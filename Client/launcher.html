@@ -1,0 +1,25 @@
+<!doctype html>
+<head>
+    <title>Launcher</title>
+    <script src="/vendor/json-patch-duplex.js"></script>
+    <script src="/vendor/puppet.js"></script>
+    <script src="/vendor/platform/platform.js"></script>
+
+    <link rel="import" href="/vendor/x-html.html">
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <template id="root" bind>
+        <template repeat="{{workspace.appThumbnails}}">
+            <!-- can be improved: https://groups.google.com/forum/?fromgroups=#!topic/polymer-dev/g1Yh8ZeXq_4 -->
+          <x-html content="{{html}}"></x-html>
+       </template>
+    </template>
+   <script>
+       var puppet = new Puppet(null, function (obj) {
+           document.getElementById("root").model = obj;
+       });
+   </script>
+</body>

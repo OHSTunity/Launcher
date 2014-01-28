@@ -1,0 +1,31 @@
+{
+   homeThumbnail: {},
+   homeUrl: "",
+   searchBar: {
+     query: "",
+	 feedback: [{
+	   text: "",
+	   matchScore: 0.5,
+	   url: "",
+	   thumbnail: {}
+	 }]
+   },
+    workspace: {
+	},
+	user: {
+	 userId: "",
+	 password: "",
+	 thumbnail: {}
+	},
+	menu: {
+	  text: "Menu",
+	  thumbnail: {},
+	  items: [{ /*collection of menus*/
+	  }]
+	},
+	appFilter: {
+	  on: true,
+	  text: "",
+	  thumbnail: {}
+	}
+}
