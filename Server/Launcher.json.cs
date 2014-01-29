@@ -39,40 +39,37 @@ partial class Launcher : Page {
 
         Handle.GET("/whoareyou1", () =>
         {
-            dynamic j = new Page();
-            j.Title = "Enecto App!";
-            j.Html = "enecto.html";
-            return j;
+            var eTemplate = new TObject();
+            eTemplate.Add<TString>("firstName");
+            eTemplate.Add<TString>("html");
+
+            dynamic e = new Json();
+            e.Template = eTemplate;
+            e.firstName = "Enecto!!";
+            e.html = "<article><input value=\"{{firstName}}!!\"></article>";
+
+            return e;
         });
 
         Handle.GET("/whoareyou2", () =>
         {
-            dynamic j = new Page();
-            j.Title = "Skype App!";
-            j.Html = "skype.html";
-            return j;
+            var sTemplate = new TObject();
+            sTemplate.Add<TString>("title");
+            sTemplate.Add<TString>("html");
+
+            dynamic s = new Json();
+            s.Template = sTemplate;
+            s.title = "Skype!!!!";
+            s.html = "<div><button>{{title}}</button><div>";
+
+            return s;
         });
 
 
         Handle.GET("/whoareyou_combined", () =>
         {
-            var eTemplate = new TObject();
-            var sTemplate = new TObject();
-            eTemplate.Add<TString>("firstName");
-            eTemplate.Add<TString>("html");
-            sTemplate.Add<TString>("title");
-            sTemplate.Add<TString>("html");
-
-            dynamic e = new Json();
-            e.Template = eTemplate;
-
-            dynamic s = new Json();
-            s.Template = sTemplate;
-
-            e.firstName = "Enecto!!";
-            e.html = "<article><input value=\"{{firstName}}!!\"></article>";
-            s.title = "Skype!!!!";
-            s.html = "<div><button>{{title}}</button><div>";
+            var e = (Json)X.GET("/whoareyou1");
+            var s = (Json)X.GET("/whoareyou2");
 
             var page = new LauncherWorkspace();
             page.appThumbnails.Add(e);
