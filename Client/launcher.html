@@ -12,10 +12,15 @@
 
 <body>
     <template id="root" bind>
-        <template repeat="{{workspace.appThumbnails}}">
-            <!-- can be improved: https://groups.google.com/forum/?fromgroups=#!topic/polymer-dev/g1Yh8ZeXq_4 -->
-          <x-html content="{{html}}"></x-html>
-       </template>
+        <template bind="{{workspace.appThumbnails.0}}">
+          <!-- enecto -->
+          <article><input value="{{firstName}}!!"></article>
+        </template>
+
+        <template bind="{{workspace.appThumbnails.1}}">
+          <!-- skype -->
+          <div><button>{{title}}</button></div>
+        </template>
     </template>
    <script>
        var puppet = new Puppet(null, function (obj) {
