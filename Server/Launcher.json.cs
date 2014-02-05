@@ -40,13 +40,13 @@ partial class Launcher : Page {
         Handle.GET("/whoareyou1", () =>
         {
             var eTemplate = new TObject();
-            eTemplate.Add<TString>("firstName");
+            eTemplate.Add<TString>("firstName$");
             eTemplate.Add<TString>("html");
 
             dynamic e = new Json();
             e.Template = eTemplate;
             e.firstName = "Enecto!!";
-            e.html = "<article><input value=\"{{firstName}}!!\"></article>";
+            e.html = "<article><input value=\"{{firstName$}}\"></article>";
 
             return e;
         });
