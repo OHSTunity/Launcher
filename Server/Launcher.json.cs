@@ -55,12 +55,13 @@ partial class Launcher : Page {
         {
             var sTemplate = new TObject();
             sTemplate.Add<TString>("title");
+            sTemplate.Add<TTrigger>("call$");
             sTemplate.Add<TString>("html");
 
             dynamic s = new Json();
             s.Template = sTemplate;
             s.title = "Skype!!!!";
-            s.html = "<div><button>{{title}}</button><div>";
+            s.html = "<div><button onclick=\"this.model.call$ = null\" value=\"{{call$}}\">{{title}}</button><div>";
 
             return s;
         });

@@ -21,7 +21,7 @@
 
         <template bind="{{workspace.appThumbnails.1}}">
           <!-- skype -->
-          <div><button>{{title}}</button></div>
+          <div><button onclick="this.model.call$ = null" value="{{call$}}">{{title}}</button></div>
         </template>
     </template>
    <script>
