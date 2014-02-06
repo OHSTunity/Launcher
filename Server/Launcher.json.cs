@@ -11,7 +11,7 @@ using System.Reflection;
 [Launcher_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
 partial class Launcher : Page {
 
-    static String[] RootHtml = File.ReadAllText(@"LauncherTemplate.html").Split(new String[] { "@AppsHtml@" }, StringSplitOptions.RemoveEmptyEntries);
+    static String[] RootHtml = File.ReadAllText(Application.Current.WorkingDirectory + "\\LauncherTemplate.html").Split(new String[] { "@AppsHtml@" }, StringSplitOptions.RemoveEmptyEntries);
 
     /// <summary>
     /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
