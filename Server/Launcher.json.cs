@@ -95,30 +95,33 @@ partial class Launcher : Page {
 
             return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
         });
-
+        StarcounterEnvironment.AppName = "App1";
         Handle.GET("/person/{?}", (String personId) =>
         {
             var eTemplate = new TObject();
+            eTemplate.Add<TString>("lastName$");
             eTemplate.Add<TString>("firstName$");
 
             dynamic e = new Json();
             e.Template = eTemplate;
             e.firstName = "Albert";
-            e.Html = "<article><input value=\"{{firstName$}}\"></article>";
+            e.lastName = "Einstien";
+            e.Html = "<article>First Name: <input value=\"{{firstName$}}\"><br/>Last Name<input value=\"{{lastName$}}\"></article>";
 
             return e;
         });
-
+        StarcounterEnvironment.AppName = "App2";
         Handle.GET("/person/{?}", (String personId) =>
         {
+
             var sTemplate = new TObject();
             sTemplate.Add<TString>("lastName$");
+            sTemplate.Add<TTrigger>("call$");
 
             dynamic s = new Json();
             s.Template = sTemplate;
             s.lastName = "Einstien";
-            e.Html = "<article><input value=\"{{lastName$}}\"></article>";
-
+            s.Html = "<article><input value=\"{{lastName$}}\"><button onclick=\"this.model.call$ = null\" value=\"{{call$}}\">call</button></article>";
             return s;
         });
     }
