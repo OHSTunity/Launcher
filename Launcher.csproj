@@ -96,9 +96,9 @@
     <Content Include="Client\css\style.css" />
     <Content Include="Client\enecto_plus_skype.html" />
     <Content Include="Client\vendor\x-html.html" />
-    <Content Include="Client\launcher.html" />
     <Content Include="Client\vendor\json-patch-duplex.js" />
     <Content Include="Client\vendor\puppet.js" />
+    <Content Include="Client\LauncherTemplate.html" />
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Server\Page.json">
