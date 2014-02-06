@@ -78,19 +78,8 @@ partial class Launcher : Page {
 
         Handle.GET("/launcher", (Request req) =>
         {
-            /*
-            Launcher m = new Launcher()
-            {                                       // This is the root view model for our application. A view model is a JSON object/tree.
-                Html = "/launcher.html",              // This is just a field we added to allow the client to know what Html to load. No magic.
-            };
-            m.Session = new Session();              // Save the JSON on the server to be accessed using GET/PATCH to allow it to be used as a view model in web components.
-
-            var j = (LauncherWorkspace)X.GET("/whoareyou_combined"); // We are cheating as multiple handlers are not allowed and there is no merger code to merge them together anyways.
-            m.workspace = j;
-            */
-
             Response resp;
-            X.GET("/whoareyou", out resp);
+            X.GET("/person/123", out resp);
 
             if (Session.InitialRequest.PreferredMimeType == MimeType.Text_Html)
             {
@@ -107,48 +96,32 @@ partial class Launcher : Page {
             return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
         });
 
-        Handle.GET("/whoareyou", () =>
+        Handle.GET("/person/{?}", (String personId) =>
         {
             var eTemplate = new TObject();
             eTemplate.Add<TString>("firstName$");
 
             dynamic e = new Json();
             e.Template = eTemplate;
-            e.firstName = "Enecto!!";
+            e.firstName = "Albert";
             e.Html = "<article><input value=\"{{firstName$}}\"></article>";
 
             return e;
         });
 
-        Handle.GET("/whoareyou", () =>
+        Handle.GET("/person/{?}", (String personId) =>
         {
             var sTemplate = new TObject();
-            sTemplate.Add<TString>("title");
-            sTemplate.Add<TTrigger>("call$");
+            sTemplate.Add<TString>("lastName$");
 
             dynamic s = new Json();
             s.Template = sTemplate;
-            s.title = "Skype!!!!";
-            s.Html = "<div><button onclick=\"this.model.call$ = null\" value=\"{{call$}}\">{{title}}</button></div>";
+            s.lastName = "Einstien";
+            e.Html = "<article><input value=\"{{lastName$}}\"></article>";
 
             return s;
         });
-
-        /*
-        Handle.GET("/whoareyou_combined", () =>
-        {
-            var e = (Json)X.GET("/whoareyou1");
-            var s = (Json)X.GET("/whoareyou2");
-
-            var page = new LauncherWorkspace();
-            page.appThumbnails.Add(e);
-            page.appThumbnails.Add(s);
-
-            return page;
-        });
-       */
     }
-
 }
 
 
