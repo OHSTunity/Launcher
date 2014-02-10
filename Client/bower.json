@@ -1,0 +1,23 @@
+{
+  "name": "LauncherClient",
+  "version": "0.0.20140210",
+  "homepage": "https://github.com/Polyjuice/Launcher",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "**/examples",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "platform": "Polymer/platform",
+    "polymer": "Polymer/polymer",
+    "fast-json-patch": "~0.3.6",
+    "tomalec-sortable-list": "tomalec/sortable-flexbox-list#master",
+    "x-html": "~0.0.20140122",
+    "PuppetJs": "~0.1.5"
+  }
+}

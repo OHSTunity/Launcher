@@ -95,9 +95,9 @@
   <ItemGroup>
     <Content Include="Client\css\style.css" />
     <Content Include="Client\enecto_plus_skype.html" />
-    <Content Include="Client\vendor\x-html.html" />
-    <Content Include="Client\vendor\json-patch-duplex.js" />
-    <Content Include="Client\vendor\puppet.js" />
+    <Content Include="Client\vendor\x-html\x-html.html" />
+    <Content Include="Client\vendor\fast-json-patch\src\json-patch-duplex.js" />
+    <Content Include="Client\vendor\PuppetJs\src\puppet.js" />
     <Content Include="Client\LauncherTemplate.html" />
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +112,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Database\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Client\.bowerrc" />
+    <None Include="Client\bower.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(StarcounterBin)\Starcounter.MsBuild.targets" />
