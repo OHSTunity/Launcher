@@ -50,18 +50,17 @@ partial class Launcher : Page {
 
                 case MimeType.Application_Json:
                 {
-                    sb.Append("{");
+                    Json root = new Json();
                     Int32 n = responses.Count;
-                    for (Int32 i = 0; i < n; i++)
-                    {
-                        sb.Append("\"" + appNames[i] + "\":");
-                        sb.Append(responses[i].GetContentString(MimeType.Application_Json));
-                        if (i < n - 1)
-                            sb.Append(",");
+                    for (Int32 i = 0; i < n; i++) {
+                        root[appNames[i]] = (Json)responses[i].Hypermedia;
                     }
-                    sb.Append("}");
+                    if (Session.Current != null)
+                        root.Session = Session.Current;
+                    else 
+                        root.Session = new Session();
 
-                    break;
+                    return root;
                 }
 
                 default:
@@ -101,6 +100,7 @@ partial class Launcher : Page {
             var eTemplate = new TObject();
             eTemplate.Add<TString>("lastName$");
             eTemplate.Add<TString>("firstName$");
+            eTemplate.Add<TString>("Html");
 
             dynamic e = new Json();
             e.Template = eTemplate;
@@ -117,6 +117,7 @@ partial class Launcher : Page {
             var sTemplate = new TObject();
             sTemplate.Add<TString>("lastName$");
             sTemplate.Add<TTrigger>("call$");
+            sTemplate.Add<TString>("Html");
 
             dynamic s = new Json();
             s.Template = sTemplate;
