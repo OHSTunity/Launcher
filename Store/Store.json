@@ -1,0 +1,10 @@
+{
+    Apps: [{
+	   Appname: "",
+	   Rating: 15,
+	   Thumbnail: {},
+       Buy$: null
+	}],
+
+    StoreName: ""
+}
