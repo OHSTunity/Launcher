@@ -1,0 +1,167 @@
+<!--
+x-html.html v0.0.20140210
+(c) 2013 Joachim Wester
+MIT license
+https://github.com/PuppetJs/x-html
+-->
+<script>
+  (function () {
+    Object.defineProperty(Node.prototype, 'model', {
+      get: function () {
+        if (this.bindings) {
+          var obj = (this.bindings.content || this.bindings.value);//`content` is in DOM and `value` is in Shadow DOM
+          return obj.object_ || obj.model; //object_ since Polymer 0.1.3 (https://github.com/Polymer/observe-js/commits/master/src/observe.js)
+        }
+      }
+    });
+
+    var XHTMLPrototype = Object.create(HTMLElement.prototype);
+
+    XHTMLPrototype.loadTemplate_ = function() {
+      var val = this.getAttribute('content');
+      if (val && (val.indexOf('/') === 0 || val.indexOf('./') === 0)) {
+        //val is a URL, load the partial from the HTTP server/cache
+        var oReq = new XMLHttpRequest();
+        var that = this;
+        oReq.onload = function (event) {
+          that.reattachTemplate_(event.target.responseText);
+        };
+        oReq.open("GET", val, true);
+        oReq.send();
+      }
+      else {
+        //val is HTML code, insert the partial from the string
+        this.reattachTemplate_(val);
+      }
+    };
+
+    XHTMLPrototype.reattachTemplate_ = function(html) {
+      var isNative = !HTMLImports.importer;
+      this.innerHTML = '<template bind>' + html + '</template>';
+
+      var template = this.firstChild;
+      if(window.PolymerExpressions) {
+        template.bindingDelegate = new PolymerExpressions; //use PolymerExpressions if available. This allows <template if="{{val == 1}}">, etc
+      }
+      var content = template.content;
+
+      var specialElemSelectors = ['style', 'link[rel=stylesheet]', 'script'];
+      if(isNative) {
+        specialElemSelectors.push('link[rel=import]');
+      }
+
+      var specialElems = content.querySelectorAll(specialElemSelectors);
+      specialElems = Array.prototype.slice.call(specialElems, 0); //convert to array
+      specialElems.forEach(function (elem) {
+        elem.parentNode.removeChild(elem); //avoid being processed by HTMLImports
+      });
+
+      //from Polymer 0.1.5, Polymer.import can be used
+      //see: https://groups.google.com/forum/#!topic/polymer-dev/pn1mhqLugVU
+      //see: http://stackoverflow.com/questions/21607663/dynamically-load-web-components-html-imports)
+
+      if(isNative) {
+        template.model = this.model;
+        this.parseSpecialElements_(specialElems);
+      }
+      else {
+        var that = this;
+        HTMLImports.importer.load(content, function () {
+          if (content.scripts === void 0) {
+            content.scripts = [];
+            //workaround HTMLImport error "TypeError: Cannot read property 'length' of undefined "
+            //this can be removed when https://github.com/Polymer/HTMLImports/issues/40 is fixed
+          }
+          HTMLImports.parser.parse(content);
+          template.model = that.model;
+          that.parseSpecialElements_(specialElems);
+        });
+
+      }
+    };
+
+    XHTMLPrototype.parseSpecialElements_ = function(specialElems) {
+      var that = this;
+      specialElems.forEach(function (elem) {
+        if (elem.nodeName === 'STYLE') {
+          that.appendChild(elem);
+        }
+        else if (elem.nodeName === 'LINK') { //appending <link rel="stylesheet"> to Shadow DOM does not have any effect (9 Nov, 2013)
+          if(elem.rel === "stylesheet") {
+            var style = document.createElement('style');
+            style.innerHTML = '@import url(' + elem.getAttribute('href') + ');';
+            setTimeout(function () { //must be async, otherwise custom elements in demo puppetjs/lab/wc/page_2 display improperly
+              that.appendChild(style);
+            }, 0);
+          }
+          else if(elem.rel === "import") {
+            document.head.appendChild(elem);
+          }
+        }
+        else if (elem.nodeName === 'SCRIPT') {
+          setTimeout(function () { //must be async
+            executeComponentScript(elem.textContent, that, 'script')
+          }, 0);
+        }
+      });
+    };
+
+    /**
+     * Function that executes script (that is ignored by browser's .innerHTML)
+     * @source Polymer's HTMLElementElement.js
+     */
+    function executeComponentScript(inScript, inContext, inName) {
+      // set (highlander) context
+      context = inContext;
+      // source location
+      var owner = context.ownerDocument;
+      var url = (owner._URL || owner.URL || owner.impl
+        && (owner.impl._URL || owner.impl.URL));
+      // ensure the component has a unique source map so it can be debugged
+      // if the name matches the filename part of the owning document's url,
+      // use this, otherwise, add ":<name>" to the document url.
+      var match = url.match(/.*\/([^.]*)[.]?.*$/);
+      if (match) {
+        var name = match[1];
+        url += name != inName ? ':' + inName : '';
+      }
+      // compose script
+      var code = "__componentScript('"
+          + inName
+          + "', function(){"
+          + inScript
+          + "});"
+          + "\n//# sourceURL=" + url + "\n"
+        ;
+      // inject script
+      eval(code);
+    }
+
+    var context;
+
+    // global necessary for script injection
+    window.__componentScript = function (inName, inFunc) {
+      inFunc.call(context);
+    };
+
+    XHTMLPrototype.attachedCallback = function () {
+      var that = this;
+      this.loadTemplate_();
+
+      var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === "attributes" && mutation.attributeName === "content") {
+            that.loadTemplate_();
+          }
+        });
+      });
+      observer.observe(this, {
+        attributes: true
+      });
+    };
+
+    document.register('x-html', {
+      prototype: XHTMLPrototype
+    });
+  })();
+</script>

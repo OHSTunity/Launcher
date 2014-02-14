@@ -42,36 +42,92 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\Level1\bin\Debug\Starcounter.dll</HintPath>
+    </Reference>
+    <Reference Include="Starcounter.Bootstrap, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\Level1\bin\Debug\Starcounter.Bootstrap.dll</HintPath>
+    </Reference>
+    <Reference Include="Starcounter.Hypermedia, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\Level1\bin\Debug\Starcounter.Hypermedia.dll</HintPath>
+    </Reference>
+    <Reference Include="Starcounter.Internal, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\level1\bin\Debug\Starcounter.Internal.dll</HintPath>
+    </Reference>
+    <Reference Include="Starcounter.Node, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\level1\bin\Debug\Starcounter.Node.dll</HintPath>
+    </Reference>
+    <Reference Include="Starcounter.REST, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\Level1\bin\Debug\Starcounter.REST.dll</HintPath>
+    </Reference>
+    <Reference Include="Starcounter.XSON, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\sc\Level1\bin\Debug\Starcounter.XSON.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Starcounter.Internal, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Starcounter.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Starcounter.Node, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Starcounter.XSON, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Store.json.cs">
-      <DependentUpon>Store.json</DependentUpon>
+    <Compile Include="Server\Master.json.cs">
+      <DependentUpon>Master.json</DependentUpon>
     </Compile>
+    <Compile Include="Server\PrimaryApp.json.cs">
+      <DependentUpon>PrimaryApp.json</DependentUpon>
+    </Compile>
+    <Compile Include="Database\Demodata.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\Page.json.cs">
+      <DependentUpon>Page.json</DependentUpon>
+    </Compile>
+    <Compile Include="Server\PrimaryPage.json.cs">
+      <DependentUpon>PrimaryPage.json</DependentUpon>
+    </Compile>
+    <Compile Include="Server\Store.json.cs">
+      <DependentUpon>Store.json</DependentUpon>
+	</Compile>
   </ItemGroup>
   <ItemGroup>
-    <TypedJSON Include="Store.json">
+    <TypedJSON Include="Server\Store.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="Server\Master.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="Server\PrimaryApp.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Client\css\style.css" />
+    <Content Include="Client\primary-create.html" />
+    <Content Include="Client\primary.html" />
+    <Content Include="Client\primary-thread.html" />
+    <Content Include="Client\vendor\x-html\x-html.html" />
+    <Content Include="Client\master.html" />
+    <Content Include="Client\vendor\fast-json-patch\src\json-patch-duplex.js" />
+    <Content Include="Client\vendor\platform\platform.js" />
+    <Content Include="Client\vendor\PuppetJS\src\puppet.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="Server\Page.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="Server\PrimaryPage.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>
