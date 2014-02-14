@@ -16,7 +16,7 @@
     "platform": "Polymer/platform",
     "polymer": "Polymer/polymer",
     "fast-json-patch": "~0.3.6",
-    "tomalec-sortable-list": "tomalec/sortable-flexbox-list#master",
+    "tomalec-sortable-list": "tomalec/sortable-flexbox-list",
     "x-html": "~0.0.20140122",
     "PuppetJs": "~0.1.5"
   }
