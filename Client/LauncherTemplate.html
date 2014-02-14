@@ -8,15 +8,16 @@
 
     <link rel="import" href="/vendor/x-html/x-html.html">
     <link rel="import" href="/vendor/tomalec-sortable-list/elements/tomalec-sortable-list.html">
-    <link rel="import" href="/vendor/tomalec-sortable-list/elements/tomalec-sortable-body.html">
 
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body is="tomalec-sortable-body">
-    <template id="root" bind>
-        @AppsHtml@       
-    </template>
+<body>
+    <tomalec-sortable-list>
+        <template id="root" bind>
+            @AppsHtml@       
+        </template>
+    </tomalec-sortable-list>
    <script>
        var puppet = new Puppet(null, function (obj) {
            var rootTemplate = document.getElementById("root");
