@@ -91,12 +91,12 @@
     <Compile Include="Server\PrimaryPage.json.cs">
       <DependentUpon>PrimaryPage.json</DependentUpon>
     </Compile>
-    <Compile Include="Server\Store.json.cs">
-      <DependentUpon>Store.json</DependentUpon>
-	</Compile>
+    <Compile Include="Server\StoreApp.json.cs">
+      <DependentUpon>StoreApp.json</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <TypedJSON Include="Server\Store.json">
+    <TypedJSON Include="Server\StoreApp.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

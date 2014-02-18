@@ -15,17 +15,14 @@ partial class Master : Page {
 
         Handle.GET("/person/{?}", (String personId) =>
         {
-            var sTemplate = new TObject();
-            sTemplate.Add<TString>("appName");
-            sTemplate.Add<TString>("description");
-            sTemplate.Add<TTrigger>("buy$");
-            sTemplate.Add<TString>("Html");
+            var s = new Store.StoreApp();
 
-            dynamic s = new Json();
-            s.Template = sTemplate;
-            s.appName = "En Tracker";
-            s.description = "Supercool En tracking app.";
-            s.Html = "<article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{appName}}</h2>{{description}}<button onclick=\"this.model.buy$ = null\" value=\"{{appName}}\">buy</button></article>";
+            var a = s.Apps.Add();
+            a.Appname = "En Bambim";
+            a.Description = "Supercool En tracking app.";
+
+            s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}}<button onclick=\"this.model.Buy$ = null\" value=\"{{Buy$}}\">buy</button></article></template>";
+
             return s;
         });
         
