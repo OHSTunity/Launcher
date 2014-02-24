@@ -1,27 +1,27 @@
 <section>
-    <!--
+    <!-- TODO: resolve to which app's /Client folder those paths points to -->
+    <!-- 
     <script src="/vendor/fast-json-patch/src/json-patch-duplex.js"></script>
     <script src="/vendor/PuppetJS/src/puppet.js"></script>
     <script src="/vendor/platform/platform.js"></script>
 
     <link rel="import" href="/vendor/x-html/x-html.html">
-
+    -->
     <link rel="stylesheet" href="/css/style.css">
-
     <link rel="import" href="/vendor/polymer-ui-sidebar-menu/polymer-ui-sidebar-menu.html">
     <link rel="import" href="/vendor/polymer-ui-submenu-item/polymer-ui-submenu-item.html">
     <link rel="import" href="/vendor/polymer-ui-icon-button/polymer-ui-icon-button.html">
     <link rel="import" href="/vendor/polymer-ui-tabs/polymer-ui-tabs.html">
     <link rel="stylesheet" href="/vendor/polymer-ui-base-css/base.css">
-    -->
+    
     <style scoped>
-        form {
+        /** 
+         * Requires enabling flag for Chome nad FF
+         * https://developer.mozilla.org/en-US/docs/Web/CSS/:scope#Browser_compatibility
+         */
+        :scope {
             border: 1px solid #DDD;
             border-radius: 0.4em;
-            padding: 0 1.5em 1.5em;
-        }
-        small {
-            font-size: 50%;
         }
         [flex] {
             display: flex;
@@ -31,17 +31,46 @@
             align-content: space-around;
             align-items: center;
         }
+        polymer-ui-toolbar{
+            padding: 0 0.2em;
+        }
+        /* Form */
+        form{
+            padding: 0.5em 1.5em;
+        }
+
+        form input {
+            display: block;
+            line-height: 24px;
+            flex: 2 2 100%;
+            align-self: center;
+            background: transparent;
+            border-width: 0;
+        }
+
+        form input,
+        form button {
+            padding-left: 0;
+            margin-left: 0;
+        }
+
+        form input[type=text],
+        form input:not([type]) {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: inherit;
+            background: transparent;
+            border-width: 0;
+        }
+
+
     </style>
+
+    <polymer-ui-toolbar flex>
+        <polymer-ui-icon icon="account" title="dummyCRM-icon"></polymer-ui-icon>
+        <h2>{{DisplayName}}</h2>
+        <polymer-ui-icon-button icon="trash" bind="{{Delete$}}" onclick="setModelValue(this)" value="null"></polymer-ui-icon-button>
+    </polymer-ui-toolbar>
     <form>
-        
-        <polymer-ui-toolbar>
-            <div flex>
-                <small>dummyCRM-icon</small>
-                <h2>{{DisplayName}}</h2>
-                <button bind="{{Delete$}}" onclick="setModelValue(this)" value="null">Delete</button>
-                <polymer-ui-icon-button icon="trash" bind="{{Delete$}}" onclick="setModelValue(this)" value="null"></polymer-ui-icon-button>
-            </div>
-        </polymer-ui-toolbar>
         <input type="text" placeholder="FirstName" value="{{FirstName$}}">
         <input type="text" placeholder="LastName" value="{{LastName$}}">
     </form>
