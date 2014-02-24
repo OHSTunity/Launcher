@@ -21,7 +21,7 @@ partial class Master : Page {
             a.Appname = "En Bambim";
             a.Description = "Supercool En tracking app.";
 
-            s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}}<button onclick=\"this.model.Buy$ = null\" value=\"{{Buy$}}\">buy</button></article></template>";
+            s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}}<button bind=\"{{Buy$}}\" onclick=\"setModelValue(this)\" value=\"null\">buy</button></article></template>";
 
             return s;
         });
