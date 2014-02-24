@@ -5,15 +5,19 @@ Client side library that binds Web Components or AngularJs to server side view m
 
 Implements [Server communication](https://github.com/Starcounter-Jack/PuppetJs/wiki/Server-communication).
 
-### Usage
+### Installation
 
-Install by adding source to your head:
+You can install it using [bower](http://bower.io/) `bower install PuppetJs` or just download from [github](https://github.com/PuppetJs/PuppetJs).
+
+Then add source to your head:
 
 ```html
 <!-- include PuppetJs with dependencies -->
-<script src="lib/json-patch/src/json-patch-duplex.js"></script>
-<script src="src/puppet.js"></script>
+<script src="bower_components/fast-json-patch/src/json-patch-duplex.js"></script>
+<script src="bower_components/PuppetJs/src/puppet.js"></script>
 ```
+
+### Usage
 
 After DOM is ready, initialize with the constructor:
 
@@ -68,13 +72,20 @@ Open `test/SpecRunner.html` in your web browser to run Jasmine test suite.
 
 ### Changelog
 
-#### 0.1.5 (Jan 24, 2013)
+#### 0.1.6 (Feb 21, 2014)
+
+- New `beforeSend` callback in `puppet.xhr` for hackability
+- Upgrade to [&lt;x-html&gt;](https://github.com/PuppetJs/x-html) to v0.0.20140221
+- New sugar `setModelValue` function, to give HTML attribute event handlers access to the model's property. (As `Node` extension was removed from [&lt;x-html&gt;](https://github.com/PuppetJs/x-html) code)
+- Upgrade Polymer to v0.2.0
+
+#### 0.1.5 (Jan 24, 2014)
 
 - Less strict behavior when `Location` is received more than once from the server. Still showing an error message when the server changes the `Location` during the session
 - Upgrade to [&lt;x-html&gt;](https://github.com/PuppetJs/x-html) to v0.0.20140122
 - Upgrade Polymer to v0.1.3
 
-#### 0.1.4 (Jan 10, 2013)
+#### 0.1.4 (Jan 10, 2014)
 
 - Redo the how the internal application clicks are intercepted by PuppetJS and changed into a patch and history push (previous implementation stopped working in ShadowDOM)
 - Deprecate `catchExternaLink` (no need to use it anymore)

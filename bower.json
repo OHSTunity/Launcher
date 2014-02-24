@@ -13,11 +13,11 @@
     "tests"
   ],
   "dependencies": {
-    "platform": "Polymer/platform#6460c3d51b30b50d311eb1d7b055f29affa26f74",
-    "polymer": "Polymer/polymer#9c8a64bf03d2543c6d9d73c3c5eea8e18c2e79e2",
+    "platform": "Polymer/platform#~0.2",
+    "polymer": "Polymer/polymer#~0.2",
     "fast-json-patch": "~0.3.6",
-    "tomalec-sortable-list": "tomalec/sortable-flexbox-list",
-    "x-html": "~0.0.20140122",
-    "PuppetJs": "~0.1.5"
+    "tomalec-sortable-list": "~0.0.20140211",
+    "x-html": "~0.0.20140221",
+    "PuppetJs": "~0.1.6"
   }
 }

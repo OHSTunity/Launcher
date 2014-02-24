@@ -1,8 +1,18 @@
-// puppet.js 0.1.5
+// puppet.js 0.1.6
 // (c) 2013 Joachim Wester
 // MIT license
 
 (function (global) {
+  /**
+   * Sugar function to bind model change on click with Polymer.
+   * @param {Node} element DOM Node
+   * @param {Object} [value]   any value to be set, if not given `element.value` or
+   *                            value attribute will be used.
+   */
+  global.setModelValue = function setModelValue(element, value){
+      return (element.bindings || ShadowDOMPolyfill.wrap(element).bindings).bind
+                .setValue( value || element.value || element.getAttribute("value") );
+  };
 
   var lastClickHandler
     , lastPopstateHandler
@@ -22,9 +32,7 @@
     this.observer = null;
     this.referer = null;
     this.queue = [];
-    this.refererSettable = true;
     this.handleResponseCookie();
-    this.refererSettable = false;
 
     this.ignoreCache = [];
     this.ignoreAdd = null; //undefined, null or regexp (tested against JSON Pointer in JSON Patch)
@@ -285,10 +293,16 @@
       //impl is Polymer
       target = target.impl;
     }
-    if (target.href && this.isApplicationLink(target)) {
+
+    //needed since Polymer 0.2.0 in Chrome stable / Web Plaftorm features disabled
+    //because target.href returns undefined for <polymer-ui-menu-item href="..."> (which is an error)
+    //while target.getAttribute("href") returns desired href (as string)
+    var href = target.href || target.getAttribute("href");
+
+    if (href && this.isApplicationLink(href)) {
       event.preventDefault();
       event.stopPropagation();
-      this.morphUrl(target.href);
+      this.morphUrl(href);
     }
     else if (target.type === 'submit') {
       event.preventDefault();
@@ -331,7 +345,15 @@
     throw new Error(description);
   };
 
-  Puppet.prototype.xhr = function (url, accept, data, callback) {
+  /**
+   * Internal method to perform XMLHttpRequest
+   * @param url (Optional) URL to send the request. If empty string, undefined or null given - the request will be sent to window location
+   * @param accept (Optional) HTTP accept header
+   * @param data (Optional) Data payload
+   * @param callback (Optional) function
+   * @param beforeSend (Optional) Function that modifies the XHR object before the request is sent. Added for hackability
+   */
+  Puppet.prototype.xhr = function (url, accept, data, callback, beforeSend) {
     //this.handleResponseCookie();
     cookie.erase('Location'); //more invasive cookie erasing because sometimes the cookie was still visible in the requests
 
@@ -361,6 +383,9 @@
     if (this.referer) {
       req.setRequestHeader('X-Referer', this.referer);
     }
+    if (beforeSend) {
+      beforeSend.call(that, req);
+    }
     req.send(data);
   };
 
@@ -372,15 +397,6 @@
   Puppet.prototype.morphUrl = function (url) {
     history.pushState(null, null, url);
     this.changeState(url);
-  };
-
-  /**
-   * Add an event listener that catches clicks on links
-   * @param element shadowRoot
-   * @deprecated
-   */
-  Puppet.prototype.catchExternaLink = function (element) {
-    //now it is handled by Puppet.prototype.fixShadowRootClicks
   };
 
   /**

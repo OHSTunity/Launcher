@@ -14,9 +14,9 @@
     "tests"
   ],
   "dependencies": {
-    "PuppetJs": "master",
-    "platform": "Polymer/platform#~0.1.4",
-    "polymer-ui-elements": "~0.1.4",
-    "x-html": "~0.0.20140210"
+    "PuppetJs": "~0.1.6",
+    "platform": "Polymer/platform#~0.2",
+    "polymer-ui-elements": "~0.2",
+    "x-html": "~0.0.20140221"
   }
 }
