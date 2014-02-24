@@ -5,7 +5,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store", "Apps\Store\Store.csproj", "{21FEC028-F5BE-468B-A60A-45284DEB0F2E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{14930FD3-7A05-494A-A1AA-26287ED67E8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dummyCRM", "Apps\dummyCRM\dummyCRM.csproj", "{E1D6642D-B9A3-4548-A714-26AE6D96F41E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{F283FC56-CAD1-4799-B7A2-26A772AFE46C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,11 +23,16 @@ Global
 		{21FEC028-F5BE-468B-A60A-45284DEB0F2E}.Debug|x64.Build.0 = Debug|x64
 		{21FEC028-F5BE-468B-A60A-45284DEB0F2E}.Release|x64.ActiveCfg = Release|x64
 		{21FEC028-F5BE-468B-A60A-45284DEB0F2E}.Release|x64.Build.0 = Release|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Debug|x64.ActiveCfg = Debug|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Debug|x64.Build.0 = Debug|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Release|x64.ActiveCfg = Release|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{21FEC028-F5BE-468B-A60A-45284DEB0F2E} = {14930FD3-7A05-494A-A1AA-26287ED67E8C}
+		{21FEC028-F5BE-468B-A60A-45284DEB0F2E} = {F283FC56-CAD1-4799-B7A2-26A772AFE46C}
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E} = {F283FC56-CAD1-4799-B7A2-26A772AFE46C}
 	EndGlobalSection
 EndGlobal

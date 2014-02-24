@@ -19,7 +19,7 @@ partial class Master : Page {
 
             var a = s.Apps.Add();
             a.Appname = "En Bambim";
-            a.Description = "Supercool En tracking app.";
+            a.Description = "Supercool En tracking app, made by Albert Einstein.";
 
             s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}}<button bind=\"{{Buy$}}\" onclick=\"setModelValue(this)\" value=\"null\">buy</button></article></template>";
 
@@ -29,38 +29,6 @@ partial class Master : Page {
         Handle.POST("/init-demo-data", () => {      // The Handle class is where you register new handlers for incomming requests.
             DemoData.Create();                      // Will create some demo data.
             return 201;                             // Returning an integer is the shortcut for returning a response with a status code.
-        });
-
-        Handle.GET("/master", () =>
-        {
-            Master m = new Master()
-            {                                       // This is the root view model for our application. A view model is a JSON object/tree.
-                Html = "/master.html",              // This is just a field we added to allow the client to know what Html to load. No magic.
-            };
-            m.Session = new Session();              // Save the JSON on the server to be accessed using GET/PATCH to allow it to be used as a view model in web components.
-            return m;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
-        });
-
-
-        Handle.GET("/primary", () =>                // The main screen of the app
-        {
-            var m = Master.GET("/master");          // Create the view model for the main application frame.
-            PrimaryApp p = new PrimaryApp();        // The email application also consists of a view model.
-            p.Html = "/primary.html";               // Starcounter is a generic server and does not know of Html, so this is a variable we create in Page.json
-            p.AddSomeNiceMenuItems(m);              // Adds some menu items in the main menu (by modifying the master view model)
-            m.ApplicationPage = p;                  // Place the email applications view model inside the main application frame as its subpage.
-            m.ApplicationName = "Tab 1";            // Used to highlight the current tab in the client
-            return p;                               // Returns the home page. As you can see in Page.json, we taught it how to serve both HTML and the JSON view model without any extra work.
-        });
-
-        Handle.GET("/primary/create", () => 
-        {
-            var p = PrimaryApp.GET("/primary");
-            p.FocusedPage = new PrimaryPage()
-            {
-                Html = "/primary-create.html"
-            };
-            return p;
         });
     }
 }

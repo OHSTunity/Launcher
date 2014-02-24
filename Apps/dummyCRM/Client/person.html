@@ -1,0 +1,48 @@
+<section>
+    <!--
+    <script src="/vendor/fast-json-patch/src/json-patch-duplex.js"></script>
+    <script src="/vendor/PuppetJS/src/puppet.js"></script>
+    <script src="/vendor/platform/platform.js"></script>
+
+    <link rel="import" href="/vendor/x-html/x-html.html">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <link rel="import" href="/vendor/polymer-ui-sidebar-menu/polymer-ui-sidebar-menu.html">
+    <link rel="import" href="/vendor/polymer-ui-submenu-item/polymer-ui-submenu-item.html">
+    <link rel="import" href="/vendor/polymer-ui-icon-button/polymer-ui-icon-button.html">
+    <link rel="import" href="/vendor/polymer-ui-tabs/polymer-ui-tabs.html">
+    <link rel="stylesheet" href="/vendor/polymer-ui-base-css/base.css">
+    -->
+    <style scoped>
+        form {
+            border: 1px solid #DDD;
+            border-radius: 0.4em;
+            padding: 0 1.5em 1.5em;
+        }
+        small {
+            font-size: 50%;
+        }
+        [flex] {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-content: space-around;
+            align-items: center;
+        }
+    </style>
+    <form>
+        
+        <polymer-ui-toolbar>
+            <div flex>
+                <small>dummyCRM-icon</small>
+                <h2>{{DisplayName}}</h2>
+                <button bind="{{Delete$}}" onclick="setModelValue(this)" value="null">Delete</button>
+                <polymer-ui-icon-button icon="trash" bind="{{Delete$}}" onclick="setModelValue(this)" value="null"></polymer-ui-icon-button>
+            </div>
+        </polymer-ui-toolbar>
+        <input type="text" placeholder="FirstName" value="{{FirstName$}}">
+        <input type="text" placeholder="LastName" value="{{LastName$}}">
+    </form>
+</section>
