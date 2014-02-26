@@ -27,7 +27,7 @@ partial class Master : Page {
                 Html = "/person.html",
                 Data = person
             };
-            //page.Transaction = new Transaction();
+            page.Transaction = new Transaction();
             return page;
         });
     }

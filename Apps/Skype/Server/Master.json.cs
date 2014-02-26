@@ -21,7 +21,7 @@ partial class Master : Page {
                 Html = "/callWidget.html"
                 //, Data = person
             };
-            //page.Transaction = new Transaction();
+            //widget.Transaction = new Transaction();
             return widget;
         });
       
