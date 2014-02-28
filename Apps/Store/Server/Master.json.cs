@@ -19,9 +19,12 @@ partial class Master : Page {
 
             var a = s.Apps.Add();
             a.Appname = "En Bambim";
-            a.Description = "Supercool En tracking app, made by Albert Einstein.";
+            a.Description = "Supercool En tracking app";
 
-            s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}}<button bind=\"{{Buy$}}\" onclick=\"setModelValue(this)\" value=\"null\">buy</button></article></template>";
+            var person = Db.SQL<Concepts.Ring1.Person>("SELECT p FROM Concepts.Ring1.Person p WHERE FirstName=?", "Albert").First;
+            a.Author.Data = person;
+
+            s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}} by {{Author.FullName}}<button bind=\"{{Buy$}}\" onclick=\"setModelValue(this)\" value=\"null\">buy</button></article></template>";
 
             return s;
         });

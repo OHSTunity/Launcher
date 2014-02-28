@@ -5,6 +5,9 @@
 	   Html: "",
 	   Rating: 15,
 	   Thumbnail: {},
+	   Author: {
+	     FullName: ""
+	   },
        Buy$: null
 	}],
 	Html: "",

@@ -20,7 +20,7 @@ partial class Master : Page {
 
         Handle.GET("/person/{?}", (String personId) =>
         {
-            var person = Db.SQL<Person>("SELECT p FROM Person p WHERE FirstName=?", "Albert").First;
+            var person = Db.SQL<Concepts.Ring1.Person>("SELECT p FROM Concepts.Ring1.Person p WHERE FirstName=?", "Albert").First;
 
             var page = new PrimaryPage()
             {
