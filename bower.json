@@ -18,6 +18,13 @@
     "fast-json-patch": "~0.3.6",
     "tomalec-sortable-list": "~0.0.20140226",
     "x-html": "~0.0.20140221",
-    "PuppetJs": "~0.1.6"
+    "PuppetJs": "~0.1.6",
+    "polymer-ui-field": "Polymer/polymer-ui-field#~0.2.0",
+    "polymer-ui-dropdown": "Polymer/polymer-ui-dropdown#~0.2.0",
+    "polymer-ui-toolbar": "Polymer/polymer-ui-toolbar#~0.2.0",
+    "polymer-ui-menu-button": "Polymer/polymer-ui-menu-button#~0.2.0",
+    "polymer-ui-menu-item": "Polymer/polymer-ui-menu-item#~0.2.0",
+    "polymer-ui-sidebar-menu": "Polymer/polymer-ui-sidebar#~0.2.0",
+    "polymer-ui-toggle-button": "Polymer/polymer-ui-toggle-button#~0.2.0"
   }
 }

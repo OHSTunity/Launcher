@@ -11,14 +11,20 @@
     <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
 
     <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Import our elements -->
+    <link rel="import" href="elements/dashboard/pj-dashboard.html">
+
 </head>
 
 <body>
+    <pj-dashboard>
     <tomalec-sortable-list>
         <template id="root" bind>
             @AppsHtml@       
         </template>
     </tomalec-sortable-list>
+    </pj-dashboard>
    <script>
        var puppet = new Puppet(null, function (obj) {
            var rootTemplate = document.getElementById("root");
