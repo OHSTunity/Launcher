@@ -16,7 +16,7 @@
     "platform": "Polymer/platform#~0.2",
     "polymer": "Polymer/polymer#~0.2",
     "fast-json-patch": "~0.3.6",
-    "tomalec-sortable-list": "~0.0.20140211",
+    "tomalec-sortable-list": "~0.0.20140226",
     "x-html": "~0.0.20140221",
     "PuppetJs": "~0.1.6"
   }

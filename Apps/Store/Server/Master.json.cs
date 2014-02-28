@@ -25,11 +25,12 @@ partial class Master : Page {
 
             return s;
         });
-        
+
         Handle.POST("/init-demo-data", () => {      // The Handle class is where you register new handlers for incomming requests.
             DemoData.Create();                      // Will create some demo data.
             return 201;                             // Returning an integer is the shortcut for returning a response with a status code.
         });
+         
     }
 }
 
