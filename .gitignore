@@ -112,3 +112,6 @@ UpgradeLog*.XML
 
 # Bower tempoarary files
 .bower.json
+
+# NPM packages
+node_modules
