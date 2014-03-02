@@ -1,17 +1,15 @@
+<!-- Importing Web Component's Polyfill -->
+<!-- 
+<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/platform.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
+-->
+<!-- Importing Skype Library -->
 <script type="text/javascript" src="http://cdn.dev.skype.com/uri/skype-uri.js"></script>
-<div id="call_24" style="width:25%; background-color:#0094ff">
-   <script type="text/javascript">
-       //There could be error in x-html with script eval order.
-       setTimeout(function () {
-           Skype.ui({
-               name: "call",
-               element: "call_24",
-               participants: ["albert.einstein"],
-               imageSize: 24,
-               imageColor: "white",
-               listParticipants: "true"
-           });
+<!-- Importing Custom Element -->
+<link rel="import" href="/vendor/skype-button/src/skype-button.html">
 
-       }, 500);
-    </script>
-</div>
+<skype-button style="width:25%; background-color:#0094ff"
+  participants="albert.einstein"
+  imageSize="24"
+  imageColor="white"
+  listParticipants="true"></skype-button>
