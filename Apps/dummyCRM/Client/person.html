@@ -23,15 +23,12 @@
             border: 1px solid #DDD;
             border-radius: 0.4em;
         }
-        [flex] {
+        .personHeader {
             display: flex;
-            flex-direction: row;
             flex-wrap: wrap;
             justify-content: space-around;
             align-content: space-around;
             align-items: center;
-        }
-        polymer-ui-toolbar{
             padding: 0 0.2em;
         }
         /* Form */
@@ -65,7 +62,7 @@
 
     </style>
 
-    <polymer-ui-toolbar flex>
+    <polymer-ui-toolbar class="personHeader">
         <polymer-ui-icon icon="account" title="dummyCRM-icon"></polymer-ui-icon>
         <h2>{{DisplayName}}</h2>
         <polymer-ui-icon-button icon="trash" bind="{{Delete$}}" onclick="setModelValue(this)" value="null"></polymer-ui-icon-button>
