@@ -1,0 +1,20 @@
+{
+  "name": "PolymerBolierplate",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Starcounter/PolymerBolierplate",
+  "description": "Minimum amount of code to create a SPA using Starcounter server and Polymer UI Elements.",
+  "main": "Client/master.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "Client/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.2",
+    "static-openstreetmap": "~0.0.1"
+  }
+}
