@@ -17,6 +17,7 @@
     "PuppetJs": "~0.1.6",
     "platform": "Polymer/platform#~0.2",
     "polymer-ui-elements": "~0.2",
-    "x-html": "~0.0.20140221"
+    "x-html": "~0.0.20140221",
+    "gravatar-image": "https://github.com/djalmaaraujo/gravatar-image.git#gh-pages"
   }
 }

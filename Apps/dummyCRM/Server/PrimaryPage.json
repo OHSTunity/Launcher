@@ -3,5 +3,6 @@
 	DisplayName: "",
 	FirstName$: "",
 	LastName$: "",
+	Email: "",
 	Delete$: null
 }

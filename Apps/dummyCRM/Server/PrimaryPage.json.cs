@@ -5,6 +5,7 @@ partial class PrimaryPage : Page
 {
     void Handle(Input.Delete input)
     {
-        this.FirstName = "Clicked";
+        Data.Delete();
+        Transaction.Commit();
     }
 }

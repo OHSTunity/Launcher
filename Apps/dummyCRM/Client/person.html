@@ -12,6 +12,8 @@
     <link rel="import" href="/vendor/polymer-ui-submenu-item/polymer-ui-submenu-item.html">
     <link rel="import" href="/vendor/polymer-ui-icon-button/polymer-ui-icon-button.html">
     <link rel="import" href="/vendor/polymer-ui-tabs/polymer-ui-tabs.html">
+    <link rel="import" href="/vendor/gravatar-image/src/gravatar.html">
+
     <link rel="stylesheet" href="/vendor/polymer-ui-base-css/base.css">
     
     <style scoped>
@@ -58,6 +60,9 @@
             background: transparent;
             border-width: 0;
         }
+        gravatar-image{
+            float: left;
+        }
 
 
     </style>
@@ -67,8 +72,10 @@
         <h2>{{DisplayName}}</h2>
         <polymer-ui-icon-button icon="trash" bind="{{Delete$}}" onclick="setModelValue(this)" value="null"></polymer-ui-icon-button>
     </polymer-ui-toolbar>
+    <gravatar-image username="{{Email$}}" size="120" placeholder="mm"></gravatar-image>
     <form>
         <input type="text" placeholder="FirstName" value="{{FirstName$}}">
         <input type="text" placeholder="LastName" value="{{LastName$}}">
+        <input type="text" placeholder="Email" value="{{Email$}}">
     </form>
 </section>

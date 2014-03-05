@@ -6,7 +6,7 @@ public class DemoData
     {
         Db.Transaction(() =>
         {
-            var albert = new Person() { FirstName = "Albert", LastName = "Einstein" };
+            var albert = new Person() { FirstName = "Albert", LastName = "Einstein", Email = "joachim.wester@me.com" };
         });
     }
 }
