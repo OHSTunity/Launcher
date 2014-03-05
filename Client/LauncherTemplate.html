@@ -7,6 +7,10 @@
     
     <link rel="import" href="/vendor/polymer/polymer.html">
 
+
+    <link rel="import" href="/vendor/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
+    <link rel="import" href="/vendor/polymer-ui-field/polymer-ui-field.html">
+
     <link rel="import" href="/vendor/x-html/x-html.html">
     <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
 
@@ -19,7 +23,11 @@
 
 <body>
     <pj-dashboard>
-    <tomalec-sortable-list>
+    <polymer-ui-field class="align-center">
+        <label>Toggle sorting </label>
+        <polymer-ui-toggle-button id="toggleSortable" offcaption="Locked" oncaption="Sorting">pleple</polymer-ui-toggle-button>
+    </polymer-ui-field>
+    <tomalec-sortable-list disabled>
         <template id="root" bind>
             @AppsHtml@       
         </template>
@@ -31,5 +39,13 @@
            rootTemplate.bindingDelegate = new PolymerExpressions;
            rootTemplate.model = obj;
        });
+       document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
+          // Consider use of `changed` event 
+          document.getElementById('toggleSortable').addEventListener('click', function toggleSortable(e) {
+            var list = document.querySelector('tomalec-sortable-list');
+            list.disabled = this.value;// XXX: `this.value` was not yet changed so lets use it as `!this.newVal`.
+          });
+       });
+
    </script>
 </body>
