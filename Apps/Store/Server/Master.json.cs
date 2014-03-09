@@ -11,8 +11,6 @@ partial class Master : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
-        StarcounterEnvironment.AppName = "Store";
-
         Handle.GET("/person/{?}", (String personId) =>
         {
             var s = new Store.StoreApp();
@@ -31,6 +29,16 @@ partial class Master : Page {
             return 201;                             // Returning an integer is the shortcut for returning a response with a status code.
         });
          
+    }
+
+    // Browsers will ask for "text/html" and we will give it to them
+    // by loading the contents of the URI in our Html property
+    public override string AsMimeType(MimeType type) {
+        if (type == MimeType.Text_Html) {
+            return this.Html;
+            //return X.GET<string>(Html);
+        }
+        return base.AsMimeType(type);
     }
 }
 

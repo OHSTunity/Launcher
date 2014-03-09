@@ -19,8 +19,6 @@ partial class Launcher : Page {
     /// </summary>
     static void Main() {
 
-        StarcounterEnvironment.AppName = "Launcher";
-
         Handle.GET("/", () =>
         {
             Response resp;
@@ -84,9 +82,9 @@ partial class Launcher : Page {
             {
                 StringBuilder sb = new StringBuilder();
                 sb.Append(RootHtml[0]);
-                sb.Append(resp.Body);
+                sb.Append(resp.GetContentString(MimeType.Text_Html));
                 sb.Append(RootHtml[1]);
-                resp.Body = sb.ToString();
+                resp = new Response() { Body = sb.ToString() };
             }
 
             if (Session.Current == null)

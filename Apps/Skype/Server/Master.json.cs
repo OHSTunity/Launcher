@@ -11,8 +11,6 @@ partial class Master : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
-        StarcounterEnvironment.AppName = "Skype";
-
         Handle.GET("/person/{?}", (String personId) =>
         {
             var widget = new CallWidget()

@@ -11,8 +11,6 @@ partial class Master : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {        
-        StarcounterEnvironment.AppName = "dummyCRM";
-        
         Handle.POST("/init-demo-data", () => {      // The Handle class is where you register new handlers for incomming requests.
             DemoData.Create();                      // Will create some demo data.
             return 201;                             // Returning an integer is the shortcut for returning a response with a status code.
