@@ -1,0 +1,18 @@
+{
+  "name": "SkypeWrapper",
+  "version": "0.0.20140302",
+  "homepage": "https://github.com/Polyjuice/Launcher",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "**/examples",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "skype-button": "~0.0.1"
+  }
+}
