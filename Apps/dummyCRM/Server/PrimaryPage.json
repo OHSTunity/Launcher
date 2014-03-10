@@ -1,8 +1,8 @@
 {
 	Html: "",
-	DisplayName: "",
+	FullName: "",
 	FirstName$: "",
-	LastName$: "",
-	Email$: "",
+	Surname$: "",
+	EMail$: "",
 	Delete$: null
 }

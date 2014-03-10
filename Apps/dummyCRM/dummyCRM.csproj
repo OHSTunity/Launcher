@@ -41,6 +41,22 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Concepts.Ring1, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SocietyObjects\Concepts.Ring1.dll</HintPath>
+    </Reference>
+    <Reference Include="Concepts.Ring2, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SocietyObjects\Concepts.Ring2.dll</HintPath>
+    </Reference>
+    <Reference Include="Concepts.Ring3, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SocietyObjects\Concepts.Ring3.dll</HintPath>
+    </Reference>
+    <Reference Include="Concepts.Ring4, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SocietyObjects\Concepts.Ring4.dll</HintPath>
+    </Reference>
     <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\Level1\bin\Debug\Starcounter.dll</HintPath>
@@ -76,7 +92,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\Person.cs" />
     <Compile Include="Server\Master.json.cs">
       <DependentUpon>Master.json</DependentUpon>
     </Compile>
