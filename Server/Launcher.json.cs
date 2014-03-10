@@ -51,7 +51,7 @@ partial class Launcher : Page {
                     Json root = new Json();
                     Int32 n = responses.Count;
                     for (Int32 i = 0; i < n; i++) {
-                        root[appNames[i].Replace(".", "_")] = (Json)responses[i].Hypermedia;
+                        root[appNames[i].Replace(".", "_")] = (Json)responses[i].Resource;
                     }
                     if (Session.Current != null)
                         root.Session = Session.Current;
