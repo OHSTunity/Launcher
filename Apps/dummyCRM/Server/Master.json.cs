@@ -18,12 +18,14 @@ partial class Master : Page {
 
         Handle.GET("/person/{?}", (String personId) =>
         {
-            var person = Db.SQL<Person>("SELECT p FROM Person p WHERE FirstName=?", "Albert").First;
+            var person = Db.SQL<Concepts.Ring1.Person>("SELECT p FROM Concepts.Ring1.Person p WHERE FirstName=?", "Albert").First;
+            var email = Db.SQL("SELECT Address FROM Concepts.Ring2.EMailRelation where Addressee = ?", person).First as Concepts.Ring2.EMailAddress;
             var page = new PrimaryPage()
             {
                 Html = "/person.html",
                 Data = person
             };
+            page.EMail = email.EMail;
             page.Transaction = new Transaction();
             return page;
         });

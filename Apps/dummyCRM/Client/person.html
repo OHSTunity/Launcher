@@ -73,13 +73,13 @@
 
     <polymer-ui-toolbar class="personHeader">
         <polymer-ui-icon icon="account" title="dummyCRM-icon"></polymer-ui-icon>
-        <h2>{{DisplayName}}</h2>
+        <h2>{{FullName}}</h2>
         <polymer-ui-icon-button icon="trash" bind="{{Delete$}}" onclick="setModelValue(this)" value="null"></polymer-ui-icon-button>
     </polymer-ui-toolbar>
-    <gravatar-image username="{{Email$}}" size="120" placeholder="mm"></gravatar-image>
+    <gravatar-image username="{{EMail$}}" size="120" placeholder="mm"></gravatar-image>
     <form>
         <input type="text" placeholder="FirstName" value="{{FirstName$}}">
-        <input type="text" placeholder="LastName" value="{{LastName$}}">
-        <input type="text" placeholder="Email" value="{{Email$}}">
+        <input type="text" placeholder="Surname" value="{{Surname$}}">
+        <input type="text" placeholder="EMail" value="{{EMail$}}">
     </form>
 </section>
