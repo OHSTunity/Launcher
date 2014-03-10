@@ -38,7 +38,7 @@ partial class Launcher : Page {
                     // Going through each response and appending it.
                     for (Int32 i = 0; i < responses.Count; i++)
                     {
-                        sb.Append("<template bind=\"{{" + appNames[i] + "}}\">\n");
+                        sb.Append("<template bind=\"{{" + appNames[i].Replace(".", "_") + "}}\">\n");
                         sb.Append(responses[i].GetContentString(MimeType.Text_Html));
                         sb.Append("</template>\n");
                     }
@@ -51,7 +51,7 @@ partial class Launcher : Page {
                     Json root = new Json();
                     Int32 n = responses.Count;
                     for (Int32 i = 0; i < n; i++) {
-                        root[appNames[i]] = (Json)responses[i].Hypermedia;
+                        root[appNames[i].Replace(".", "_")] = (Json)responses[i].Hypermedia;
                     }
                     if (Session.Current != null)
                         root.Session = Session.Current;
