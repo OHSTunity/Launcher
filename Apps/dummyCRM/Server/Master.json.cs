@@ -10,27 +10,41 @@ partial class Master : Page {
     /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
-    static void Main() {        
-        Handle.POST("/init-demo-data", () => {      // The Handle class is where you register new handlers for incomming requests.
-            DemoData.Create();                      // Will create some demo data.
-            return 201;                             // Returning an integer is the shortcut for returning a response with a status code.
+    static void Main()
+    {
+        Handle.GET("/super-crm/company/{?}", (String companyId) => {
+            var page = (CompanyPage)X.GET("/super-crm/partials/company/" + companyId);
+            Master m = (Master)X.GET("/super-crm");
+            m.FavoriteCustomer = page;
+            return m;
         });
-
-        Handle.GET("/person/{?}", (String personId) =>
-        {
-            var person = Db.SQL<Concepts.Ring1.Person>("SELECT p FROM Concepts.Ring1.Person p WHERE FirstName=?", "Albert").First;
-            var email = Db.SQL("SELECT Address FROM Concepts.Ring2.EMailRelation where Addressee = ?", person).First as Concepts.Ring2.EMailAddress;
-            var page = new PrimaryPage()
-            {
-                Html = "/person.html",
-                Data = person
+    
+        Handle.GET("/super-crm/partials/company/{?}", (String companyId) => {
+            CompanyPage c =  new CompanyPage() {
+                Name = "Id Software",
+                Revenue = 0,
+                Html = "/company.html"
             };
-            if (email != null)
+            c.Contacts.Add( X.GET("/super-crm/partials/contact/Albert/Scientist") );
+            c.Contacts.Add( X.GET("/super-crm/partials/contact/John/Programmer") );
+
+            return c;
+        });
+    
+        Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) => {
+            ContactPage c = new ContactPage()
             {
-                page.EMail = email.EMail;
-            }
-            page.Transaction = new Transaction();
-            return page;
+                Name = firstName,
+                Title = title,
+                Html = "/contact.html"
+            };
+            return c;
+        });
+    
+        Handle.GET("/super-crm", ()=>{
+            var m = new Master();
+            //Session.Data = m;
+            return m;
         });
     }
 }
