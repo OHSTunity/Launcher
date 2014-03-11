@@ -10,19 +10,34 @@ partial class Master : Page {
     /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
-    static void Main() {
-        Handle.GET("/person/{?}", (String personId) =>
+    static void Main()
+    {
+        Handle.GET("/skyper/skype-user/{?}", (String objectId) =>
         {
-            var widget = new CallWidget()
-            {
-                // Html = "/person.html" // <-- why this works? there is no person.html in this App
-                Html = "/callWidget.html"
-                //, Data = person
-            };
-            //widget.Transaction = new Transaction();
-            return widget;
+            SkyperUserPage page = (SkyperUserPage)X.GET("/skyper/partials/skyper-user/" + objectId);
+            Master m = (Master) X.GET("/skyper");
+            m.MyOnlyFriend = page;
+            return m;
         });
-      
+
+        Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) =>
+        {
+            return new SkyperUserPage()
+            {
+                Name = "Albert",
+                SkypeId = "EMC2",
+                Html = "skyper-user.html"
+            };
+        });
+
+        Handle.GET("/skyper", () =>
+        {
+            Master m = new Master()
+            {
+            };
+            //Session.Data = m;
+            return m;
+        });
     }
 }
 
