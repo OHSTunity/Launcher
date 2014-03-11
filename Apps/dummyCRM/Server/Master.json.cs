@@ -25,7 +25,10 @@ partial class Master : Page {
                 Html = "/person.html",
                 Data = person
             };
-            page.EMail = email.EMail;
+            if (email != null)
+            {
+                page.EMail = email.EMail;
+            }
             page.Transaction = new Transaction();
             return page;
         });
