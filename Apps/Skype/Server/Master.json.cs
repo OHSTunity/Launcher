@@ -38,6 +38,16 @@ partial class Master : Page {
             //Session.Data = m;
             return m;
         });
+
+        Handle.IsMapperHandler = true;
+        Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) => {
+           return (Json) X.GET("/societyobjects/ring1/person/" + objectId);
+        });
+
+        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
+           Handle.CallOnlyNonMapperHandlers = true;
+           return (Json) X.GET("/skyper/partials/skyper-user/" + objectId);
+        });
     }
 }
 

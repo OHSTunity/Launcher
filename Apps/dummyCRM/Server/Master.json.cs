@@ -46,6 +46,31 @@ partial class Master : Page {
             //Session.Data = m;
             return m;
         });
+
+        Handle.IsMapperHandler = true;
+        Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) => {
+            // String objectId = (String) Db.SQL("SELECT p.ObjectId FROM Person p WHERE p.Name = ?", firstName).First;
+            // return X.GET("/societyobjects/ring2/employee/" + objectId);
+
+            if (firstName == "Albert")
+                return (Json) X.GET("/societyobjects/ring1/person/1");
+            else if (firstName == "John")
+                return (Json) X.GET("/societyobjects/ring1/person/2");
+            else throw new Exception("Wrong first name!");
+        });
+
+        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
+            // var c = Db.SQL("SELECT e FROM Employee e WHERE e.ObjectId = ?", objectId);
+            // return X.GETWITHOUTPREGET("/super-crm/partials/contact/" + p.WhoIs.FullName + "/" + p.Title);
+
+            Handle.CallOnlyNonMapperHandlers = true;
+
+            if (objectId == "1")
+                return (Json) X.GET("/super-crm/partials/contact/Albert/Scientist");
+            else if (objectId == "2")
+                return (Json) X.GET("/super-crm/partials/contact/John/Programmer");
+            else throw new Exception("Wrong objectId!");
+        });
     }
 }
 

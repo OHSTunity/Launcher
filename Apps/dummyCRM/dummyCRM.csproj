@@ -60,22 +60,27 @@
     <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\Level1\bin\Debug\Starcounter.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Bootstrap, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\Level1\bin\Debug\Starcounter.Bootstrap.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Hypermedia, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\Level1\bin\Debug\Starcounter.Hypermedia.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Internal, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\level1\bin\Debug\Starcounter.Internal.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Node, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\level1\bin\Debug\Starcounter.Node.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.REST, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -84,6 +89,7 @@
     <Reference Include="Starcounter.XSON, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\sc\Level1\bin\Debug\Starcounter.XSON.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
