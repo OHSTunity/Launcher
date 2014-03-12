@@ -34,7 +34,7 @@ partial class Master : Page {
         {
             Master m = new Master()
             {
-                Html = "/master.html"
+                Html = "/skyper.html"
             };
             //Session.Data = m;
             return m;
