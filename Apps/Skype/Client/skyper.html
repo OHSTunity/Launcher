@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Skyper App</title>
+    <script src="https://rawgithub.com/Starcounter-Jack/JSON-Patch/master/src/json-patch-duplex.js"></script>
+    <script src="https://rawgithub.com/PuppetJs/PuppetJs/master/src/puppet.js"></script>
+    <script src="https://rawgithub.com/Polymer/platform/master/platform.js"></script>
+    <link rel="import" href="/vendor/x-html/x-html.html">
+
+    <!-- FIXME: `<script>` tag in included in partial used by `<x-html>` does not load --> 
+    <script type="text/javascript" src="http://cdn.dev.skype.com/uri/skype-uri.js"></script>
+</head>
+<body>
+    <template bind id="root">
+        <h1>Skyper</h1>
+        <h2>Hello, My Only Friend!</h2>
+        <template bind="{{MyOnlyFriend}}">
+            <x-html content="{{Html}}" flex></x-html>
+        </template>
+    </template>
+    <script>
+        var puppet = new Puppet(null, function (obj) { document.getElementById("root").model = obj; });
+    </script>
+</body>
+</html>

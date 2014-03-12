@@ -25,8 +25,8 @@ partial class Master : Page {
                 Revenue = 0,
                 Html = "/company.html"
             };
-            c.Contacts.Add( X.GET("/super-crm/partials/contact/Albert/Scientist") );
-            c.Contacts.Add( X.GET("/super-crm/partials/contact/John/Programmer") );
+            c.Contacts.Add( (ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist") );
+            c.Contacts.Add( (ContactPage)X.GET("/super-crm/partials/contact/John/Programmer") );
 
             return c;
         });
@@ -42,7 +42,10 @@ partial class Master : Page {
         });
     
         Handle.GET("/super-crm", ()=>{
-            var m = new Master();
+            var m = new Master()
+            {
+                Html = "/dummyCRM.html"
+            };
             //Session.Data = m;
             return m;
         });
