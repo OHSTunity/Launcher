@@ -76,8 +76,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Server\CallWidget.json.cs">
-      <DependentUpon>CallWidget.json</DependentUpon>
+    <Compile Include="Server\SkyperUserPage.json.cs">
+      <DependentUpon>SkyperUserPage.json</DependentUpon>
     </Compile>
     <Compile Include="Server\Master.json.cs">
       <DependentUpon>Master.json</DependentUpon>
@@ -94,7 +94,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Client\callWidget.html" />
+    <Content Include="Client\skyper-user.html" />
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Server\Page.json">
@@ -102,7 +102,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
-    <TypedJSON Include="Server\CallWidget.json">
+    <TypedJSON Include="Server\SkyperUserPage.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

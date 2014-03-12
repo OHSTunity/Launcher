@@ -1,3 +1,4 @@
+<section>
 <!-- Importing Web Component's Polyfill -->
 <!-- 
 <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/platform.js"></script>
@@ -7,9 +8,11 @@
 <script type="text/javascript" src="http://cdn.dev.skype.com/uri/skype-uri.js"></script>
 <!-- Importing Custom Element -->
 <link rel="import" href="/vendor/skype-button/src/skype-button.html">
-
-<skype-button style="width:25%; background-color:#0094ff"
-  participants="albert.einstein"
-  imageSize="24"
-  imageColor="white"
-  listParticipants="true"></skype-button>
+    <h1>{{ Name }}</h1>
+    <input value=""{{ SkypeId }}" >
+    <skype-button style="width:25%; background-color:#0094ff"
+      participants="{{ SkypeId }}"
+      imageSize="24"
+      imageColor="white"
+      listParticipants="true"></skype-button>
+</section>
