@@ -26,7 +26,7 @@ partial class Master : Page {
             {
                 Name = "Albert",
                 SkypeId = "EMC2",
-                Html = "skyper-user.html"
+                Html = "/skyper-user.html"
             };
         });
 
@@ -34,6 +34,7 @@ partial class Master : Page {
         {
             Master m = new Master()
             {
+                Html = "/master.html"
             };
             //Session.Data = m;
             return m;
