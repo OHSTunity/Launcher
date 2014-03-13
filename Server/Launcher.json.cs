@@ -27,50 +27,36 @@ partial class Launcher : Page {
             return resp;
         });
 
-        Handle.MergeResponses((Request req, List<Response> responses, List<String> appNames) =>
+        // Not actually a mergerer anymore but linker of sibling Json parts.
+        Handle.MergeResponses((Request req, List<Response> responses) =>
         {
-            StringBuilder sb = new StringBuilder();
-
-            switch (Session.InitialRequest.PreferredMimeType)
-            {
-                case MimeType.Text_Html:
-                {
-                    // Going through each response and appending it.
-                    for (Int32 i = 0; i < responses.Count; i++)
-                    {
-                        sb.Append("<template bind=\"{{" + appNames[i] + "}}\">\n");
-                        sb.Append(responses[i].GetContentString(MimeType.Text_Html));
-                        sb.Append("</template>\n");
-                    }
-
-                    break;
-                }
-
-                case MimeType.Application_Json:
-                {
-                    Json root = new Json();
-                    Int32 n = responses.Count;
-                    for (Int32 i = 0; i < n; i++) {
-                        root[appNames[i]] = (Json)responses[i].Resource;
-                    }
-                    if (Session.Current != null)
-                        root.Session = Session.Current;
-                    else 
-                        root.Session = new Session();
-
-                    return root;
-                }
-
-                default:
-                    throw new ArgumentException("Request is of unsuitable MIME type to merge responses!");
+            for (Int32 i = 1; i < responses.Count; i++) {
+                ((Json) responses[i].Resource).AppName = responses[i].AppName;
+                ((Json) responses[0].Resource).JsonSiblings.Add((Json) responses[i].Resource);
             }
 
-            Response mergedResp = new Response()
-            {
-                Body = sb.ToString()
-            };
+            ((Json) responses[0].Resource).AppName = responses[0].AppName;
 
-            return mergedResp;
+            return responses[0];
+        });
+
+        // Merges HTML partials according to provided URLs.
+        Handle.GET("/polyjuice-merger?{?}", (String s) => {
+            StringBuilder sb = new StringBuilder();
+
+            String[] allPartialInfos = s.Split(new char[] { '&' });
+
+            foreach (String appNamePlusPartialUrl in allPartialInfos) {
+                String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
+
+                sb.Append("<template bind=\"{{" + a[0] + "}}\">\n");
+                Response resp;
+                X.GET(a[1], out resp);
+                sb.Append(resp.Body);
+                sb.Append("\n</template>\n");
+            }
+
+            return sb.ToString();
         });
 
         Handle.GET("/launcher", (Request req) =>
