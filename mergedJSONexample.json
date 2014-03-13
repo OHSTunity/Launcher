@@ -1,47 +1,48 @@
 {
-   "Html": "/company.html",
-   "Name": "Id Software",
-   "Revenue": 0,
-   "Contacts": [
-       {
-            "Html": "/merged//skyper-user.html+/contact.html",
-            //    <template bind="{{SuperCRM}}">
-            //   .. content of /skyper-user.html" ..
-            //    </template>
-            //    <template bind="{{Skyper}}">
-            //   .. content of /contact.html" ..
-            //    </template>
-           "Skype": {
-               "Name": "Albert",
-               "SkypeId": "EMC2",
-               "Call": null,
-               "Html": "/skyper-user.html" // not used anyways
-           },
-           "dummyCRM": {
-               "Html": "/contact.html",
-               "Name": "Albert",
-               "Title": "Scientist" // not used anyways
-           }
-       },
-       {
-            "Html": "/merged//skyper-user.html+/contact.html",
-            //    <template bind="{{SuperCRM}}">
-            //   .. content of /skyper-user.html" ..
-            //    </template>
-            //    <template bind="{{Skyper}}">
-            //   .. content of /contact.html" ..
-            //    </template>
-           "Skype": {
-               "Name": "Albert",
-               "SkypeId": "EMC2",
-               "Call": null,
-               "Html": "/skyper-user.html" // not used anyways
-           },
-           "dummyCRM": {
-               "Html": "/contact.html",
-               "Name": "John",
-               "Title": "Programmer" // not used anyways
-           }
-       }
-   ]
+  "Html": "/company.html",
+  "Name": "Id Software",
+  "Revenue": 0,
+  "Contacts": [{
+    "Html": "/polyjuice-merger?Skyper=/skyper-user.html&SuperCRM=/contact.html",
+    //    <template bind="{{SuperCRM}}">
+    //   .. content of /skyper-user.html" ..
+    //    </template>
+    //    <template bind="{{Skyper}}">
+    //   .. content of /contact.html" ..
+    //    </template>
+    "Skype": {
+      "Name": "Albert",
+      "SkypeId": "EMC2",
+      "Call": null,
+      //NOTE: for now we assume `Html` is always a path.
+      "Html": "/skyper-user.html" // not used anyways
+    },
+    "dummyCRM": {
+      //NOTE: for now we assume `Html` is always a path.
+      "Html": "/contact.html",
+      "Name": "Albert",
+      "Title": "Scientist" // not used anyways
+    }
+  }, {
+    "Html": "/polyjuice-merger?Skyper=/skyper-user.html&SuperCRM=/contact.html",
+    //    <template bind="{{SuperCRM}}">
+    //   .. content of /skyper-user.html" ..
+    //    </template>
+    //    <template bind="{{Skyper}}">
+    //   .. content of /contact.html" ..
+    //    </template>
+    "Skype": {
+      "Name": "Albert",
+      "SkypeId": "EMC2",
+      "Call": null,
+      //NOTE: for now we assume `Html` is always a path.
+      "Html": "/skyper-user.html" // not used anyways
+    },
+    "dummyCRM": {
+      //NOTE: for now we assume `Html` is always a path.
+      "Html": "/contact.html",
+      "Name": "John",
+      "Title": "Programmer" // not used anyways
+    }
+  }]
 }
