@@ -2,7 +2,7 @@
    homeThumbnail: {},
    homeUrl: "",
    searchBar: {
-     query: "",
+     query$: "",
 	 feedback: [{
 	   text: "",
 	   matchScore: 0.5,

@@ -19,12 +19,22 @@ partial class Launcher : Page {
     /// </summary>
     static void Main() {
 
+        // Dashboard
         Handle.GET("/", () =>
         {
-            Response resp;
-            X.GET("/launcher", out resp);
 
-            return resp;
+            var launcher = new Launcher()
+            {
+                Html = "/LauncherTemplate.html"
+            };
+            Response resp;
+            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
+            // X.GET("/" + query.Value, out resp);
+            X.GET("/dashboard", out resp);
+            launcher.workspace = resp;
+
+            launcher.Session = new Session();
+            return launcher;
         });
 
         // Not actually a mergerer anymore but linker of sibling Json parts.
@@ -59,7 +69,7 @@ partial class Launcher : Page {
             return sb.ToString();
         });
 
-        Handle.GET("/launcher", (Request req) =>
+        Handle.GET("/launcher/person/123", (Request req) =>
         {
             Response resp;
             X.GET("/person/123", out resp);
@@ -78,10 +88,50 @@ partial class Launcher : Page {
 
             return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
         });
+
+        Handle.GET("/launcher/search?query={?}", (string query) =>
+        {
+            Response resp;
+            X.GET("/search?query=" + query, out resp);
+
+            if (Session.InitialRequest.PreferredMimeType == MimeType.Text_Html)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(RootHtml[0]);
+                sb.Append(resp.GetContentString(MimeType.Text_Html));
+                sb.Append(RootHtml[1]);
+                resp = new Response() { Body = sb.ToString() };
+            }
+
+            if (Session.Current == null)
+                Session.Current = new Session();
+
+            return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
+  
+        });
+        // + dummy responses from launcher itself        
+
+
+        Handle.GET("/menu", () =>
+        {
+            Response resp;
+            X.GET("/launcher", out resp);
+
+            return resp;
+        });
+        // + dummy responses from launcher itself
     }
 }
 
 
+[Launcher_json.searchBar]
+partial class SearchBar : Json {
+    void Handle(Input.query query) {
+        Response resp;
+        X.GET("/search?query=" + query.Value, out resp);
+        ((Launcher)this.Parent).workspace = resp;
+    }
+}
 
 
 

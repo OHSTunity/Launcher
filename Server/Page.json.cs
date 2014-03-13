@@ -7,7 +7,7 @@ partial class Page : Json {
     // by loading the contents of the URI in our Html property
     public override string AsMimeType(MimeType type) {
         if (type == MimeType.Text_Html) {
-            return this.Html;
+            return X.GET<string>(Html);
         }
         return base.AsMimeType(type);
     }

@@ -12,7 +12,7 @@
 
 <link rel="import" href="../../vendor/polymer-flex-layout/polymer-flex-layout.html">
 
-<polymer-element name="pj-dashboard" attributes="data">
+<polymer-element name="pj-dashboard" attributes="data search">
 <style>
 
 </style>
@@ -59,7 +59,7 @@
         <polymer-ui-icon-button icon="back"></polymer-ui-icon-button>
         <polymer-ui-field>
             <polymer-ui-icon icon="search"></polymer-ui-icon>
-            <input placeholder="Search"/>
+            <input placeholder="Search" value="{{search}}"/>
         </polymer-ui-field>
         <polymer-ui-icon-button id="account" icon="account"></polymer-ui-icon-button>
     </polymer-ui-toolbar>
