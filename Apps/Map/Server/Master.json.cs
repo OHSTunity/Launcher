@@ -24,5 +24,20 @@ partial class Master : Page {
             page.Transaction = new Transaction();
             return page;
         });
+
+        Handle.GET("/search?query=warszawa{?}", (String appName) =>
+        {
+            // var person = Db.SQL<Person>("SELECT p FROM Person p WHERE FirstName=?", "Albert").First;
+            var page = new MapPage()
+            {
+                Html = "/mapPage.html"
+                //, Data = person
+            };
+            page.Address = "warszawa";
+            page.Zoom = 15;
+
+            page.Transaction = new Transaction();
+            return page;
+        });
     }
 }

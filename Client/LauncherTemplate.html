@@ -17,35 +17,39 @@
     <link rel="stylesheet" href="/css/style.css">
 
     <!-- Import our elements -->
-    <link rel="import" href="elements/dashboard/pj-dashboard.html">
+    <link rel="import" href="/elements/dashboard/pj-dashboard.html">
 
 </head>
 
 <body>
-    <pj-dashboard>
-    <polymer-ui-field class="align-center">
-        <label>Toggle sorting </label>
-        <polymer-ui-toggle-button id="toggleSortable" offcaption="Locked" oncaption="Sorting"></polymer-ui-toggle-button>
-    </polymer-ui-field>
-    <tomalec-sortable-list disabled>
-        <template id="root" bind>
-            @AppsHtml@       
+  <template id="root" bind>
+    <pj-dashboard search="{{ searchBar.query$ }}">
+      <polymer-ui-field class="align-center">
+          <label>Toggle sorting </label>
+          <polymer-ui-toggle-button id="toggleSortable" offcaption="Locked" oncaption="Sorting"></polymer-ui-toggle-button>
+      </polymer-ui-field>
+      <tomalec-sortable-list disabled>
+        <template bind="{{ workspace }}">
+           <x-html content="{{ Html }}"></x-html>   
         </template>
-    </tomalec-sortable-list>
+      </tomalec-sortable-list>
     </pj-dashboard>
-   <script>
-       var puppet = new Puppet(null, function (obj) {
-           var rootTemplate = document.getElementById("root");
-           rootTemplate.bindingDelegate = new PolymerExpressions;
-           rootTemplate.model = obj;
-       });
-       document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
+  </template>
+  <script>
+    document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
+      var puppet = new Puppet(null, function (obj) {
+        var rootTemplate = document.getElementById("root");
+        rootTemplate.bindingDelegate = new PolymerExpressions;
+        rootTemplate.model = obj;
+
+        window.setTimeout(function templateReady(){
           // Consider use of `changed` event 
           document.getElementById('toggleSortable').addEventListener('click', function toggleSortable(e) {
             var list = document.querySelector('tomalec-sortable-list');
             list.disabled = this.value;// XXX: `this.value` was not yet changed so lets use it as `!this.newVal`.
           });
-       });
-
-   </script>
+        });
+      });
+    });
+  </script>
 </body>
