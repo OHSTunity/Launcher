@@ -42,11 +42,12 @@ partial class Master : Page {
         });
     
         Handle.GET("/super-crm", ()=>{
-            var m = new Master()
-            {
+            var m = new Master() {
                 Html = "/dummyCRM.html"
             };
-            //Session.Data = m;
+
+            m.Session = new Session();
+
             return m;
         });
 
