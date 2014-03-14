@@ -2,6 +2,7 @@ using System;
 using Starcounter;                                  // Most stuff relating to the database, JSON and communication is in this namespace
 using Starcounter.Internal;
 using Starcounter.Templates;
+using System.Web;
 
 [Master_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
 partial class Master : Page {
@@ -74,6 +75,14 @@ partial class Master : Page {
             else if (objectId == "2")
                 return (Json) X.GET("/super-crm/partials/contact/John/Programmer");
             else throw new Exception("Wrong objectId!");
+        });
+
+
+        Handle.GET("/search?query={?}", (String company) =>
+        {
+            Response resp;
+            X.GET("/super-crm/partials/company/" + HttpUtility.UrlEncode(company), out resp);
+            return resp;
         });
     }
 }
