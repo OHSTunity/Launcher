@@ -80,6 +80,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Server\MapPage.json.cs">
@@ -100,6 +101,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\dashboard.html" />
     <Content Include="Client\mapPage.html" />
     <Content Include="Client\vendor\platform\platform.js" />
   </ItemGroup>

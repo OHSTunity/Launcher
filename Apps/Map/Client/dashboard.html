@@ -1,0 +1,12 @@
+<!-- Importing Web Component's Polyfill -->
+<!-- 
+<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/platform.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
+-->
+<!-- Importing Custom Element -->
+<div>
+	<link rel="import" href="/vendor/static-openstreetmap/src/static-openstreetmap.html">
+
+	<h4>Map</h4>
+	<static-openstreetmap lat="{{ Longitude$ }}" lng="{{ Latitude$ }}" width="64" height="64" zoom="{{ Zoom$ }}"></static-openstreetmap>
+</div>

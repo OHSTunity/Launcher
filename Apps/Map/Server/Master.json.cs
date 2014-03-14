@@ -1,6 +1,7 @@
 using System;
 using Starcounter;                                  // Most stuff relating to the database, JSON and communication is in this namespace
 using Starcounter.Internal;
+using System.Web;
 
 [Master_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
 partial class Master : Page {
@@ -25,7 +26,7 @@ partial class Master : Page {
             return page;
         });
 
-        Handle.GET("/search?query=warszawa{?}", (String appName) =>
+        Handle.GET("/search?query={?}", (String address) =>
         {
             // var person = Db.SQL<Person>("SELECT p FROM Person p WHERE FirstName=?", "Albert").First;
             var page = new MapPage()
@@ -33,7 +34,23 @@ partial class Master : Page {
                 Html = "/mapPage.html"
                 //, Data = person
             };
-            page.Address = "warszawa";
+            page.Address = HttpUtility.UrlDecode(address);
+            page.Zoom = 15;
+
+            page.Transaction = new Transaction();
+            return page;
+        });
+
+        Handle.GET("/dashboard", () =>
+        {
+            // var person = Db.SQL<Person>("SELECT p FROM Person p WHERE FirstName=?", "Albert").First;
+            var page = new MapPage()
+            {
+                Html = "/dashboard.html"
+                //, Data = person
+            };
+	        page.Latitude= 0;
+            page.Longitude = 0;
             page.Zoom = 15;
 
             page.Transaction = new Transaction();

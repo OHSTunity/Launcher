@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
+using System.Web;
 
 [Launcher_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
 partial class Launcher : Page {
@@ -30,12 +31,19 @@ partial class Launcher : Page {
             Response resp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
+            // Functional bricks
             X.GET("/dashboard", out resp);
-            launcher.workspace = resp;
+
+
+            // X.GET("/launchpad", out resp); // thumbnails only
+            launcher.results = resp;
 
             launcher.Session = new Session();
             return launcher;
         });
+
+
+
 
         // Not actually a mergerer anymore but linker of sibling Json parts.
         Handle.MergeResponses((Request req, List<Response> responses) =>
@@ -128,8 +136,8 @@ partial class Launcher : Page {
 partial class SearchBar : Json {
     void Handle(Input.query query) {
         Response resp;
-        X.GET("/search?query=" + query.Value, out resp);
-        ((Launcher)this.Parent).workspace = resp;
+        X.GET("/search?query=" + HttpUtility.UrlEncode(query.Value), out resp);
+        ((Launcher)this.Parent).results = resp;
     }
 }
 
