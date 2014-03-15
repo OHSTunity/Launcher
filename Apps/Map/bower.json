@@ -14,7 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.2",
-    "static-openstreetmap": "~0.0.1"
+    "polymer": "Polymer/polymer#~0.2.0",
+    "static-openstreetmap": "~0.0.2"
   }
 }
