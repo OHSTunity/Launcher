@@ -59,6 +59,18 @@ partial class Master : Page {
            Handle.CallOnlyNonMapperHandlers = true;
            return (Json) X.GET("/skyper/partials/skyper-user/" + objectId);
         });
+
+        Handle.GET("/dashboard", () =>
+        {
+            var page = new SkyperUserPage()
+            {
+                //Html = "/dashboard.html" // will break as Map does also use `/dashboard.html`
+                Html = "/skyper-dashboard.html"
+            };
+
+            page.Transaction = new Transaction();
+            return page;
+        });
     }
 }
 

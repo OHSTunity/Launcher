@@ -99,6 +99,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\skyper-dashboard.html" />
     <Content Include="Client\skyper-user.html" />
     <Content Include="Client\skyper.html" />
   </ItemGroup>

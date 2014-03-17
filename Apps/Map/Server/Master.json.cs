@@ -50,8 +50,8 @@ partial class Master : Page {
                 //, Data = person
             };
 	        page.Latitude= 0;
-            page.Longitude = 0;
-            page.Zoom = 15;
+            page.Longitude = 51;
+            page.Zoom = 0;
 
             page.Transaction = new Transaction();
             return page;
