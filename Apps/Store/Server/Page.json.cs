@@ -14,6 +14,14 @@ partial class Page : Json {
     }
 
     /// <summary>
+    /// The way to get a URL for HTML partial if any.
+    /// </summary>
+    /// <returns></returns>
+    public override string GetHtmlPartialUrl() {
+        return Html;
+    }
+
+    /// <summary>
     /// Whenever we set a bound data object to this page, we update the
     /// URI property on this page.
     /// </summary>
