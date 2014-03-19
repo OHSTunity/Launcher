@@ -28,11 +28,12 @@
           <label>Toggle sorting </label>
           <polymer-ui-toggle-button id="toggleSortable" offcaption="Locked" oncaption="Sorting"></polymer-ui-toggle-button>
       </polymer-ui-field>
-      <tomalec-sortable-list disabled>
-        <template bind="{{ results }}">
-           <x-html content="{{ Html }}"></x-html>   
-        </template>
-      </tomalec-sortable-list>
+      <template bind="{{ results }}">
+        <tomalec-sortable-list disabled>
+          <!-- FIXME: <x-html> is still marked as one of sortable elements, even if it acts more as <tempalte> -->
+          <x-html content="{{ Html }}" currentnode></x-html>   
+        </tomalec-sortable-list>
+      </template>
     </pj-dashboard>
   </template>
   <script>
