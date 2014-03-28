@@ -11,7 +11,7 @@
     <link rel="import" href="/vendor/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
     <link rel="import" href="/vendor/polymer-ui-field/polymer-ui-field.html">
 
-    <link rel="import" href="/vendor/x-html/x-html.html">
+    <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
 
     <link rel="stylesheet" href="/css/style.css">
@@ -30,7 +30,7 @@
       </polymer-ui-field>
       <template bind="{{ results }}">
         <tomalec-sortable-list disabled>
-          <template is="x-html" content="{{ Html }}"></template>   
+          <template is="imported-template" content="{{ Html }}"></template>   
         </tomalec-sortable-list>
       </template>
     </pj-dashboard>

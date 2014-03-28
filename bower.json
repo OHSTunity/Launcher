@@ -17,7 +17,7 @@
     "polymer": "Polymer/polymer#~0.2.1",
     "fast-json-patch": "~0.3.6",
     "tomalec-sortable-list": "~0.0.20140226",
-    "x-html": "#master",
+    "imported-template": "https://github.com/PuppetJs/imported-template.git#master",
     "PuppetJs": "~0.1.6",
     "polymer-ui-field": "Polymer/polymer-ui-field#~0.2.1",
     "polymer-ui-dropdown": "Polymer/polymer-ui-dropdown#~0.2.1",
