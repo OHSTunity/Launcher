@@ -95,7 +95,7 @@ var TimingDict = function(timingInput) {
 TimingDict.prototype = {
   delay: 0,
   endDelay: 0,
-  fill: 'forwards',
+  fill: 'auto',
   iterationStart: 0,
   iterations: 1,
   duration: 'auto',
@@ -216,8 +216,11 @@ Timeline.prototype = {
     }
     return relativeTime(cachedClockTime(), this._startTime);
   },
+  get effectiveCurrentTime() {
+    return this.currentTime || 0;
+  },
   play: function(source) {
-    return new Player(constructorToken, source, this);
+    return new AnimationPlayer(constructorToken, source, this);
   },
   getCurrentPlayers: function() {
     return PLAYERS.filter(function(player) {
@@ -233,13 +236,13 @@ Timeline.prototype = {
   },
   _pauseAnimationsForTesting: function(pauseAt) {
     PLAYERS.forEach(function(player) {
-      player.paused = true;
+      player.pause();
       player.currentTime = pauseAt;
     });
   }
 };
 
-// TODO: Remove dead Players from here?
+// TODO: Remove dead players from here?
 var PLAYERS = [];
 var playersAreSorted = false;
 var playerSequenceNumber = 0;
@@ -247,7 +250,7 @@ var playerSequenceNumber = 0;
 
 
 /** @constructor */
-var Player = function(token, source, timeline) {
+var AnimationPlayer = function(token, source, timeline) {
   if (token !== constructorToken) {
     throw new TypeError('Illegal constructor');
   }
@@ -258,9 +261,12 @@ var Player = function(token, source, timeline) {
     this._timeline = timeline;
     this._startTime =
         this.timeline.currentTime === null ? 0 : this.timeline.currentTime;
-    this._timeDrift = 0.0;
-    this._pauseTime = undefined;
+    this._storedTimeLag = 0.0;
+    this._pausedState = false;
+    this._holdTime = null;
+    this._previousCurrentTime = null;
     this._playbackRate = 1.0;
+    this._hasTicked = false;
 
     this.source = source;
     this._checkForHandlers();
@@ -273,7 +279,7 @@ var Player = function(token, source, timeline) {
   }
 };
 
-Player.prototype = {
+AnimationPlayer.prototype = {
   set source(source) {
     enterModifyCurrentAnimationState();
     try {
@@ -307,34 +313,77 @@ Player.prototype = {
     }
   },
   get currentTime() {
-    return this._currentTime === null ? 0 : this._currentTime;
+    return this._currentTime;
   },
-  // This is the current time.
-  set _currentTime(currentTime) {
-    // This seeks by updating _drift. It does not affect the startTime.
-    if (isDefined(this._pauseTime)) {
-      this._pauseTime = currentTime;
+  set _currentTime(seekTime) {
+    // If we are paused or seeking to a time where limiting applies (i.e. beyond
+    // the end in the current direction), update the hold time.
+    var sourceContentEnd = this.source ? this.source.endTime : 0;
+    if (this.paused ||
+        (this.playbackRate > 0 && seekTime >= sourceContentEnd) ||
+        (this.playbackRate < 0 && seekTime <= 0)) {
+      this._holdTime = seekTime;
+    // Otherwise, clear the hold time (it may been set by previously seeking to
+    // a limited time) and update the time lag.
     } else {
-      this._timeDrift = (this.timeline.currentTime - this.startTime) *
-          this.playbackRate - currentTime;
+      this._holdTime = null;
+      this._storedTimeLag = (this.timeline.effectiveCurrentTime -
+          this.startTime) * this.playbackRate - seekTime;
     }
     this._update();
     maybeRestartAnimation();
   },
   get _currentTime() {
-    if (this.timeline.currentTime === null) {
-      return null;
+    this._previousCurrentTime = (this.timeline.effectiveCurrentTime -
+        this.startTime) * this.playbackRate - this.timeLag;
+    return this._previousCurrentTime;
+  },
+  get _unlimitedCurrentTime() {
+    return (this.timeline.effectiveCurrentTime - this.startTime) *
+        this.playbackRate - this._storedTimeLag;
+  },
+  get timeLag() {
+    if (this.paused) {
+      return this._pauseTimeLag;
     }
-    return isDefined(this._pauseTime) ? this._pauseTime :
-        (this.timeline.currentTime - this.startTime) * this.playbackRate -
-        this._timeDrift;
+
+    // Apply limiting at start of interval when playing in reverse
+    if (this.playbackRate < 0 && this._unlimitedCurrentTime <= 0) {
+      if (this._holdTime === null) {
+        this._holdTime = Math.min(this._previousCurrentTime, 0);
+      }
+      return this._pauseTimeLag;
+    }
+
+    // Apply limiting at end of interval when playing forwards
+    var sourceContentEnd = this.source ? this.source.endTime : 0;
+    if (this.playbackRate > 0 &&
+        this._unlimitedCurrentTime >= sourceContentEnd) {
+      if (this._holdTime === null) {
+        this._holdTime = Math.max(this._previousCurrentTime, sourceContentEnd);
+      }
+      return this._pauseTimeLag;
+    }
+
+    // Finished limiting so store pause time lag
+    if (this._holdTime !== null) {
+      this._storedTimeLag = this._pauseTimeLag;
+      this._holdTime = null;
+    }
+
+    return this._storedTimeLag;
+  },
+  get _pauseTimeLag() {
+    return ((this.timeline.currentTime || 0) - this.startTime) *
+        this.playbackRate - this._holdTime;
   },
   set startTime(startTime) {
     enterModifyCurrentAnimationState();
     try {
       // This seeks by updating _startTime and hence the currentTime. It does
-      // not affect _drift.
+      // not affect _storedTimeLag.
       this._startTime = startTime;
+      this._holdTime = null;
       playersAreSorted = false;
       this._update();
       maybeRestartAnimation();
@@ -345,18 +394,21 @@ Player.prototype = {
   get startTime() {
     return this._startTime;
   },
-  set paused(isPaused) {
-    if (isPaused) {
-      this._pauseTime = this.currentTime;
-    } else if (isDefined(this._pauseTime)) {
-      this._timeDrift = (this.timeline.currentTime - this.startTime) *
-          this.playbackRate - this._pauseTime;
-      this._pauseTime = undefined;
-      maybeRestartAnimation();
+  set _paused(isPaused) {
+    if (isPaused === this._pausedState) {
+      return;
     }
+    if (this._pausedState) {
+      this._storedTimeLag = this.timeLag;
+      this._holdTime = null;
+      maybeRestartAnimation();
+    } else {
+      this._holdTime = this.currentTime;
+    }
+    this._pausedState = isPaused;
   },
   get paused() {
-    return isDefined(this._pauseTime);
+    return this._pausedState;
   },
   get timeline() {
     return this._timeline;
@@ -375,9 +427,61 @@ Player.prototype = {
   get playbackRate() {
     return this._playbackRate;
   },
+  get finished() {
+    return this.source &&
+        ((this.playbackRate > 0 && this.currentTime >= this.source.endTime) ||
+        (this.playbackRate < 0 && this.currentTime <= 0));
+  },
+  cancel: function() {
+    this.source = null;
+  },
+  finish: function() {
+    if (this.playbackRate < 0) {
+      this.currentTime = 0;
+    } else if (this.playbackRate > 0) {
+      var sourceEndTime = this.source ? this.source.endTime : 0;
+      if (sourceEndTime === Infinity) {
+        throw new Error('InvalidStateError');
+      }
+      this.currentTime = sourceEndTime;
+    }
+  },
+  play: function() {
+    this._paused = false;
+    if (!this.source) {
+      return;
+    }
+    if (this.playbackRate > 0 &&
+        (this.currentTime < 0 ||
+         this.currentTime >= this.source.endTime)) {
+      this.currentTime = 0;
+    } else if (this.playbackRate < 0 &&
+        (this.currentTime <= 0 ||
+        this.currentTime > this.source.endTime)) {
+      this.currentTime = this.source.endTime;
+    }
+  },
+  pause: function() {
+    this._paused = true;
+  },
+  reverse: function() {
+    if (this.playbackRate === 0) {
+      return;
+    }
+    if (this.source) {
+      if (this.playbackRate > 0 && this.currentTime >= this.source.endTime) {
+        this.currentTime = this.source.endTime;
+      } else if (this.playbackRate < 0 && this.currentTime < 0) {
+        this.currentTime = 0;
+      }
+    }
+    this.playbackRate = -this.playbackRate;
+    this._paused = false;
+  },
   _update: function() {
     if (this.source !== null) {
-      this.source._updateInheritedTime(this._currentTime);
+      this.source._updateInheritedTime(
+          this.timeline.currentTime === null ? null : this._currentTime);
       this._registerOnTimeline();
     }
   },
@@ -420,15 +524,15 @@ Player.prototype = {
     }
 
     if (this._needsHandlerPass) {
-      var timeDelta = this._currentTime - this._lastCurrentTime;
+      var timeDelta = this._unlimitedCurrentTime - this._lastCurrentTime;
       if (timeDelta > 0) {
         this.source._generateEvents(
-            this._lastCurrentTime, this._currentTime,
+            this._lastCurrentTime, this._unlimitedCurrentTime,
             this.timeline.currentTime, 1);
       }
     }
 
-    this._lastCurrentTime = this._currentTime;
+    this._lastCurrentTime = this._unlimitedCurrentTime;
   },
   _registerOnTimeline: function() {
     if (!this._registeredOnTimeline) {
@@ -462,6 +566,7 @@ var TimedItem = function(token, timingInput) {
   this._updateInternalState();
   this._handlers = {};
   this._onHandlers = {};
+  this._fill = this._resolveFillMode(this.specified.fill);
 };
 
 TimedItem.prototype = {
@@ -539,8 +644,8 @@ TimedItem.prototype = {
         this.remove();
       }
       this._parent = parent;
-      // In the case of a SeqGroup parent, _startTime will be updated by
-      // TimingGroup.splice().
+      // In the case of a AnimationSequence parent, _startTime will be updated
+      // by TimingGroup.splice().
       if (this.parent === null || this.parent.type !== 'seq') {
         this._startTime =
             this._stashedStartTime === undefined ? 0.0 : this._stashedStartTime;
@@ -558,7 +663,9 @@ TimedItem.prototype = {
   _intrinsicDuration: function() {
     return 0.0;
   },
+  _resolveFillMode: abstractMethod,
   _updateInternalState: function() {
+    this._fill = this._resolveFillMode(this.specified.fill);
     if (this.parent) {
       this.parent._childrenStateModified();
     } else if (this._player) {
@@ -577,8 +684,8 @@ TimedItem.prototype = {
   },
   // We push time down to children. We could instead have children pull from
   // above, but this is tricky because a TimedItem may use either a parent
-  // TimedItem or an Player. This requires either logic in
-  // TimedItem, or for TimedItem and Player to implement Timeline
+  // TimedItem or an AnimationPlayer. This requires either logic in
+  // TimedItem, or for TimedItem and AnimationPlayer to implement Timeline
   // (or an equivalent), both of which are ugly.
   _updateInheritedTime: function(inheritedTime) {
     this._inheritedTime = inheritedTime;
@@ -586,8 +693,8 @@ TimedItem.prototype = {
   },
   _updateAnimationTime: function() {
     if (this.localTime < this.specified.delay) {
-      if (this.specified.fill === 'backwards' ||
-          this.specified.fill === 'both') {
+      if (this._fill === 'backwards' ||
+          this._fill === 'both') {
         this._animationTime = 0;
       } else {
         this._animationTime = null;
@@ -596,8 +703,8 @@ TimedItem.prototype = {
         this.specified.delay + this.activeDuration) {
       this._animationTime = this.localTime - this.specified.delay;
     } else {
-      if (this.specified.fill === 'forwards' ||
-          this.specified.fill === 'both') {
+      if (this._fill === 'forwards' ||
+          this._fill === 'both') {
         this._animationTime = this.activeDuration;
       } else {
         this._animationTime = null;
@@ -796,7 +903,7 @@ TimedItem.prototype = {
   // are not in effect unless current.
   // TODO: Complete this restriction.
   _hasFutureEffect: function() {
-    return this._isCurrent() || this.specified.fill !== 'none';
+    return this._isCurrent() || this._fill !== 'none';
   },
   set onstart(func) {
     this._setOnHandler('start', func);
@@ -1118,6 +1225,9 @@ var Animation = function(target, animationEffect, timingInput) {
 };
 
 Animation.prototype = createObject(TimedItem.prototype, {
+  _resolveFillMode: function(fillMode) {
+    return fillMode === 'auto' ? 'none' : fillMode;
+  },
   _sample: function() {
     if (isDefinedAndNotNull(this.effect) &&
         !(this.target instanceof PseudoElementReference)) {
@@ -1234,6 +1344,9 @@ var TimingGroup = function(token, type, children, timing) {
 };
 
 TimingGroup.prototype = createObject(TimedItem.prototype, {
+  _resolveFillMode: function(fillMode) {
+    return fillMode === 'auto' ? 'both' : fillMode;
+  },
   _childrenStateModified: function() {
     // See _updateChildStartTimes().
     this._isInChildrenStateModified = true;
@@ -1335,8 +1448,8 @@ TimingGroup.prototype = createObject(TimedItem.prototype, {
       children.push(child.clone());
     });
     return this.type === 'par' ?
-        new ParGroup(children, this.specified._dict) :
-        new SeqGroup(children, this.specified._dict);
+        new AnimationGroup(children, this.specified._dict) :
+        new AnimationSequence(children, this.specified._dict);
   },
   clear: function() {
     this._splice(0, this._children.length);
@@ -1450,20 +1563,20 @@ TimingGroup.prototype = createObject(TimedItem.prototype, {
 
 
 /** @constructor */
-var ParGroup = function(children, timing, parent) {
+var AnimationGroup = function(children, timing, parent) {
   TimingGroup.call(this, constructorToken, 'par', children, timing, parent);
 };
 
-ParGroup.prototype = Object.create(TimingGroup.prototype);
+AnimationGroup.prototype = Object.create(TimingGroup.prototype);
 
 
 
 /** @constructor */
-var SeqGroup = function(children, timing, parent) {
+var AnimationSequence = function(children, timing, parent) {
   TimingGroup.call(this, constructorToken, 'seq', children, timing, parent);
 };
 
-SeqGroup.prototype = Object.create(TimingGroup.prototype);
+AnimationSequence.prototype = Object.create(TimingGroup.prototype);
 
 
 
@@ -1491,7 +1604,8 @@ var MediaReference = function(mediaElement, timing, parent, delta) {
   this._media.loop = false;
 
   // If the media element has a media controller, we detach it. This mirrors the
-  // behaviour when re-parenting a TimedItem, or attaching one to a Player.
+  // behaviour when re-parenting a TimedItem, or attaching one to an
+  // AnimationPlayer.
   // TODO: It would be neater to assign to MediaElement.controller, but this was
   // broken in Chrome until recently. See crbug.com/226270.
   this._media.mediaGroup = '';
@@ -1500,6 +1614,12 @@ var MediaReference = function(mediaElement, timing, parent, delta) {
 };
 
 MediaReference.prototype = createObject(TimedItem.prototype, {
+  _resolveFillMode: function(fillMode) {
+    // TODO: Fill modes for MediaReferences are still undecided. The spec is not
+    // clear what 'auto' should mean for TimedItems other than Animations and
+    // groups.
+    return fillMode === 'auto' ? 'none' : fillMode;
+  },
   _intrinsicDuration: function() {
     // TODO: This should probably default to zero. But doing so means that as
     // soon as our inheritedTime is zero, the polyfill deems the animation to be
@@ -1549,8 +1669,8 @@ MediaReference.prototype = createObject(TimedItem.prototype, {
       this._media.currentTime = time * this._media.defaultPlaybackRate;
     }
   },
-  // This is called by the polyfill on each tick when our Player's tree is
-  // active.
+  // This is called by the polyfill on each tick when our AnimationPlayer's tree
+  // is active.
   _updateInheritedTime: function(inheritedTime) {
     this._inheritedTime = inheritedTime;
     this._updateTimeMarkers();
@@ -1609,10 +1729,10 @@ MediaReference.prototype = createObject(TimedItem.prototype, {
       this._ensurePlaying();
     }
 
-    // Seek if required. This could be due to our Player being seeked, or video
-    // slippage. We need to handle the fact that the video may not play at
-    // exactly the right speed. There's also a variable delay when the video is
-    // first played.
+    // Seek if required. This could be due to our AnimationPlayer being seeked,
+    // or video slippage. We need to handle the fact that the video may not play
+    // at exactly the right speed. There's also a variable delay when the video
+    // is first played.
     // TODO: What's the right value for this delta?
     var delta = isDefinedAndNotNull(this._delta) ? this._delta :
         0.2 * Math.abs(this._media.playbackRate);
@@ -1902,7 +2022,8 @@ var expandShorthand = function(property, value, result) {
 var normalizeKeyframeDictionary = function(properties) {
   var result = {
     offset: null,
-    composite: null
+    composite: null,
+    easing: presetTimingFunctions.linear
   };
   var animationProperties = [];
   for (var property in properties) {
@@ -1916,6 +2037,8 @@ var normalizeKeyframeDictionary = function(properties) {
           properties.composite === 'replace') {
         result.composite = properties.composite;
       }
+    } else if (property === 'easing') {
+      result.easing = TimingFunction.createFromString(properties.easing);
     } else {
       // TODO: Check whether this is a supported property.
       animationProperties.push(property);
@@ -2082,6 +2205,9 @@ KeyframeEffect.prototype = createObject(AnimationEffect.prototype, {
     }
     var intervalDistance = (timeFraction - startKeyframe.offset) /
         (endKeyframe.offset - startKeyframe.offset);
+    if (startKeyframe.easing) {
+      intervalDistance = startKeyframe.easing.scaleTime(intervalDistance);
+    }
     return new BlendedCompositableValue(
         new AddReplaceCompositableValue(startKeyframe.rawValue(),
             this._compositeForKeyframe(startKeyframe)),
@@ -2103,8 +2229,8 @@ KeyframeEffect.prototype = createObject(AnimationEffect.prototype, {
         }
         var frame = distributedFrames[i];
         this._cachedPropertySpecificKeyframes[property].push(
-            new PropertySpecificKeyframe(frame.offset,
-                frame.composite, property, frame.cssValues[property]));
+            new PropertySpecificKeyframe(frame.offset, frame.composite,
+                frame.easing, property, frame.cssValues[property]));
       }
     }
 
@@ -2117,12 +2243,12 @@ KeyframeEffect.prototype = createObject(AnimationEffect.prototype, {
       // Add synthetic keyframes at offsets of 0 and 1 if required.
       if (frames[0].offset !== 0.0) {
         var keyframe = new PropertySpecificKeyframe(0.0, 'add',
-            property, cssNeutralValue);
+            presetTimingFunctions.linear, property, cssNeutralValue);
         frames.unshift(keyframe);
       }
       if (frames[frames.length - 1].offset !== 1.0) {
         var keyframe = new PropertySpecificKeyframe(1.0, 'add',
-            property, cssNeutralValue);
+            presetTimingFunctions.linear, property, cssNeutralValue);
         frames.push(keyframe);
       }
       ASSERT_ENABLED && assert(
@@ -2268,7 +2394,7 @@ KeyframeEffect.prototype = createObject(AnimationEffect.prototype, {
  *
  * @constructor
  */
-var KeyframeInternal = function(offset, composite) {
+var KeyframeInternal = function(offset, composite, easing) {
   ASSERT_ENABLED && assert(
       typeof offset === 'number' || offset === null,
       'Invalid offset value');
@@ -2277,6 +2403,7 @@ var KeyframeInternal = function(offset, composite) {
       'Invalid composite value');
   this.offset = offset;
   this.composite = composite;
+  this.easing = easing;
   this.cssValues = {};
 };
 
@@ -2301,9 +2428,12 @@ KeyframeInternal.createFromNormalizedProperties = function(properties) {
   ASSERT_ENABLED && assert(
       isDefinedAndNotNull(properties) && typeof properties === 'object',
       'Properties must be an object');
-  var keyframe = new KeyframeInternal(properties.offset, properties.composite);
+  var keyframe = new KeyframeInternal(properties.offset, properties.composite,
+      properties.easing);
   for (var candidate in properties) {
-    if (candidate !== 'offset' && candidate !== 'composite') {
+    if (candidate !== 'offset' &&
+        candidate !== 'composite' &&
+        candidate !== 'easing') {
       keyframe.addPropertyValuePair(candidate, properties[candidate]);
     }
   }
@@ -2313,9 +2443,11 @@ KeyframeInternal.createFromNormalizedProperties = function(properties) {
 
 
 /** @constructor */
-var PropertySpecificKeyframe = function(offset, composite, property, cssValue) {
+var PropertySpecificKeyframe = function(offset, composite, easing, property,
+    cssValue) {
   this.offset = offset;
   this.composite = composite;
+  this.easing = easing;
   this.property = property;
   this.cssValue = cssValue;
   // Calculated lazily
@@ -5061,7 +5193,7 @@ var repeatLastTick = function() {
 
 var playerSortFunction = function(a, b) {
   var result = a.startTime - b.startTime;
-  return result !== 0 ? result : a._sequenceNumber - b.sequenceNumber;
+  return result !== 0 ? result : a._sequenceNumber - b._sequenceNumber;
 };
 
 var lastTickTime;
@@ -5083,8 +5215,8 @@ var ticker = function(rafTime, isRepeat) {
   // Clear any modifications to getComputedStyle.
   ensureOriginalGetComputedStyle();
 
-  // Get animations for this sample. We order by Player then by DFS order within
-  // each Player's tree.
+  // Get animations for this sample. We order by AnimationPlayer then by DFS
+  // order within each AnimationPlayer's tree.
   if (!playersAreSorted) {
     PLAYERS.sort(playerSortFunction);
     playersAreSorted = true;
@@ -5166,7 +5298,7 @@ try {
 window.Element.prototype.animate = function(effect, timing) {
   var anim = new Animation(this, effect, timing);
   DOCUMENT_TIMELINE.play(anim);
-  return anim;
+  return anim.player;
 };
 window.Element.prototype.getCurrentPlayers = function() {
   return PLAYERS.filter((function(player) {
@@ -5185,13 +5317,13 @@ window.Element.prototype.getCurrentAnimations = function() {
 
 window.Animation = Animation;
 window.AnimationEffect = AnimationEffect;
+window.AnimationGroup = AnimationGroup;
+window.AnimationPlayer = AnimationPlayer;
+window.AnimationSequence = AnimationSequence;
 window.KeyframeEffect = KeyframeEffect;
 window.MediaReference = MediaReference;
-window.ParGroup = ParGroup;
 window.MotionPathEffect = MotionPathEffect;
-window.Player = Player;
 window.PseudoElementReference = PseudoElementReference;
-window.SeqGroup = SeqGroup;
 window.TimedItem = TimedItem;
 window.TimedItemList = TimedItemList;
 window.Timing = Timing;

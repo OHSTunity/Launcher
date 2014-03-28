@@ -19,7 +19,7 @@
     </label>
     <div class="contacts">
        <template repeat="{{ Contacts }}">
-          <x-html content="{{ Html }}"></x-html>
+          <template is="x-html" content="{{ Html }}"></template>
        </template>
     </div>
 </div>

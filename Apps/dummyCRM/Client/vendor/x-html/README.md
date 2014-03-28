@@ -8,18 +8,16 @@ If you have this:
 ```javascript
 var model = {
   appdata: {
-    username: "World",
-    html: "<h1>Hello {{ username }}</h1>"
-  }  
+    username: "World"
+  },
+  html: "<h1>Hello {{ username }}</h1>"
 }
 ```
 
 You can put it on screen with this:
 
 ```html
-<template bind="{{ appdata }}">
-  <x-html content="{{ html }}"></x-html>
-</template>
+<template is="x-html" bind="{{ appdata }}" content="{{ html }}"></template>
 ```
 
 To produce that:
@@ -52,16 +50,23 @@ Of course, the 2-way data binding provided by works within your partials as desi
 Load HTML partial from a string:
 
 ```
-<x-html content="{{ var }}"></x-html>
+<template is="x-html" content="{{ var }}"></template>
 <!-- where {{ var }} equals "<b>some</b> HTML" -->
 ```
 
 Load HTML partial from a URL:
 
 ```
-<x-html content="{{ var }}"></x-html>
+<template is="x-html" content="{{ var }}"></template>
 <!-- where {{ var }} equals "./path/to/file.html", a path relative to the document that must start with / or ./ -->
 ```
+
+## Options/Attributes
+
+Attribute    | Options       | Default          | Description
+---          | ---           | ---              | ---
+`content`    | *string*		 | `""`				| Safe HTML code, or path to partial to be loaded.
+
 
 ### Dependencies
 
@@ -69,6 +74,19 @@ Load HTML partial from a URL:
 future, it will be library-agnostic.
 
 ### Changelog
+
+#### v0.0.?
+
+- `x-html` now extends `<template>`, so use it as `<template is="x-html">`,
+- Inherit from `HTMLTemplateElement.prototype`,
+- Content is being added on `x-html` level (as a sibling),
+- `x-html` no longer bother about `<script>`,`<style>`, and `<link type="import">` tags, it delagates this to `<template>`. So you should **be aware of execution order of inline and external scripts**.
+If you still need blocking for dynamically added scripts consider [`<puppet-partial>`](https://github.com/PuppetJs/puppet-partial).
+
+#### v0.0.20140326
+
+- Compatibility changes for Polymer 0.2.2 (use element `templateInstance` property instead of `bindings`) (see ticket [#7](https://github.com/PuppetJs/x-html/issues/7))
+- Add "web-components" keyword for [CustomElements.io](http://customelements.io/)
 
 #### v0.0.20140221
 

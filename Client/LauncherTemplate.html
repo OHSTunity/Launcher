@@ -2,8 +2,8 @@
 <head>
     <title>Launcher</title>
     <script src="/vendor/fast-json-patch/src/json-patch-duplex.js"></script>
-    <script src="/vendor/PuppetJs/src/puppet.js"></script>
     <script src="/vendor/platform/platform.js"></script>
+    <script src="/vendor/PuppetJs/src/puppet.js"></script>
     
     <link rel="import" href="/vendor/polymer/polymer.html">
 
@@ -30,8 +30,7 @@
       </polymer-ui-field>
       <template bind="{{ results }}">
         <tomalec-sortable-list disabled>
-          <!-- FIXME: <x-html> is still marked as one of sortable elements, even if it acts more as <tempalte> -->
-          <x-html content="{{ Html }}" currentnode></x-html>   
+          <template is="x-html" content="{{ Html }}"></template>   
         </tomalec-sortable-list>
       </template>
     </pj-dashboard>

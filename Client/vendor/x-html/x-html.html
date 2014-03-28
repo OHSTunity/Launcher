@@ -1,18 +1,13 @@
 <!--
-x-html.html v0.0.20140221
+x-html.html v0.0.20140326
 (c) 2013 Joachim Wester
 MIT license
 https://github.com/PuppetJs/x-html
 -->
 <link rel="import" href="../polymer/polymer.html">
-<style>
-x-html[currentnode]{
-  display: none;
-}
-</style>
 <script>
   (function () {
-    var XHTMLPrototype = Object.create(HTMLElement.prototype);
+    var XHTMLPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
 
     XHTMLPrototype.loadTemplate_ = function() {
       var val = this.getAttribute('content');
@@ -33,100 +28,33 @@ x-html[currentnode]{
     };
 
     XHTMLPrototype.reattachTemplate_ = function(html) {
-
-      var template = document.createElement("template");
-      template.setAttribute("bind","");
-      template.innerHTML = html;
-      if( this.getAttribute('currentnode') || this.getAttribute('currentnode')==="" ){
-        this.parentNode.insertBefore(template, this.nextSibling);
+      if( this.subTemplate ){
+        // IDEA: or maybe just this.subTempalte.clear()? - to leave lightDOM template untouched (tomalec)
+        this.clear();
       } else {
-        this.appendChild( template );// = '<template bind>' + html + '</template>';
+        this.subTemplate = document.createElement("template");
       }
-
+      this.subTemplate.setAttribute("bind","");
+      this.subTemplate.innerHTML = html;
+      this.parentNode.insertBefore(this.subTemplate, this.nextSibling);
       if(window.PolymerExpressions) {
-        template.bindingDelegate = new PolymerExpressions; //use PolymerExpressions if available. This allows <template if="{{val == 1}}">, etc
+        this.subTemplate.bindingDelegate = new PolymerExpressions; //use PolymerExpressions if available. This allows <template if="{{val == 1}}">, etc
       }
-      var content = template.content;
+      this.subTemplate.model = this.model;
 
-      // maybe we could also consider re-importing external CSS'es https://github.com/PuppetJs/x-html/issues/5
-      var specialElemSelectors = [/*'style', 'link[rel=stylesheet]', */'link[rel=import]', 'script'];
-
-      var specialElems = content.querySelectorAll(specialElemSelectors);
-      specialElems = Array.prototype.slice.call(specialElems, 0); //convert to array
-      specialElems.forEach(function (elem) {
-        elem.parentNode.removeChild(elem); //avoid being processed by HTMLImports
-      });
-      if( !this.model && this.bindings ){
-        //`content` is in DOM and `value` is in Shadow DOM
-        this.model  = (this.bindings.content || this.bindings.value).object_;
-      }
-      template.model = this.model;
-      this.parseSpecialElements_(specialElems);
-    };
-
-    XHTMLPrototype.parseSpecialElements_ = function(specialElems) {
-      var that = this;
-      specialElems.forEach(function (elem) {
-        if (elem.nodeName === 'STYLE') {
-          that.appendChild(elem);
-        }
-        else if (elem.nodeName === 'LINK') { //appending <link rel="stylesheet"> to Shadow DOM does not have any effect (9 Nov, 2013)
-          if(elem.rel === "stylesheet") {
-            var style = document.createElement('style');
-            style.innerHTML = '@import url(' + elem.getAttribute('href') + ');';
-            setTimeout(function () { //must be async, otherwise custom elements in demo puppetjs/lab/wc/page_2 display improperly
-              that.appendChild(style);
-            }, 0);
-          }
-          else if(elem.rel === "import") {
-            document.head.appendChild(elem);
-          }
-        }
-        else if (elem.nodeName === 'SCRIPT') {
-          setTimeout(function () { //must be async
-            executeComponentScript(elem.textContent, that, 'script')
-          }, 0);
-        }
-      });
     };
 
     /**
-     * Function that executes script (that is ignored by browser's .innerHTML)
-     * @source Polymer's HTMLElementElement.js
+     * Empty xhml content.
+     * @TODO clear also siblings for `x-html[currentnode]`
+     * @requires HTMLTemplateElement#clear (https://github.com/Polymer/TemplateBinding/blob/51df59c16e0922dec041cfe604016aac00918d5d/src/TemplateBinding.js#L595)
+     * @extends HTMLTemplateElement.prototype.clear
+     * @return  see HTMLTemplateElement.prototype.clear
      */
-    function executeComponentScript(inScript, inContext, inName) {
-      // set (highlander) context
-      context = inContext;
-      // source location
-      var owner = context.ownerDocument;
-      var url = (owner._URL || owner.URL || owner.impl
-        && (owner.impl._URL || owner.impl.URL));
-      // ensure the component has a unique source map so it can be debugged
-      // if the name matches the filename part of the owning document's url,
-      // use this, otherwise, add ":<name>" to the document url.
-      var match = url.match(/.*\/([^.]*)[.]?.*$/);
-      if (match) {
-        var name = match[1];
-        url += name != inName ? ':' + inName : '';
-      }
-      // compose script
-      var code = "__componentScript('"
-          + inName
-          + "', function(){"
-          + inScript
-          + "});"
-          + "\n//# sourceURL=" + url + "\n"
-        ;
-      // inject script
-      eval(code);
+    XHTMLPrototype.clear = function(){
+      return this.subTemplate.clear() && HTMLTemplateElement.prototype.clear.call(this);
     }
 
-    var context;
-
-    // global necessary for script injection
-    window.__componentScript = function (inName, inFunc) {
-      inFunc.call(context);
-    };
 
     XHTMLPrototype.attachedCallback = function () {
       var that = this;
@@ -145,7 +73,8 @@ x-html[currentnode]{
     };
 
     document.register('x-html', {
-      prototype: XHTMLPrototype
+      prototype: XHTMLPrototype,
+      extends: "template"
     });
   })();
 </script>
