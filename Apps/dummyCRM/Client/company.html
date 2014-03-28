@@ -1,25 +1,27 @@
-﻿<style>
-    h1 input {
-        font-size: 0.9em;
-    }
-    .company {
-        background: yellow;
-    }
-    .contacts {
-        margin: 2em;
-        padding: 0.5em;
-        border: 2px dashed black;
-    }
-</style>
+﻿<template bind="{{dummyCRM}}">
+    <style>
+        h1 input {
+            font-size: 0.9em;
+        }
+        .company {
+            background: yellow;
+        }
+        .contacts {
+            margin: 2em;
+            padding: 0.5em;
+            border: 2px dashed black;
+        }
+    </style>
 
-<div class="company">
-    <h1><input value="{{ Name$ }}"></h1>
-    <label>Revenue
-      <input type="number" value="{{ Revenue$ }}">
-    </label>
-    <div class="contacts">
-       <template repeat="{{ Contacts }}">
-          <template is="x-html" content="{{ Html }}"></template>
-       </template>
+    <div class="company">
+        <h1><input value="{{ Name$ }}"></h1>
+        <label>Revenue
+          <input type="number" value="{{ Revenue$ }}">
+        </label>
+        <div class="contacts">
+           <template repeat="{{ Contacts }}">
+              <template is="imported-template" content="{{ Html }}"></template>
+           </template>
+        </div>
     </div>
-</div>
+</template>

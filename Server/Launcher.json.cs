@@ -64,17 +64,12 @@ partial class Launcher : Page {
 
             String[] allPartialInfos = s.Split(new char[] { '&' });
 
-            sb.Append("<template bind>\n");
             foreach (String appNamePlusPartialUrl in allPartialInfos) {
                 String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
-
-                sb.Append("<template bind=\"{{" + a[0] + "}}\">\n");
                 Response resp;
                 X.GET(a[1], out resp);
                 sb.Append(resp.Body);
-                sb.Append("\n</template>\n");
             }
-            sb.Append("\n</template>\n");
 
             return sb.ToString();
         });
