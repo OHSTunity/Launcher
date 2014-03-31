@@ -1,30 +1,8 @@
-<!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>Dummy CRM</title>
-    <script src="https://rawgithub.com/Starcounter-Jack/JSON-Patch/master/src/json-patch-duplex.js"></script>
-    <script src="https://rawgithub.com/Polymer/platform/master/platform.js"></script>
-    <script src="https://rawgithub.com/PuppetJs/PuppetJs/master/src/puppet.js"></script>
-    <link rel="import" href="/vendor/imported-template/imported-template.html">
-
-</head>
-<body>
-    <template bind id="root">
+    <template bind>
         <h1>DummyCRM</h1>
         <h2>Favorite Customer:</h2>
         <template bind="{{FavoriteCustomer}}">
             <template is="imported-template" content="{{Html}}"></template>
         </template>
     </template>
-    <script>
-        document.addEventListener("polymer-ready", function polymerReadyForLauncher() {
-            window.puppet = new Puppet(null, function (obj) {
-                document.getElementById("root").bindingDelegate = new PolymerExpressions;
-                document.getElementById("root").model = obj;
-            });
-        });
-    </script>
-</body>
-</html>

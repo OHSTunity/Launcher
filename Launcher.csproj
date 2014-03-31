@@ -87,9 +87,6 @@
       <DependentUpon>Launcher.json</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server\LauncherWorkspace.json.cs">
-      <DependentUpon>LauncherWorkspace.json</DependentUpon>
-    </Compile>
     <Compile Include="Server\Page.json.cs">
       <DependentUpon>Page.json</DependentUpon>
     </Compile>
@@ -113,11 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Server\Page.json">
-      <Generator>MsBuild:Compile</Generator>
-    </TypedJSON>
-  </ItemGroup>
-  <ItemGroup>
-    <TypedJSON Include="Server\LauncherWorkspace.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

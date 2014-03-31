@@ -27,5 +27,13 @@
 	  on: true,
 	  text: "",
 	  thumbnail: {}
-	}
+	},
+	uri: "",
+	focusedWorkspace: 1,
+	workspaces: [
+	  {
+	    appName: "",
+		master: {}
+	  }
+	]
 }

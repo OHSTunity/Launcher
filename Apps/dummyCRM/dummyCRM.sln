@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dummyCRM", "dummyCRM.csproj", "{30D11832-7DCA-4B52-A52E-D3F4EB573E1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dummyCRM", "dummyCRM.csproj", "{E1D6642D-B9A3-4548-A714-26AE6D96F41E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{30D11832-7DCA-4B52-A52E-D3F4EB573E1E}.Debug|x64.ActiveCfg = Debug|x64
-		{30D11832-7DCA-4B52-A52E-D3F4EB573E1E}.Debug|x64.Build.0 = Debug|x64
-		{30D11832-7DCA-4B52-A52E-D3F4EB573E1E}.Release|x64.ActiveCfg = Release|x64
-		{30D11832-7DCA-4B52-A52E-D3F4EB573E1E}.Release|x64.Build.0 = Release|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Debug|x64.ActiveCfg = Debug|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Debug|x64.Build.0 = Debug|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Release|x64.ActiveCfg = Release|x64
+		{E1D6642D-B9A3-4548-A714-26AE6D96F41E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

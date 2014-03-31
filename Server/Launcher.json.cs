@@ -58,6 +58,33 @@ partial class Launcher : Page {
             return responses[0];
         });
 
+        Handle.GET("/launcher/workspace/{?}/{?}", (String appName, String uri) =>
+        //Handle.GET("/launcher/workspace/{?}", (String uri) =>
+        {
+            Launcher launcher = (Launcher)Launcher.GET("/");
+            Launcher.workspacesElementJson foundWorkspace = null;
+            for (var i = 0; i < launcher.workspaces.Count; i++)
+            {
+                if (appName == launcher.workspaces[i].appName)
+                {
+                    foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces[i];
+                    launcher.focusedWorkspace = i;
+                    break;
+                }
+            }
+
+            if (foundWorkspace == null)
+            {
+                foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces.Add();
+                foundWorkspace.appName = appName;
+                launcher.focusedWorkspace = launcher.workspaces.Count - 1;
+            }
+            foundWorkspace.master = (Json)X.GET("/" + appName + "/" + uri);
+
+            
+            return launcher;
+        });
+
         // Merges HTML partials according to provided URLs.
         Handle.GET("/polyjuice-merger?{?}", (String s) => {
             StringBuilder sb = new StringBuilder();

@@ -33,6 +33,14 @@
           <template is="imported-template" content="{{ Html }}"></template>   
         </tomalec-sortable-list>
       </template>
+        <!--<template repeat="{{ key, app in workspaces }}">-->
+        <template repeat="{{ workspaces }}">
+        <tomalec-sortable-list disabled>
+            <template bind="{{ master }}">
+                <template is="imported-template" content="{{ Html }}"></template>  
+            </template> 
+        </tomalec-sortable-list>
+      </template>
     </pj-dashboard>
   </template>
   <script>

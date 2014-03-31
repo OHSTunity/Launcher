@@ -13,18 +13,18 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
-        Handle.GET("/super-crm/company/{?}", (String companyId) => {
-            var page = (CompanyPage)X.GET("/super-crm/partials/company/" + companyId);
+        Handle.GET("/super-crm/companies/{?}", (String companyId) => {
+            var page = (CompanyPage)X.GET("/super-crm/partials/companies/" + companyId);
             Master m = (Master)X.GET("/super-crm");
             m.FavoriteCustomer = page;
             return m;
         });
     
-        Handle.GET("/super-crm/partials/company/{?}", (String companyId) => {
+        Handle.GET("/super-crm/partials/companies/{?}", (String companyId) => {
             CompanyPage c =  new CompanyPage() {
                 Name = "Id Software",
                 Revenue = 0,
-                Uri = "/super-crm/partials/company/1",
+                Uri = "/launcher/workspace/super-crm/companies/1",
                 Html = "/company.html"
             };
             c.Contacts.Add( (ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist") );
@@ -58,7 +58,7 @@ partial class Master : Page {
                 Html = "/dummyCRM.html"
             };
 
-            m.Session = new Session();
+            //m.Session = new Session();
 
             return m;
         });
@@ -123,7 +123,7 @@ partial class Master : Page {
             {
                 Html = "/search-companies.html"
             };
-            p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/company/" + companyId));
+            p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/companies/" + companyId));
             return p;
         });
 
