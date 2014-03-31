@@ -37,7 +37,7 @@
   </template>
   <script>
     document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
-      var puppet = new Puppet(null, function (obj) {
+      window.puppet = new Puppet(null, function (obj) { //setting up global for console access
         var rootTemplate = document.getElementById("root");
         rootTemplate.bindingDelegate = new PolymerExpressions;
         rootTemplate.model = obj;

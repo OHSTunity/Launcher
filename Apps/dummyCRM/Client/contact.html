@@ -1,6 +1,21 @@
+<link rel="import" href="vendor/gravatar-image/src/gravatar.html">
+<link rel="stylesheet" href="/css/dummyCRM.css">
+
 <template bind="{{dummyCRM}}">
-	<div class="contact">
-	    <h1><input value="{{ Name$ }}"></h1>
-	    <label>Title <input value="{{ Title$ }}"></label>
-	</div>
+        <gravatar-image username="warpech@gmail.com"></gravatar-image>
+        <div class="dummyCRM">
+            <label>Name<input value="{{ Name$ }}"></label>
+        </div>
+	    <div class="dummyCRM">
+            <label>Title <input value="{{ Title$ }}"></label>
+        </div>
+	    <div class="dummyCRM">
+            <label>Email <input value="{{ Email$ }}"></label>
+        </div>
+	    <div class="dummyCRM">
+            <label>Company <select selectedIndex="{{CompanyIndex}}">
+                <option>Starcounter</option>
+                           </select></label>
+        </div>
+	    
 </template>

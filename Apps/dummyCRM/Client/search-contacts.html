@@ -1,0 +1,20 @@
+﻿<link rel="stylesheet" href="/css/dummyCRM.css">
+
+<template bind="{{dummyCRM}}">
+    <div class="dummyCRM">
+        <h1>Contacts</h1>
+        <ul>
+            <template repeat="{{Contact in Contacts}}">
+                <template bind="{{Contact}}">
+                    <li><a href="{{Uri}}">{{Name$}} | {{Title$}} | Starcounter
+                        <!-- TODO fix PuppetJS span in a
+                        <span>{{Name$}}</span>
+                        <span>{{Title$}}</span>
+                        <span>Starcounter</span>
+                            -->
+                        </a></li>
+                </template>
+            </template>
+        </ul>
+    </div>
+</template>

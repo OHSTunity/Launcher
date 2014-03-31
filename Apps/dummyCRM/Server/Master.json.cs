@@ -24,6 +24,7 @@ partial class Master : Page {
             CompanyPage c =  new CompanyPage() {
                 Name = "Id Software",
                 Revenue = 0,
+                Uri = "/super-crm/partials/company/1",
                 Html = "/company.html"
             };
             c.Contacts.Add( (ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist") );
@@ -31,13 +32,23 @@ partial class Master : Page {
 
             return c;
         });
+
+        Handle.GET("/super-crm/contact/{?}/{?}", (String firstName, String title) =>
+        {
+            var page = (ContactPage)X.GET("/super-crm/partials/contact/" + firstName + "/" + title);
+            Master m = (Master)X.GET("/super-crm");
+            m.FavoriteCustomer = page;
+            return m;
+        });
     
         Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) => {
             ContactPage c = new ContactPage()
             {
                 Name = firstName,
                 Title = title,
-                Html = "/contact.html"
+                Email = "name@company.com",
+                Html = "/contact.html",
+                Uri = "/super-crm/partials/contact/" + firstName + "/" + title
             };
             return c;
         });
@@ -77,13 +88,55 @@ partial class Master : Page {
             else throw new Exception("Wrong objectId!");
         });
 
-
-        Handle.GET("/search?query={?}", (String company) =>
+        /*Handle.GET("/dashboard", () =>
         {
             Response resp;
-            X.GET("/super-crm/partials/company/" + HttpUtility.UrlEncode(company), out resp);
+            X.GET("/super-crm/partials/contact/John/Programmer", out resp);
+            return resp;
+        });*/
+
+        Handle.GET("/dashboard", () =>
+        {
+            Response resp;
+            X.GET("/super-crm/partials/search-contacts/John/Programmer", out resp);
             return resp;
         });
+
+        Handle.GET("/dashboard", () =>
+        {
+            Response resp;
+            X.GET("/super-crm/partials/search-companies/" + "123", out resp);
+            return resp;
+        });
+
+        Handle.GET("/search?query={?}", (String query) =>
+        {
+            Response resp;
+            //X.GET("/super-crm/partials/search-contacts/" + HttpUtility.UrlEncode(query), out resp);
+            X.GET("/super-crm/partials/search-companies/" + HttpUtility.UrlEncode(query), out resp);
+            return resp;
+        });
+
+        Handle.GET("/super-crm/partials/search-companies/{?}", (String companyId) =>
+        {
+            SearchCompaniesPage p = new SearchCompaniesPage()
+            {
+                Html = "/search-companies.html"
+            };
+            p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/company/" + companyId));
+            return p;
+        });
+
+        Handle.GET("/super-crm/partials/search-contacts/{?}", (String companyId) =>
+        {
+            SearchContactsPage p = new SearchContactsPage()
+            {
+                Html = "/search-contacts.html"
+            };
+            p.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/" + companyId + "/Programmer"));
+            return p;
+        });
+
     }
 }
 

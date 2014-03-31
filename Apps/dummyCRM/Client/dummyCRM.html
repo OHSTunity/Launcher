@@ -15,11 +15,16 @@
         <h1>DummyCRM</h1>
         <h2>Favorite Customer:</h2>
         <template bind="{{FavoriteCustomer}}">
-            <template is="imported-template" content="{{Html}}" flex></template>
+            <template is="imported-template" content="{{Html}}"></template>
         </template>
     </template>
     <script>
-        var puppet = new Puppet(null, function (obj) { document.getElementById("root").model = obj; });
+        document.addEventListener("polymer-ready", function polymerReadyForLauncher() {
+            window.puppet = new Puppet(null, function (obj) {
+                document.getElementById("root").bindingDelegate = new PolymerExpressions;
+                document.getElementById("root").model = obj;
+            });
+        });
     </script>
 </body>
 </html>

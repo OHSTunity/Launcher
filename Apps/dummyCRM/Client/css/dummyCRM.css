@@ -1,0 +1,37 @@
+﻿.dummyCRM {
+  font-family: Calibri, Helvetica, Arial, sans-serif;
+}
+
+.dummyCRM h1 {
+  font-size: 20px;
+}
+
+.dummyCRM ul {
+  display: table;
+  list-style: none;
+  padding: 0;
+}
+
+.dummyCRM li {
+  display: table-row;
+}
+
+.dummyCRM li a {
+    padding: 10px;
+    display: block;
+    color: black;
+    text-decoration: none;
+}
+
+.dummyCRM li:hover {
+  background-color: whitesmoke;
+}
+
+.dummyCRM li span {
+  display: table-cell;
+  padding-right: 20px;
+}
+
+.dummyCRM li span:last-child {
+  padding-right: 0;
+}
