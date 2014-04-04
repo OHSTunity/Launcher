@@ -45,7 +45,7 @@ partial class Master : Page {
                 Html = "/skyper.html"
             };
             
-            m.Session = new Session();
+            //m.Session = new Session();
 
             return m;
         });
