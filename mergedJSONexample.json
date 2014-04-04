@@ -17,7 +17,7 @@
       //NOTE: for now we assume `Html` is always a path.
       "Html": "/skyper-user.html" // not used anyways
     },
-    "dummyCRM": {
+    "SuperCRM": {
       //NOTE: for now we assume `Html` is always a path.
       "Html": "/contact.html",
       "Name": "Albert",
@@ -38,7 +38,7 @@
       //NOTE: for now we assume `Html` is always a path.
       "Html": "/skyper-user.html" // not used anyways
     },
-    "dummyCRM": {
+    "SuperCRM": {
       //NOTE: for now we assume `Html` is always a path.
       "Html": "/contact.html",
       "Name": "John",

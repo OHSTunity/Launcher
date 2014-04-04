@@ -128,11 +128,11 @@
   <ItemGroup>
     <Content Include="Client\company.html" />
     <Content Include="Client\contact.html" />
-    <Content Include="Client\dummyCRM.html" />
+    <Content Include="Client\SuperCRM.html" />
     <Content Include="Client\menu.html" />
     <Content Include="Client\search-companies.html" />
     <Content Include="Client\search-contacts.html" />
-    <Content Include="Client\css\dummyCRM.css" />
+    <Content Include="Client\css\SuperCRM.css" />
     <Content Include="Client\vendor\x-html\x-html.html" />
     <Content Include="Client\vendor\fast-json-patch\src\json-patch-duplex.js" />
     <Content Include="Client\vendor\platform\platform.js" />

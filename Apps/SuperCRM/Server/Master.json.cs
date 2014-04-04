@@ -100,7 +100,7 @@ partial class Master : Page {
     
         Handle.GET("/super-crm", ()=>{
             var m = new Master() {
-                Html = "/dummyCRM.html"
+                Html = "/SuperCRM.html"
             };
 
             //m.Session = new Session();
