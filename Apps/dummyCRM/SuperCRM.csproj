@@ -9,8 +9,8 @@
     <ProjectGuid>{E1D6642D-B9A3-4548-A714-26AE6D96F41E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dummyCRM</RootNamespace>
-    <AssemblyName>dummyCRM</AssemblyName>
+    <RootNamespace>SuperCRM</RootNamespace>
+    <AssemblyName>SuperCRM</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <UseVSHostingProcess>false</UseVSHostingProcess>

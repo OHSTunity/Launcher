@@ -9,8 +9,8 @@
     <ProjectGuid>{06ED6D21-02EC-452A-ACBC-9B0A85AA95BA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Skype</RootNamespace>
-    <AssemblyName>Skype</AssemblyName>
+    <RootNamespace>Skyper</RootNamespace>
+    <AssemblyName>Skyper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <UseVSHostingProcess>false</UseVSHostingProcess>
