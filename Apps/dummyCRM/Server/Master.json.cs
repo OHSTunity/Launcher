@@ -13,23 +13,67 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
-        Handle.GET("/super-crm/companies/{?}", (String companyId) => {
+        Handle.GET("/super-crm/companies/add", () =>
+        {
+            var page = (CompanyPage)X.GET("/super-crm/partials/companies/add");
+            Master m = (Master)X.GET("/super-crm");
+            m.FavoriteCustomer = page;
+            return m;
+        });
+
+        Handle.GET("/super-crm/partials/companies/add", () =>
+        {
+            CompanyPage c = new CompanyPage()
+            {
+                Name = "",
+                Revenue = 0,
+                Uri = "/launcher/workspace/super-crm/companies/add",
+                Html = "/company.html"
+            };
+
+            return c;
+        });
+
+        Handle.GET("/super-crm/companies/{?}", (String companyId) => 
+        {
             var page = (CompanyPage)X.GET("/super-crm/partials/companies/" + companyId);
             Master m = (Master)X.GET("/super-crm");
             m.FavoriteCustomer = page;
             return m;
         });
-    
-        Handle.GET("/super-crm/partials/companies/{?}", (String companyId) => {
-            CompanyPage c =  new CompanyPage() {
+
+        Handle.GET("/super-crm/partials/companies/{?}", (String companyId) =>
+        {
+            CompanyPage c = new CompanyPage()
+            {
                 Name = "Id Software",
                 Revenue = 0,
                 Uri = "/launcher/workspace/super-crm/companies/1",
                 Html = "/company.html"
             };
-            c.Contacts.Add( (ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist") );
-            c.Contacts.Add( (ContactPage)X.GET("/super-crm/partials/contact/John/Programmer") );
+            c.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist"));
+            c.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/John/Programmer"));
 
+            return c;
+        });
+
+        Handle.GET("/super-crm/contacts/add", () =>
+        {
+            var page = (ContactPage)X.GET("/super-crm/partials/contacts/add");
+            Master m = (Master)X.GET("/super-crm");
+            m.FavoriteCustomer = page;
+            return m;
+        });
+    
+        Handle.GET("/super-crm/partials/contacts/add", () => {
+            ContactPage c = new ContactPage()
+            {
+                Name = "",
+                Title = "",
+                Email = "",
+                Html = "/contact.html",
+                Uri = "/super-crm/partials/contacts/add"
+            };
             return c;
         });
 
@@ -40,8 +84,9 @@ partial class Master : Page {
             m.FavoriteCustomer = page;
             return m;
         });
-    
-        Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) => {
+
+        Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) =>
+        {
             ContactPage c = new ContactPage()
             {
                 Name = firstName,
@@ -107,6 +152,15 @@ partial class Master : Page {
             Response resp;
             X.GET("/super-crm/partials/search-companies/" + "123", out resp);
             return resp;
+        });
+
+        Handle.GET("/menu", () =>
+        {
+            var p = new Page()
+            {
+                Html = "/menu.html"
+            };
+            return p;
         });
 
         Handle.GET("/search?query={?}", (String query) =>

@@ -4,3 +4,15 @@
     margin: 0;
     height: 100%;
 }
+
+#menu{
+    float:left;
+    box-shadow: inset -8px 0px 8px -4px rgba(0, 0, 0, 0.4),
+                inset 0px 8px 8px -4px rgba(0, 0, 0, 0.4);
+    height: 100%;
+}
+
+#menu ul {
+    list-style: none;
+    padding: 10px;
+}

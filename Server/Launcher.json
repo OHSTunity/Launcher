@@ -18,10 +18,6 @@
 	 thumbnail: {}
 	},
 	menu: {
-	  text: "Menu",
-	  thumbnail: {},
-	  items: [{ /*collection of menus*/
-	  }]
 	},
 	appFilter: {
 	  on: true,

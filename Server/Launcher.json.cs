@@ -45,6 +45,16 @@ partial class Launcher : Page {
 
             // X.GET("/launchpad", out resp); // thumbnails only
             launcher.results = resp;
+
+            Response menuResp;
+            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
+            // X.GET("/" + query.Value, out resp);
+            // Functional bricks
+            X.GET("/menu", out menuResp);
+
+            // X.GET("/launchpad", out resp); // thumbnails only
+            launcher.menu = menuResp;
+
             return launcher;
         });
 
@@ -158,16 +168,6 @@ partial class Launcher : Page {
   
         });
         // + dummy responses from launcher itself        
-
-
-        Handle.GET("/menu", () =>
-        {
-            Response resp;
-            X.GET("/launcher", out resp);
-
-            return resp;
-        });
-        // + dummy responses from launcher itself
     }
 }
 
