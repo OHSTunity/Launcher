@@ -23,22 +23,28 @@ partial class Launcher : Page {
         // Dashboard
         Handle.GET("/", () =>
         {
-
-            var launcher = new Launcher()
+            Launcher launcher;
+            if (Session.Current == null)
+            {
+                launcher = new Launcher()
             {
                 Html = "/LauncherTemplate.html"
             };
+                launcher.Session = new Session();
+            }
+            else
+            {
+                launcher = (Launcher)Session.Current.Data;
+            }
+
             Response resp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
             // Functional bricks
             X.GET("/dashboard", out resp);
 
-
             // X.GET("/launchpad", out resp); // thumbnails only
             launcher.results = resp;
-
-            launcher.Session = new Session();
             return launcher;
         });
 
