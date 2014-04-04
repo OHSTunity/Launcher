@@ -4,8 +4,8 @@
     <div class="dummyCRM">
         <h1>Companies</h1>
         <ul>
-            <template repeat="{{Company in Companies}}">
-                <template bind="{{Company}}">
+            <template repeat="{{Companies}}">
+                <template bind="{{dummyCRM}}">
                     <li><a href="{{Uri}}">{{Name$}} | {{Contacts.length}} contacts
                         <!-- TODO fix PuppetJS span in a
                             <span>{{Name$}}</span>

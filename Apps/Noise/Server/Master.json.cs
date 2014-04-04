@@ -9,6 +9,15 @@ partial class Master : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
+        Handle.GET("/super-crm/companies/{?}", (String url) => 
+        {
+            var page = new Page()
+            {
+                Html = "/noise.html"
+            };
+
+            return page;
+        });
 
         Handle.GET("/super-crm/partials/companies/{?}", (String url) => 
         {
