@@ -23,15 +23,18 @@ partial class Master : Page {
 
         Handle.GET("/super-crm/partials/companies/add", () =>
         {
-            CompanyPage c = new CompanyPage()
+            CompanyPage page = new CompanyPage()
             {
-                Name = "",
-                Revenue = 0,
                 Uri = "/launcher/workspace/super-crm/companies/add",
                 Html = "/company.html"
             };
+            page.Transaction = new Transaction();
+            page.Transaction.Add(() =>
+            {
+                page.Data = new SuperCRM.Company();
+            });
 
-            return c;
+            return page;
         });
 
         Handle.GET("/super-crm/companies/{?}", (String companyId) => 
@@ -42,15 +45,15 @@ partial class Master : Page {
             return m;
         });
 
-        Handle.GET("/super-crm/partials/companies/{?}", (String companyId) =>
+        Handle.GET("/super-crm/partials/companies/{?}", (String objectId) =>
         {
             CompanyPage c = new CompanyPage()
             {
-                Name = "Id Software",
-                Revenue = 0,
-                Uri = "/launcher/workspace/super-crm/companies/1",
                 Html = "/company.html"
             };
+            c.Data = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE ObjectId = ?", objectId).First;
+            c.Uri = "/launcher/workspace/super-crm/companies/" + objectId;
+            
             c.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist"));
             c.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/John/Programmer"));
 
@@ -177,7 +180,12 @@ partial class Master : Page {
             {
                 Html = "/search-companies.html"
             };
-            p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/companies/" + companyId));
+            var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c FETCH ?", 5);
+            var enumerator = companies.GetEnumerator();
+            while(enumerator.MoveNext())
+            {
+                p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/companies/" + enumerator.Current.GetObjectID()));
+            }
             return p;
         });
 

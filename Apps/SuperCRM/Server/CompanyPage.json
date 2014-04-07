@@ -3,5 +3,6 @@
 	"Name$" : "Id Software",
 	"Revenue$": 100000000,
 	"Uri" : "",
-	"Contacts" : [{}]
+	"Contacts" : [{}],
+	"Save$" : null
 }
