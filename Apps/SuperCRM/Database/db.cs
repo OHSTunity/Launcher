@@ -21,7 +21,7 @@ namespace SuperCRM
     public class Contact
     {
         public Company Company;
-        //public Person Person;
+        //public Person Person; //can be uncommented when https://github.com/Starcounter/Starcounter/issues/1838 is fixed
         public string FirstName;
         public string LastName;
         public string Email;

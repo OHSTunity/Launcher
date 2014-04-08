@@ -22,21 +22,14 @@ partial class Master : Page {
 
         Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) =>
         {
-            if (objectId == "1") {
-                return new SkyperUserPage() {
-                    Name = "Albert",
-                    SkypeId = "EMC2",
-                    Html = "/skyper-user.html"
-                };
-            } else if (objectId == "2") {
+            //if has Skype account
                 return new SkyperUserPage()
                 {
-                    Name = "John",
-                    SkypeId = "JohnC",
+                    Name = objectId + " on Skype",
+                    SkypeId = "skype_" + objectId,
                     Html = "/skyper-user.html"
-                };
-            }
-            else throw new Exception("Wrong object id!");
+                }; 
+            //}
         });
 
         Handle.GET("/skyper", () =>

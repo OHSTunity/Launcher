@@ -51,9 +51,19 @@ partial class Master : Page {
             {
                 Html = "/company.html"
             };
-            c.Data = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE ObjectId = ?", objectId).First;
+            var company = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE ObjectId = ?", objectId).First;
+            c.Data = company;
             //c.Uri = "/launcher/workspace/super-crm/companies/" + objectId;
             c.Transaction = new Transaction();
+
+            var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE Company = ?", company);
+            var enumerator = contacts.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var p = (ContactPage)X.GET("/super-crm/partials/contacts/" + enumerator.Current.GetObjectID());
+                c.Contacts.Add(p);
+            }
+
             return c;
         });
 
@@ -157,15 +167,11 @@ partial class Master : Page {
         });
 
         Handle.IsMapperHandler = true;
-        Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) => {
+        Handle.GET("/super-crm/partials/contacts/{?}", (String objectId) => {
             // String objectId = (String) Db.SQL("SELECT p.ObjectId FROM Person p WHERE p.Name = ?", firstName).First;
             // return X.GET("/societyobjects/ring2/employee/" + objectId);
 
-            if (firstName == "Albert")
-                return (Json) X.GET("/societyobjects/ring1/person/1");
-            else if (firstName == "John")
-                return (Json) X.GET("/societyobjects/ring1/person/2");
-            else throw new Exception("Wrong first name!");
+            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
         });
 
         Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
@@ -173,12 +179,7 @@ partial class Master : Page {
             // return X.GETWITHOUTPREGET("/super-crm/partials/contact/" + p.WhoIs.FullName + "/" + p.Title);
 
             Handle.CallOnlyNonMapperHandlers = true;
-
-            if (objectId == "1")
-                return (Json) X.GET("/super-crm/partials/contact/Albert/Scientist");
-            else if (objectId == "2")
-                return (Json) X.GET("/super-crm/partials/contact/John/Programmer");
-            else throw new Exception("Wrong objectId!");
+            return (Json)X.GET("/super-crm/partials/contacts/" + objectId);
         });
 
         Handle.GET("/dashboard", () =>
