@@ -6,6 +6,7 @@ partial class ContactPage : Page
     void Handle(Input.Save input)
     {
         Transaction.Commit();
+        RedirectUrl = Uri;
     }
 
     void Handle(Input.SelectedCompanyIndex input)
@@ -13,5 +14,13 @@ partial class ContactPage : Page
         var index = (int)input.Value;
         var company = Companies[index];
         ((SuperCRM.Contact)Data).Company = (SuperCRM.Company)company.Data;
+    }
+
+    protected override string UriFragment
+    {
+        get
+        {
+            return "/launcher/workspace/super-crm/contacts/" + Data.GetObjectID();
+        }
     }
 }

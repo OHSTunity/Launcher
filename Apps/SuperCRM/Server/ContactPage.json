@@ -13,5 +13,6 @@
 	"Companies": [{
 	  "Name" : ""
 	}],
-	"Save$" : null
+	"Save$" : null,
+	"RedirectUrl$" : ""
 }

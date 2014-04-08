@@ -52,7 +52,7 @@ partial class Master : Page {
                 Html = "/company.html"
             };
             c.Data = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE ObjectId = ?", objectId).First;
-            c.Uri = "/launcher/workspace/super-crm/companies/" + objectId;
+            //c.Uri = "/launcher/workspace/super-crm/companies/" + objectId;
             c.Transaction = new Transaction();
             return c;
         });
@@ -127,7 +127,7 @@ partial class Master : Page {
             };
             var contact = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE ObjectId = ?", objectId).First;
             page.Data = contact;
-            page.Uri = "/launcher/workspace/super-crm/contacts/" + objectId;
+            //page.Uri = "/launcher/workspace/super-crm/contacts/" + objectId;
             page.Transaction = new Transaction();
             page.SelectedCompanyIndex = -1;
             var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c");
