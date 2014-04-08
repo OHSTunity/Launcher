@@ -1,0 +1,16 @@
+{
+	"Html" : "",
+	"Companies" : [{
+	  "Name": "",
+	  "Uri": ""
+	}],
+	"Contacts" : [{
+	  "FirstName": "",
+	  "LastName": "",
+	  "Title": "",
+	  "Company": {
+	    "Name" : ""
+	  },
+	  "Uri": ""
+	}]
+}

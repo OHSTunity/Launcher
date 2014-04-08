@@ -113,11 +113,8 @@
     <Compile Include="Server\Page.json.cs">
       <DependentUpon>Page.json</DependentUpon>
     </Compile>
-    <Compile Include="Server\SearchCompaniesPage.json.cs">
-      <DependentUpon>SearchCompaniesPage.json</DependentUpon>
-    </Compile>
-    <Compile Include="Server\SearchContactsPage.json.cs">
-      <DependentUpon>SearchContactsPage.json</DependentUpon>
+    <Compile Include="Server\SearchPage.json.cs">
+      <DependentUpon>SearchPage.json</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -131,8 +128,7 @@
     <Content Include="Client\contact.html" />
     <Content Include="Client\SuperCRM.html" />
     <Content Include="Client\menu.html" />
-    <Content Include="Client\search-companies.html" />
-    <Content Include="Client\search-contacts.html" />
+    <Content Include="Client\search.html" />
     <Content Include="Client\css\SuperCRM.css" />
     <Content Include="Client\vendor\x-html\x-html.html" />
     <Content Include="Client\vendor\fast-json-patch\src\json-patch-duplex.js" />
@@ -155,12 +151,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
-    <TypedJSON Include="Server\SearchCompaniesPage.json">
-      <Generator>MsBuild:Compile</Generator>
-    </TypedJSON>
-  </ItemGroup>
-  <ItemGroup>
-    <TypedJSON Include="Server\SearchContactsPage.json">
+    <TypedJSON Include="Server\SearchPage.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

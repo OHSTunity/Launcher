@@ -181,26 +181,12 @@ partial class Master : Page {
             else throw new Exception("Wrong objectId!");
         });
 
-        /*Handle.GET("/dashboard", () =>
-        {
-            Response resp;
-            X.GET("/super-crm/partials/contact/John/Programmer", out resp);
-            return resp;
-        });*/
-
         Handle.GET("/dashboard", () =>
         {
             Response resp;
-            X.GET("/super-crm/partials/search-contacts/John/Programmer", out resp);
+            X.GET("/super-crm/partials/search/", out resp);
             return resp;
         });
-
-        /*Handle.GET("/dashboard", () =>
-        {
-            Response resp;
-            X.GET("/super-crm/partials/search-companies/" + "123", out resp);
-            return resp;
-        });*/
 
         Handle.GET("/menu", () =>
         {
@@ -214,25 +200,22 @@ partial class Master : Page {
         Handle.GET("/search?query={?}", (String query) =>
         {
             Response resp;
-            //X.GET("/super-crm/partials/search-contacts/" + HttpUtility.UrlEncode(query), out resp);
-            X.GET("/super-crm/partials/search-companies/" + HttpUtility.UrlEncode(query), out resp);
+            X.GET("/super-crm/partials/search/" + HttpUtility.UrlEncode(query), out resp);
             return resp;
         });
 
-        Handle.GET("/super-crm/partials/search-companies/{?}", (String companyId) =>
+        Handle.GET("/super-crm/partials/search/{?}", (String query) =>
         {
-            SearchCompaniesPage p = new SearchCompaniesPage()
+            SearchPage page = new SearchPage()
             {
-                Html = "/search-companies.html"
+                Html = "/search.html"
             };
-            var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c FETCH ?", 5);
-            /*var enumerator = companies.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/companies/" + enumerator.Current.GetObjectID()));
-            }*/
-            p.Companies.Data = companies;
-            return p;
+            var wildcardQuery = "%" + query + "%";
+            var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE Name LIKE ? FETCH ?", wildcardQuery, 5);
+            var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE FirstName LIKE ? OR LastName LIKE ? OR Title LIKE ? OR Company.Name LIKE ? FETCH ?", wildcardQuery, wildcardQuery, wildcardQuery, wildcardQuery, 5);
+            page.Companies.Data = companies;
+            page.Contacts.Data = contacts;
+            return page;
         });
 
         Handle.GET("/super-crm/delete-all-data", () =>
@@ -246,22 +229,6 @@ partial class Master : Page {
             Master m = (Master)X.GET("/super-crm");
             m.Message = "SugarCRM's company, contact and person data was removed";
             return m;
-        });
-
-        Handle.GET("/super-crm/partials/search-contacts/{?}", (String query) =>
-        {
-            SearchContactsPage page = new SearchContactsPage()
-            {
-                Html = "/search-contacts.html"
-            };
-            var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c FETCH ?", 5);
-            /*var enumerator = contacts.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                p.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contacts/" + enumerator.Current.GetObjectID()));
-            }*/
-            page.Contacts.Data = contacts;
-            return page;
         });
 
     }

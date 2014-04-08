@@ -8,8 +8,10 @@ partial class Master : Page {
     /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
-    static void Main() {
+    static void Main()
+    {
         Handle.GET("/menu", GetNoiseResponse);
+        Handle.GET<String>("/search?query={?}", GetNoiseResponse);
         Handle.GET("/super-crm/companies/add", GetNoiseResponse);
         Handle.GET("/super-crm/partials/companies/add", GetNoiseResponse);
         Handle.GET<String>("/super-crm/companies/{?}", GetNoiseResponse);
