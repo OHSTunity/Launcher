@@ -4,16 +4,14 @@
     <div class="SuperCRM">
         <h1>Contacts</h1>
         <ul>
-            <template repeat="{{Contact in Contacts}}">
-                <template bind="{{Contact}}">
-                    <li><a href="{{Uri}}">{{Name$}} | {{Title$}} | Starcounter
+            <template repeat="{{Contacts}}">
+                    <li><a href="{{Uri}}">{{FirstName}}  {{LastName}} | {{Title}} | {{Company.Name}}
                         <!-- TODO fix PuppetJS span in a
                         <span>{{Name$}}</span>
                         <span>{{Title$}}</span>
                         <span>Starcounter</span>
                             -->
                         </a></li>
-                </template>
             </template>
         </ul>
     </div>

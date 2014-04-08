@@ -4,5 +4,7 @@
 	"Revenue$": 100000000,
 	"Uri" : "",
 	"Contacts" : [{}],
-	"Save$" : null
+	"Save$" : null,
+	"AddContact$" : null,
+	"RedirectUrl$" : ""
 }

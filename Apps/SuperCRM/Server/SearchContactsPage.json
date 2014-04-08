@@ -1,4 +1,12 @@
 {
 	"Html" : "",
-	"Contacts" : [{}]
+	"Contacts" : [{
+	  "FirstName" : "",
+	  "LastName" : "",
+	  "Title" : "",
+	  "Company" : {
+	    "Name" : ""
+	  },
+	  "Uri" : ""
+	}]
 }

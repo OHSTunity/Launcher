@@ -5,13 +5,11 @@
         <h1>Companies</h1>
         <ul>
             <template repeat="{{Companies}}">
-                <template bind="{{SuperCRM}}">
-                    <li><a href="{{Uri}}">{{Name$}} | {{Contacts.length}} contacts
+                    <li><a href="{{Uri}}">{{Name}} | {{Contacts.length}} contacts
                         <!-- TODO fix PuppetJS span in a
                             <span>{{Name$}}</span>
                         <span>{{Contacts.length}} contacts</span>-->
                         </a></li>
-                </template>
             </template>
         </ul>
     </div>

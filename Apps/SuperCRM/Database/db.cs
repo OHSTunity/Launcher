@@ -1,4 +1,4 @@
-﻿using Starcounter;
+using Starcounter;
 
 namespace SuperCRM
 {
@@ -18,10 +18,14 @@ namespace SuperCRM
     }
 
     [Database]
-    public class Employee
+    public class Contact
     {
         public Company Company;
-        public Person Person;
+        //public Person Person;
+        public string FirstName;
+        public string LastName;
+        public string Email;
+        public string Title;
     }
 
 }

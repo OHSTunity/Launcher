@@ -39,7 +39,7 @@ partial class Master : Page {
 
         Handle.GET("/super-crm/companies/{?}", (String companyId) => 
         {
-            var page = (CompanyPage)X.GET("/super-crm/partials/companies/" + companyId);
+            var page = CompanyPage.GET("/super-crm/partials/companies/" + companyId);
             Master m = (Master)X.GET("/super-crm");
             m.FavoriteCustomer = page;
             return m;
@@ -53,10 +53,7 @@ partial class Master : Page {
             };
             c.Data = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE ObjectId = ?", objectId).First;
             c.Uri = "/launcher/workspace/super-crm/companies/" + objectId;
-            
-            c.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/Albert/Scientist"));
-            c.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/John/Programmer"));
-
+            c.Transaction = new Transaction();
             return c;
         });
 
@@ -65,40 +62,88 @@ partial class Master : Page {
             var page = (ContactPage)X.GET("/super-crm/partials/contacts/add");
             Master m = (Master)X.GET("/super-crm");
             m.FavoriteCustomer = page;
+            /*if (m.AddContactToCompany.Data != null)
+            {
+                ((SuperCRM.Contact)page.Data).Company = (SuperCRM.Company)m.AddContactToCompany.Data;
+                m.AddContactToCompany.Data = null;
+            }*/
             return m;
         });
-    
-        Handle.GET("/super-crm/partials/contacts/add", () => {
-            ContactPage c = new ContactPage()
+
+        Handle.GET("/super-crm/partials/contacts/add", () =>
+        {
+            ContactPage page = new ContactPage()
             {
-                Name = "",
-                Title = "",
-                Email = "",
                 Html = "/contact.html",
                 Uri = "/super-crm/partials/contacts/add"
             };
-            return c;
+            var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c");
+            page.Transaction = new Transaction();
+            page.SelectedCompanyIndex = -1;
+            page.Transaction.Add(() =>
+            {
+                var contact = new SuperCRM.Contact();
+                if (companies.First != null)
+                {
+                    contact.Company = companies.First;
+                    page.SelectedCompanyIndex = 0;
+                }
+                page.Data = contact;
+            });
+            page.Companies.Data = companies;
+
+            /*page.Person.Transaction = new Transaction();
+            page.Person.Transaction.Add(() =>
+            {
+                var person = new SuperCRM.Person();
+                page.Person.Data = person;
+            });
+
+            page.Transaction = new Transaction();
+            page.Transaction.Add(() =>
+            {
+                var contact = new SuperCRM.Contact();
+                contact.Title = "Specialist";
+                contact.Person = page.Person.Data;
+                page.Data = contact;
+            });*/
+
+            return page;
         });
 
-        Handle.GET("/super-crm/contact/{?}/{?}", (String firstName, String title) =>
+        Handle.GET("/super-crm/contacts/{?}", (String objectId) =>
         {
-            var page = (ContactPage)X.GET("/super-crm/partials/contact/" + firstName + "/" + title);
+            var page = (ContactPage)X.GET("/super-crm/partials/contacts/" + objectId);
             Master m = (Master)X.GET("/super-crm");
             m.FavoriteCustomer = page;
             return m;
         });
 
-        Handle.GET("/super-crm/partials/contact/{?}/{?}", (String firstName, String title) =>
+        Handle.GET("/super-crm/partials/contacts/{?}", (String objectId) =>
         {
-            ContactPage c = new ContactPage()
+            ContactPage page = new ContactPage()
             {
-                Name = firstName,
-                Title = title,
-                Email = "name@company.com",
-                Html = "/contact.html",
-                Uri = "/super-crm/partials/contact/" + firstName + "/" + title
+                Html = "/contact.html"
             };
-            return c;
+            var contact = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE ObjectId = ?", objectId).First;
+            page.Data = contact;
+            page.Uri = "/launcher/workspace/super-crm/contacts/" + objectId;
+            page.Transaction = new Transaction();
+            page.SelectedCompanyIndex = -1;
+            var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c");
+            page.Companies.Data = companies;
+            var enumertator = companies.GetEnumerator();
+            var i = 0;
+            while (enumertator.MoveNext())
+            {
+                if (enumertator.Current.Equals(contact.Company))
+                {
+                    page.SelectedCompanyIndex = i;
+                    break;
+                }
+                i++;
+            }
+            return page;
         });
     
         Handle.GET("/super-crm", ()=>{
@@ -150,12 +195,12 @@ partial class Master : Page {
             return resp;
         });
 
-        Handle.GET("/dashboard", () =>
+        /*Handle.GET("/dashboard", () =>
         {
             Response resp;
             X.GET("/super-crm/partials/search-companies/" + "123", out resp);
             return resp;
-        });
+        });*/
 
         Handle.GET("/menu", () =>
         {
@@ -181,22 +226,42 @@ partial class Master : Page {
                 Html = "/search-companies.html"
             };
             var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c FETCH ?", 5);
-            var enumerator = companies.GetEnumerator();
-            while(enumerator.MoveNext())
+            /*var enumerator = companies.GetEnumerator();
+            while (enumerator.MoveNext())
             {
                 p.Companies.Add((CompanyPage)X.GET("/super-crm/partials/companies/" + enumerator.Current.GetObjectID()));
-            }
+            }*/
+            p.Companies.Data = companies;
             return p;
         });
 
-        Handle.GET("/super-crm/partials/search-contacts/{?}", (String companyId) =>
+        Handle.GET("/super-crm/delete-all-data", () =>
         {
-            SearchContactsPage p = new SearchContactsPage()
+            Db.Transaction(() =>
+            {
+                SlowSQL("DELETE FROM SuperCRM.Company");
+                SlowSQL("DELETE FROM SuperCRM.Contact");
+                SlowSQL("DELETE FROM SuperCRM.Person");
+            });
+            Master m = (Master)X.GET("/super-crm");
+            m.Message = "SugarCRM's company, contact and person data was removed";
+            return m;
+        });
+
+        Handle.GET("/super-crm/partials/search-contacts/{?}", (String query) =>
+        {
+            SearchContactsPage page = new SearchContactsPage()
             {
                 Html = "/search-contacts.html"
             };
-            p.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contact/" + companyId + "/Programmer"));
-            return p;
+            var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c FETCH ?", 5);
+            /*var enumerator = contacts.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                p.Contacts.Add((ContactPage)X.GET("/super-crm/partials/contacts/" + enumerator.Current.GetObjectID()));
+            }*/
+            page.Contacts.Data = contacts;
+            return page;
         });
 
     }

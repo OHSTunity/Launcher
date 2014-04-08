@@ -1,7 +1,17 @@
 {
 	"Html" : "",
-	"Name$" : "Albert",
+	"FirstName$": "Albert",
+	"LastName$": "Einstein",
+	/*"Person" : {
+	    "FirstName$" : "Albert",
+		"LastName$" : "Einstein"
+	},*/
 	"Title$" : "Scientist",
 	"Email$" : "albert@example.com",
-	"Uri" : ""
+	"Uri" : "",
+	"SelectedCompanyIndex$" : 0,
+	"Companies": [{
+	  "Name" : ""
+	}],
+	"Save$" : null
 }

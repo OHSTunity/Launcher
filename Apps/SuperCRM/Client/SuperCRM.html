@@ -1,6 +1,10 @@
+<link rel="import" href="components/puppet-morphUrl.html">
+
 <template bind="{{SuperCRM}}">
     <h1>SuperCRM</h1>
-    <h2>Favorite Customer:</h2>
+    <template if="{{Message}}">
+        <h2>{{Message}}</h2>
+    </template>
     <template bind="{{FavoriteCustomer}}">
         <template is="imported-template" content="{{Html}}"></template>
     </template>

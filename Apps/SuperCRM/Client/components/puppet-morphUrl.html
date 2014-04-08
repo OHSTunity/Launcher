@@ -1,0 +1,19 @@
+<polymer-element name="puppet-morphUrl" attributes="url">
+  <template>
+  </template>
+  <script>
+    Polymer('puppet-morphUrl', {
+      enteredView: function () {
+      },
+      urlChanged: function () {
+        if(this.url == "current") {
+          puppet.morphUrl(window.location.href);
+        }
+        else if(this.url != "") {
+          puppet.morphUrl(this.url);
+        }
+        //this.url = "";
+      }
+    });
+  </script>
+</polymer-element>

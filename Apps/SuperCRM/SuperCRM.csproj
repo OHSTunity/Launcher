@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\company.html" />
+    <Content Include="Client\components\puppet-morphUrl.html" />
     <Content Include="Client\contact.html" />
     <Content Include="Client\SuperCRM.html" />
     <Content Include="Client\menu.html" />

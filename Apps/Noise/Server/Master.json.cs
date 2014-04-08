@@ -16,6 +16,9 @@ partial class Master : Page {
         Handle.GET<String>("/super-crm/partials/companies/{?}", GetNoiseResponse);
         Handle.GET("/super-crm/contacts/add", GetNoiseResponse);
         Handle.GET("/super-crm/partials/contacts/add", GetNoiseResponse);
+        Handle.GET<String>("/super-crm/contacts/{?}", GetNoiseResponse);
+        Handle.GET<String>("/super-crm/partials/contacts/{?}", GetNoiseResponse);
+        Handle.GET("/super-crm/delete-all-data", GetNoiseResponse);
     }
 
     static Response GetNoiseResponse()
@@ -30,7 +33,7 @@ partial class Master : Page {
 
     static Response GetNoiseResponse(String url)
     {
-        var page = new Page()
+        var page = new NoisePage()
         {
             Html = "/noise.html"
         };
@@ -39,6 +42,12 @@ partial class Master : Page {
     }
 }
 
+/**
+ * NoisePage extends Page so in stack traces we can see when the object's origin is the Noise app
+ */
+public class NoisePage : Page {
+
+}
 
 
 

@@ -2,9 +2,12 @@
 <link rel="stylesheet" href="/css/SuperCRM.css">
 
 <template bind="{{SuperCRM}}">
-        <gravatar-image username="warpech@gmail.com"></gravatar-image>
+        <gravatar-image username="{{ Email$ }}"></gravatar-image>
         <div class="SuperCRM">
-            <label>Name<input value="{{ Name$ }}"></label>
+            <label>First Name<input value="{{ FirstName$ }}"></label>
+        </div>
+        <div class="SuperCRM">
+            <label>Last Name<input value="{{ LastName$ }}"></label>
         </div>
 	    <div class="SuperCRM">
             <label>Title <input value="{{ Title$ }}"></label>
@@ -13,9 +16,21 @@
             <label>Email <input value="{{ Email$ }}"></label>
         </div>
 	    <div class="SuperCRM">
-            <label>Company <select selectedIndex="{{CompanyIndex}}">
-                <option>Starcounter</option>
-                           </select></label>
+            <label>Company 
+                <template if="{{ Companies.length > 0 }}">
+                    <select selectedIndex="{{ SelectedCompanyIndex$ }}">
+                        <template repeat="{{ Companies }}">
+                            <option>{{ Name }}</option>
+                        </template>
+                    </select>
+                </template>
+                <template if="{{ Companies.length == 0 }}">
+                    <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
+                </template>
+            </label>
+        </div>
+	    <div class="SuperCRM">
+            <label><button bind="{{ Save$ }}" onclick="setModelValue(this, null)">Save</button></label>
         </div>
 	    
 </template>
