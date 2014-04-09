@@ -25,7 +25,7 @@ partial class Master : Page {
 
     static Response GetNoiseResponse()
     {
-        var page = new Page()
+        var page = new NoisePage()
         {
             Html = "/noise.html"
         };
