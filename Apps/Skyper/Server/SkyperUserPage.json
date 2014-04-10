@@ -1,5 +1,8 @@
 {
-    "Name$" : "John Carmack",
-    "SkypeId$" : "JohnC",
+    "Contact": {
+      "SkypeId$": ""
+    },
+    "Editing$" : false,
+    "Save$": null,
     "Html" : ""
 }

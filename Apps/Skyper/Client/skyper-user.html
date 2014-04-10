@@ -7,14 +7,32 @@
 <script type="text/javascript" src="/vendor/skype-uri/skype-uri.js"></script>
 <!-- Importing Custom Element -->
 <link rel="import" href="/vendor/skype-button/src/skype-button.html">
+<style>
+    .Skyper {
+        background-color: #0094ff;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
 <template bind="{{Skyper}}">
-	<section>
-	    <h1>{{ Name$ }}</h1>
-	    <input value="{{ SkypeId$ }}" >
-	    <skype-button style="width:25%; background-color:#0094ff"
-	      participants="{{ SkypeId$ }}"
-	      imageSize="24"
-	      imageColor="white"
-	      listParticipants="true"></skype-button>
-	</section>
+    <section>
+        <template if="{{ Editing$ == false }}">
+            <skype-button title="Call {{ Contact.SkypeId$ }}" class="Skyper"
+              participants="{{ Contact.SkypeId$ }}"
+              imageSize="24"
+              imageColor="white"
+              listParticipants="true"></skype-button>
+            <button bind="{{Editing$}}" onclick="setModelValue(this, true)">Edit</button>
+        </template>
+
+        <template if="{{ Editing$ == true }}">
+            <div class="Skyper">
+                <label>
+                    Skype username
+                    <input value="{{ Contact.SkypeId$ }}">
+                </label>
+                <button bind="{{Save$}}" onclick="setModelValue(this, null)">OK</button>
+            </div>
+        </template>
+    </section>
 </template>

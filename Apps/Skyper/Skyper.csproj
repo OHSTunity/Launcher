@@ -82,6 +82,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\db.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Server\SkyperUserPage.json.cs">
       <DependentUpon>SkyperUserPage.json</DependentUpon>
     </Compile>

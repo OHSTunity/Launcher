@@ -22,14 +22,38 @@ partial class Master : Page {
 
         Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) =>
         {
-            //if has Skype account
-                return new SkyperUserPage()
+            var page = new SkyperUserPage()
+            {
+                Html = "/skyper-user.html",
+                Editing = false
+            };
+            page.Transaction = new Transaction();
+            Skyper.Contact contact = SQL<Skyper.Contact>("SELECT c FROM Skyper.Contact c WHERE c.ExternalId = ?", objectId).First;
+            if (contact == null)
+            {
+                page.Transaction.Add(() =>
                 {
-                    Name = objectId + " on Skype",
-                    SkypeId = "skype_" + objectId,
-                    Html = "/skyper-user.html"
-                }; 
-            //}
+                    contact = new Skyper.Contact()
+                    {
+                        ExternalId = objectId,
+                        SkypeId = ""
+                    };
+                    if (contact.SkypeId == "")
+                    {
+                        page.Editing = true;
+                    }
+                    page.Contact.Data = contact;
+                });
+            }
+            else
+            {
+                page.Contact.Data = contact;
+                if (contact.SkypeId == "")
+                {
+                    page.Editing = true;
+                }
+            }
+            return page;
         });
 
         Handle.GET("/skyper", () =>
