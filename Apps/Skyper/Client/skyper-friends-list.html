@@ -1,0 +1,24 @@
+﻿<!-- Importing Web Component's Polyfill -->
+<!-- 
+<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/platform.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
+-->
+<!-- Importing Skype Library -->
+<script type="text/javascript" src="/vendor/skype-uri/skype-uri.js"></script>
+<!-- Importing Custom Element -->
+<link rel="import" href="/vendor/skype-button/src/skype-button.html">
+<style>
+    .Skyper {
+        background-color: #0094ff;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
+<template bind="{{Skyper}}">
+    <section class="Skyper">
+        <h1>Friends list</h1>
+        <template repeat="{{ Friends }}">
+            <template is="imported-template" content="{{ Html }}"></template>
+        </template>
+    </section>
+</template>

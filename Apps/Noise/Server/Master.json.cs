@@ -21,6 +21,8 @@ partial class Master : Page {
         Handle.GET<String>("/super-crm/contacts/{?}", GetNoiseResponse);
         Handle.GET<String>("/super-crm/partials/contacts/{?}", GetNoiseResponse);
         Handle.GET("/super-crm/delete-all-data", GetNoiseResponse);
+        Handle.GET("/skyper/friends-list", GetNoiseResponse);
+        Handle.GET("/skyper/partials/friends-list", GetNoiseResponse);
     }
 
     static Response GetNoiseResponse()

@@ -85,6 +85,9 @@
     <Compile Include="Database\db.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Server\SkyperFriendsList.json.cs">
+      <DependentUpon>SkyperFriendsList.json</DependentUpon>
+    </Compile>
     <Compile Include="Server\SkyperUserPage.json.cs">
       <DependentUpon>SkyperUserPage.json</DependentUpon>
     </Compile>
@@ -102,6 +105,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\skyper-friends-list.html" />
     <Content Include="Client\skyper-dashboard.html" />
     <Content Include="Client\skyper-user.html" />
     <Content Include="Client\skyper.html" />
@@ -113,6 +117,11 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Server\SkyperUserPage.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="Server\SkyperFriendsList.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

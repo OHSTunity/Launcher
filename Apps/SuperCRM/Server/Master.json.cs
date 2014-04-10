@@ -136,6 +136,14 @@ partial class Master : Page {
                 Html = "/contact.html"
             };
             var contact = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE ObjectId = ?", objectId).First;
+            if (contact == null)
+            {
+                //return empty response
+                return new Page()
+                {
+                    Html = ""
+                };
+            }
             page.Data = contact;
             //page.Uri = "/launcher/workspace/super-crm/contacts/" + objectId;
             page.Transaction = new Transaction();

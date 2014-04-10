@@ -12,6 +12,39 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
+        Handle.GET("/skyper/friends-list", () =>
+        {
+            SkyperFriendsList page = (SkyperFriendsList)X.GET("/skyper/partials/friends-list");
+            Master m = (Master)X.GET("/skyper");
+            m.MyOnlyFriend = page;
+            return m;
+        });
+
+        Handle.GET("/skyper/partials/friends-list", () =>
+        {
+            var page = new SkyperFriendsList()
+            {
+                Html = "/skyper-friends-list.html"
+            };
+
+            var contacts = SQL<Skyper.Contact>("SELECT c FROM Skyper.Contact c");
+            var enumerator = contacts.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var p = new SkyperUserPage()
+                {
+                    Html = "/skyper-user.html"
+                };
+                p.Contact.Data = enumerator.Current;
+                p.Transaction = new Transaction();
+                var s = new SkyperFriendsList.FriendsElementJson();
+                s.Skyper = p;
+                s.Html = "/skyper-user.html";
+                page.Friends.Add(s);
+            }
+            return page;
+        });
+
         Handle.GET("/skyper/skype-user/{?}", (String objectId) =>
         {
             SkyperUserPage page = (SkyperUserPage)X.GET("/skyper/partials/skyper-user/" + objectId);

@@ -1,19 +1,16 @@
-<!-- Importing Web Component's Polyfill -->
-<!-- 
-<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/platform.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
--->
-<!-- Importing Skype Library -->
-<script type="text/javascript" src="/vendor/skype-uri/skype-uri.js"></script>
-<!-- Importing Custom Element -->
-<link rel="import" href="/vendor/skype-button/src/skype-button.html">
-
+<style>
+    .Skyper {
+        background-color: #0094ff;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .Skyper a {
+        color: #fff;
+    }
+</style>
 <template bind="{{Skyper}}">
-<section>
-    <h4>Skyper</h4>
-    <skype-button style="background-color:#0094ff"
-      participants="call"
-      imageSize="24"
-      imageColor="white"></skype-button>
-</section>
+    <section class="Skyper">
+            <a href="/launcher/workspace/skyper/friends-list"><img src="/vendor/skype-uri/callbutton_trans_16px.png">
+            <br>Show all contacts</a>
+    </section>
 </template>
