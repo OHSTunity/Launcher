@@ -11,6 +11,11 @@ partial class Master : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
+
+        // Setting default handler level to 1.
+        HandlerOptions.DefaultHandlerLevel = 1;
+        Handlers.AddExtraHandlerLevel();
+
         Handle.GET("/person/{?}", (String personId) =>
         {
             // var person = Db.SQL<Person>("SELECT p FROM Person p WHERE FirstName=?", "Albert").First;

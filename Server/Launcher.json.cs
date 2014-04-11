@@ -20,6 +20,9 @@ partial class Launcher : Page {
     /// </summary>
     static void Main() {
 
+        // Setting default handler level to 1.
+        HandlerOptions.DefaultHandlerLevel = 0;
+
         // Dashboard
         Handle.GET("/", () =>
         {
@@ -57,9 +60,6 @@ partial class Launcher : Page {
 
             return launcher;
         });
-
-
-
 
         // Not actually a mergerer anymore but linker of sibling Json parts.
         Handle.MergeResponses((Request req, List<Response> responses) =>
@@ -168,6 +168,34 @@ partial class Launcher : Page {
   
         });
         // + dummy responses from launcher itself        
+    }
+
+    /// <summary>
+    /// Explicitly defined mapper handlers.
+    /// </summary>
+    void AddMapperHandlers() {
+
+        HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
+
+        Handle.GET("/super-crm/partials/contacts/{?}", (String objectId) => {
+            // String objectId = (String) Db.SQL("SELECT p.ObjectId FROM Person p WHERE p.Name = ?", firstName).First;
+
+            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
+        });
+
+        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
+            // var c = Db.SQL("SELECT e FROM Employee e WHERE e.ObjectId = ?", objectId);
+
+            return (Json)X.GET("/super-crm/partials/contacts/" + objectId, 0, h1);
+        });
+
+        Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) => {
+            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
+        });
+
+        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
+            return (Json)X.GET("/skyper/partials/skyper-user/" + objectId, 0, h1);
+        });
     }
 }
 

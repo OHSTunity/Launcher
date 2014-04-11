@@ -12,6 +12,10 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
+        // Setting default handler level to 1.
+        HandlerOptions.DefaultHandlerLevel = 1;
+        Handlers.AddExtraHandlerLevel();
+
         Handle.GET("/skyper/friends-list", () =>
         {
             SkyperFriendsList page = (SkyperFriendsList)X.GET("/skyper/partials/friends-list");
@@ -98,16 +102,6 @@ partial class Master : Page {
             //m.Session = new Session();
 
             return m;
-        });
-
-        Handle.IsMapperHandler = true;
-        Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) => {
-           return (Json) X.GET("/societyobjects/ring1/person/" + objectId);
-        });
-
-        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
-           Handle.CallOnlyNonMapperHandlers = true;
-           return (Json) X.GET("/skyper/partials/skyper-user/" + objectId);
         });
 
         Handle.GET("/dashboard", () =>

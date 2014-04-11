@@ -13,6 +13,10 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
+        // Setting default handler level to 1.
+        HandlerOptions.DefaultHandlerLevel = 1;
+        Handlers.AddExtraHandlerLevel();
+
         Handle.GET("/super-crm/companies/add", () =>
         {
             var page = (CompanyPage)X.GET("/super-crm/partials/companies/add");
@@ -172,22 +176,6 @@ partial class Master : Page {
             //m.Session = new Session();
 
             return m;
-        });
-
-        Handle.IsMapperHandler = true;
-        Handle.GET("/super-crm/partials/contacts/{?}", (String objectId) => {
-            // String objectId = (String) Db.SQL("SELECT p.ObjectId FROM Person p WHERE p.Name = ?", firstName).First;
-            // return X.GET("/societyobjects/ring2/employee/" + objectId);
-
-            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
-        });
-
-        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
-            // var c = Db.SQL("SELECT e FROM Employee e WHERE e.ObjectId = ?", objectId);
-            // return X.GETWITHOUTPREGET("/super-crm/partials/contact/" + p.WhoIs.FullName + "/" + p.Title);
-
-            Handle.CallOnlyNonMapperHandlers = true;
-            return (Json)X.GET("/super-crm/partials/contacts/" + objectId);
         });
 
         Handle.GET("/dashboard", () =>
