@@ -27,19 +27,16 @@
                 div.id = uniqueId;
                 this.appendChild(div);
                 this.style.display = "inline-block";
-                var that = this;
-                this.async(function(){
-                    Skype.ui({
-                        name: that.name,
-                        element: uniqueId,
-                        participants: that.participants.split(","),
-                        listParticipants: mapSkypeBoolean( that.listparticipants ),
-                        video: mapSkypeBoolean( that.video ),
-                        topic: that.topic,
-                        listTopic: mapSkypeBoolean( that.listtopic ),
-                        imageSize: that.imagesize,
-                        imageColor: that.imagecolor
-                    });
+                Skype.ui({
+                    name: this.name,
+                    element: uniqueId,
+                    participants: this.participants.split(","),
+                    listParticipants: mapSkypeBoolean( this.listparticipants ),
+                    video: mapSkypeBoolean( this.video ),
+                    topic: this.topic,
+                    listTopic: mapSkypeBoolean( this.listtopic ),
+                    imageSize: this.imagesize,
+                    imageColor: this.imagecolor
                 });
             }
         });

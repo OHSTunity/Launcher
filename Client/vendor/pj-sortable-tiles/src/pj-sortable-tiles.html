@@ -119,7 +119,7 @@
 
 
                     window.addEventListener('resize', function() {
-                        console.log(self.package.width, self.clientWidth)
+                        // console.log(self.package.width, self.clientWidth)
                         // debugger
                         if( self.layersOrientation !== "vertical"){
                             self.package.width = self.clientWidth;
@@ -137,7 +137,7 @@
                       mutations.forEach(function(mutation) {
                         console.log("observation", mutation.type, arguments, mutations);
                         if(mutation.addedNodes){
-                            debugger;
+                            // debugger;
                             //DRY, performance
                             console.log("something was added")
                             self.package.reset();
@@ -196,8 +196,8 @@
                 // move to the end
                 // debugger
                 if( end || 
-                    increase && (itemIndex == 1) ||
-                    !increase && (itemIndex == this.items.length - 2 ) 
+                    increase && (itemIndex <= 1) ||
+                    !increase && (itemIndex >= this.items.length - 2 ) 
                 ){
                     // top
                     if(increase){
