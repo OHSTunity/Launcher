@@ -13,6 +13,7 @@
 
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
+    <link rel="import" href="/vendor/pj-sortable-tiles/src/pj-sortable-tiles.html">
 
     <link rel="stylesheet" href="/css/style.css">
 
@@ -37,9 +38,10 @@
           <polymer-ui-toggle-button id="toggleSortable" offcaption="Locked" oncaption="Sorting"></polymer-ui-toggle-button>
       </polymer-ui-field>
       <template bind="{{ results }}">
-        <tomalec-sortable-list disabled>
+        <!-- FIXME: hardcoded priority -->
+        <pj-sortable-tiles disabled  cellWidth="128" cellHeight="128" priorities='[{"width":1,"height":1,"priority":0.3},{"width":2,"height":1,"priority":0.9},{"width":2,"height":1,"priority":0.8},{"width":1,"height":1,"priority":0.1}]'>
           <template is="imported-template" content="{{ Html }}"></template>   
-        </tomalec-sortable-list>
+        </pj-sortable-tiles>
       </template>
         <!--<template repeat="{{ key, app in workspaces }}">-->
         <template repeat="{{ workspaces }}">
@@ -60,9 +62,11 @@
 
         window.setTimeout(function templateReady(){
           // Consider use of `changed` event 
-          document.getElementById('toggleSortable').addEventListener('click', function toggleSortable(e) {
+          document.addEventListener('click', function toggleSortable(e) {
+            if(e.target.id = "toggleSortable"){
             var list = document.querySelector('tomalec-sortable-list');
             list.disabled = this.value;// XXX: `this.value` was not yet changed so lets use it as `!this.newVal`.
+          }
           });
         });
       });

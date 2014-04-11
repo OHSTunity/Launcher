@@ -1,0 +1,293 @@
+<!-- Import Polymer -->
+<script src="rectangle.js"></script>
+<script src="package.js"></script>
+
+<!-- Define your custom element -->
+<polymer-element name="pj-sortable-tiles" attributes="priorities rowspans colspans cellWidth cellHeight layersOrientation">
+    <template>
+    <style>
+        :host {
+            display: table;
+        }
+        #container{
+            display: block;
+            position: relative;
+        }
+        polyfill-next-selector { content: ':host #container> *'; }
+        #container ::content>* {
+            position: absolute;
+            -webkit-transition:width 1s, height 1s, top 1s, left 1s, -webkit-transform 1s;
+            transition:width 1s, height 1s, top 1s, left 1s, transform 1s;
+        }
+    </style>
+    <div id="container"><content></content></div>
+    </template>
+    <script>
+    (function( scope ){
+        var defaultSetupNode = {
+            width: 1,
+            height: 1,
+            priority: 0
+        }
+        /**
+         * Disregard `<style>`, `<template>` and Text nodes.
+         * @param  {NodesList} nodesList nodes list to filter
+         * @return {Array}           array of sortable items.
+         */
+        function filterNodes( nodesList ){
+            return nodesList.array()
+                        .filter(function filterOutText(child){
+                            return !(child instanceof Text) &&
+                                    !(child instanceof HTMLTemplateElement) &&
+                                    !(child instanceof HTMLScriptElement);
+                        });
+        }
+        /**
+         * [createItemsList description]
+         * @param  {Array<Element>} elements [description]
+         * @return {[type]}          [description]
+         */
+        function createItemsList( elements, setup, cellWidth, cellHeight ){
+            return elements.map(function(element, index){
+                var elementSetup = setup[index] || defaultSetupNode;
+                // TODO: do it more lightweight
+                var rect = new Rectangle({
+                        width: elementSetup.width * cellWidth,
+                        height: elementSetup.height * cellHeight,
+                        //TODO: it looks a bit hacky
+                        priority: elementSetup.priority
+                    }); 
+                return {
+                    element: element,
+                    rect: rect
+                }
+            })
+
+        }
+        Polymer('pj-sortable-tiles', {
+            priorities:[],
+            items: null,
+            cellHeight: 50,
+            cellWidth: 100,
+            maxX:0,
+            maxY:0,
+            layersOrientation: "horizontal",
+            sorter: function byPriority(itemA, itemB){
+                return itemB.rect.priority - itemA.rect.priority;
+            },
+            package: null,
+            created: function (){
+                // this.style.display = "block";
+                // this.style.position = "relative";
+                // debugging:
+                // debugger
+                // globMe = this;
+            },
+            createItemsList: function(){
+                return this.items = createItemsList( 
+                            filterNodes( this.children ),
+                                this.priorities,
+                                this.cellWidth,
+                                this.cellHeight
+                            )
+                            .sort( this.sorter );
+            },
+            attached: function gridAttached(){
+                //ensure any element upgrades have been processed
+                //TODO Add mutation observer for window resize, and items change
+                this.async(function asyncAttached(){
+                    var self = this;
+
+                    // debugger;
+                    this.createItemsList();
+                    // TODO: support LTR
+                        // debugger
+                    this.package = new Package(
+                            this.layersOrientation !== "vertical" ?
+                                {
+                                    width: this.clientWidth, 
+                                    height: Number.POSITIVE_INFINITY,
+                                    direction: "rightDown"
+                                } : {
+                                    width: Number.POSITIVE_INFINITY, 
+                                    height: this.clientHeight,
+                                    direction: "downRight"
+                                }
+                    );
+                    
+                    this.packItems( this.items, this.priorities );
+
+
+                    window.addEventListener('resize', function() {
+                        console.log(self.package.width, self.clientWidth)
+                        // debugger
+                        if( self.layersOrientation !== "vertical"){
+                            self.package.width = self.clientWidth;
+                        } else {
+                            self.package.height = self.clientHeight;
+                        }
+                        self.package.reset();
+                        self.packItems( self.items, self.priorities );
+                    }, true);
+
+                    // Observe changes
+                    // TODO: Make it cleaner
+                    // create an observer instance
+                    var observer = new MutationObserver(function(mutations) {
+                      mutations.forEach(function(mutation) {
+                        console.log("observation", mutation.type, arguments, mutations);
+                        if(mutation.addedNodes){
+                            debugger;
+                            //DRY, performance
+                            console.log("something was added")
+                            self.package.reset();
+                            self.createItemsList();                            
+                            self.packItems( self.items, self.priorities );
+                        }
+                      });
+                    });
+                    // pass in the target node, as well as the observer options
+                    observer.observe(this, { childList: true });
+                    // end of: Observe changes
+                });
+            },
+
+            stretchContainer: function( rectangle ) {
+              this.maxX = Math.max( rectangle.x + rectangle.width, this.maxX );
+              this.maxY = Math.max( rectangle.y + rectangle.height, this.maxY );
+            },
+            /**
+             * Resize given item.
+             * @param  {Object | Number} item   item from list, or item index (note that items list is sorted by priority)
+             * @param  {Number} width  number of cells/columns
+             * @param  {Number} height number of cells/rows
+             * @return {pj-sortable-tiles}        self
+             */
+            resizeItem: function(item, width, height){
+                if(typeof item == 'number'){
+                    item = this.items[item];
+                }
+                item.rect.width = width * this.cellWidth;
+                item.rect.height = height * this.cellHeight;
+                this.items.sort( this.sorter ) ;
+                this.package.reset();
+                this.packItems( this.items );
+                return this;
+            },
+
+            /**
+             * Change priority of given item
+             * @param  {Number} itemIndex    item index (note that items list is sorted by priority)
+             * @param  {Boolean} increase  true - increases priority, false - decreases
+             * @param  {Boolean} [end=false] true to move to the end
+             * @return {pj-sortable-tiles}        self
+             * @TODO write tests
+             */
+            reprioritizeItem: function(itemIndex, increase, end){
+                var higher, lower, item;
+                // do nothing if there is nothing to rearrange
+                if( this.items.length < 2){
+                    return this;
+                }
+                //use indexes as input
+                // if(typeof item == 'number'){
+                    item = this.items[itemIndex];
+                // }
+                // move to the end
+                // debugger
+                if( end || 
+                    increase && (itemIndex == 1) ||
+                    !increase && (itemIndex == this.items.length - 2 ) 
+                ){
+                    // top
+                    if(increase){
+                        // already on top
+                        if(item.rect.priority == 1){
+                            return this;
+                        }
+                        higher = this.items[0];
+                        // already there, but with different priority
+                        if(higher == item){
+                            item.rect.priority = 1;
+                            // do not rearrange
+                            return this;
+                        } else {
+                            // move to the middle
+                            higher.rect.priority = (this.items[1].rect.priority + 1)/2;
+                            item.rect.priority = 1;
+                        }
+                    } else { // bottom                        
+                        // already at the bottom
+                        if(item.rect.priority == 0){
+                            return this;
+                        }
+                        lower = this.items[this.items.length -1 ];
+                        // already there, but with different priority.
+                        if(lower == item){
+                            item.rect.priority = 0;
+                            return this;
+                        } else {
+                            // move to the middle
+                            lower.rect.priority = this.items[this.items.length -2].rect.priority/2;
+                            item.rect.priority = 0;
+                        }
+
+                    }
+                } else {
+                    // top
+                    if(increase){
+                        higher = this.items[itemIndex-2];
+                        lower = this.items[itemIndex-1];
+                    } else { 
+                        higher = this.items[itemIndex+1];
+                        lower = this.items[itemIndex+2];
+                    }
+                    item.rect.priority = (higher.rect.priority + lower.rect.priority)/2;
+                }
+
+
+                this.items.sort( this.sorter ) ;
+                this.package.reset();
+                this.packItems( this.items );
+                return this;
+            },
+
+            /**
+             * [packItems description]
+             * @param  {Array<Object>} collection array of elements
+             * @return {Array}            [description]
+             */
+            packItems: function( collection ){
+                var self = this;
+                //pack rectangles, and calculate container size
+                collection.forEach(function(item, index){
+                    // TODO: do it more lightweight
+                    var element = item.element;
+                    var rect = item.rect;
+                    var elStyle = element.style;
+                    self.package.add(rect);
+
+                    self.stretchContainer(rect);
+
+                    elStyle.top = rect.y + "px";
+                    elStyle.left = rect.x + "px";
+                    elStyle.width = rect.width + "px";
+                    elStyle.height = rect.height + "px";
+                    return {
+                        element: element,
+                        rect: rect
+                    }
+                });
+
+                if( self.layersOrientation !== "vertical"){
+                    self.$.container.style.height = self.maxY + "px";
+                } else {
+                    self.$.container.style.width = self.maxX + "px";
+                }
+
+            }
+        });
+    }());
+    </script>
+
+</polymer-element>
