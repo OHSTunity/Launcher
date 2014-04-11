@@ -5,8 +5,10 @@
 	  "Uri": ""
 	}],
 	"Contacts" : [{
-	  "FirstName": "",
-	  "LastName": "",
+	  "Person" : {
+	    "FirstName": "",
+	    "LastName": ""
+	  },
 	  "Title": "",
 	  "Company": {
 	    "Name" : ""

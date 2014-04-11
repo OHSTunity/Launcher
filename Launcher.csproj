@@ -95,7 +95,6 @@
   <ItemGroup>
     <Content Include="Client\css\style.css" />
     <Content Include="Client\elements\dashboard\pj-dashboard.html" />
-    <Content Include="Client\enecto_plus_skype.html" />
     <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-body.html" />
     <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-list.css" />
     <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-list.html" />

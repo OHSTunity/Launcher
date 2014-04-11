@@ -96,7 +96,10 @@ partial class Master : Page {
             page.SelectedCompanyIndex = -1;
             page.Transaction.Add(() =>
             {
-                var contact = new SuperCRM.Contact();
+                var contact = new SuperCRM.Contact()
+                {
+                    Person = new SuperCRM.Person()
+                };
                 if (companies.First != null)
                 {
                     contact.Company = companies.First;
@@ -209,7 +212,7 @@ partial class Master : Page {
             };
             var wildcardQuery = "%" + query + "%";
             var companies = SQL<SuperCRM.Company>("SELECT c FROM SuperCRM.Company c WHERE Name LIKE ? FETCH ?", wildcardQuery, 5);
-            var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE FirstName LIKE ? OR LastName LIKE ? OR Title LIKE ? OR Company.Name LIKE ? FETCH ?", wildcardQuery, wildcardQuery, wildcardQuery, wildcardQuery, 5);
+            var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE Person.FirstName LIKE ? OR Person.LastName LIKE ? OR Title LIKE ? OR Company.Name LIKE ? FETCH ?", wildcardQuery, wildcardQuery, wildcardQuery, wildcardQuery, 5);
             page.Companies.Data = companies;
             page.Contacts.Data = contacts;
             return page;

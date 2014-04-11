@@ -1,11 +1,9 @@
 {
 	"Html" : "",
-	"FirstName$": "Albert",
-	"LastName$": "Einstein",
-	/*"Person" : {
+	"Person" : {
 	    "FirstName$" : "Albert",
 		"LastName$" : "Einstein"
-	},*/
+	},
 	"Title$" : "Scientist",
 	"Email$" : "albert@example.com",
 	"Uri" : "",
