@@ -29,7 +29,7 @@ Application Launcher
 
 #### Chrome Stable & Dev Channel
 
-Make sure the following flags are set:
+Make sure the following flags are set (chrome://flags/):
 
  - Experimental JavaScript - **disabled**
  - Experimental Web Platform features - **disabled**
