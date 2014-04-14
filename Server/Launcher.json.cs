@@ -167,35 +167,7 @@ partial class Launcher : Page {
             return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
   
         });
-        // + dummy responses from launcher itself        
-    }
-
-    /// <summary>
-    /// Explicitly defined mapper handlers.
-    /// </summary>
-    void AddMapperHandlers() {
-
-        HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
-
-        Handle.GET("/super-crm/partials/contacts/{?}", (String objectId) => {
-            // String objectId = (String) Db.SQL("SELECT p.ObjectId FROM Person p WHERE p.Name = ?", firstName).First;
-
-            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
-        });
-
-        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
-            // var c = Db.SQL("SELECT e FROM Employee e WHERE e.ObjectId = ?", objectId);
-
-            return (Json)X.GET("/super-crm/partials/contacts/" + objectId, 0, h1);
-        });
-
-        Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) => {
-            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
-        });
-
-        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) => {
-            return (Json)X.GET("/skyper/partials/skyper-user/" + objectId, 0, h1);
-        });
+        // + dummy responses from launcher itself  
     }
 }
 

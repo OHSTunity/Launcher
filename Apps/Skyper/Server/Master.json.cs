@@ -12,6 +12,19 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
+        HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
+        HandlerOptions h0 = new HandlerOptions() { HandlerLevel = 0 };
+
+        Handle.GET("/skyper/partials/skyper-user/{?}", (String objectId) =>
+        {
+            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
+        }, h0);
+
+        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) =>
+        {
+            return (Json)X.GET("/skyper/partials/skyper-user/" + objectId, 0, h1);
+        }, h0);
+
         // Setting default handler level to 1.
         HandlerOptions.DefaultHandlerLevel = 1;
         Handlers.AddExtraHandlerLevel();

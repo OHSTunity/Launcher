@@ -13,6 +13,24 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
+        HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
+        HandlerOptions h0 = new HandlerOptions() { HandlerLevel = 0 };
+
+        Handle.GET("/super-crm/partials/contacts/{?}", (String objectId) =>
+        {
+            // String objectId = (String) Db.SQL("SELECT p.ObjectId FROM Person p WHERE p.Name = ?", firstName).First;
+
+            return (Json)X.GET("/societyobjects/ring1/person/" + objectId);
+        }, h0);
+
+        Handle.GET("/societyobjects/ring1/person/{?}", (String objectId) =>
+        {
+            // var c = Db.SQL("SELECT e FROM Employee e WHERE e.ObjectId = ?", objectId);
+
+            return (Json)X.GET("/super-crm/partials/contacts/" + objectId, 0, h1);
+        }, h0);
+        
+        
         // Setting default handler level to 1.
         HandlerOptions.DefaultHandlerLevel = 1;
         Handlers.AddExtraHandlerLevel();
