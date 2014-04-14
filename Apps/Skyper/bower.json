@@ -13,6 +13,6 @@
     "tests"
   ],
   "dependencies": {
-    "skype-button": "warpech/skype-button#fixLifecycleCallback"
+    "skype-button": "~0.0.2"
   }
 }
