@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <head>
     <title>Launcher</title>
     <script src="/vendor/fast-json-patch/src/json-patch-duplex.js"></script>
@@ -14,6 +14,7 @@
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
     <link rel="import" href="/vendor/pj-sortable-tiles/src/pj-sortable-tiles.html">
+    <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
 
     <link rel="stylesheet" href="/css/style.css">
 
@@ -39,17 +40,18 @@
       </polymer-ui-field>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
-        <pj-sortable-tiles disabled  cellWidth="128" cellHeight="128" priorities='[{"width":1,"height":1,"priority":0.3},{"width":2,"height":1,"priority":0.9},{"width":2,"height":1,"priority":0.8},{"width":1,"height":1,"priority":0.1}]'>
+        <pj-sortable-tiles class="workspace launcher" disabled  cellWidth="128" cellHeight="128" priorities='[{"width":1,"height":1,"priority":0.3},{"width":2,"height":1,"priority":0.9},{"width":2,"height":1,"priority":0.8},{"width":1,"height":1,"priority":0.1}]'>
           <template is="imported-template" content="{{ Html }}"></template>   
         </pj-sortable-tiles>
       </template>
-        <!--<template repeat="{{ key, app in workspaces }}">-->
         <template repeat="{{ workspaces }}">
-        <tomalec-sortable-list disabled>
+        <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
+        <tomalec-sortable-list class="workspace {{appName}}" disabled>
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
             </template> 
         </tomalec-sortable-list>
+        <warpech-display-route match-path="^\/launcher\/[^w][^o][^r][^k][^s][^p][^a][^c][^e]" display-selector=".workspace.launcher"></warpech-display-route>
       </template>
     </pj-dashboard>
   </template>
@@ -65,7 +67,9 @@
           document.addEventListener('click', function toggleSortable(e) {
             if(e.target.id = "toggleSortable"){
             var list = document.querySelector('tomalec-sortable-list');
-            list.disabled = this.value;// XXX: `this.value` was not yet changed so lets use it as `!this.newVal`.
+            if (list) {
+              list.disabled = this.value;// XXX: `this.value` was not yet changed so lets use it as `!this.newVal`.
+            }
           }
           });
         });
