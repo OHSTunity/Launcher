@@ -36,8 +36,6 @@
       </div>
       <polymer-ui-field class="align-center">
           <a href="/do-nothing">Do nothing</a>
-          <label>Toggle sorting </label>
-          <polymer-ui-toggle-button id="toggleSortable" offcaption="Locked" oncaption="Sorting"></polymer-ui-toggle-button>
       </polymer-ui-field>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
@@ -62,18 +60,6 @@
         var rootTemplate = document.getElementById("root");
         rootTemplate.bindingDelegate = new PolymerExpressions;
         rootTemplate.model = obj;
-
-        window.setTimeout(function templateReady(){
-          // Consider use of `changed` event 
-          document.addEventListener('click', function toggleSortable(e) {
-            if(e.target.id = "toggleSortable"){
-            var list = document.querySelector('tomalec-sortable-list');
-            if (list) {
-              list.disabled = this.value;// XXX: `this.value` was not yet changed so lets use it as `!this.newVal`.
-            }
-          }
-          });
-        });
       });
     });
   </script>
