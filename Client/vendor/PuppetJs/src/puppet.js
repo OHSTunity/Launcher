@@ -1,22 +1,8 @@
-// puppet.js 0.1.7
+// puppet.js 0.1.8
 // (c) 2013 Joachim Wester
 // MIT license
 
 (function (global) {
-  Platform.enableBindingsReflection = true; //see https://github.com/PuppetJs/PuppetJs/issues/18
-
-  /**
-   * Sugar function to bind model change on click with Polymer.
-   * @param {Node} element DOM Node
-   * @param {Object} [value]   any value to be set, if not given `element.value` or
-   *                            value attribute will be used.
-   */
-  global.setModelValue = function setModelValue(element, value){
-    var wrapped = window.ShadowDOMPolyfill ? ShadowDOMPolyfill.wrap(element) : element; //fixes https://github.com/PuppetJs/PuppetJs/issues/17
-    var bindings = wrapped.bindings || wrapped.bindings_; //bindings_ since Polymer 0.2.2, see https://github.com/PuppetJs/PuppetJs/issues/18
-    return bindings.bind.setValue(value || element.value || element.getAttribute("value"));
-  };
-
   var lastClickHandler
     , lastPopstateHandler
     , lastBlurHandler;

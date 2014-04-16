@@ -23,8 +23,8 @@
            <template repeat="{{ Contacts }}">
               <template is="imported-template" content="{{ Html }}"></template>
            </template>
-           <label><button bind="{{ AddContact$ }}" onclick="setModelValue(this, null)">Add a contact in {{Name$}}</button></label>
+           <label><button onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button></label>
         </div>
-        <label><button bind="{{ Save$ }}" onclick="setModelValue(this, null)">Save</button></label>
+        <label><button onclick="getModel(this).Save$ = null">Save</button></label>
         <puppet-morphUrl url="{{ RedirectUrl$ }}"></puppet-morphUrl>
 </template>

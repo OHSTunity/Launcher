@@ -22,7 +22,7 @@
               imageSize="24"
               imageColor="white"
               listParticipants="true"></skype-button>
-            <button bind="{{Editing$}}" onclick="setModelValue(this, true)">Edit</button>
+            <button onclick="getModel(this).Editing$ = true">Edit</button>
         </template>
 
         <template if="{{ Editing$ == true }}">
@@ -31,7 +31,7 @@
                     Skype username
                     <input value="{{ Contact.SkypeId$ }}">
                 </label>
-                <button bind="{{Save$}}" onclick="setModelValue(this, null)">OK</button>
+                <button onclick="getModel(this).Editing$ = false">OK</button>
             </div>
         </template>
     </section>
