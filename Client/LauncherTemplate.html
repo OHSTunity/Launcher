@@ -45,11 +45,11 @@
       </template>
         <template repeat="{{ workspaces }}">
         <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
-        <tomalec-sortable-list class="workspace {{appName}}" disabled>
+        <pj-sortable-tiles class="workspace {{appName}}" disabled>
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
             </template> 
-        </tomalec-sortable-list>
+        </pj-sortable-tiles>
         <warpech-display-route match-path="^\/launcher\/[^w][^o][^r][^k][^s][^p][^a][^c][^e]" display-selector=".workspace.launcher"></warpech-display-route>
       </template>
     </pj-dashboard>
