@@ -1,6 +1,8 @@
 <!-- Import Polymer -->
 <script src="rectangle.js"></script>
 <script src="package.js"></script>
+<link rel="import" href="pj-sortable-tiles-editor.html">
+<link rel="import" href="element-selector.html">
 
 <!-- Define your custom element -->
 <polymer-element name="pj-sortable-tiles" attributes="priorities rowspans colspans cellWidth cellHeight layersOrientation">
@@ -21,9 +23,27 @@
         }
     </style>
     <div id="container"><content></content></div>
+    <pj-sortable-tiles-editor editedItem="{{editedItem}}" editedItemIndex="{{editedItemIndex}}"></pj-sortable-tiles-editor>
+    <element-selector id="elementSelector"></element-selector>
     </template>
     <script>
     (function( scope ){
+      /**
+       * Counts index of element within its parent
+       * @see http://jsperf.com/sibling-index/10
+       * @param {Element} elem
+       * @return {Number}
+       */
+      function elementIndex (elem) {
+        var i = 0;
+        while (elem = elem.previousElementSibling) {
+		  if(elem.nodeName != "TEMPLATE") {
+			++i
+		  }
+        }
+        return i;
+      };
+
         var defaultSetupNode = {
             width: 1,
             height: 1,
@@ -56,7 +76,7 @@
                         height: elementSetup.height * cellHeight,
                         //TODO: it looks a bit hacky
                         priority: elementSetup.priority
-                    }); 
+                    });
                 return {
                     element: element,
                     rect: rect
@@ -67,11 +87,14 @@
         Polymer('pj-sortable-tiles', {
             priorities:[],
             items: null,
+            originalItems: null, //DOM order
             cellHeight: 50,
             cellWidth: 100,
             maxX:0,
             maxY:0,
             layersOrientation: "horizontal",
+            editedItem: null,
+            editedItemIndex: 0,
             sorter: function byPriority(itemA, itemB){
                 return itemB.rect.priority - itemA.rect.priority;
             },
@@ -84,19 +107,22 @@
                 // globMe = this;
             },
             createItemsList: function(){
-                return this.items = createItemsList( 
+				this.originalItems = createItemsList(
                             filterNodes( this.children ),
                                 this.priorities,
                                 this.cellWidth,
                                 this.cellHeight
-                            )
-                            .sort( this.sorter );
+                            );
+							
+				this.items = this.originalItems.slice(0); //shallow copy
+                this.items.sort( this.sorter );
+				return this.items;
             },
             attached: function gridAttached(){
                 //ensure any element upgrades have been processed
                 //TODO Add mutation observer for window resize, and items change
                 this.async(function asyncAttached(){
-                    var self = this;
+                    var that = this;
 
                     // debugger;
                     this.createItemsList();
@@ -105,30 +131,68 @@
                     this.package = new Package(
                             this.layersOrientation !== "vertical" ?
                                 {
-                                    width: this.clientWidth, 
+                                    width: this.clientWidth,
                                     height: Number.POSITIVE_INFINITY,
                                     direction: "rightDown"
                                 } : {
-                                    width: Number.POSITIVE_INFINITY, 
+                                    width: Number.POSITIVE_INFINITY,
                                     height: this.clientHeight,
                                     direction: "downRight"
                                 }
                     );
-                    
+
                     this.packItems( this.items, this.priorities );
 
+                    var refresh = function() {
+                      // console.log(that.package.width, that.clientWidth)
+                      // debugger
+                      if( that.layersOrientation !== "vertical"){
+                        that.package.width = that.clientWidth;
+                      } else {
+                        that.package.height = that.clientHeight;
+                      }
+                      that.package.reset();
+                      that.packItems( that.items, that.priorities );
+                    }
 
-                    window.addEventListener('resize', function() {
-                        // console.log(self.package.width, self.clientWidth)
-                        // debugger
-                        if( self.layersOrientation !== "vertical"){
-                            self.package.width = self.clientWidth;
-                        } else {
-                            self.package.height = self.clientHeight;
+                    var highlightItem = function (elem) {
+                        if (elem != that && elem != that.$.container) {
+                            while (elem.parentNode != that.$.container && elem.parentNode != that) {
+                                elem = elem.parentNode;
+                            }
+                            that.editedItemIndex = elementIndex(elem);
+                            that.editedItem = that.originalItems[that.editedItemIndex];
+                            that.$.elementSelector.show(elem);
                         }
-                        self.package.reset();
-                        self.packItems( self.items, self.priorities );
-                    }, true);
+                    }
+
+                    var keepEditor = false;
+                    this.addEventListener('mouseover', function (ev) {
+                        if(ev.ctrlKey || ev.metaKey) { //meta is Mac command button
+                            highlightItem(ev.target);
+                        }
+                    });
+
+                    /*this.addEventListener('mouseout', function (ev) {
+                        if(that.editedItem && !keepEditor) {
+                            that.$.elementSelector.hide();
+                        }
+                    });
+
+                    this.addEventListener('click', function (ev) {
+                        if(ev.ctrlKey || ev.metaKey) { //meta is Mac command button
+                            keepEditor = true;
+                        }
+                    });*/
+
+                    this.addEventListener('pj-sortable-tiles-editor-close', function () {
+                      that.$.elementSelector.hide();
+                        keepEditor = false;
+                    });
+
+                    this.addEventListener('pj-sortable-tiles-refresh', refresh, true);
+
+                    window.addEventListener('resize', refresh, true);var that = this;
 
                     // Observe changes
                     // TODO: Make it cleaner
@@ -140,9 +204,9 @@
                             // debugger;
                             //DRY, performance
                             console.log("something was added")
-                            self.package.reset();
-                            self.createItemsList();                            
-                            self.packItems( self.items, self.priorities );
+                            that.package.reset();
+                            that.createItemsList();
+                            that.packItems( that.items, that.priorities );
                         }
                       });
                     });
@@ -195,9 +259,9 @@
                 // }
                 // move to the end
                 // debugger
-                if( end || 
+                if( end ||
                     increase && (itemIndex <= 1) ||
-                    !increase && (itemIndex >= this.items.length - 2 ) 
+                    !increase && (itemIndex >= this.items.length - 2 )
                 ){
                     // top
                     if(increase){
@@ -216,7 +280,7 @@
                             higher.rect.priority = (this.items[1].rect.priority + 1)/2;
                             item.rect.priority = 1;
                         }
-                    } else { // bottom                        
+                    } else { // bottom
                         // already at the bottom
                         if(item.rect.priority == 0){
                             return this;
@@ -238,7 +302,7 @@
                     if(increase){
                         higher = this.items[itemIndex-2];
                         lower = this.items[itemIndex-1];
-                    } else { 
+                    } else {
                         higher = this.items[itemIndex+1];
                         lower = this.items[itemIndex+2];
                     }
