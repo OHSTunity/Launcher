@@ -1,36 +1,56 @@
 <link rel="import" href="vendor/gravatar-image/src/gravatar.html">
 <link rel="stylesheet" href="/css/SuperCRM.css">
+<link rel="stylesheet" href="/css/labeledInput.css">
+<link rel="stylesheet" href="/css/button.css">
+<link rel="stylesheet" href="/css/select.css">
 
 <template bind="{{SuperCRM}}">
         <gravatar-image username="{{ Email$ }}"></gravatar-image>
-        <div class="SuperCRM">
-            <label>First Name<input value="{{ Person.FirstName$ }}"></label>
+
+        <div>
+            <div class="labeled-input">
+                <input id="PersonFirstName$" type='text' value='{{ Person.FirstName$ }}' placeholder='<First Name>'>
+                <label for="PersonFirstName$">First Name</label>
+            </div>
         </div>
-        <div class="SuperCRM">
-            <label>Last Name<input value="{{ Person.LastName$ }}"></label>
+
+        <div>
+            <div class="labeled-input">
+                <input id="PersonLastName$" type='text' value='{{ Person.LastName$ }}' placeholder='<Last Name>'>
+                <label for="PersonLastName$">Last Name</label>
+            </div>
         </div>
-	    <div class="SuperCRM">
-            <label>Title <input value="{{ Title$ }}"></label>
+
+        <div>
+            <div class="labeled-input">
+                <input id="Title$" type='text' value='{{ Title$ }}' placeholder='<Title>'>
+                <label for="Title$">Title</label>
+            </div>
         </div>
-	    <div class="SuperCRM">
-            <label>Email <input value="{{ Email$ }}"></label>
+
+        <div>
+            <div class="labeled-input">
+                <input id="Email$" type='text' value='{{ Email$ }}' placeholder='<Email>'>
+                <label for="Email$">Email</label>
+            </div>
         </div>
-	    <div class="SuperCRM">
-            <label>Company 
-                <template if="{{ Companies.length > 0 }}">
-                    <select selectedIndex="{{ SelectedCompanyIndex$ }}">
-                        <template repeat="{{ Companies }}">
-                            <option>{{ Name }}</option>
-                        </template>
-                    </select>
-                </template>
-                <template if="{{ Companies.length == 0 }}">
-                    <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
-                </template>
-            </label>
+
+	    <div>
+            <template if="{{ Companies.length > 0 }}">
+                <select class="select" selectedIndex="{{ SelectedCompanyIndex$ }}">
+                    <template repeat="{{ Companies }}">
+                        <option>{{ Name }}</option>
+                    </template>
+                </select>
+            </template>
+            <template if="{{ Companies.length == 0 }}">
+                <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
+            </template>
         </div>
-	    <div class="SuperCRM">
-            <label><button onclick="getModel(this).Save$ = null">Save</button></label>
+
+        <div>
+           <button class="button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
         </div>
+
         <puppet-morphUrl url="{{ RedirectUrl$ }}"></puppet-morphUrl>
 </template>

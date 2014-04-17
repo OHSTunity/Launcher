@@ -19,6 +19,14 @@
 
     <link rel="stylesheet" href="/css/style.css">
 
+    <link rel="stylesheet" href="/css/menu.css">
+
+    <link rel="stylesheet" href="/css/fontello.css">
+    <link rel="stylesheet" href="/css/animation.css">
+
+    <script src="/vendor/css-element-queries/src/ElementQueries.js"></script>
+    <script src="/vendor/css-element-queries/src/ResizeSensor.js"></script>
+
     <!-- Import our elements -->
     <link rel="import" href="/elements/dashboard/pj-dashboard.html">
 
@@ -27,16 +35,15 @@
 <body>
   <template id="root" bind>
     <pj-dashboard search="{{ searchBar.query$ }}">
-      <div id="menu">
+      <div id="launcher-menu">
           <ul>
               <template bind="{{ menu }}">
                   <template is="imported-template" content="{{ Html }}"></template>
               </template>
+              <li><a href="/do-nothing">Do nothing</a></li>
           </ul>
+
       </div>
-      <polymer-ui-field class="align-center">
-          <a href="/do-nothing">Do nothing</a>
-      </polymer-ui-field>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
         <pj-sortable-tiles class="workspace launcher" disabled  cellWidth="128" cellHeight="128" priorities='[{"width":1,"height":1,"priority":0.3},{"width":2,"height":1,"priority":0.9},{"width":2,"height":1,"priority":0.8},{"width":1,"height":1,"priority":0.1}]'>

@@ -16,6 +16,9 @@
 <template>
   <!-- <link rel="stylesheet" href="pj-dashboard.css"> -->
   <style>
+      #main {
+          display: flex;
+      }
     polymer-ui-toolbar polymer-ui-field{
         width:  100%;
     }
@@ -57,18 +60,20 @@
     <polymer-ui-dropdown id="dropdown">
         <polymer-ui-menu-item icon="settings">Settings</polymer-ui-menu-item>
         <polymer-ui-menu-item icon="close">Log out</polymer-ui-menu-item>
-    </polymer-ui-dropdown>   
-    <polymer-ui-sidebar selected="0" id="filters" label="Filter" class="column"  multi="true">
-        <template if="{{ data }}">
-            <template repeat="{{ item, index in data.filters }}">
-                <polymer-ui-field class="align-center">
-                    <polymer-ui-toggle-button class="on" value="" offCaption="Hide" onCaption="Show"></polymer-ui-toggle-button>
-                    <label>{{item.desc}}</label>
-                </polymer-ui-field>
-           </template>
-        </template>
-    </polymer-ui-sidebar>
-    <content></content>
+    </polymer-ui-dropdown>
+    <div id="main">
+        <content></content>
+        <polymer-ui-sidebar selected="0" id="filters" label="Filter" class="column"  multi="true">
+            <template if="{{ data }}">
+                <template repeat="{{ item, index in data.filters }}">
+                    <polymer-ui-field class="align-center">
+                        <polymer-ui-toggle-button class="on" value="" offCaption="Hide" onCaption="Show"></polymer-ui-toggle-button>
+                        <label>{{item.desc}}</label>
+                    </polymer-ui-field>
+               </template>
+            </template>
+        </polymer-ui-sidebar>
+    </div>
 </template>
 <script>
     Polymer('pj-dashboard', {
