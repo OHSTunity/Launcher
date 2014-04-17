@@ -1,4 +1,5 @@
 
+.icon-trash:before { content: '\e803'; } /* '' */
 .icon-skype:before { content: '\e800'; } /* '' */
 .icon-industrial-building:before { content: '\e802'; } /* '' */
 .icon-adult:before { content: '\e801'; } /* '' */
