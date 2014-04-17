@@ -73,7 +73,7 @@
         },
         heightIncrease: function () {
           var power = 1;
-          while (power * 2 < this.editedItem.rect.height)
+          while (power <= this.editedItem.rect.height)
             power *= 2;
           if (power < 32) {
             power = 32;
