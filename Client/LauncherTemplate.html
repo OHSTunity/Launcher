@@ -46,7 +46,7 @@
       </div>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
-        <pj-sortable-tiles class="workspace launcher" disabled  cellWidth="128" cellHeight="128" priorities='[{"width":1,"height":1,"priority":0.3},{"width":2,"height":1,"priority":0.9},{"width":2,"height":1,"priority":0.8},{"width":1,"height":1,"priority":0.1}]'>
+        <pj-sortable-tiles class="workspace launcher" disabled  cellWidth="128" cellHeight="128" priorities='[{"gap":{"left":8,"top":8},"width":1,"height":1,"priority":0.3},{"gap":{"left":8,"top":8},"width":2,"height":1,"priority":0.9},{"gap":{"left":8,"top":8},"width":2,"height":1,"priority":0.8},{"gap":{"left":8,"top":8},"width":1,"height":1,"priority":0.1}]'>
           <template is="imported-template" content="{{ Html }}"></template>   
         </pj-sortable-tiles>
       </template>

@@ -45,6 +45,10 @@
       };
 
         var defaultSetupNode = {
+            gap: {
+                top: 8,
+                left: 8
+            },
             width: 1,
             height: 1,
             priority: 0
@@ -72,8 +76,12 @@
                 var elementSetup = setup[index] || defaultSetupNode;
                 // TODO: do it more lightweight
                 var rect = new Rectangle({
-                        width: elementSetup.width * cellWidth,
-                        height: elementSetup.height * cellHeight,
+                        gap: {
+                            top: elementSetup.gap.top,
+                            left: elementSetup.gap.left
+                        },
+                        width: elementSetup.width * cellWidth + elementSetup.gap.top,
+                        height: elementSetup.height * cellHeight + elementSetup.gap.left,
                         //TODO: it looks a bit hacky
                         priority: elementSetup.priority
                     });
@@ -333,10 +341,10 @@
 
                     self.stretchContainer(rect);
 
-                    elStyle.top = rect.y + "px";
-                    elStyle.left = rect.x + "px";
-                    elStyle.width = rect.width + "px";
-                    elStyle.height = rect.height + "px";
+                    elStyle.top = rect.y + rect.gap.top + "px";
+                    elStyle.left = rect.x + rect.gap.left + "px";
+                    elStyle.width = rect.width - rect.gap.left + "px";
+                    elStyle.height = rect.height - rect.gap.top + "px";
                     return {
                         element: element,
                         rect: rect
