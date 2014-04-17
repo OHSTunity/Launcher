@@ -26,9 +26,6 @@
 	font-size   : 100%;
 	font-weight:bold;
 
-     -webkit-appearance: none;  /*Removes default chrome and safari style*/
-     -moz-appearance: none;  	/*Removes default style Firefox*/
-
     /* Removes default arrow from firefox */
 /*    
   	text-indent: 0.01px; 

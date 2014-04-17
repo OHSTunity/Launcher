@@ -1,9 +1,9 @@
-﻿.SuperCRM {
-  font-family: Calibri, Helvetica, Arial, sans-serif;
-}
-
+﻿
 .SuperCRM h1 {
-  font-size: 20px;
+  font-size: 150%;
+  padding-left: 8px;
+  margin:0px;
+  border-bottom: 1px solid #ddd;
 }
 
 .SuperCRM ul {
@@ -17,14 +17,14 @@
 }
 
 .SuperCRM li a {
-    padding: 10px;
+    padding: 4px;
     display: block;
     color: black;
     text-decoration: none;
 }
 
 .SuperCRM li:hover {
-  background-color: whitesmoke;
+  background-color: #6794AC;
 }
 
 .SuperCRM li span {
