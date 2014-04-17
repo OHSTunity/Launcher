@@ -28,6 +28,7 @@
     "polymer-ui-sidebar-menu": "Polymer/polymer-ui-sidebar#~0.2.1",
     "polymer-ui-toggle-button": "Polymer/polymer-ui-toggle-button#~0.2.1",
     "pj-sortable-tiles": "Polyjuice/pj-sortable-tiles#editor",
-    "warpech-display-router": "warpech/warpech-display-router#0.1.0"
+    "warpech-display-router": "warpech/warpech-display-router#0.1.0",
+    "css-element-queries": "~0.0.1"
   }
 }

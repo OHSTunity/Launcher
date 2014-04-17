@@ -1,0 +1,97 @@
+﻿
+
+.labeled-input {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-flex-direction: row; 
+	flex-direction: row;
+
+	-webkit-flex: 1 1 auto;
+	flex: 1 1 auto;
+	align-self: stretch;
+
+	font-family : inherit; 		
+	font-size   : 100%;
+
+	border: 1px solid #ddd;
+
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+
+/*	background-color: red;*/
+}
+
+
+/* Label ontop */
+.labeled-input[max-width="300px"] {
+	-webkit-flex-direction: column; 
+	flex-direction: column;
+
+	border: 0px;
+	padding: 0px;
+}
+
+
+/* Lable */
+.labeled-input label {
+	-webkit-flex: 0 1 100px;
+	flex: 0 1 100px;
+
+	-webkit-order: 0;
+	order: 0;
+	align-self: baseline;
+
+	font: inherit;
+
+	color: #999;
+}
+
+/* Lable ontop */
+.labeled-input[max-width="300px"] > label { 
+	-webkit-flex: 0 1 auto;
+	flex: 0 1 auto;
+	align-self: stretch;
+
+	margin-bottom: 3px;
+}
+
+/* Input */
+.labeled-input input[type=text] {
+	-webkit-flex: 1 1 auto;
+	flex: 1 1 auto;
+
+	-webkit-order: 1;
+	order: 1;
+
+	outline:none;
+
+	font: inherit;
+	font-weight:bold;
+
+	align-self: baseline;
+
+	border: 0px;		
+}
+
+.labeled-input input:focus {
+	background-color: #eee;
+}
+
+
+/* Input (lable ontop) */
+.labeled-input[max-width="300px"] input[type=text] {
+	align-self: stretch;
+
+	margin: 0px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	border: 1px solid #ddd;		
+}		

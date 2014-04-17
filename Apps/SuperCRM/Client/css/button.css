@@ -1,0 +1,33 @@
+﻿
+
+.button {
+	border:1px solid transparent;
+	padding: 0px;
+
+	margin:0px;
+	width: 100%;
+	height: 100%;
+
+	background-color: #013859;
+	color: #fff;
+		
+	font-family : inherit; 		
+	font-size   : 100%;
+	font-weight:bold;
+
+
+/*justify-content:flex-end;*/
+}
+
+.button:hover {
+	opacity: 0.9;
+}
+
+.button:active {
+	opacity: 0.8;
+
+}
+
+.button:focus {
+	border:1px solid black;
+}

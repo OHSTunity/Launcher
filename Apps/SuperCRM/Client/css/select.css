@@ -1,0 +1,63 @@
+﻿
+
+.select {
+	border: 1px solid #ddd;
+
+	padding-left: 0px;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+
+	margin:0px;
+	width: 100%;
+	height: 100%;
+
+/*	background-color: #00A6FF;*/
+/*	color: #fff; */
+		
+/* vertical-align: middle; */
+
+ box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+
+
+	font-family : inherit; 		
+	font-size   : 100%;
+	font-weight:bold;
+
+     -webkit-appearance: none;  /*Removes default chrome and safari style*/
+     -moz-appearance: none;  	/*Removes default style Firefox*/
+
+    /* Removes default arrow from firefox */
+/*    
+  	text-indent: 0.01px; 
+    text-overflow: "";
+*/
+/*justify-content:flex-end;*/
+}
+
+.select:focus {
+/*	background-color: #eee;*/
+	
+}
+.select option {
+	background-color: white;
+}
+
+
+.select:hover {
+
+}
+
+.select:active {
+	
+
+}
+
+
+
+.select input {
+	background-color: red;
+}
+
