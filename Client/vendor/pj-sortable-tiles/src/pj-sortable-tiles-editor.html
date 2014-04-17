@@ -26,11 +26,11 @@
     </style>
     <template if="{{displayed}}">
       <template bind="{{editedItem}}">
-        <div><label>Width</label><input value="{{rect.width}}" type="number" disabled>
+        <div><label>Width ({{rect.width}})</label>
           <button on-click="{{widthIncrease}}">Inc</button>
           <button on-click="{{widthDecrease}}">Dec</button>
         </div>
-        <div><label>Height</label><input value="{{rect.height}}" type="number" disabled>
+        <div><label>Height ({{rect.height}})</label>
           <button on-click="{{heightIncrease}}">Inc</button>
           <button on-click="{{heightDecrease}}">Dec</button>
         </div>
