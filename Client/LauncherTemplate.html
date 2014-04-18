@@ -46,13 +46,13 @@
       </div>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
-        <pj-sortable-tiles class="workspace launcher" id="pj-sortable-tile:{{Html}}" disabled  cellWidth="128" cellHeight="128">
+        <pj-sortable-tiles class="workspace launcher" id="pj-sortable-tile:{{Html}}" disabled cellWidth="128" cellHeight="32">
           <template is="imported-template" content="{{ Html }}"></template>   
         </pj-sortable-tiles>
       </template>
         <template repeat="{{ workspaces }}">
         <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
-        <pj-sortable-tiles class="workspace {{appName}}" id="pj-sortable-tile:{{master.Html}}" disabled>
+        <pj-sortable-tiles class="workspace {{appName}}" id="pj-sortable-tile:{{master.Html}}" disabled cellWidth="128" cellHeight="32">
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
             </template> 
