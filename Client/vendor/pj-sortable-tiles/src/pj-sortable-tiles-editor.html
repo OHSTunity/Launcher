@@ -26,23 +26,23 @@
     </style>
     <template if="{{displayed}}">
       <template bind="{{editedItem}}">
-        <div><label>Gap Left ({{rect.gap.left}})</label>
+        <div><label>Gap Left ({{gap.left}})</label>
           <button on-click="{{gapLeftIncrease}}">Inc</button>
           <button on-click="{{gapLeftDecrease}}">Dec</button>
         </div>
-        <div><label>Gap Top ({{rect.gap.top}})</label>
+        <div><label>Gap Top ({{gap.top}})</label>
           <button on-click="{{gapTopIncrease}}">Inc</button>
           <button on-click="{{gapTopDecrease}}">Dec</button>
         </div>
-        <div><label>Width ({{rect.width - rect.gap.left}})</label>
+        <div><label>Width ({{width - gap.left}})</label>
           <button on-click="{{widthIncrease}}">Inc</button>
           <button on-click="{{widthDecrease}}">Dec</button>
         </div>
-        <div><label>Height ({{rect.height - rect.gap.left}})</label>
+        <div><label>Height ({{height - gap.left}})</label>
           <button on-click="{{heightIncrease}}">Inc</button>
           <button on-click="{{heightDecrease}}">Dec</button>
         </div>
-        <div><label>Priority ({{rect.priority}})</label>
+        <div><label>Priority ({{priority}})</label>
           <button on-click="{{priorityIncrease}}">Inc</button>
           <button on-click="{{priorityDecrease}}">Dec</button>
         </div>
@@ -80,59 +80,57 @@
           this.sortableTilesModel = this.parentNode.host;
         },
         gapLeftIncrease: function () {
-          var lastGap = this.editedItem.rect.gap.left;
-          powerIncrease(this.editedItem.rect.gap, "left");
-          this.editedItem.rect.width += this.editedItem.rect.gap.left - lastGap;
+          var lastGap = this.editedItem.gap.left;
+          powerIncrease(this.editedItem.gap, "left");
+          this.editedItem.width += this.editedItem.gap.left - lastGap;
           this.fire("pj-sortable-tiles-refresh");
         },
         gapLeftDecrease: function () {
-          var lastGap = this.editedItem.rect.gap.left;
-          powerDecrease(this.editedItem.rect.gap, "left", 1);
-          this.editedItem.rect.width += this.editedItem.rect.gap.left - lastGap;
+          var lastGap = this.editedItem.gap.left;
+          powerDecrease(this.editedItem.gap, "left", 1);
+          this.editedItem.width += this.editedItem.gap.left - lastGap;
           this.fire("pj-sortable-tiles-refresh");
         },
         gapTopIncrease: function () {
-          var lastGap = this.editedItem.rect.gap.top;
-          powerIncrease(this.editedItem.rect.gap, "top");
-          this.editedItem.rect.height += this.editedItem.rect.gap.top - lastGap;
+          var lastGap = this.editedItem.gap.top;
+          powerIncrease(this.editedItem.gap, "top");
+          this.editedItem.height += this.editedItem.gap.top - lastGap;
           this.fire("pj-sortable-tiles-refresh");
         },
         gapTopDecrease: function () {
-          var lastGap = this.editedItem.rect.gap.top;
-          powerDecrease(this.editedItem.rect.gap, "top", 1);
-          this.editedItem.rect.height += this.editedItem.rect.gap.top - lastGap;
+          var lastGap = this.editedItem.gap.top;
+          powerDecrease(this.editedItem.gap, "top", 1);
+          this.editedItem.height += this.editedItem.gap.top - lastGap;
           this.fire("pj-sortable-tiles-refresh");
         },
         widthIncrease: function () {
-          this.editedItem.rect.width -= this.editedItem.rect.gap.left;
-          powerIncrease(this.editedItem.rect, "width");
-          this.editedItem.rect.width += this.editedItem.rect.gap.left;
+          this.editedItem.width -= this.editedItem.gap.left;
+          powerIncrease(this.editedItem, "width");
+          this.editedItem.width += this.editedItem.gap.left;
           this.fire("pj-sortable-tiles-refresh");
         },
         widthDecrease: function () {
-          this.editedItem.rect.width -= this.editedItem.rect.gap.left;
-          powerDecrease(this.editedItem.rect, "width");
-          this.editedItem.rect.width += this.editedItem.rect.gap.left;
+          this.editedItem.width -= this.editedItem.gap.left;
+          powerDecrease(this.editedItem, "width");
+          this.editedItem.width += this.editedItem.gap.left;
           this.fire("pj-sortable-tiles-refresh");
         },
         heightIncrease: function () {
-          this.editedItem.rect.height -= this.editedItem.rect.gap.top;
-          powerIncrease(this.editedItem.rect, "height");
-          this.editedItem.rect.height += this.editedItem.rect.gap.top;
+          this.editedItem.height -= this.editedItem.gap.top;
+          powerIncrease(this.editedItem, "height");
+          this.editedItem.height += this.editedItem.gap.top;
           this.fire("pj-sortable-tiles-refresh");
         },
         heightDecrease: function () {
-          this.editedItem.rect.height -= this.editedItem.rect.gap.top;
-          powerDecrease(this.editedItem.rect, "height");
-          this.editedItem.rect.height += this.editedItem.rect.gap.top;
+          this.editedItem.height -= this.editedItem.gap.top;
+          powerDecrease(this.editedItem, "height");
+          this.editedItem.height += this.editedItem.gap.top;
           this.fire("pj-sortable-tiles-refresh");
         },
-        priorityIncrease: function (sss) {
-          console.log("priorityIncrease", sss);
+        priorityIncrease: function () {
           this.sortableTilesModel.reprioritizeItem(this.editedItemIndex, true);
         },
         priorityDecrease: function () {
-          console.log("priorityDecrease");
           this.sortableTilesModel.reprioritizeItem(this.editedItemIndex, false);
         },
         editedItemChanged: function () {
