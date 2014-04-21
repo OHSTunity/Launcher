@@ -204,33 +204,32 @@
                                 elem = elem.parentNode;
                             }
                             that.editedItemIndex = elementIndex(elem);
-                            that.editedItem = that.priorities[that.editedItemIndex];
-                            that.$.elementSelector.show(elem);
+                            if(that.editedItem !== that.priorities[that.editedItemIndex]) {
+                              that.editedItem = that.priorities[that.editedItemIndex];
+                              that.$.elementSelector.show(elem);
+                            }
                         }
                     }
 
-                    var keepEditor = false;
+                    var lastTarget;
+                    window.addEventListener('keydown', function (ev) {
+                      if(lastTarget && (ev.ctrlKey || ev.metaKey)) { //meta is Mac command button
+                        highlightItem(lastTarget);
+                      }
+                    });
                     this.addEventListener('mouseover', function (ev) {
-                        if(ev.ctrlKey || ev.metaKey) { //meta is Mac command button
-                            highlightItem(ev.target);
-                        }
+                      if(ev.ctrlKey || ev.metaKey) { //meta is Mac command button
+                        highlightItem(ev.target);
+                        lastTarget = null;
+                      }
+                      else {
+                        lastTarget = ev.target;
+                      }
                     });
-
-                    /*this.addEventListener('mouseout', function (ev) {
-                        if(that.editedItem && !keepEditor) {
-                            that.$.elementSelector.hide();
-                        }
-                    });
-
-                    this.addEventListener('click', function (ev) {
-                        if(ev.ctrlKey || ev.metaKey) { //meta is Mac command button
-                            keepEditor = true;
-                        }
-                    });*/
 
                     this.addEventListener('pj-sortable-tiles-editor-close', function () {
+                      that.editedItem = null;
                       that.$.elementSelector.hide();
-                        keepEditor = false;
                     });
 
                     this.addEventListener('pj-sortable-tiles-refresh', refresh, true);

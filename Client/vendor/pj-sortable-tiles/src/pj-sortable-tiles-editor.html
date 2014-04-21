@@ -24,7 +24,7 @@
         font-family: Helvetica, Arial, sans-serif;
       }
     </style>
-    <template if="{{displayed}}">
+    <template if="{{editedItem}}">
       <template bind="{{editedItem}}">
         <div><label>Gap Left ({{gap.left}})</label>
           <button on-click="{{gapLeftIncrease}}">Inc</button>
@@ -72,7 +72,6 @@
       }
 
       Polymer('pj-sortable-tiles-editor', {
-        displayed: false,
         sortableTilesModel: null,
         editedItem: null,
         editedItemIndex: 0,
@@ -133,14 +132,8 @@
         priorityDecrease: function () {
           this.sortableTilesModel.reprioritizeItem(this.editedItemIndex, false);
         },
-        editedItemChanged: function () {
-          if (this.editedItem) {
-            this.displayed = true;
-          }
-        },
         close: function () {
           this.editedItem = null;
-          this.displayed = false;
           this.fire("pj-sortable-tiles-editor-close");
         }
       });
