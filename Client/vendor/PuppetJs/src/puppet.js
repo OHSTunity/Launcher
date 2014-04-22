@@ -1,4 +1,4 @@
-// puppet.js 0.1.8
+// puppet.js 0.1.9
 // (c) 2013 Joachim Wester
 // MIT license
 
@@ -282,9 +282,12 @@
       //impl is Polymer
       target = target.impl;
     }
-    var isInLink = closestParent(target, 'A');
-    if(isInLink) {
-      target = isInLink;
+
+    if(target.nodeName !== 'A') {
+      var parentA = closestParent(target, 'A');
+      if(parentA) {
+        target = parentA;
+      }
     }
 
     //needed since Polymer 0.2.0 in Chrome stable / Web Plaftorm features disabled
