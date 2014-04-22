@@ -101,6 +101,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\css\skyper.css" />
     <Content Include="Client\skyper-friends-list.html" />
     <Content Include="Client\skyper-dashboard.html" />
     <Content Include="Client\skyper-user.html" />

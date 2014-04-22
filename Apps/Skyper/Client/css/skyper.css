@@ -1,0 +1,137 @@
+﻿
+.Skyper {
+	display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+	-webkit-flex-direction: column; 
+	flex-direction: column;
+
+	font-family : inherit; 		
+	font-size   : 100%;
+	font-weight:bold;
+
+    border-color:#73C5FF #3084BF #3084BF #73C5FF;
+    border-radius:2px;
+
+    background-color: #0094ff;
+    color:white;
+}
+
+.Skyper h1 {
+	-webkit-flex: 0 1 auto;
+	flex: 0 1 auto;
+
+    font-size: 150%;
+    padding-left: 8px;
+    margin: 0px;
+    border-bottom: 1px solid #73C5FF;
+}
+
+
+.SkyperDashboard {
+	width: 100%;
+	height: 100%;
+
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+	box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+
+	justify-content: center;
+
+	padding: 4px;
+	margin:0px;
+}
+
+.SkyperDashboard:hover {
+	background-color: #40B0FF;
+}
+
+.SkyperDashboard a {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-flex-direction: row; 
+	flex-direction: row;
+}
+
+.SkyperDashboard a img {
+	-webkit-flex: 0 1 auto;
+	flex: 0 1 auto;
+	-webkit-order: 0;
+	order: 0;
+
+	align-self: center;
+}
+
+.SkyperDashboard a div {
+	-webkit-flex: 1 1 auto;
+	flex: 1 1 auto;
+
+	-webkit-order: 1;
+	order: 1;
+
+	align-self: center;
+
+	margin-left: 4px;
+}
+
+.SkyperDashboard a:link, a:visited, a:hover, a:active{
+	text-decoration:none;
+	color:inherit;
+}
+
+/* Icon ontop */
+.SkyperDashboard[max-width="150px"] {
+	align-items:center;
+}
+
+/* Icon ontop */
+.SkyperDashboard[max-width="150px"] a {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-flex: 0 1 auto;
+	flex: 0 1 auto;
+
+	-webkit-flex-direction: column; 
+	flex-direction: column;
+	justify-content: center;
+}
+
+/* Icon ontop */
+.SkyperDashboard[max-width="150px"] a img {
+	-webkit-flex: 0 1 auto;
+	flex: 0 1 auto;
+
+	-webkit-order: 0;
+	order: 0;
+
+	align-self: center;
+}
+
+/* Icon ontop */
+.SkyperDashboard[max-width="150px"] a div {
+	margin-left: 0px;
+	margin-top: 4px;
+}
+
+
+
+
+
+

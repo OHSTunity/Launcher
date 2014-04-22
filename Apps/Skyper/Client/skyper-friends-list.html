@@ -7,18 +7,18 @@
 <script type="text/javascript" src="/vendor/skype-uri/skype-uri.js"></script>
 <!-- Importing Custom Element -->
 <link rel="import" href="/vendor/skype-button/src/skype-button.html">
-<style>
-    .Skyper {
-        background-color: #0094ff;
-        color: #fff;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-</style>
+
+<link rel="stylesheet" href="/css/skyper.css">
+<script src="vendor/css-element-queries/src/ElementQueries.js"></script>
+<script src="vendor/css-element-queries/src/ResizeSensor.js"></script>
+
 <template bind="{{Skyper}}">
+
     <section class="Skyper">
         <h1>Friends list</h1>
         <template repeat="{{ Friends }}">
             <template is="imported-template" content="{{ Html }}"></template>
         </template>
     </section>
+
 </template>
