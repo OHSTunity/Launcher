@@ -8,7 +8,7 @@ partial class SkyperUserPage : Page
         Transaction.Commit();
         if (Contact.SkypeId != "")
         {
-            Editing = false;
+            Editing = false; //does not work until https://github.com/Starcounter/Starcounter/issues/1871 is fixed
         }
     }
 }
