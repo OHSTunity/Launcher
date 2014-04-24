@@ -19,4 +19,5 @@ pj-dashboard {
 
 pj-sortable-tiles{
     flex: 1 1 auto;
+    padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
 }
