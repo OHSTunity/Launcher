@@ -1,10 +1,10 @@
 @font-face {
-  font-family: 'fontello';
-  src: url('../font/fontello.eot?75235422');
-  src: url('../font/fontello.eot?75235422#iefix') format('embedded-opentype'),
-       url('../font/fontello.woff?75235422') format('woff'),
-       url('../font/fontello.ttf?75235422') format('truetype'),
-       url('../font/fontello.svg?75235422#fontello') format('svg');
+  font-family: 'supercrmfont';
+  src: url('../font/supercrmfont.eot?55961654');
+  src: url('../font/supercrmfont.eot?55961654#iefix') format('embedded-opentype'),
+       url('../font/supercrmfont.woff?55961654') format('woff'),
+       url('../font/supercrmfont.ttf?55961654') format('truetype'),
+       url('../font/supercrmfont.svg?55961654#supercrmfont') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -13,14 +13,14 @@
 /*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
-    font-family: 'fontello';
-    src: url('../font/fontello.svg?75235422#fontello') format('svg');
+    font-family: 'supercrmfont';
+    src: url('../font/supercrmfont.svg?55961654#supercrmfont') format('svg');
   }
 }
 */
  
  [class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "fontello";
+  font-family: "supercrmfont";
   font-style: normal;
   font-weight: normal;
   speak: none;
@@ -50,7 +50,6 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
  
-.icon-trash:before { content: '\e803'; } /* '' */
-.icon-skype:before { content: '\e800'; } /* '' */
-.icon-industrial-building:before { content: '\e802'; } /* '' */
+.icon-trash:before { content: '\e802'; } /* '' */
+.icon-industrial-building:before { content: '\e800'; } /* '' */
 .icon-adult:before { content: '\e801'; } /* '' */

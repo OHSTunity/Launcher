@@ -1,36 +1,33 @@
 <link rel="import" href="vendor/gravatar-image/src/gravatar.html">
 <link rel="stylesheet" href="/css/SuperCRM.css">
-<link rel="stylesheet" href="/css/labeledInput.css">
-<link rel="stylesheet" href="/css/button.css">
-<link rel="stylesheet" href="/css/select.css">
 
 <template bind="{{SuperCRM}}">
         <gravatar-image username="{{ Email$ }}"></gravatar-image>
 
         <div>
-            <div class="labeled-input">
+            <div class="launcher-labeled-input">
                 <input id="PersonFirstName$" type='text' value='{{ Person.FirstName$ }}' placeholder='<First Name>'>
                 <label for="PersonFirstName$">First Name</label>
             </div>
 
-            <div class="labeled-input">
+            <div class="launcher-labeled-input">
                 <input id="PersonLastName$" type='text' value='{{ Person.LastName$ }}' placeholder='<Last Name>'>
                 <label for="PersonLastName$">Last Name</label>
             </div>
 
-            <div class="labeled-input">
+            <div class="launcher-labeled-input">
                 <input id="Title$" type='text' value='{{ Title$ }}' placeholder='<Title>'>
                 <label for="Title$">Title</label>
             </div>
 
-            <div class="labeled-input">
+            <div class="launcher-labeled-input">
                 <input id="Email$" type='text' value='{{ Email$ }}' placeholder='<Email>'>
                 <label for="Email$">Email</label>
             </div>
         </div>
 
         <template if="{{ Companies.length > 0 }}">
-            <select class="select" selectedIndex="{{ SelectedCompanyIndex$ }}">
+            <select class="launcher-select" selectedIndex="{{ SelectedCompanyIndex$ }}">
                 <template repeat="{{ Companies }}">
                     <option>{{ Name }}</option>
                 </template>
@@ -40,7 +37,7 @@
             <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
         </template>
 
-        <button class="button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
+        <button class="launcher-button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
 
         <puppet-morphUrl url="{{ RedirectUrl$ }}"></puppet-morphUrl>
 </template>

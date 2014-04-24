@@ -1,6 +1,6 @@
 ﻿
 
-.button {
+.launcher-button {
 	border:1px solid transparent;
 	padding: 0px;
 
@@ -19,15 +19,15 @@
 /*justify-content:flex-end;*/
 }
 
-.button:hover {
+.launcher-button:hover {
 	opacity: 0.9;
 }
 
-.button:active {
+.launcher-button:active {
 	opacity: 0.8;
 
 }
 
-.button:focus {
+.launcher-button:focus {
 	border:1px solid black;
 }

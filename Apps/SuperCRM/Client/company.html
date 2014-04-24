@@ -1,6 +1,4 @@
-﻿<link rel="stylesheet" href="/css/labeledInput.css">
-<link rel="stylesheet" href="/css/button.css">
-<link rel="stylesheet" href="/css/select.css">
+﻿
 
 <template bind="{{SuperCRM}}">
     <style>
@@ -18,12 +16,12 @@
     </style>
 
 
-            <div class="labeled-input">
+            <div class="launcher-labeled-input">
                 <input id="Name$" type='text' value='{{ Name$ }}' placeholder='<Name>'>
                 <label for="Name$">Name</label>
             </div>
 
-            <div class="labeled-input">
+            <div class="launcher-labeled-input">
                 <input id="Revenue$" type='text' value='{{ Revenue$ }}' placeholder='<Revenue>'>
                 <label for="Revenue$">Revenue</label>
             </div>
@@ -33,8 +31,8 @@
            <template repeat="{{ Contacts }}">
               <template is="imported-template" content="{{ Html }}"></template>
            </template>
-           <button class="button" style="background-color:#184259" onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button>
+           <button class="launcher-button" style="background-color:#184259" onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button>
         </div>
-        <button class="button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
+        <button class="launcher-button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
         <puppet-morphUrl url="{{ RedirectUrl$ }}"></puppet-morphUrl>
 </template>

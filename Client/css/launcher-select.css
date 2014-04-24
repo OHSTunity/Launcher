@@ -1,6 +1,6 @@
 ﻿
 
-.select {
+.launcher-select {
 	border: 1px solid #ddd;
 
 	padding-left: 0px;
@@ -34,27 +34,27 @@
 /*justify-content:flex-end;*/
 }
 
-.select:focus {
+.launcher-select:focus {
 /*	background-color: #eee;*/
 	
 }
-.select option {
+.launcher-select option {
 	background-color: white;
 }
 
 
-.select:hover {
+.launcher-select:hover {
 
 }
 
-.select:active {
+.launcher-select:active {
 	
 
 }
 
 
 
-.select input {
+.launcher-select input {
 	background-color: red;
 }
 

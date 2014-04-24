@@ -93,7 +93,11 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Client\css\menu.css" />
+    <Content Include="Client\css\launcher-button.css" />
+    <Content Include="Client\css\launcher-labeledInput.css" />
+    <Content Include="Client\css\launcher-select.css" />
+    <Content Include="Client\css\launcher-toolbar.css" />
+    <Content Include="Client\css\launcher-menu.css" />
     <Content Include="Client\css\style.css" />
     <Content Include="Client\elements\dashboard\pj-dashboard.html" />
     <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-body.html" />

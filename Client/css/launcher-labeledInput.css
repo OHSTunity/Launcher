@@ -1,6 +1,6 @@
 ﻿
 
-.labeled-input {
+.launcher-labeled-input {
     box-sizing: border-box;
 
 	display: -webkit-box;
@@ -32,7 +32,7 @@
 
 
 /* Label ontop */
-.labeled-input[max-width="300px"] {
+.launcher-labeled-input[max-width="300px"] {
 	-webkit-flex-direction: column; 
 	flex-direction: column;
 
@@ -42,7 +42,7 @@
 
 
 /* Lable */
-.labeled-input label {
+.launcher-labeled-input label {
 	-webkit-flex: 0 1 100px;
 	flex: 0 1 100px;
 
@@ -63,7 +63,7 @@
 }
 
 /* Lable ontop */
-.labeled-input[max-width="300px"] > label { 
+.launcher-labeled-input[max-width="300px"] > label { 
 	-webkit-flex: 0 1 auto;
 	flex: 0 1 auto;
 	align-self: stretch;
@@ -72,7 +72,7 @@
 }
 
 /* Input */
-.labeled-input input[type=text] {
+.launcher-labeled-input input[type=text] {
 	-webkit-flex: 1 1 auto;
 	flex: 1 1 auto;
 
@@ -89,13 +89,13 @@
 	border: 0px;		
 }
 
-.labeled-input input:focus {
+.launcher-labeled-input input:focus {
 	background-color: #eee;
 }
 
 
 /* Input (lable ontop) */
-.labeled-input[max-width="300px"] input[type=text] {
+.launcher-labeled-input[max-width="300px"] input[type=text] {
 	align-self: stretch;
 
 	margin: 0px;

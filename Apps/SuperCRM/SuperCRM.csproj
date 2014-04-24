@@ -123,14 +123,11 @@
     <Content Include="Client\components\puppet-morphUrl.html" />
     <Content Include="Client\contact.html" />
     <Content Include="Client\css\animation.css" />
-    <Content Include="Client\css\button.css" />
     <Content Include="Client\css\fontello-codes.css" />
     <Content Include="Client\css\fontello-embedded.css" />
     <Content Include="Client\css\fontello-ie7-codes.css" />
     <Content Include="Client\css\fontello-ie7.css" />
     <Content Include="Client\css\fontello.css" />
-    <Content Include="Client\css\labeledInput.css" />
-    <Content Include="Client\css\select.css" />
     <Content Include="Client\font\fontello.svg" />
     <Content Include="Client\SuperCRM.html" />
     <Content Include="Client\menu.html" />
