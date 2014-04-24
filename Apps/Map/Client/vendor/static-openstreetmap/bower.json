@@ -1,6 +1,6 @@
 {
   "name": "static-openstreetmap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/warpech/static-openstreetmap",
   "authors": [
     "Marcin Warpechowski <marcin@nextgen.pl>",
@@ -20,6 +20,6 @@
     "node_modules"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.2"
+    "polymer": "Polymer/polymer"
   }
 }

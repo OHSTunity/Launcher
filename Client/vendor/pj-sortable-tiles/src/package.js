@@ -56,7 +56,7 @@ Package.prototype.add = function( rectangle ) {
 
   for ( var si=0, len = this.slots.length; si < len; si++ ) {
     var slot = this.slots[si];
-  //CHANGEME
+	//CHANGEME
     if ( slot.canFit( rectangle ) ) {
       this.placeAt( rectangle, slot );
       break;

@@ -8,11 +8,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
 -->
 <!-- Importing Custom Element -->
-<template bind="{{Map}}">
-<div class="map">
-	<link rel="import" href="/vendor/static-openstreetmap/src/static-openstreetmap.html">
+<link rel="import" href="/vendor/static-openstreetmap/src/static-openstreetmap.html">
 
-	<h1>Map</h1>
-	<static-openstreetmap lat="{{ Longitude$ }}" lng="{{ Latitude$ }}" width="64" height="64" zoom="{{ Zoom$ }}"></static-openstreetmap>
-</div>
-</template>
+<template bind="{{Map}}"><div class="map"><static-openstreetmap lat="{{ Longitude$ }}" lng="{{ Latitude$ }}" zoom="{{ Zoom$ }}"></static-openstreetmap></div></template>

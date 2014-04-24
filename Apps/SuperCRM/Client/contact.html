@@ -7,6 +7,7 @@
 <template bind="{{SuperCRM}}">
         <gravatar-image username="{{ Email$ }}"></gravatar-image>
 
+        <div>
             <div class="labeled-input">
                 <input id="PersonFirstName$" type='text' value='{{ Person.FirstName$ }}' placeholder='<First Name>'>
                 <label for="PersonFirstName$">First Name</label>
@@ -26,19 +27,20 @@
                 <input id="Email$" type='text' value='{{ Email$ }}' placeholder='<Email>'>
                 <label for="Email$">Email</label>
             </div>
+        </div>
 
-            <template if="{{ Companies.length > 0 }}">
-                <select class="select" selectedIndex="{{ SelectedCompanyIndex$ }}">
-                    <template repeat="{{ Companies }}">
-                        <option>{{ Name }}</option>
-                    </template>
-                </select>
-            </template>
-            <template if="{{ Companies.length == 0 }}">
-                <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
-            </template>
+        <template if="{{ Companies.length > 0 }}">
+            <select class="select" selectedIndex="{{ SelectedCompanyIndex$ }}">
+                <template repeat="{{ Companies }}">
+                    <option>{{ Name }}</option>
+                </template>
+            </select>
+        </template>
+        <template if="{{ Companies.length == 0 }}">
+            <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
+        </template>
 
-           <button class="button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
+        <button class="button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
 
         <puppet-morphUrl url="{{ RedirectUrl$ }}"></puppet-morphUrl>
 </template>
