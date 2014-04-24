@@ -14,10 +14,6 @@
     "tests"
   ],
   "dependencies": {
-    "PuppetJs": "~0.1.6",
-    "platform": "Polymer/platform#~0.2",
-    "polymer-ui-elements": "~0.2",
-    "x-html": "#master",
     "gravatar-image": "gh-pages"
   }
 }
