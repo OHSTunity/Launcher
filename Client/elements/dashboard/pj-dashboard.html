@@ -92,6 +92,19 @@
         border-left: 1px solid #ddd;
     }
 
+    #elementSettings {
+        box-sizing:border-box;
+        -webkit-flex: 0 0 0px;
+        flex: 0 0 0px;
+
+        visibility:collapse;
+
+        padding-left:20px;
+        padding-right:20px;
+
+        background-color: #eee;
+
+    }
 
   </style>
 
@@ -104,12 +117,58 @@
                 <input placeholder="Search" value="{{search}}" update-on="input"/>
             </polymer-ui-field>
             <polymer-ui-icon-button id="account" icon="account"></polymer-ui-icon-button>
+            <polymer-ui-icon-button id="settings" icon="settings"></polymer-ui-icon-button>
         </polymer-ui-toolbar>
-
+       
         <polymer-ui-dropdown id="dropdown">
             <polymer-ui-menu-item icon="settings">Settings</polymer-ui-menu-item>
             <polymer-ui-menu-item icon="close">Log out</polymer-ui-menu-item>
         </polymer-ui-dropdown>
+        
+        <div id="elementSettings">
+            <p>Element Settings</p><p style="color:red">NOTE: Not implemented!</p>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Gap</td>
+                        <td>123</td>
+                        <td><button>Inc</button></td>
+                        <td><button>Dec</button></td>
+                    </tr>
+                    <tr>
+                        <td>Width</td>
+                        <td>123</td>
+                        <td><button>Inc</button></td>
+                        <td><button>Dec</button></td>
+                    </tr>
+                    <tr>
+                        <td>Height</td>
+                        <td>123</td>
+                        <td><button>Inc</button></td>
+                        <td><button>Dec</button></td>
+                        <td>Auto <input type="checkbox"/></td>
+                    </tr>
+                    <tr>
+                        <td>Priority</td>
+                        <td>1</td>
+                        <td><button>Inc</button></td>
+                        <td><button>Dec</button></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><button>Save</button></td>
+                        <td><button>Close</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
 
         <div id="main">
             <content></content>
@@ -132,6 +191,7 @@
 <script>
     Polymer('pj-dashboard', {
         data: null,
+        isSettingsOpen: false,
 
         ready: function () {
             console.info("dataChanged", this, arguments)
@@ -151,6 +211,23 @@
             this.$.account.addEventListener('tap', function () {
                 this.$.dropdown.toggle();
             }.bind(this));
+
+            this.$.settings.addEventListener('tap', function () {
+                this.isSettingsOpen = !this.isSettingsOpen;
+            }.bind(this));
+
+        },
+        isSettingsOpenChanged: function (oldValue, newValue) {
+            if (newValue) {
+                // Show settings menu
+                this.$.elementSettings.style.flex = "1 0 auto";
+                this.$.elementSettings.style.visibility = "visible";
+            }
+            else {
+                // Hide settings menu
+                this.$.elementSettings.style.flex = "0 0 0px";
+                this.$.elementSettings.style.visibility = "collapse";
+            }
         }
 
 

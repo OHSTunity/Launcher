@@ -9,12 +9,14 @@ polymer-ui-toolbar.launcher-theme {
 polymer-ui-toolbar polymer-ui-icon-button.launcher-theme:hover {
     background-color: #6794AC;
 }
+/*
 polymer-ui-toolbar polymer-ui-icon-button.launcher-theme:hover polymer-ui-icon {
     transition: -webkit-transform 0.33s;
     transition: transform 0.33s;
     -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
 }
+*/
 
 /* Set custom theme icon */
 polymer-ui-icon-button.launcher-theme polymer-ui-icon {
