@@ -14,6 +14,6 @@
     "tests"
   ],
   "dependencies": {
-    "gravatar-image": "gh-pages"
+    "gravatar-img": "warpech/gravatar-img#~0.1.2"
   }
 }

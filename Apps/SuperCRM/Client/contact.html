@@ -1,8 +1,9 @@
-<link rel="import" href="vendor/gravatar-image/src/gravatar.html">
+<link rel="import" href="vendor/gravatar-img/gravatar-img.html">
+<script src="vendor/spark-md5/spark-md5.js"></script>
 <link rel="stylesheet" href="/css/SuperCRM.css">
 
 <template bind="{{SuperCRM}}">
-        <gravatar-image username="{{ Email$ }}"></gravatar-image>
+        <gravatar-img email="{{ Email$ }}"></gravatar-img>
 
         <div>
             <div class="launcher-labeled-input">

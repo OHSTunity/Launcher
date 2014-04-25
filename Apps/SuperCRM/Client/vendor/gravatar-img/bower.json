@@ -1,0 +1,11 @@
+{
+  "name": "gravatar-img",
+  "version": "0.1.2",
+  "main": ["gravatar-img.html"],
+  "dependencies": {
+    "spark-md5": "~0.0.5"
+  },
+  "keywords": [
+    "web-components"
+  ]
+}

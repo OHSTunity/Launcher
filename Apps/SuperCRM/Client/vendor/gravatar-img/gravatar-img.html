@@ -1,0 +1,64 @@
+<script>
+  //gravatar-img.html
+  //v0.1.2
+  //Copyright 2014 Marcin Warpechowski (MIT license)
+  (function (global) {
+    function updateImg(host, img, hash) {
+      var width = host.offsetWidth;
+      var height = host.offsetHeight;
+      var desiredSize = Math.max(width, height);
+      if (!(desiredSize > 0)) {
+        desiredSize = 16;
+        img.style.minWidth = "16px";
+        img.style.minHeight = "16px";
+      }
+      if (!(width > 0)) {
+        img.style.minWidth = "16px";
+      }
+      if (!(height > 0)) {
+        img.style.minHeight = "16px";
+      }
+      img.style.backgroundImage = "url(//www.gravatar.com/avatar/" + (hash || "") + "?s=" + desiredSize + ")";
+    }
+
+    var GravatarImgElementPrototype = Object.create(HTMLElement.prototype);
+    GravatarImgElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
+      if (!this.shadowRoot) {
+        return;
+      }
+      if (attributeName == "email") {
+        updateImg(this, this.shadowRoot.querySelector('div'), SparkMD5.hash(newVal));
+      }
+      else if (attributeName == "hash") {
+        updateImg(this, this.shadowRoot.querySelector('div'), newVal);
+      }
+    };
+    GravatarImgElementPrototype.attachedCallback = function () {
+      var img = document.createElement("DIV");
+      this.style.display = "inline-flex";
+      img.style.display = "inline-block";
+      img.style.flex = "1 1 auto";
+      img.style.backgroundPosition = "center center";
+      img.style.backgroundRepeat = "no-repeat";
+      img.style.backgroundSize = "cover";
+
+      var that = this;
+      window.requestAnimationFrame(function() {
+        var email = that.getAttribute("email");
+        if (email) {
+          updateImg(that, img, SparkMD5.hash(email));
+        }
+        else {
+          var hash = that.getAttribute("hash");
+          updateImg(that, img, hash);
+        }
+      });
+
+      this.createShadowRoot().appendChild(img);
+    };
+
+    global.GravatarImgElement = document.registerElement('gravatar-img', {
+      prototype: GravatarImgElementPrototype
+    });
+  })(window)
+</script>
