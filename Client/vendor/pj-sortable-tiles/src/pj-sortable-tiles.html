@@ -1,11 +1,10 @@
 <!-- Import Polymer -->
 <script src="rectangle.js"></script>
 <script src="package.js"></script>
-<link rel="import" href="pj-sortable-tiles-editor.html">
 <link rel="import" href="element-selector.html">
 
 <!-- Define your custom element -->
-<polymer-element name="pj-sortable-tiles" attributes="priorities rowspans colspans layersOrientation">
+<polymer-element name="pj-sortable-tiles" attributes="priorities rowspans colspans layersOrientation editingMode">
     <template>
     <style>
         :host {
@@ -23,7 +22,6 @@
         }
     </style>
     <div id="container"><content></content></div>
-    <pj-sortable-tiles-editor gap="{{gap}}" editedItem="{{editedItem}}" editedItemIndex="{{editedItemIndex}}"></pj-sortable-tiles-editor>
     <element-selector id="elementSelector"></element-selector>
     </template>
     <script>
@@ -160,6 +158,7 @@
             maxX:0,
             maxY:0,
             layersOrientation: "horizontal",
+            editingMode: false,
             editedItem: null,
             editedItemIndex: 0,
             sorter: function byPriority(itemA, itemB){
@@ -201,57 +200,9 @@
                     this.saveToStorage();
                     this.packItems( this.getSortedCollection() );
 
-                    var refresh = function() {
-                      // console.log(that.package.width, that.clientWidth)
-                      // debugger
-                      if( that.layersOrientation !== "vertical"){
-                        that.package.width = that.clientWidth;
-                      } else {
-                        that.package.height = that.clientHeight;
-                      }
-                      that.saveToStorage();
-                      that.package.reset();
-                      that.packItems( that.getSortedCollection() );
-                    }
+                    window.addEventListener('resize', this.refresh.bind(this), true);
 
-                    var highlightItem = function (elem) {
-                        if (elem != that && elem != that.$.container) {
-                            while (elem.parentNode != that.$.container && elem.parentNode != that) {
-                                elem = elem.parentNode;
-                            }
-                            // debugger
-                            that.editedItemIndex = elementIndex(elem);
-                            if(that.editedItem !== that.priorities[that.editedItemIndex]) {
-                              that.editedItem = that.priorities[that.editedItemIndex];
-                              that.$.elementSelector.show(elem);
-                            }
-                        }
-                    }
-
-                    var lastTarget;
-                    window.addEventListener('keydown', function (ev) {
-                      if(lastTarget && (ev.ctrlKey || ev.metaKey)) { //meta is Mac command button
-                        highlightItem(lastTarget);
-                      }
-                    });
-                    this.addEventListener('mouseover', function (ev) {
-                      if(ev.ctrlKey || ev.metaKey) { //meta is Mac command button
-                        highlightItem(ev.target);
-                        lastTarget = null;
-                      }
-                      else {
-                        lastTarget = ev.target;
-                      }
-                    });
-
-                    this.addEventListener('pj-sortable-tiles-editor-close', function () {
-                      that.editedItem = null;
-                      that.$.elementSelector.hide();
-                    });
-
-                    this.addEventListener('pj-sortable-tiles-refresh', refresh, true);
-
-                    window.addEventListener('resize', refresh, true);var that = this;
+                    var that = this;
 
                     // Observe changes
                     // TODO: Make it cleaner
@@ -275,6 +226,19 @@
                     // end of: Observe changes
                 });
             },
+
+           refresh: function() {
+            // console.log(that.package.width, that.clientWidth)
+            // debugger
+            if( this.layersOrientation !== "vertical"){
+              this.package.width = this.clientWidth;
+            } else {
+              this.package.height = this.clientHeight;
+            }
+             this.saveToStorage();
+             this.package.reset();
+             this.packItems( this.getSortedCollection() );
+          },
 
             stretchContainer: function( rectangle ) {
               this.maxX = Math.max( rectangle.x + rectangle.width, this.maxX );
@@ -449,6 +413,45 @@
                     self.$.container.style.width = self.maxX + "px";
                 }
 
+            },
+
+          editingModeChanged: function() {
+            if(this.editingMode) {
+              this.$.elementSelector.show();
+
+              var that = this;
+              var highlightItem = function (elem) {
+                if (elem != that && elem != that.$.container) {
+                  while (elem.parentNode != that.$.container && elem.parentNode != that) {
+                    elem = elem.parentNode;
+                  }
+                  // debugger
+                  that.editedItemIndex = elementIndex(elem);
+                  if(that.editedItem !== that.priorities[that.editedItemIndex]) {
+                    that.editedItem = that.priorities[that.editedItemIndex];
+                    that.$.elementSelector.show(elem);
+                    that.fire("pj-sortable-tiles-edited-item-changed");
+                  }
+                }
+              }
+
+              this.addEventListener('mouseover', function (ev) {
+                if(that.editingMode) {
+                  highlightItem(ev.target);
+                }
+              });
+
+            }
+            else {
+              this.$.elementSelector.hide();
+            }
+          },
+
+            editedItemChanged: function() {
+              if(this.editedItem == null) {
+                this.editingMode = false;
+              }
+              this.fire("pj-sortable-tiles-edited-item-changed");
             },
 
             saveToStorage: function() {

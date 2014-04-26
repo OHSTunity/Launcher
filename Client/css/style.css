@@ -1,9 +1,13 @@
 ﻿html,body{
     font-family: Calibri, Helvetica, Arial, sans-serif;
     font-size: 14px;
-	height: 100%;
     padding: 0;
     margin: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
 }
 
 #launcher-menu {
@@ -13,8 +17,7 @@
 }
 
 pj-dashboard {
-    width: 100%;
-    height: 100%;
+    flex: 1 1 auto;
 }
 
 pj-sortable-tiles{

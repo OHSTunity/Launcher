@@ -1,53 +1,52 @@
-<polymer-element name="pj-sortable-tiles-editor" attributes="editedItem editedItemIndex gap">
+<polymer-element name="pj-sortable-tiles-editor" attributes="sortableTilesSelector">
   <template>
     <style>
-      div {
-        padding: 10px;
+      .editablesContainer {
+        display: flex;
+      }
 
+      .editableGroup {
+        flex: 1 1 auto;
       }
 
       label {
         display: inline-block;
-        width: 90px;
+        white-space: nowrap;
       }
 
-      input {
-        width: 60px;
+      .val {
+        display: inline-block;
+        width: 40px;
       }
 
-      :host {
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 100;
-        background: #fff;
-        font-family: Helvetica, Arial, sans-serif;
+      .disabled .val {
+        visibility: hidden;
+      }
+
+      .disabled .editable {
+        opacity: 0.5;
+        pointer-events: none;
       }
     </style>
-    <template if="{{editedItem}}">
-      <div><label>Gap ({{gap}})</label>
-        <button on-click="{{gapIncrease}}">Inc</button>
-        <button on-click="{{gapDecrease}}">Dec</button>
+    <div class="{{ {editablesContainer: true, disabled: !sortableTilesModel.editedItem} | tokenList }}">
+      <div class="editableGroup"><label>Gap <span class="val">({{sortableTilesModel.gap}})</span></label>
+        <button class="editable" on-click="{{gapIncrease}}">Inc</button>
+        <button class="editable" on-click="{{gapDecrease}}">Dec</button>
       </div>
-      <template bind="{{editedItem}}">
-        <div><label>Width ({{width}})</label>
-          <button on-click="{{widthIncrease}}">Inc</button>
-          <button on-click="{{widthDecrease}}">Dec</button>
-        </div>
-        <div><label>Height ({{height}})</label>
-          <button on-click="{{heightIncrease}}">Inc</button>
-          <button on-click="{{heightDecrease}}">Dec</button>
-          <label><input id="heightAutoCheckbox" type="checkbox" on-click="{{heightAuto}}"> auto</label>
-        </div>
-        <div><label>Priority ({{priority}})</label>
-          <button on-click="{{priorityIncrease}}">Inc</button>
-          <button on-click="{{priorityDecrease}}">Dec</button>
-        </div>
-        <div><label></label>
-          <button on-click="{{close}}">Done</button>
-        </div>
-      </template>
-    </template>
+      <div class="editableGroup"><label>Width <span class="val">({{sortableTilesModel.editedItem.width}})</span></label>
+        <button class="editable" on-click="{{widthIncrease}}">Inc</button>
+        <button class="editable" on-click="{{widthDecrease}}">Dec</button>
+      </div>
+      <div class="editableGroup"><label>Height <span class="val">({{sortableTilesModel.editedItem.height}})</span></label>
+        <button class="editable" on-click="{{heightIncrease}}">Inc</button>
+        <button class="editable" on-click="{{heightDecrease}}">Dec</button>
+        <label class="editable"><input id="heightAutoCheckbox" type="checkbox" on-click="{{heightAuto}}"> auto</label>
+      </div>
+      <div class="editableGroup"><label>Priority <span class="val">({{sortableTilesModel.editedItem.priority}})</span></label>
+        <button class="editable" on-click="{{priorityIncrease}}">Inc</button>
+        <button class="editable" on-click="{{priorityDecrease}}">Dec</button>
+      </div>
+    </div>
   </template>
   <script>
     (function () {
@@ -70,63 +69,64 @@
 
       Polymer('pj-sortable-tiles-editor', {
         sortableTilesModel: null,
-        editedItem: null,
-        editedItemIndex: 0,
+        sortableTilesSelector: null,
         attached: function () {
-          this.sortableTilesModel = this.parentNode.host;
+          var that = this;
+          window.addEventListener("pj-sortable-tiles-edited-item-changed", function(event) {
+            that.sortableTilesModel = event.target;
+          });
+        },
+        sortableTilesSelectorChanged: function() {
+          this.sortableTilesModel = document.querySelector(this.sortableTilesSelector);
         },
         gapIncrease: function () {
-          this.gap++;
-          this.fire("pj-sortable-tiles-refresh");
+          this.sortableTilesModel.gap++;
+          this.sortableTilesModel.refresh();
         },
         gapDecrease: function () {
-          if(this.gap >= 1) {
-            this.gap--;
+          if(this.sortableTilesModel.gap >= 1) {
+            this.sortableTilesModel.gap--;
           }
-          this.fire("pj-sortable-tiles-refresh");
+          this.sortableTilesModel.refresh();
         },
         widthIncrease: function () {
-          powerIncrease(this.editedItem, "width");
-          this.fire("pj-sortable-tiles-refresh");
+          powerIncrease(this.sortableTilesModel.editedItem, "width");
+          this.sortableTilesModel.refresh();
         },
         widthDecrease: function () {
-          powerDecrease(this.editedItem, "width");
-          this.fire("pj-sortable-tiles-refresh");
+          powerDecrease(this.sortableTilesModel.editedItem, "width");
+          this.sortableTilesModel.refresh();
         },
         heightIncrease: function () {
-          if(this.editedItem.height == 'auto') { //turn off auto
-            this.editedItem.height = 32;
+          if(this.sortableTilesModel.editedItem.height == 'auto') { //turn off auto
+            this.sortableTilesModel.editedItem.height = 32;
             this.shadowRoot.querySelector("#heightAutoCheckbox").checked = false;
           }
-          powerIncrease(this.editedItem, "height");
-          this.fire("pj-sortable-tiles-refresh");
+          powerIncrease(this.sortableTilesModel.editedItem, "height");
+          this.sortableTilesModel.refresh();
         },
         heightDecrease: function () {
-          if(this.editedItem.height == 'auto') { //turn off auto
-            this.editedItem.height = 32;
+          if(this.sortableTilesModel.editedItem.height == 'auto') { //turn off auto
+            this.sortableTilesModel.editedItem.height = 32;
             this.shadowRoot.querySelector("#heightAutoCheckbox").checked = false;
           }
-          powerDecrease(this.editedItem, "height");
-          this.fire("pj-sortable-tiles-refresh");
+          powerDecrease(this.sortableTilesModel.editedItem, "height");
+          this.sortableTilesModel.refresh();
         },
         heightAuto: function () {
-          if(this.editedItem.height == 'auto') { //turn off auto
-            this.editedItem.height = 32;
+          if(this.sortableTilesModel.editedItem.height == 'auto') { //turn off auto
+            this.sortableTilesModel.editedItem.height = 32;
           }
           else { //turn on auto
-            this.editedItem.height = "auto";
+            this.sortableTilesModel.editedItem.height = "auto";
           }
-          this.fire("pj-sortable-tiles-refresh");
+          this.sortableTilesModel.refresh();
         },
         priorityIncrease: function () {
-          this.sortableTilesModel.reprioritizeItem(this.editedItemIndex, true);
+          this.sortableTilesModel.reprioritizeItem(this.sortableTilesModel.editedItemIndex, true);
         },
         priorityDecrease: function () {
-          this.sortableTilesModel.reprioritizeItem(this.editedItemIndex, false);
-        },
-        close: function () {
-          this.editedItem = null;
-          this.fire("pj-sortable-tiles-editor-close");
+          this.sortableTilesModel.reprioritizeItem(this.sortableTilesModel.editedItemIndex, false);
         }
       });
     })();
