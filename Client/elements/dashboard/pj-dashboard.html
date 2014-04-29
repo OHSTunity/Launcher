@@ -184,7 +184,10 @@
 
             this.$.settings.addEventListener('tap', function () {
                 this.editingMode = !this.editingMode;
-                document.querySelector("pj-sortable-tiles").editingMode = this.editingMode;
+                var elems = document.querySelectorAll("pj-sortable-tiles");
+                for (var i = 0, ilen = elems.length; i < ilen; i++) {
+                  elems[i].editingMode = this.editingMode;
+                }
             }.bind(this));
 
         }
