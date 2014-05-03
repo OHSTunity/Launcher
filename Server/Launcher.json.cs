@@ -8,6 +8,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Reflection;
 using System.Web;
+using Starcounter.Advanced.XSON;
 
 [Launcher_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
 partial class Launcher : Page {
@@ -65,11 +66,11 @@ partial class Launcher : Page {
         Handle.MergeResponses((Request req, List<Response> responses) =>
         {
             for (Int32 i = 1; i < responses.Count; i++) {
-                ((Json) responses[i].Resource).AppName = responses[i].AppName;
-                ((Json) responses[0].Resource).JsonSiblings.Add((Json) responses[i].Resource);
+                ((Json) responses[i].Resource).SetAppName(responses[i].AppName);
+                ((Json) responses[0].Resource).AddStepSibling((Json) responses[i].Resource);
             }
 
-            ((Json) responses[0].Resource).AppName = responses[0].AppName;
+            ((Json) responses[0].Resource).SetAppName(responses[0].AppName);
 
             return responses[0];
         });
