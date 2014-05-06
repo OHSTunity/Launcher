@@ -1,10 +1,10 @@
 <!-- Import Polymer -->
 <script src="rectangle.js"></script>
+<script src="packer.js"></script>
 <script src="package.js"></script>
-<link rel="import" href="element-selector.html">
 
 <!-- Define your custom element -->
-<polymer-element name="pj-sortable-tiles" attributes="setup rowspans colspans layersOrientation editingMode">
+<polymer-element name="pj-sortable-tiles" constructor="PJSortableTiles" attributes="setup rowspans colspans layersOrientation">
     <template>
     <style>
         :host {
@@ -22,7 +22,6 @@
         }
     </style>
     <div id="container"><content></content></div>
-    <element-selector id="elementSelector"></element-selector>
     </template>
     <script>
     (function( scope ){
@@ -110,7 +109,7 @@
         function defaultSetup( elements, setupItems, items ){
             for(var elNo = 0, eLen = elements.length; elNo < eLen; elNo++) {
               var element = elements[elNo];
-              if( !items[elNo] || !items[elNo].setup){
+              if( !items[elNo] ){
                 var itemSetup = JSON.parse(JSON.stringify(defaultSetupNode));
                 if(setupItems.length == 0) {
                   itemSetup.priority = 0.5;
@@ -119,68 +118,18 @@
                   itemSetup.priority = getMinimumPriority(setupItems) * (1-1/eLen);
                 }
                 itemSetup.index = elNo;
+                Object.defineProperty(itemSetup, "container", {value:items["root"], writable: true})
                 setupItems.push(itemSetup);
-                items[elNo] = {
-                  container: items["root"],
-                  element: element,
-                  setup: itemSetup
-                };
+                items[elNo] = itemSetup;
               }
             }
-        }
-        /**
-         * Creates an array of items corresponding to real 
-         * DOM elements and virtual containers, 
-         * to match those with Rectangles and tree configutation
-         * @param {Array} elements
-         * @param {Object} setup package setup
-         * @param {Item} [container] parent item
-         * @param {Object} [items={}] map of items to update
-         * @returns {Array} array of updated/created items
-         */
-        function itmizeContainer( elements, setup, container, items ){
-            items = items || {};
-            // This is a bit ugly, and this is main reason why items is not an array (tomalec)
-            var name, currentContainer;
-            if( !container ){
-              // setup.name = "root"
-              name = "root";
-            } else {
-              name = setup.name || ( (container && container.name) + "_" + sNo );
-              // FIXME i'm ugly
-              setup.name = name;
-            }
-            // create item for current container
-            items[ name ] = currentContainer = {
-              name: name,
-              setup: setup,
-              package: null,
-              container: container || null //null <=> root node
-            };
-
-
-            // create items list
-            for(var sNo = 0, sLen = setup.items.length; sNo < sLen; sNo++) {
-              var itemSetup = setup.items[sNo];
-
-              // walk the tree recursively
-              if(itemSetup.items){
-                itmizeContainer( elements, itemSetup, currentContainer, items );
-              } else {
-                items[ itemSetup.index ] = {
-                  element: elements[ itemSetup.index ],
-                  setup: itemSetup,
-                  container: currentContainer
-                };
-              }
-            }
-            return items;
         }
 
         /**
          * Returns the minimum value of the priority property from the given array of objects
          * @param {Array<Object>} arr
          * @return {Number} number in range from 0 to 1
+         * @TODO DRY
          */
         function getMinimumPriority(arr) {
           var min = 1;
@@ -195,31 +144,27 @@
           return min;
         }
 
-        Polymer('pj-sortable-tiles', {
+        Polymer('pj-sortable-tiles', Platform.mixin( {}, Package.prototype, {
             setup: {
               gap: 8,
               items: []
             },
-            filteredChildren: null,
+            elements: null,
             maxX:0,
             maxY:0,
             // {
             //  index_in_DOM: {element: DOMElement, setup: setupObject, container},..
-            //  containerName: {setup: setupObject, items: , package: package}        
+            //  containerName: {setup: setupObject, items: , packer: packer}        
             items: {}, 
 
             layersOrientation: "horizontal",
-            editingMode: false,
-            editedItem: null,
             sorter: function byPriority(itemA, itemB){
                 return itemB.priority - itemA.priority;
             },
-            package: null,
             createItemsList: function(){
-              this.filteredChildren = filterNodes(this.children);
-              this.items = itmizeContainer( this.filteredChildren, this.setup );
+              this.elements = filterNodes(this.children);
               defaultSetup(
-                this.filteredChildren,
+                this.elements,
                 this.setup.items,
                 this.items
               );
@@ -232,20 +177,18 @@
 
                     this.loadFromStorage();
 
+                    Package.call(this);
                     this.createItemsList();
                     // TODO: support LTR
-                    this.package = new Package(
-                            this.layersOrientation !== "vertical" ?
-                                {
-                                    width: innerWidth(this),
-                                    height: Number.POSITIVE_INFINITY,
-                                    direction: "rightDown"
-                                } : {
-                                    width: Number.POSITIVE_INFINITY,
-                                    height: innerHeight(this),
-                                    direction: "downRight"
-                                }
-                    );
+                    if( this.layersOrientation !== "vertical" ){
+                      this.setup.width = innerWidth(this);
+                      this.setup.height = Number.POSITIVE_INFINITY;
+                      this.setup.direction = "rightDown";
+                    } else {
+                      this.setup.width = Number.POSITIVE_INFINITY;
+                      this.setup.height = innerHeight(this);
+                      this.setup.direction = "downRight";
+                    }
 
                     this.saveToStorage();
                     this.packItems();
@@ -265,7 +208,6 @@
                             console.log("something was added")
                             that.createItemsList();
                             that.saveToStorage();
-                            that.package.reset();
                             that.packItems();
                         }
                       });
@@ -279,314 +221,27 @@
              * Refresh everything
              */
            refresh: function( ) {
-            // console.log(that.package.width, that.clientWidth)
+            // console.log(that.packer.width, that.clientWidth)
             if( this.layersOrientation !== "vertical"){
-              this.package.width = this.clientWidth;
+              this.setup.width = this.clientWidth;
             } else {
-              this.package.height = this.clientHeight;
+              this.setup.height = this.clientHeight;
             }
              this.saveToStorage();
-             this.package.reset();
              this.packItems( );
           },
-
-            stretchContainer: function( rectangle ) {
-              this.maxX = Math.max( rectangle.x + rectangle.width, this.maxX );
-              this.maxY = Math.max( rectangle.y + rectangle.height, this.maxY );
-            },
-            /**
-             * Resize given item.
-             * @param  {Object | Number} item   item from list, or item index (the original item index in DOM)
-             * @param  {Number} width  number of cells/columns
-             * @param  {Number} height number of cells/rows
-             * @return {pj-sortable-tiles}        self
-             */
-            resizeItem: function(item, width, height){
-                if(typeof item !== 'object'){
-                    item = this.items[item];
-                }
-                item.setup.width = width;
-                item.setup.height = height;
-                this.saveToStorage();
-                this.package.reset();
-                // re-pack only applicable branch
-                // this.packItems( item.container.setup, item.container.package );
-                // re-pack everthing
-                this.packItems();
-
-                return this;
-            },
-
-            /**
-             * Change priority of given item
-             * @param  {Number | Item} itemIndex    item index (the original item index in DOM), container name, or item itself
-             * @param  {Boolean} increase  true - increases priority, false - decreases
-             * @param  {Boolean} [end=false] true to move to the end
-             * @return {pj-sortable-tiles}        self
-             * @TODO write tests
-             */
-            reprioritizeItem: function( item, increase, end ){
-                var higher, lower, item;
-                // do nothing if there is nothing to rearrange
-                if( this.filteredChildren.length < 2){
-                  return this;
-                }
-                if( typeof item !== 'object'){
-                  item = this.items[item];
-                }
-                var itemSetup = item.setup;
-                // do nothing for root
-                if( !item.container ){
-                  throw new RangeError( "Cannot reprioritize root container");
-                  return false;
-                }
-                // use parent items
-                var collection = item.container.setup.items;
-                var sortedIndex = collection.indexOf( itemSetup );
-
-                // move to the end
-                if( end ||
-                    increase && (sortedIndex <= 1) ||
-                    !increase && (sortedIndex >= collection.length - 2 )
-                ){
-                    // top
-                    if(increase){
-                        // already on top
-                        if(itemSetup.priority == 1){
-                            return this;
-                        }
-                        higher = collection[0];
-                        // already there, but with different priority
-                        if(higher == item){
-                            itemSetup.priority = 1;
-                            // do not rearrange
-                            return this;
-                        } else {
-                            // move to the middle
-                            higher.priority = (collection[1].priority + 1)/2;
-                            itemSetup.priority = 1;
-                        }
-                    } else { // bottom
-                        // already at the bottom
-                        if(itemSetup.priority == 0){
-                            return this;
-                        }
-                        lower = collection[collection.length -1 ];
-                        // already there, but with different priority.
-                        if(lower == item){
-                            itemSetup.priority = 0;
-                            return this;
-                        } else {
-                            // move to the middle
-                            lower.priority = collection[collection.length -2].priority/2;
-                            itemSetup.priority = 0;
-                        }
-
-                    }
-                } else {
-                    // top
-                    if(increase){
-                        higher = collection[sortedIndex-2];
-                        lower = collection[sortedIndex-1];
-                    } else {
-                        higher = collection[sortedIndex+1];
-                        lower = collection[sortedIndex+2];
-                    }
-                    itemSetup.priority = (higher.priority + lower.priority)/2;
-                }
-
-                this.saveToStorage();
-                this.package.reset();
-                // TODO only this scope
-                this.packItems( );
-                return this;
-            },
-            /**
-             * 
-             * @param  {Number | String | ObjectRef} what item referrence or element index or container name
-             * @param  {Object| String} [where]    container name or reference to container iitself. If not given will wrap element with new one, "root" indicates root level
-             * @param {Boolean} [noPacking=false]
-             * @return {[type]}              [description]
-             */
-            moveToContainer: function( what, where, noPacking ){
-              if( typeof what !== "object" ){
-                what = this.items[what];
-              }
-              // do nothing for root
-              if( !what.container ){
-                throw new RangeError( "Cannot move root container");
-                return false;
-              }
-              var from = what.container.setup.items;
-              var to;
-              if( typeof where === "string" ){
-                to = this.items[where];
-                // create new one
-                if(!to){
-                  where = {
-                    name: where,
-                    setup: {
-                      gap: 0,
-                      items: [],
-                      name: where,
-                      priority: what.setup.priority,
-                      width: what.setup.width,
-                      height: what.setup.height
-                    },
-                    package: null,
-                    container: what.container || null //null <=> root node
-                  };
-                  this.items[ where.name ] = where;
-                  from.push(where.setup);
-                } else {
-                  where = to;  
-                }
-              }
-              to = where.setup.items;
-              // origin == destination
-              if( from == to ){
-                return false;
-              }
-              var setup = from.splice( from.indexOf(what.setup), 1);
-              what.container = where;
-              to.push(what.setup);
-
-              if(!noPacking){
-                //TODO: repack only applicable ones
-                this.saveToStorage();
-                this.package.reset();
-                this.packItems();
-              }
-
-            },
-
-            /**
-             * [packItems description]
-             * @param {Array} setup setup of items fo pack, if not give `#setup` will be used
-             * @param {Package} currentContainer to be used, if notgive #package will be used.
-             */
-            packItems: function packItems(containerSetup, currentPackage, offSetX, offSetY){
-                // XXX using bot this,items and setup here is kind of overhead (tomalec)
-                containerSetup = containerSetup || this.setup;
-                currentPackage = currentPackage || this.package;
-                offSetX = offSetX || 0;
-                offSetY = offSetY || 0;
-
-                var that = this,
-                    gap = containerSetup.gap || 0;
-
-                if(!this.originalHeights) {
-                  this.originalHeights = [];
-                }
-
-                //pack rectangles, and calculate container size
-                containerSetup.items
-                  .sort(this.sorter) // sort- if neded
-                  .forEach(function(itemSetup){
-                    // TODO: do it more lightweight
-                    var rect = new Rectangle(itemSetup);
-
-                    var element = that.filteredChildren[ itemSetup.index ];
-                    if( element ){ // itemSetup.index - if it is real element not a virtual group
-                      var elStyle = element.style;
-                      if(typeof that.originalHeights[itemSetup.index] === 'undefined') {
-                        that.originalHeights[itemSetup.index] = (element.clientHeight);
-                      }
-                      if(rect.height == "auto") {
-                        rect.height = that.originalHeights[index];
-                        elStyle.overflowY = "visible";
-                      }
-                      else {
-                        elStyle.overflowY = "auto";
-                      }
-                    }
-
-                    // Add gaps
-                    rect.width += gap;
-                    rect.height += gap;
-                    // Pack item
-                    currentPackage.add(rect);
-
-                    that.stretchContainer(rect);
-
-                    if( element ){ // itemSetup.index - if it is real element not a virtual group
-                      // update oryginal element
-                      elStyle.top = rect.y + offSetY + gap + "px";
-                      elStyle.left = rect.x + offSetX + gap + "px";
-                      elStyle.width = itemSetup.width + "px";
-                      elStyle.height = itemSetup.height + "px";
-                    } else if ( itemSetup.items ){
-                      // TODO save it somewhere
-                      // //FIXME i'm ugly
-                        var containerItem = that.items[ itemSetup.name ];
-                      containerItem.package = new Package( itemSetup );
-                      return that.packItems( 
-                        itemSetup, 
-                        containerItem.package, 
-                        rect.x + offSetX + gap, 
-                        rect.y + offSetY + gap 
-                      );
-                    }
-                });
-
-                if( that.layersOrientation !== "vertical"){
-                    that.$.container.style.height = that.maxY + "px";
-                } else {
-                    that.$.container.style.width = that.maxX + "px";
-                }
-
-            },
-
-          editingModeChanged: function() {
-            if(this.editingMode) {
-              this.$.elementSelector.show();
-
-              var that = this;
-              var highlightItem = function (elem) {
-                if (elem != that && elem != that.$.container) {
-                  while (elem.parentNode != that.$.container && elem.parentNode != that) {
-                    elem = elem.parentNode;
-                  }
-                  // ??? Do we realy need index? wouldn't it be better to get itemOfElement, so we will get setup, parent package, index and everything.. (tomalec) ?
-                  var highlightedItem = that.items[ that.filteredChildren.indexOf(elem) ];
-                  if(that.editedItem !== highlightedItem) {
-                    that.editedItem = highlightedItem;
-                    that.$.elementSelector.show(elem);
-                    that.fire("pj-sortable-tiles-edited-item-changed");
-                  }
-                }
-              }
-
-              this.addEventListener('mouseover', function (ev) {
-                if(that.editingMode) {
-                  highlightItem(ev.target);
-                }
-              });
-
-            }
-            else {
-              this.$.elementSelector.hide();
-            }
+          saveToStorage: function() {
+            saveJson(this.id, this.setup);
           },
 
-            editedItemChanged: function() {
-              if(this.editedItem == null) {
-                this.editingMode = false;
-              }
-              this.fire("pj-sortable-tiles-edited-item-changed");
-            },
-
-            saveToStorage: function() {
-              saveJson(this.id, this.setup);
-            },
-
-            loadFromStorage: function() {
-              var loadedSetup = loadJson(this.id);
-              if(loadedSetup) {
-                this.setup = loadedSetup;
-              }
+          loadFromStorage: function() {
+            var loadedSetup = loadJson(this.id);
+            if(loadedSetup) {
+              this.setup = loadedSetup;
             }
-        });
+          }
+         }) 
+        );
     }());
     </script>
 
