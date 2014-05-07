@@ -118,7 +118,7 @@
 
         <div id="top">
         <polymer-ui-toolbar   theme="launcher-theme" class="launcher-theme" defaulttheme="polymer-ui-light-theme">
-            <a href="/"><polymer-ui-icon-button icon="menu"></polymer-ui-icon-button></a>
+            <a href="../../../../../"><!-- for some reason href="/" produces <a href></a> in Polymer 0.2.3 / Chrome Stable 34. TODO investigate --><polymer-ui-icon-button icon="menu"></polymer-ui-icon-button></a>
             <polymer-ui-field class="launcher-theme">
                 <polymer-ui-icon icon="search"></polymer-ui-icon>
                 <input placeholder="Search" value="{{search}}" update-on="input"/>
