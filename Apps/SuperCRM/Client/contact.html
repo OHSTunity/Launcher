@@ -5,7 +5,6 @@
 <template bind="{{SuperCRM}}">
         <gravatar-img email="{{ Email$ }}"></gravatar-img>
 
-        <div>
             <div class="launcher-labeled-input">
                 <input id="PersonFirstName$" type='text' value='{{ Person.FirstName$ }}' placeholder='<First Name>'>
                 <label for="PersonFirstName$">First Name</label>
@@ -25,7 +24,6 @@
                 <input id="Email$" type='text' value='{{ Email$ }}' placeholder='<Email>'>
                 <label for="Email$">Email</label>
             </div>
-        </div>
 
         <template if="{{ Companies.length > 0 }}">
             <select class="launcher-select" selectedIndex="{{ SelectedCompanyIndex$ }}">
