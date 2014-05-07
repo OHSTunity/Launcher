@@ -14,6 +14,7 @@ partial class Master : Page {
         HandlerOptions.DefaultHandlerLevel = 1;
         Handlers.AddExtraHandlerLevel();
 
+        Handle.GET("/dashboard", GetNoiseResponse);
         Handle.GET("/menu", GetNoiseResponse);
         Handle.GET<String>("/search?query={?}", GetNoiseResponse);
         Handle.GET("/super-crm/companies/add", GetNoiseResponse);
