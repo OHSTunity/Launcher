@@ -2,7 +2,8 @@
 
 <template bind="{{SuperCRM}}">
     <div class="SuperCRM">
-        <h1>Contacts</h1>
+
+        <h1><i class="icon-industrial-building"></i> <span class="i-name">Contacts</span></h1>
         <ul>
             <template repeat="{{Contacts}}">
                     <li><a href="{{Uri}}">{{Person.FirstName}}  {{Person.LastName}} | {{Title}} | {{Company.Name}}
@@ -16,7 +17,7 @@
         </ul>
     </div>
     <div class="SuperCRM">
-        <h1>Companies</h1>
+        <h1><i class="icon-adult"></i> <span class="i-name">Companies</span></h1>
         <ul>
             <template repeat="{{Companies}}">
                     <li><a href="{{Uri}}">{{Name}} | {{Contacts.length}} contacts
