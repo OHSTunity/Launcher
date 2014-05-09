@@ -43,8 +43,17 @@
 .SuperCRM li span {
   display: table-cell;
   padding-right: 20px;
+
 }
 
 .SuperCRM li span:last-child {
   padding-right: 0;
+}
+
+/* SuperCRM Company */
+.SuperCRM-Contacts h1 {
+  font-size: 150%;
+  margin:0px;
+  color: #333C4E;
+  border-bottom: 1px solid #ddd;
 }

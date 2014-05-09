@@ -1,12 +1,18 @@
 ﻿<link rel="stylesheet" href="/css/SuperCRM.css">
 
 <template bind="{{SuperCRM}}">
+
+     <!-- Contacts -->
     <div class="SuperCRM">
 
-        <h1><i class="icon-industrial-building"></i> <span class="i-name">Contacts</span></h1>
+        <!-- Icon plus header -->
+        <h1><i class="icon-adult"></i><span class="i-name">Contacts</span></h1>
+
+        <!-- List of Contacts -->
         <ul>
             <template repeat="{{Contacts}}">
-                    <li><a href="{{Uri}}">{{Person.FirstName}}  {{Person.LastName}} | {{Title}} | {{Company.Name}}
+                    <li><a href="{{Uri}}">{{Title}} {{Person.FirstName}}  {{Person.LastName}} ({{Company.Name}})
+
                         <!-- TODO fix PuppetJS span in a
                         <span>{{Name$}}</span>
                         <span>{{Title$}}</span>
@@ -16,14 +22,22 @@
             </template>
         </ul>
     </div>
+
+    <!-- Companies -->
     <div class="SuperCRM">
-        <h1><i class="icon-adult"></i> <span class="i-name">Companies</span></h1>
+
+        <!-- Icon plus header -->
+        <h1><i class="icon-industrial-building"></i><span class="i-name">Companies</span></h1>
+
+        <!-- List of Companies -->
         <ul>
             <template repeat="{{Companies}}">
-                    <li><a href="{{Uri}}">{{Name}} | {{Contacts.length}} contacts
+                    <li><a href="{{Uri}}">{{Name}}
+
                         <!-- TODO fix PuppetJS span in a
                             <span>{{Name$}}</span>
                         <span>{{Contacts.length}} contacts</span>-->
+
                         </a></li>
             </template>
         </ul>

@@ -21,18 +21,19 @@
             <skype-button title="Call {{ Contact.SkypeId$ }}"
               participants="{{ Contact.SkypeId$ }}"
               imageSize="24"
-              imageColor="white"
               listParticipants="true"></skype-button>
-            <button onclick="getModel(this).Editing$ = true">Edit</button>
+            <button class="launcher-button" onclick="getModel(this).Editing$ = true">Edit</button>
         </template>
 
         <template if="{{ Editing$ == true }}">
             <div >
-                <label>
-                    Skype username
-                    <input value="{{ Contact.SkypeId$ }}">
-                </label>
-                <button onclick="getModel(this).Save$ = null">OK</button><!--text input will remain on screen until https://github.com/Starcounter/Starcounter/issues/1871 is fixed-->
+
+                <div class="launcher-labeled-input">
+                    <input id="Name$" type='text' value='{{ Contact.SkypeId$ }}' placeholder='&lt;Username&gt;'>
+                    <label for="Name$">Username</label>
+                </div>
+
+                <button class="launcher-button" onclick="getModel(this).Save$ = null">OK</button><!--text input will remain on screen until https://github.com/Starcounter/Starcounter/issues/1871 is fixed-->
             </div>
         </template>
 
