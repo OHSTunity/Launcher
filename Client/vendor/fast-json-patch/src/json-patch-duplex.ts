@@ -1,4 +1,4 @@
-// json-patch-duplex.js 0.3.6
+// json-patch-duplex.js 0.3.7
 // (c) 2013 Joachim Wester
 // MIT license
 
@@ -10,6 +10,14 @@ interface Object {
 
 module jsonpatch {
 
+  /* We use a Javascript hash to store each 
+     function. Each hash entry (property) uses
+     the operation identifiers specified in rfc6902.
+     In this way, we can map each patch operation 
+     to its dedicated function in efficient way.
+     */
+     
+  /* The operations applicable to an object */
   var objOps = {
     add: function (obj, key) {
       obj[key] = this.value;
@@ -50,6 +58,7 @@ module jsonpatch {
     }
   };
 
+  /* The operations applicable to an array. Many are the same as for the object */
   var arrOps = {
     add: function (arr, i) {
       arr.splice(i, 0, this.value);
@@ -263,6 +272,9 @@ module jsonpatch {
         observer.callback = callback;
         observer.next = null;
         var intervals = this.intervals || [100, 1000, 10000, 60000];
+        if (intervals.push === void 0) {
+          throw new Error("jsonpatch.intervals must be an array");
+        }
         var currentInterval = 0;
 
         var dirtyCheck = function () {
@@ -469,6 +481,12 @@ module jsonpatch {
       p++;
     }
     return result;
+  }
+
+  export function compare(tree1:any, tree2:any):any[] {
+    var patches = [];
+    _generate(tree1, tree2, patches, '');
+    return patches;
   }
 }
 

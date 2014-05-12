@@ -6,7 +6,7 @@ Also support dual directions! I.e. you can both apply patches and generate patch
 
 ## Why you should use JSON-Patch
 
-JSON-Patch [(RFC6902)](http://tools.ietf.org/html/rfc6902) is a new standard format that 
+JSON-Patch [(RFC6902)](http://tools.ietf.org/html/rfc6902) is a standard format that 
 allows you to update a JSON document by sending the changes rather than the whole document. 
 JSON Patch plays well with the HTTP PATCH verb (method) and REST style programming.
 
@@ -80,6 +80,13 @@ var patches = jsonpatch.generate(observer);
 //   { op:"replace", path="/contactDetails/phoneNumbers/0/number", value:"123"},
 //   { op:"add", path="/contactDetails/phoneNumbers/1", value:{number:"456"}}];
 ```
+Comparing two object trees:
+```
+var objA = {user: {firstName: "Albert", lastName: "Einstein"}};
+var objB = {user: {firstName: "Albert", lastName: "Collins"}};
+var diff = jsonpatch.compare(objA, objB));
+//diff == [{op: "replace", path: "/user/lastName", value: "Collins"}]
+```
 
 ## Testing
 
@@ -143,7 +150,20 @@ Destroys the observer set up on `obj`.
 
 Any remaining changes are delivered synchronously (as in `jsonpatch.generate`). Note: this is different that ES6/7 `Object.unobserve`, which delivers remaining changes asynchronously.
 
+#### jsonpatch.compare (`obj1` Object, `obj2` Object) : `patches` Array
+
+Available in *json-patch-duplex.js*
+
+Compares object trees `obj1` and `obj2` and returns the difference relative to `obj1` as a patches array.
+
+If there are no differences, returns an empty array.
+
 ## Changelog
+
+#### 0.3.7 (May 5, 2014)
+
+Feature:
+- add a new method `compare` ([#24](https://github.com/Starcounter-Jack/JSON-Patch/issues/24))
 
 #### 0.3.6 (Nov 14, 2013)
 
