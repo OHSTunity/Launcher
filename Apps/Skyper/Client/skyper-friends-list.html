@@ -17,7 +17,9 @@
     <section class="Skyper">
         <!--<h1>Friends list</h1>-->
         <template repeat="{{ Friends }}">
-            <template is="imported-template" content="{{ Html }}"></template>
+	        <pj-sortable-tiles id="pj-sortable-tile:{{Html}}" disabled>
+	            <template is="imported-template" content="{{ Html }}"></template>
+        	</pj-sortable-tiles>
         </template>
     </section>
 

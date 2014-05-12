@@ -7,7 +7,9 @@
     <div class="Skyper">
         <h1>Skyper</h1>
         <template bind="{{MyOnlyFriend}}">
-            <template is="imported-template" content="{{Html}}"></template>
+	        <pj-sortable-tiles id="pj-sortable-tile:{{Html}}" disabled>
+	            <template is="imported-template" content="{{Html}}"></template>
+        	</pj-sortable-tiles>
         </template>
     </div>
 

@@ -33,7 +33,9 @@
         <h1><i class="icon-adult"></i><span class="i-name">Contacts</span></h1>
 
         <template repeat="{{ Contacts }}">
-            <template is="imported-template" content="{{ Html }}"></template>
+            <pj-sortable-tiles id="pj-sortable-tile:{{Html}}" disabled>
+                <template is="imported-template" content="{{ Html }}"></template>
+            </pj-sortable-tiles>
         </template>
         <button class="launcher-button" style="background-color:#184259" onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button>
     </div> 
