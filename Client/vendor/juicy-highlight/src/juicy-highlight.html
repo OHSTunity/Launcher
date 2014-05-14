@@ -1,7 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 
 <!-- Define your custom element -->
-<polymer-element name="element-selector" attributes="overlay strokeWidth strokeColor strokeOffset">
+<polymer-element name="juicy-highlight" attributes="overlay strokeWidth strokeColor strokeOffset">
     <script>
     (function() {
 
@@ -114,33 +114,39 @@
 
     var svg1, svg2;
 
-    Polymer('element-selector', {
+    Polymer('juicy-highlight', {
         overlay: false,
         strokeWidth: 1,
         strokeColor: "#000000",
         strokeOffset: 1,
         focused: null,
-        attached: function(){
-          if(!svg1) {
-            svg1 = CreateMask("#FFFFFF", 0.5);
-            svg2 = CreateMask("#000000", 0.5);
-          }
-          if(!this.focusRect) {
-            this.focusRect = CreateFocusRect(this.strokeWidth, this.strokeColor, this.strokeOffset);
-          }
-        },
         drawMask: function () {
           drawMask(this,svg1, svg2, this.focusRect, this.overlay);
         },
+
+        /**
+         * Highlight element(s)
+         * @param elements {null|Element|Array|NodeList}
+         */
         show: function(elements) {
           if (Array.isArray(elements)) {
             this.focused = elements;
+          }
+          else if (elements && elements.length) {
+            this.focused = Array.prototype.slice.call(elements); //convert NodeList to Array
           }
           else if(elements) {
             this.focused = [elements];
           }
           else {
             this.focused = [];
+          }
+          if(!svg1) {
+            svg1 = CreateMask("#FFFFFF", 0.5);
+            svg2 = CreateMask("#000000", 0.5);
+          }
+          if(!this.focusRect) {
+            this.focusRect = CreateFocusRect(this.strokeWidth, this.strokeColor, this.strokeOffset);
           }
           if (this.overlay && !svg1.parentNode) {
             document.body.appendChild(svg1);
@@ -155,12 +161,16 @@
           }
           repeat.call(this);
         },
+
+        /**
+         * Hide current highlight
+         */
         hide: function() {
           if(this.overlay && svg1.parentNode) {
             document.body.removeChild(svg1);
             document.body.removeChild(svg2);
           }
-          if(this.focusRect.parentNode) {
+          if(this.focusRect && this.focusRect.parentNode) {
             document.body.removeChild(this.focusRect);
           }
           window.cancelAnimationFrame(this.req);

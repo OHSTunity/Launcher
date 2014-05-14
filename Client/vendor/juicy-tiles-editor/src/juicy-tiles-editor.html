@@ -1,5 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="element-selector.html">
+<link rel="import" href="../../juicy-highlight/src/juicy-highlight.html">
 <link rel="import" href="juicy-tree.html">
 
 <polymer-element name="juicy-tiles-editor" attributes="selectionMode">
@@ -117,9 +117,9 @@
       <juicy-tree id="treeView" tree="{{ tree }}" on-juicy-tree-activate="{{treeActivateBranch}}"></juicy-tree>
     </div>
 
-    <element-selector id="elementEdited" overlay strokeWidth="3" strokeColor="#33579F" strokeOffset="3"></element-selector>
-    <element-selector id="elementRollover" strokeWidth="1" strokeColor="#222222" strokeOffset="4"></element-selector>
-    <element-selector id="elementSelected" strokeWidth="1" strokeColor="#33579F" strokeOffset="3"></element-selector>
+    <juicy-highlight id="elementEdited" overlay strokeWidth="3" strokeColor="#33579F" strokeOffset="3"></juicy-highlight>
+    <juicy-highlight id="elementRollover" strokeWidth="1" strokeColor="#222222" strokeOffset="4"></juicy-highlight>
+    <juicy-highlight id="elementSelected" strokeWidth="1" strokeColor="#33579F" strokeOffset="3"></juicy-highlight>
   </template>
   <script>
     (function () {
@@ -398,13 +398,14 @@
             element = this.sortableTilesModel.elements[this.editedItem.index];
           }
           this.$.elementEdited.show(element);
-          this.$.treeView.highlightTreeView(this.editedItem);
+          this.$.treeView.highlightBranch(this.editedItem);
         },
         treeActivateBranch: function() {
           this.editedItem = this.$.treeView.selectedBranch;
         },
         treeRefresh: function() {
           this.tree = [this.sortableTilesModel.setup];
+          Platform.performMicrotaskCheckpoint(); //this is needed because otherwise juicy-tree can't perform first highlightBranch
         }
       });
     })();
