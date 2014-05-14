@@ -23,7 +23,9 @@ Application Launcher
      - Map - `Apps\Map\Client\`
      - Store - `Apps\Store\Client\`
      - Noise - `Apps\Noise\Client\`
-4. Build the solution and go to [http://localhost:8080/](http://localhost:8080/)
+4. Build the solution
+5. Run it using `boot.bat` or Visual Studio
+6. Go to [http://localhost:8080/](http://localhost:8080/)
 
 ### Browsers
 
