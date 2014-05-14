@@ -134,7 +134,7 @@
 
         <template if="{{editingMode}}">
           <div id="elementSettings">
-            <pj-sortable-tiles-editor selectionMode></pj-sortable-tiles-editor>
+            <juicy-tiles-editor selectionMode></juicy-tiles-editor>
           </div>
         </template>
 
@@ -184,7 +184,7 @@
 
             this.$.settings.addEventListener('tap', function () {
                 this.editingMode = !this.editingMode;
-                var elems = document.querySelectorAll("pj-sortable-tiles");
+                var elems = document.querySelectorAll("juicy-tiles");
                 for (var i = 0, ilen = elems.length; i < ilen; i++) {
                   elems[i].editingMode = this.editingMode;
                 }

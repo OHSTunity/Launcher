@@ -20,7 +20,7 @@ pj-dashboard {
     flex: 1 1 auto;
 }
 
-pj-sortable-tiles{
+juicy-tiles{
     flex: 1 1 auto;
     padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
 }

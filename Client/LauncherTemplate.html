@@ -14,8 +14,8 @@
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/model-operations/model-operations.html">
     <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
-    <link rel="import" href="/vendor/pj-sortable-tiles/src/pj-sortable-tiles.html">
-    <link rel="import" href="/vendor/pj-sortable-tiles-editor/src/pj-sortable-tiles-editor.html">
+    <link rel="import" href="/vendor/juicy-tiles/src/juicy-tiles.html">
+    <link rel="import" href="/vendor/juicy-tiles-editor/src/juicy-tiles-editor.html">
     <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
 
     <link rel="stylesheet" href="/css/style.css">
@@ -51,17 +51,17 @@
       </div>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
-        <pj-sortable-tiles class="workspace launcher" id="pj-sortable-tile:{{Html}}" disabled>
+        <juicy-tiles class="workspace launcher" id="juicy-tile:{{Html}}" disabled>
           <template is="imported-template" content="{{ Html }}"></template>   
-        </pj-sortable-tiles>
+        </juicy-tiles>
       </template>
         <template repeat="{{ workspaces }}">
         <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
-        <pj-sortable-tiles class="workspace {{appName}}" id="pj-sortable-tile:{{master.Html}}" disabled>
+        <juicy-tiles class="workspace {{appName}}" id="juicy-tile:{{master.Html}}" disabled>
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
             </template> 
-        </pj-sortable-tiles>
+        </juicy-tiles>
         <warpech-display-route match-path="^\/launcher\/[^w][^o][^r][^k][^s][^p][^a][^c][^e]" display-selector=".workspace.launcher"></warpech-display-route>
       </template>
     </pj-dashboard>

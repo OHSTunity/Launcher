@@ -1,0 +1,47 @@
+<link rel="import" href="vendor/gravatar-img/gravatar-img.html">
+<<<<<<< Updated upstream
+<script src="vendor/spark-md5/spark-md5.js"></script>
+=======
+>>>>>>> Stashed changes
+<link rel="stylesheet" href="/css/SuperCRM.css">
+
+<template bind="{{SuperCRM}}">
+        <gravatar-img email="{{ Email$ }}"></gravatar-img>
+
+        <div>
+            <div class="launcher-labeled-input">
+                <input id="PersonFirstName$" type='text' value='{{ Person.FirstName$ }}' placeholder='<First Name>'>
+                <label for="PersonFirstName$">First Name</label>
+            </div>
+
+            <div class="launcher-labeled-input">
+                <input id="PersonLastName$" type='text' value='{{ Person.LastName$ }}' placeholder='<Last Name>'>
+                <label for="PersonLastName$">Last Name</label>
+            </div>
+
+            <div class="launcher-labeled-input">
+                <input id="Title$" type='text' value='{{ Title$ }}' placeholder='<Title>'>
+                <label for="Title$">Title</label>
+            </div>
+
+            <div class="launcher-labeled-input">
+                <input id="Email$" type='text' value='{{ Email$ }}' placeholder='<Email>'>
+                <label for="Email$">Email</label>
+            </div>
+        </div>
+
+        <template if="{{ Companies.length > 0 }}">
+            <select class="launcher-select" selectedIndex="{{ SelectedCompanyIndex$ }}">
+                <template repeat="{{ Companies }}">
+                    <option>{{ Name }}</option>
+                </template>
+            </select>
+        </template>
+        <template if="{{ Companies.length == 0 }}">
+            <strong>Please <a href="/launcher/workspace/super-crm/companies/add">Add a Company</a> before adding a Contact</strong>
+        </template>
+
+        <button class="launcher-button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
+
+        <puppet-morphUrl url="{{ RedirectUrl$ }}"></puppet-morphUrl>
+</template>
