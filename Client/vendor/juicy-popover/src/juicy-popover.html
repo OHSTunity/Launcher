@@ -1,0 +1,107 @@
+<template id="jdtemplate">
+  <style>
+    #expandable {
+      display: none;
+      position: fixed;
+      left: 0;
+      top: 20px;
+    }
+
+    #expandable.expanded {
+      display: inline-block;
+    }
+  </style>
+    <span id="handle">
+      <content select="{{handleSelector}}"></content>
+    </span>
+    <span id="expandable">
+      <content select="{{expandableSelector}}"></content>
+    </span>
+</template>
+
+<script>
+  (function (global) {
+    var importDoc;
+    if (document._currentScript) {
+      //@see http://www.polymer-project.org/platform/html-imports.html
+      //@see https://groups.google.com/d/topic/polymer-dev/4UKty9tb1-s/discussion
+      importDoc = document._currentScript.ownerDocument;
+    }
+    else {
+      importDoc = document.currentScript.ownerDocument;
+    }
+
+    var JuicyDropdownElementPrototype = Object.create(HTMLElement.prototype);
+
+    JuicyDropdownElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
+      switch(attributeName) {
+        case "handleSelector":
+          this.shadowRoot.querySelector("#handle content").setAttribute("select", newVal || ".handle");
+          break;
+
+        case "expandableSelector":
+          this.shadowRoot.querySelector("#expandable content").setAttribute("select", newVal || ".expandable");
+          break;
+      }
+    };
+
+    JuicyDropdownElementPrototype.createdCallback = function () {
+      var t = importDoc.querySelector('#jdtemplate');
+      var clone = document.importNode(t.content, true);
+      clone.querySelector("#handle content").setAttribute("select", this.getAttribute("handleSelector") || ".handle");
+      clone.querySelector("#expandable content").setAttribute("select", this.getAttribute("expandableSelector") || ".expandable");
+      this.createShadowRoot().appendChild(clone);
+
+      var ignore = false;
+      var expandable = this.shadowRoot.querySelector("#expandable");
+      this.shadowRoot.querySelector("#handle").addEventListener("mousedown", function (ev) {
+        if (!expandable.classList.contains("expanded")) {
+          this.expand(ev.target);
+          ev.preventDefault();
+          ev.stopPropagation();
+          ignore = true;
+        }
+      }.bind(this));
+
+      window.addEventListener("mouseup", function (ev) {
+        if (!ignore && expandable.classList.contains("expanded")) {
+          this.collapse();
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+        ignore = false;
+      }.bind(this));
+    };
+
+    JuicyDropdownElementPrototype.expand = function (elem) {
+      var expandable = this.shadowRoot.querySelector("#expandable");
+      expandable.classList.toggle("expanded");
+      this.classList.toggle("expanded");
+      var box = elem.getBoundingClientRect();
+
+      var position = this.getAttribute("position") || "bottom left";
+      if (position.indexOf("top") > -1) {
+        expandable.style.top = box.top + "px";
+      }
+      else {
+        expandable.style.top = box.top + box.height + "px";
+      }
+
+      if (position.indexOf("right") > -1) {
+        expandable.style.left = box.left + box.width + "px";
+      }
+      else {
+        expandable.style.left = box.left + "px";
+      }
+    };
+
+    JuicyDropdownElementPrototype.collapse = function () {
+      this.shadowRoot.querySelector("#expandable").classList.remove("expanded");
+      this.classList.remove("expanded");
+    };
+
+    global.JuicyDropdownElement = document.registerElement('juicy-popover', {
+      prototype: JuicyDropdownElementPrototype
+    });
+  })(window);
+</script>
