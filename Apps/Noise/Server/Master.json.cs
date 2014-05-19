@@ -17,15 +17,15 @@ partial class Master : Page {
         Handle.GET("/dashboard", GetNoiseResponse);
         Handle.GET("/menu", GetNoiseResponse);
         Handle.GET<String>("/search?query={?}", GetNoiseResponse);
-        Handle.GET("/super-crm/companies/add", GetNoiseResponse);
-        Handle.GET("/super-crm/partials/companies/add", GetNoiseResponse);
-        Handle.GET<String>("/super-crm/companies/{?}", GetNoiseResponse);
-        Handle.GET<String>("/super-crm/partials/companies/{?}", GetNoiseResponse);
-        Handle.GET("/super-crm/contacts/add", GetNoiseResponse);
-        Handle.GET("/super-crm/partials/contacts/add", GetNoiseResponse);
-        Handle.GET<String>("/super-crm/contacts/{?}", GetNoiseResponse);
-        Handle.GET<String>("/super-crm/partials/contacts/{?}", GetNoiseResponse);
-        Handle.GET("/super-crm/delete-all-data", GetNoiseResponse);
+        Handle.GET("/supercrm/companies/add", GetNoiseResponse);
+        Handle.GET("/supercrm/partials/companies/add", GetNoiseResponse);
+        Handle.GET<String>("/supercrm/companies/{?}", GetNoiseResponse);
+        Handle.GET<String>("/supercrm/partials/companies/{?}", GetNoiseResponse);
+        Handle.GET("/supercrm/contacts/add", GetNoiseResponse);
+        Handle.GET("/supercrm/partials/contacts/add", GetNoiseResponse);
+        Handle.GET<String>("/supercrm/contacts/{?}", GetNoiseResponse);
+        Handle.GET<String>("/supercrm/partials/contacts/{?}", GetNoiseResponse);
+        Handle.GET("/supercrm/delete-all-data", GetNoiseResponse);
         Handle.GET("/skyper/friends-list", GetNoiseResponse);
         Handle.GET("/skyper/partials/friends-list", GetNoiseResponse);
     }
