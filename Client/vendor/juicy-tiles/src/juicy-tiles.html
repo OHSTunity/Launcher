@@ -17,8 +17,9 @@
         polyfill-next-selector { content: ':host #container> *'; }
         #container ::content>* {
             position: absolute;
-            -webkit-transition:width 1s, height 1s, top 1s, left 1s, -webkit-transform 1s;
-            transition:width 1s, height 1s, top 1s, left 1s, transform 1s;
+            -webkit-transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s, -webkit-transform 0.5s;
+            transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s, transform 0.5s;
+            transition-timing-function: ease-out;
             z-index: 2;
         }
         #container {
@@ -150,18 +151,16 @@
 
         Polymer('juicy-tiles', Platform.mixin( {}, Package.prototype, {
             setup: {
+              direction: "rightDown",
               gap: 8,
               items: []
             },
             elements: null,
-            maxX:0,
-            maxY:0,
             // {
             //  index_in_DOM: {element: DOMElement, setup: setupObject, container},..
             //  containerName: {setup: setupObject, items: , packer: packer}        
             items: {}, 
 
-            layersOrientation: "horizontal",
             sorter: function byPriority(itemA, itemB){
                 return itemB.priority - itemA.priority;
             },
@@ -211,19 +210,41 @@
             /**
              * Refresh everything
              */
-           refresh: function( ) {
+          refresh: function( ) {
               // TODO: support LTR
-              if( this.layersOrientation !== "vertical" ){
-                this.setup.width = innerWidth(this);
-                this.setup.height = Number.POSITIVE_INFINITY;
-                this.setup.direction = "rightDown";
-              } else {
-                this.setup.width = Number.POSITIVE_INFINITY;
-                this.setup.height = innerHeight(this);
-                this.setup.direction = "downRight";
+            if( this.setup.direction != "downRight"){
+               this.setup.width = innerWidth(this);
+            } else {
+              this.setup.height = innerHeight(this);
+            }
+            this.saveToStorage();
+            var packedTree = this.packItems( );
+            var container = this.$.container;
+            
+            function renderTree( node, elements, offsetX, offsetY ){
+              var element = elements[ node.name || node.index ] 
+                            || container; //TODO: remove it from here, so we could remove renderTree to outer scope
+                  elementStyle = element.style;
+              offsetX = ( node.x || 0 ) + offsetX; 
+              offsetY = ( node.y || 0 ) + offsetY; 
+              elementStyle.left = offsetX + "px";
+              elementStyle.top = offsetY + "px";
+              elementStyle.width = node.width + "px";
+              elementStyle.height = node.height + "px";
+              if(node.background != undefined) {
+                elementStyle.backgroundColor = node.background || "transparent";
               }
-             this.saveToStorage();
-             this.packItems( );
+              
+              if(node.items){
+                var childNodeNo = node.items.length;  
+                while(childNodeNo--){
+                  renderTree( node.items[childNodeNo], elements, offsetX, offsetY);
+                }
+              }
+
+
+            }
+            renderTree( packedTree, this.elements, 0, 0);
           },
           saveToStorage: function() {
             saveJson(this.id, this.setup);
