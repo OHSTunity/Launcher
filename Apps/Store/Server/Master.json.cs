@@ -28,7 +28,7 @@ partial class Master : Page {
             a.Author.Data = person;
 
             s.Html = "<template repeat=\"{{Apps}}\"><article style=\"border: 1px solid #DDD; border-radius:0.4em; padding: 0 1.5em 1.5em\"><h2>{{Appname}}</h2>{{Description}} by {{Author.FullName}}<button bind=\"{{Buy$}}\" onclick=\"setModelValue(this)\" value=\"null\">buy</button></article></template>";
-
+            s.Session = Session.Current;
             return s;
         });
 

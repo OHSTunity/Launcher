@@ -103,6 +103,7 @@ partial class Master : Page {
                     page.Editing = true;
                 }
             }
+            page.Session = Session.Current;
             return page;
         });
 
@@ -111,9 +112,8 @@ partial class Master : Page {
             Master m = new Master() {
                 Html = "/skyper.html"
             };
-            
-            //m.Session = new Session();
 
+            m.Session = Session.Current;
             return m;
         });
 
