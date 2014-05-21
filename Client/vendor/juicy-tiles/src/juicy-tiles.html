@@ -124,7 +124,7 @@
                 }
                 itemSetup.index = elNo;
                 Object.defineProperty(itemSetup, "container", {value:items["root"], writable: true})
-                Object.defineProperty(itemSetup, "root", {value:this})
+                Object.defineProperty(itemSetup, "root", {value:this, writable: true}); //TODO investigate why with cleaned localStorage and empty setup attribute it only works with writable: true
                 setupItems.push(itemSetup);
                 items[elNo] = itemSetup;
               }
@@ -148,6 +148,17 @@
             min = 0;
           }
           return min;
+        }
+        function workaroundOnResizeEvent(node, fn){
+          var parent = node;
+          parent = parent.parentNode;
+          while( parent && parent.tagName != "BODY" ){
+            if(parent.tagName == "JUICY-TILES"){
+              parent.addEventListener("juicy-tiles-refresh", fn);
+              break;
+            }
+            parent = parent.parentNode;
+          }
         }
 
         Polymer('juicy-tiles', Platform.mixin( {}, Package.prototype, {
@@ -184,6 +195,14 @@
                     Package.call(this);
                     this.createItemsList();
                     this.refresh();
+
+                    if(document.attachEvent){
+                      element.detachEvent('onresize', this.refresh.bind(this, null, null));
+                    } else {
+                      //FIXME: async timeout look ugly (tomalec)
+                      //we wait for transition, so innerHeight won't miss the planned size
+                      workaroundOnResizeEvent( this, this.async.bind(this, "refresh", [null, null],500+1) );
+                    }
 
                     window.addEventListener('resize', this.refresh.bind(this, null, null), true);
 
@@ -246,6 +265,8 @@
 
             }
             renderTree( packedTree, this.elements, 0, 0);
+            // trigger event
+            this.dispatchEvent( new CustomEvent("juicy-tiles-refresh") );
           },
           saveToStorage: function() {
             saveJson(this.id, this.setup);
