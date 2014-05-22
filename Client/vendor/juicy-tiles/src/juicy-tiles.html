@@ -124,7 +124,6 @@
                 }
                 itemSetup.index = elNo;
                 Object.defineProperty(itemSetup, "container", {value:items["root"], writable: true})
-                Object.defineProperty(itemSetup, "root", {value:this, writable: true}); //TODO investigate why with cleaned localStorage and empty setup attribute it only works with writable: true
                 setupItems.push(itemSetup);
                 items[elNo] = itemSetup;
               }
@@ -162,23 +161,24 @@
         }
 
         Polymer('juicy-tiles', Platform.mixin( {}, Package.prototype, {
-            setup: {
-              direction: "rightDown",
-              gap: 8,
-              items: []
-            },
+            setup: null,
+            // {
+            //   direction: "rightDown",
+            //   gap: 8,
+            //   items: []
+            // },
             elements: null,
             // {
             //  index_in_DOM: {element: DOMElement, setup: setupObject, container},..
             //  containerName: {setup: setupObject, items: , packer: packer}        
-            items: {}, 
+            items: null,// {}, 
 
             sorter: function byPriority(itemA, itemB){
                 return itemB.priority - itemA.priority;
             },
             createItemsList: function(){
               this.elements = filterNodes(this.children);
-              defaultSetup.call(this,
+              defaultSetup(
                 this.elements,
                 this.setup.items,
                 this.items
@@ -192,7 +192,7 @@
 
                     this.loadFromStorage();
 
-                    Package.call(this);
+                    Package.call(this, this.setup);
                     this.createItemsList();
                     this.refresh();
 
