@@ -88,7 +88,10 @@
 	margin-left: 4px;
 }
 
-.SkyperDashboard a:link, a:visited, a:hover, a:active{
+.SkyperDashboard a:link,
+.SkyperDashboard a:visited,
+.SkyperDashboard a:hover,
+.SkyperDashboard a:active{
 	text-decoration:none;
 	color:inherit;
 }

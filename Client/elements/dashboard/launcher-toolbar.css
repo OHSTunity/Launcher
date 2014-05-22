@@ -1,4 +1,4 @@
-﻿
+
 /* Toolbar custom theme */
 polymer-ui-toolbar.launcher-theme {
     background-color: #333c4e;
@@ -19,7 +19,7 @@ polymer-ui-toolbar polymer-ui-icon-button.launcher-theme:hover polymer-ui-icon {
 */
 
 /* Set custom theme icon */
-polymer-ui-icon-button.launcher-theme polymer-ui-icon {
+polymer-ui-icon-button.launcher-theme::shadow polymer-ui-icon {
     background-position-x: -72px !important;
 }
 

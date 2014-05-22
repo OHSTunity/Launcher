@@ -74,9 +74,9 @@
     }
 
 
-    :host > polymer-ui-toolbar polymer-ui-icon-button:hover ^ polymer-ui-icon {
-        transition: -webkit-transform 0.33s;
-        transition: transform 0.33s;
+    polymer-ui-toolbar > polymer-ui-icon-button:hover::shadow polymer-ui-icon {
+        transition: -webkit-transform 1s;
+        transition: transform 1s;
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
@@ -113,6 +113,7 @@
     }
 
   </style>
+  <link rel="stylesheet" href="launcher-toolbar.css">
 
     <div id="container">
 
