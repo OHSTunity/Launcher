@@ -2,7 +2,7 @@
 <link rel="import" href="../../juicy-highlight/src/juicy-highlight.html">
 <link rel="import" href="../../juicy-popover/src/juicy-popover.html">
 <link rel="import" href="juicy-color-picker.html">
-<link rel="import" href="juicy-tree.html">
+<link rel="import" href="juicy-tiles-tree.html">
 
 <polymer-element name="juicy-tiles-editor" attributes="selectionMode">
   <template>
@@ -130,9 +130,9 @@
 
     <div class="sidebar">
       <h1>Elements</h1>
-      <juicy-tree id="treeView" tree="{{ tree }}" on-juicy-tree-activate="{{treeActivateBranch}}"
-        on-juicy-tree-selection-add="{{selectionAdd}}"
-        on-juicy-tree-selection-remove="{{selectionRemove}}"></juicy-tree>
+      <juicy-tiles-tree id="treeView" tree="{{ tree }}" on-juicy-tiles-tree-activate="{{treeActivateBranch}}"
+        on-juicy-tiles-tree-selection-add="{{selectionAdd}}"
+        on-juicy-tiles-tree-selection-remove="{{selectionRemove}}"></juicy-tiles-tree>
     </div>
 
     <juicy-highlight id="elementEdited" overlay strokeWidth="3" strokeColor="#33579F" strokeOffset="3"></juicy-highlight>
@@ -168,6 +168,26 @@
             Element.prototype.mozMatchesSelector ||
             Element.prototype.msMatchesSelector ||
             Element.prototype.oMatchesSelector
+      }
+
+      /**
+       * Returns an array of descendant elements that match the given tag name.
+       */
+      function getFirstLevelChildTags(baseElement, tagName) {
+        var tagName = tagName.toUpperCase();
+        var children = [];
+        var elements = baseElement.getElementsByTagName(tagName);
+        elementLoop: for (var i = 0, ilen = elements.length; i < ilen; i++) {
+          var elem = elements[i].parentNode;
+          while (elem != baseElement) {
+            if (elem.nodeName == tagName) {
+              continue elementLoop;
+            }
+            elem = elem.parentNode;
+          }
+          children.push(elements[i]);
+        }
+        return children;
       }
 
       Polymer('juicy-tiles-editor', {
@@ -496,9 +516,12 @@
 
             // iterate on element's real DOM elements
             for (var childNo = 0, eLen = element.elements.length; childNo < eLen; childNo++) {
-            	nested = 
-            		// findFirstLevelDescendants(element.elements[childNo], 'juicy-tiles');
-            		element.elements[childNo].getElementsByTagName('juicy-tiles');
+              if (element.elements[childNo].nodeName == 'JUICY-TILES') { //element is directly a nested tiles
+                nested = [element.elements[childNo]]
+              }
+              else { //check if element has nested tiles children
+                nested = getFirstLevelChildTags(element.elements[childNo], 'juicy-tiles');
+              }
             	// iterate on nested juicy-tiles
             	if( nested.length ){
             		branches[ childNo ] = [];
@@ -527,34 +550,31 @@
             topmost = topmost.parentNode;
           }
 
-          var models = topmost.querySelectorAll("JUICY-TILES");
+          var models = getFirstLevelChildTags(topmost, 'juicy-tiles');
 
-          if(topmost.host) {
-            models = Array.prototype.slice.call(models);
-            var distributedModels = topmost.host.querySelectorAll("JUICY-TILES");
-            distributedModels = Array.prototype.slice.call(distributedModels);
+          if (topmost.host) {
+            var distributedModels = getFirstLevelChildTags(topmost.host, 'juicy-tiles');
             models = models.concat(distributedModels);
           }
 
           for (var i = 0, ilen = models.length; i < ilen; i++) {
-            if (!models[i].matches("JUICY-TILES JUICY-TILES")) {
-              tree.push(
-              	extendWithSubTiles(models[i])
-              );
-            }
+            tree.push(
+              extendWithSubTiles(models[i])
+            );
           }
           // notify observer/two-way-binding/tempalte only once
           this.tree = tree;
 
-          Platform.performMicrotaskCheckpoint(); //this is needed because otherwise juicy-tree can't perform first highlightBranch
+          Platform.performMicrotaskCheckpoint(); //this is needed because otherwise juicy-tiles-tree can't perform first highlightBranch
         },
         selectionAdd: function(item) {
           if(item.detail) {  //is tree event
             item = item.detail.branch;
           }
           this.selectedItems.push(item);
-          var elem = item.root.elements[item.name || item.index];
+          var elem = this.editedTiles.elements[item.name || item.index];
           this.selectedElements.push(elem);
+          this.$.elementSelected.show(this.selectedElements);
         },
         selectionRemove: function(item) {
           if(item.detail) {  //is tree event
@@ -563,6 +583,7 @@
           var index = this.selectedItems.indexOf(item);
           this.selectedItems.splice(index, 1);
           this.selectedElements.splice(index, 1);
+          this.$.elementSelected.show(this.selectedElements);
         }
       });
     })();

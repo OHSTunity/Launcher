@@ -70,8 +70,6 @@ function getMinimumPriority(arr) {
 /**
  * [Package description]
  * @param {Object} [setup] packer setup
- *
- * @todo remove #elements from here
  */
 function Package( setup ){
   this.setup = setup || {
@@ -86,7 +84,6 @@ function Package( setup ){
 
   // this.reset();
 }
-// Package.prototype.elements = [];
 Package.prototype.items = null;
 Package.prototype.setup = null;
 
@@ -97,11 +94,9 @@ Package.prototype.direction = "rightDown";
 /**
  * [packItems description]
  * @param {Object} setup setup of items fo pack, if not give `#setup` will be used
- * @param {Array<Element>} elements array of DOM elements to update.
  */
-Package.prototype.packItems = function packItems( setup, elements ) {
+Package.prototype.packItems = function packItems( setup ) {
   setup || (setup = this.setup);
-  elements || (elements = this.elements);
   var that = this,
       packer = new Packer(setup);
 
@@ -114,20 +109,6 @@ Package.prototype.packItems = function packItems( setup, elements ) {
       // TODO, property?
       rect.container = setup;
 
-      if (elements) {
-        var element = elements[ itemSetup.index ];
-        if (!element) {
-          element = elements[ itemSetup.name ];
-          if (!element) {
-            element = document.createElement('DIV');
-            element.style.zIndex = -1;
-            element.style.position = "absolute";// FIXME: should be done in css
-            that.$.container.appendChild(element);
-            elements[ itemSetup.name ] = element;
-          }
-        }
-      }
-
       //first calculate rect width because it cannot be auto TODO: fix for downRight mode
       if( typeof rect.width == "string" && rect.width != "auto" && rect.width.indexOf("%") > 0 ){
         rect.width = ( (setup.width + setup.gap) * parseFloat(rect.width) /100  - setup.gap);
@@ -139,28 +120,12 @@ Package.prototype.packItems = function packItems( setup, elements ) {
       }
 
       
-      if (itemSetup.items && itemSetup.propertyIsEnumerable("items")) { // container. propertyIsEnumerable is needed to rule out virtual "items" added by juicy-tiles-editor on nested tiles
+      if (itemSetup.items ) { // container
         // pack its items first, to figureout minSize
         rect = that.packItems(
-          rect, // use caculated width and height
-          elements
+          rect // use caculated width and height
         );
 
-      } else { // element
-        if(itemSetup.height == "auto"){
-          // rect.height = element.clientHeight;          
-          element.style.height = ""; //slow, but I don't know another way to measure real height when element's content has shrinked other than remove height property before measuring (Marcin)
-          rect.height = element.scrollHeight; //now we can measure scrollHeight because width is already set and height is not constrained
-        } else {
-          rect.height = parseFloat( rect.height );
-        }
-        if(itemSetup.width == "auto"){
-          // rect.width = element.clientWidth;
-          element.style.width = ""; //slow, but I don't know another way to measure real width when element's content has shrinked other than remove height property before measuring (Marcin)
-          rect.width = element.scrollWidth; //now we can measure scrollHeight because width is already set and height is not constrained
-        } else {
-          rect.width = parseFloat( rect.width );
-        }
       }
 
       // Pack item
@@ -186,10 +151,6 @@ Package.prototype.packItems = function packItems( setup, elements ) {
  */
 Package.prototype.reprioritizeItem =  function( item, increase, end ){
   var higher, lower, item;
-  // do nothing if there is nothing to rearrange
-  if( this.elements.length < 2){
-    return this;
-  }
   // if( typeof item !== 'object'){
   //   item = this.items[item];
   // }
@@ -200,6 +161,10 @@ Package.prototype.reprioritizeItem =  function( item, increase, end ){
   if( !collection ){
     throw new RangeError( "Cannot reprioritize root container");
     return false;
+  }
+  // do nothing if there is nothing to rearrange
+  if( collection.length < 2){
+    return this;
   }
   var sortedIndex = collection.indexOf( itemSetup );
 
@@ -420,64 +385,6 @@ Package.prototype.createNewContainer = function( name, inContainer, rectangle, n
   }
   return setup;
 };
-/**
- * For an array of HTML elements, returns total size in which they would all fit in one dimension.
- * Dimension projection is read through startProp and sizeProp
- * @param {Array} elements
- * @param {String} startProp - "offsetLeft" or "offsetTop"
- * @param {String} sizeProp - "offsetWidth" or "offsetHeight"
- * @returns {Number}
- */
-Package.prototype._getMinimumDimension = function (elements, startProp, sizeProp) {
-  var ranges = [];
-
-  if (elements.length < 1) {
-    throw new Error("I need at least one element");
-  }
-
-  elements.sort(function (a, b) {
-    return a[startProp] - b[startProp];
-  });
-
-  ranges.push({
-    start: elements[0][startProp],
-    end: elements[0][startProp] + elements[0][sizeProp]
-  });
-
-  for (var i = 1, ilen = elements.length; i < ilen; i++) {
-    var last = ranges[ranges.length - 1];
-    var start = elements[i][startProp];
-    var end = elements[i][startProp] + elements[i][sizeProp];
-
-    if (last.end < start) {
-      ranges.push({
-        start: start,
-        end: end
-      });
-    }
-    else if (last.end < end) {
-      last.end = end;
-    }
-  }
-
-  var sizeSum = 0;
-  for (var i = 0, ilen = ranges.length; i < ilen; i++) {
-    sizeSum += ranges[i].end - ranges[i].start;
-  }
-
-  return sizeSum;
-}
-/**
- * For an array of HTML elements, returns the minimum width and height where they can fit
- * @param {Array} elements
- * @returns {{width: {Number}, height: {Number}}}
- */
-Package.prototype.getMinimumDimensions = function (elements) {
-  return {
-    width: this._getMinimumDimension(elements, 'offsetLeft', 'offsetWidth'),
-    height: this._getMinimumDimension(elements, 'offsetTop', 'offsetHeight')
-  }
-}
 
 
 // TODO: export
