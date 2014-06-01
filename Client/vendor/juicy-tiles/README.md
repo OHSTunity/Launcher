@@ -17,14 +17,14 @@
 2. Import Web Components' polyfill:
 
     ```html
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.2.2/platform.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.2.2/polymer.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.0/platform.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.0/polymer.js"></script>
     ```
 
 3. Import Custom Element:
 
     ```html
-    <link rel="import" href="bower_components/juicy-tiles/dist/juicy-tiles.html">
+    <link rel="import" href="../juicy-tiles/dist/juicy-tiles.html">
     ```
 
 4. Start using it!
@@ -48,6 +48,7 @@ Attribute                    | Options             | Default      | Description
 `setup.items[?].index`       | *Number*            |              | DOM ChildElement index (not needed for virtual containers)
 `setup.items[?].name`        | *String*            |              | Group name (for virtual containers)
 `setup.items[?].innerHTML`   | *String*            |              | Inner HTML for (for virtual containers)
+`setup.items[?].oversize`    | *Number*            | `0`          | Make container's box & background bleed for this aoumt of pixels out of packed box. So, render box bigger, but pack with iths original size (for virtual containers)
 `setup.items[?].items`       | *Array(Items)*      |              | Recursive setup (for virtual containers)
 `setup.items[?].gap`         | *Number*            | `0`          | Recursive setup (for virtual containers)
 `setup.items[?].direction`   | *String*            |              | Recursive setup (for virtual containers)
