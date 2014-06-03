@@ -34,6 +34,7 @@
         min-width: 1.45em;
         display: inline-block;
         padding: 0;
+        margin: 0;
         vertical-align: top;
         line-height: 1;
         font-size: 14px;
@@ -287,7 +288,7 @@
         innerHTML: null,
         getSortableElement: function (elem) {
           while (elem.parentNode) {
-            if (elem.parentNode.nodeName == 'JUICY-TILES') {
+            if (elem.parentNode.nodeName == 'JUICY-TILE-LIST') {
               return elem;
             }
             elem = elem.parentNode;
@@ -517,7 +518,7 @@
           this.gap = this.getCommonValue("gap");
           this.oversize = this.getCommonValue("oversize");
           this.priority = this.getCommonValue("priority");
-          this.innerHTML = this.getCommonValue("innerHTML");
+          this.innerHTML = this.getCommonValue("innerHTML") || ""; //set innerHTML to empty string if undefined is returned
           this.isSelection = (this.selectedItems.length > 0);
           this.isSingleSelection = (this.selectedItems.length == 1);
           this.isContainer = this.isContainerInSelection();

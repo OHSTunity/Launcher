@@ -185,7 +185,7 @@
 
             this.$.settings.addEventListener('tap', function () {
                 this.editingMode = !this.editingMode;
-                var elems = document.querySelectorAll("juicy-tiles");
+                var elems = document.querySelectorAll("juicy-tile-list");
                 for (var i = 0, ilen = elems.length; i < ilen; i++) {
                   elems[i].editingMode = this.editingMode;
                 }

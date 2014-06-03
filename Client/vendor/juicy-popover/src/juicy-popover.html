@@ -1,10 +1,11 @@
-<template id="jdtemplate">
+<template id="juicy-popover-template">
   <style>
     #expandable {
       display: none;
-      position: fixed;
+      position: absolute;
       left: 0;
       top: 20px;
+      z-index: 999;
     }
 
     #expandable.expanded {
@@ -31,9 +32,9 @@
       importDoc = document.currentScript.ownerDocument;
     }
 
-    var JuicyDropdownElementPrototype = Object.create(HTMLElement.prototype);
+    var JuicyPopoverElementPrototype = Object.create(HTMLElement.prototype);
 
-    JuicyDropdownElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
+    JuicyPopoverElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
       switch(attributeName) {
         case "handleSelector":
           this.shadowRoot.querySelector("#handle content").setAttribute("select", newVal || ".handle");
@@ -45,8 +46,8 @@
       }
     };
 
-    JuicyDropdownElementPrototype.createdCallback = function () {
-      var t = importDoc.querySelector('#jdtemplate');
+    JuicyPopoverElementPrototype.createdCallback = function () {
+      var t = importDoc.querySelector('#juicy-popover-template');
       var clone = document.importNode(t.content, true);
       clone.querySelector("#handle content").setAttribute("select", this.getAttribute("handleSelector") || ".handle");
       clone.querySelector("#expandable content").setAttribute("select", this.getAttribute("expandableSelector") || ".expandable");
@@ -86,35 +87,34 @@
       });
     };
 
-    JuicyDropdownElementPrototype.expand = function (elem) {
+    JuicyPopoverElementPrototype.expand = function (elem) {
       var expandable = this.shadowRoot.querySelector("#expandable");
       expandable.classList.toggle("expanded");
       this.classList.toggle("expanded");
-      var box = elem.getBoundingClientRect();
 
       var position = this.getAttribute("position") || "bottom left";
       if (position.indexOf("top") > -1) {
-        expandable.style.top = box.top + "px";
+        expandable.style.top = elem.offsetTop + "px";
       }
       else {
-        expandable.style.top = box.top + box.height + "px";
+        expandable.style.top = elem.offsetTop + elem.offsetHeight + "px";
       }
 
       if (position.indexOf("right") > -1) {
-        expandable.style.left = box.left + box.width + "px";
+        expandable.style.left = elem.offsetLeft + elem.offsetWidth + "px";
       }
       else {
-        expandable.style.left = box.left + "px";
+        expandable.style.left = elem.offsetLeft + "px";
       }
     };
 
-    JuicyDropdownElementPrototype.collapse = function () {
+    JuicyPopoverElementPrototype.collapse = function () {
       this.shadowRoot.querySelector("#expandable").classList.remove("expanded");
       this.classList.remove("expanded");
     };
 
-    global.JuicyDropdownElement = document.registerElement('juicy-popover', {
-      prototype: JuicyDropdownElementPrototype
+    global.JuicyPopoverElement = document.registerElement('juicy-popover', {
+      prototype: JuicyPopoverElementPrototype
     });
   })(window);
 </script>

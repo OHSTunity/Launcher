@@ -100,10 +100,6 @@
     <Content Include="Client\css\launcher-menu.css" />
     <Content Include="Client\css\style.css" />
     <Content Include="Client\elements\dashboard\pj-dashboard.html" />
-    <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-body.html" />
-    <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-list.css" />
-    <Content Include="Client\vendor\tomalec-sortable-list\elements\tomalec-sortable-list.html" />
-    <Content Include="Client\vendor\x-html\x-html.html" />
     <Content Include="Client\vendor\fast-json-patch\src\json-patch-duplex.js" />
     <Content Include="Client\vendor\PuppetJs\src\puppet.js" />
     <Content Include="Client\LauncherTemplate.html" />

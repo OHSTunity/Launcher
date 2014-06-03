@@ -13,8 +13,7 @@
 
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/model-operations/model-operations.html">
-    <link rel="import" href="/vendor/tomalec-sortable-list/src/tomalec-sortable-list.html">
-    <link rel="import" href="/vendor/juicy-tiles/src/juicy-tiles.html">
+    <link rel="import" href="/vendor/juicy-tile-list/src/juicy-tile-list.html">
     <link rel="import" href="/vendor/juicy-tiles-editor/src/juicy-tiles-editor.html">
     <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
 
@@ -50,17 +49,17 @@
       </div>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
-        <juicy-tiles class="workspace launcher" id="juicy-tile:{{Html}}" disabled>
+        <juicy-tile-list class="workspace launcher" id="juicy-tile:{{Html}}" disabled>
           <template is="imported-template" content="{{ Html }}"></template>   
-        </juicy-tiles>
+        </juicy-tile-list>
       </template>
         <template repeat="{{ workspaces }}">
         <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
-        <juicy-tiles class="workspace {{appName}}" id="juicy-tile:{{master.Html}}" disabled>
+        <juicy-tile-list class="workspace {{appName}}" id="juicy-tile:{{master.Html}}" disabled>
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
             </template> 
-        </juicy-tiles>
+        </juicy-tile-list>
         <warpech-display-route match-path="^\/launcher\/[^w][^o][^r][^k][^s][^p][^a][^c][^e]" display-selector=".workspace.launcher"></warpech-display-route>
       </template>
     </pj-dashboard>
