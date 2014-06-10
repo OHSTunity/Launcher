@@ -4,11 +4,11 @@
 <script src="package.js"></script>
 
 <!-- Define your custom element -->
-<polymer-element name="juicy-tile-list" constructor="PJSortableTiles" attributes="setup rowspans colspans layersOrientation">
+<polymer-element name="juicy-tile-list" constructor="JuicyTileListElement" attributes="setup rowspans colspans layersOrientation">
     <template>
     <style>
         :host {
-            display: block;
+            display: inline-block;
             padding: 16px;
         }
         #container{
@@ -24,8 +24,7 @@
         #container.animate ::content>*,
         #container.animate >*  {
             -webkit-transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s, -webkit-transform 0.5s;
-            transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s, transform 0.5s;
-            transition-timing-function: ease-out;
+            transition: width 0.5s ease-out, height 0.5s ease-out, top 0.5s ease-out, left 0.5s ease-out, transform 0.5s ease-out;
         }
         #container {
           z-index: 0;
@@ -43,10 +42,10 @@
       function innerWidth(elem) {
         var outerWidth = elem.offsetWidth;
         var computedStyle = window.getComputedStyle(elem, null);
-        var borderLeft = parseInt(computedStyle.getPropertyValue('border-left'), 10);
-        var borderRight = parseInt(computedStyle.getPropertyValue('border-right'), 10);
-        var paddingLeft = parseInt(computedStyle.getPropertyValue('padding-left'), 10);
-        var paddingRight = parseInt(computedStyle.getPropertyValue('padding-right'), 10);
+        var borderLeft = parseFloat(computedStyle.getPropertyValue('border-left')) || 0;
+        var borderRight = parseFloat(computedStyle.getPropertyValue('border-right')) || 0;
+        var paddingLeft = parseFloat(computedStyle.getPropertyValue('padding-left')) || 0;
+        var paddingRight = parseFloat(computedStyle.getPropertyValue('padding-right')) || 0;
         return outerWidth - borderLeft - borderRight - paddingLeft - paddingRight;
       }
 
@@ -58,10 +57,10 @@
       function innerHeight(elem) {
         var outerHeight = elem.offsetHeight;
         var computedStyle = window.getComputedStyle(elem, null);
-        var borderTop = parseInt(computedStyle.getPropertyValue('border-top'), 10);
-        var borderBottom = parseInt(computedStyle.getPropertyValue('border-bottom'), 10);
-        var paddingTop = parseInt(computedStyle.getPropertyValue('padding-top'), 10);
-        var paddingBottom = parseInt(computedStyle.getPropertyValue('padding-bottom'), 10);
+        var borderTop = parseFloat(computedStyle.getPropertyValue('border-top')) || 0;
+        var borderBottom = parseFloat(computedStyle.getPropertyValue('border-bottom')) || 0;
+        var paddingTop = parseFloat(computedStyle.getPropertyValue('padding-top')) || 0;
+        var paddingBottom = parseFloat(computedStyle.getPropertyValue('padding-bottom')) || 0;
         return outerHeight - borderTop - borderBottom - paddingTop - paddingBottom;
       }
 
@@ -183,6 +182,7 @@
             },
             createItemsList: function(){
               this.elements = filterNodes(this.children);
+              this.elements["root"] = this.$.container;
               defaultSetup(
                 this.elements,
                 this.setup.items,
@@ -265,8 +265,10 @@
             // TODO: support LTR
             if( this.setup.direction != "downRight"){
                this.setup.width = innerWidth(this);
+               this.setup.heightAuto = true;
             } else {
               this.setup.height = innerHeight(this);
+              this.setup.widthAuto = true;
             }
             // IDEA move to outter scope, not to redefine it every time
             var itemSetup, itemsLength = setup.items.length;
@@ -274,9 +276,12 @@
                 // TODO: do it more lightweight
                 itemSetup = setup.items[itemsLength];
 
+                var element;
                 if (elements) {
-                  var element = elements[ itemSetup.index ];
-                  if (!element) {
+                  if(itemSetup.index !== undefined) {
+                    element = elements[ itemSetup.index ];
+                  }
+                  else if (itemSetup.name !== undefined) {
                     element = elements[ itemSetup.name ];
                     if (!element) {
                       element = document.createElement('DIV');
@@ -289,7 +294,7 @@
                     (itemSetup.innerHTML != undefined) && (element.innerHTML = itemSetup.innerHTML);
                   }
                 }
-                
+
                 if (! itemSetup.items ){ // element
                   if(itemSetup.heightAuto){
                     // itemSetup.height = element.clientHeight;          
@@ -299,6 +304,8 @@
                   if(itemSetup.widthAuto){
                     // itemSetup.width = element.clientWidth;
                     element.style.width = ""; //slow, but I don't know another way to measure real width when element's content has shrinked other than remove height property before measuring (Marcin)
+                    element.style["grid-row"] = "";
+                    element.style["grid-column"] = "";
                     itemSetup.width = element.scrollWidth; //now we can measure scrollHeight because width is already set and height is not constrained
                   }
                 }
@@ -315,33 +322,10 @@
           refresh: function( ) {
             var container = this.$.container;
             var packedTree = this.packItems();
-
-
-            function renderTree( node, elements, offsetX, offsetY ){
-              var element = elements[ node.name || node.index ] 
-                            || container; //TODO: remove it from here, so we could remove renderTree to outer scope
-                  elementStyle = element.style;
-              offsetX = ( node.x || 0 ) + offsetX; 
-              offsetY = ( node.y || 0 ) + offsetY;
-              var oversize = node.oversize || 0;
-              elementStyle.left = ( offsetX - oversize ) + "px";
-              elementStyle.top = ( offsetY - oversize ) + "px";
-              elementStyle.width = ( node.width + 2 * oversize ) + "px";
-              elementStyle.height = ( node.height + 2 * oversize ) + "px";
-              if(node.background != undefined) {
-                elementStyle.backgroundColor = node.background || "transparent";
-              }
-              
-              if(node.items){// virtual container
-                var childNodeNo = node.items.length;  
-                while(childNodeNo--){
-                  renderTree( node.items[childNodeNo], elements, offsetX, offsetY);
-                }
-              }
-
-
-            }
-            renderTree( packedTree, this.elements, 0, 0);
+            
+            container.style.width = packedTree.width + "px";
+            container.style.height = packedTree.height + "px";
+            this.renderer( packedTree, this.elements, 0, 0);
             // trigger event
             this.dispatchEvent( new CustomEvent("juicy-tile-list-refresh") );
           },
@@ -360,13 +344,15 @@
           },
 
           loadFromStorage: function() {
-            this.cleanupDOM();
-
             this._storedSetup = loadJson(this.id);
-            if (this._storedSetup) {
-              this.setup = JSON.parse(this._storedSetup);
-            }
+            this.loadFromString(this._storedSetup);
+          },
 
+          loadFromString: function(setupString) {
+            this.cleanupDOM();
+            if(setupString) {
+              this.setup = JSON.parse(setupString);
+            }
             Package.call(this, this.setup);
             this.createItemsList();
             this.refresh();
@@ -431,6 +417,36 @@
             return {
               width: this._getMinimumDimension(elements, 'offsetLeft', 'offsetWidth'),
               height: this._getMinimumDimension(elements, 'offsetTop', 'offsetHeight')
+            }
+          },
+          /**
+           * Renderer method, used to render packed tree to DOM
+           */
+          renderer: function positionAbsolute( node, elements, offsetX, offsetY ){
+            var childNodeNo = node.items.length,
+                child,
+                element, elementStyle, left, top;  
+            while(childNodeNo--){
+              child = node.items[childNodeNo]
+              element = elements[ child.name || child.index ];
+              if(!element) {
+                continue; //if element is not found, perhaps DOM was not yet rendered? Skip gracefully
+              }
+              elementStyle = element.style;
+              left = ( child.x || 0 ) + offsetX; 
+              top = ( child.y || 0 ) + offsetY;
+              var oversize = child.oversize || 0;
+              elementStyle.left = ( left - oversize ) + "px";
+              elementStyle.top = ( top - oversize ) + "px";
+              elementStyle.width = ( child.width + 2 * oversize ) + "px";
+              elementStyle.height = ( child.height + 2 * oversize ) + "px";
+              if(child.background !== undefined) {
+                elementStyle.backgroundColor = child.background || "transparent";
+              }
+              
+              if(child.items){// virtual container
+                positionAbsolute( child, elements, left, top);
+              }
             }
           }
          }) 
