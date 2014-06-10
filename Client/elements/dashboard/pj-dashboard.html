@@ -112,6 +112,12 @@
         background-color: #eee;
     }
 
+    #homeIcon {
+      width: 19px;
+      height: 19px;
+      margin: 0px 10px 2px 18px;
+    }
+
   </style>
   <link rel="stylesheet" href="launcher-toolbar.css">
 
@@ -119,7 +125,7 @@
 
         <div id="top">
         <polymer-ui-toolbar   theme="launcher-theme" class="launcher-theme" defaulttheme="polymer-ui-light-theme">
-            <a href="/"><polymer-ui-icon-button icon="menu"></polymer-ui-icon-button></a>
+            <a href="/"><img id="homeIcon" src="/images/elusive-iconfont/dev/icons-svg/home.svg"></a>
             <polymer-ui-field class="launcher-theme">
                 <polymer-ui-icon icon="search"></polymer-ui-icon>
                 <input placeholder="Search" value="{{search}}" update-on="input"/>
