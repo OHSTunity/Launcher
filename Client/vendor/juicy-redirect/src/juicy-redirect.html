@@ -1,0 +1,33 @@
+<script>
+    (function (global) {
+        var JuicyRedirectElementPrototype = Object.create(HTMLLinkElement.prototype);
+
+        JuicyRedirectElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
+            switch(attributeName) {
+                case "url":
+                    var url;
+                    if(newVal == "current") {
+                        url = window.location.href;
+                    }
+                    else {
+                        url = newVal;
+                    }
+                    if(url != "") {
+                        if(this.hasAttribute("history")) {
+                            history.pushState(null, null, url);
+                        }
+                        else {
+                            window.location = url;
+                        }
+                        this.setAttribute("url", "");
+                    }
+                    break;
+            }
+        };
+
+        global.JuicyRedirectElement = document.registerElement('juicy-redirect', {
+            prototype: JuicyRedirectElementPrototype,
+            extends: "link"
+        });
+    })(window);
+</script>

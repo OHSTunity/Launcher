@@ -120,7 +120,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Client\company.html" />
-    <Content Include="Client\components\puppet-morphUrl.html" />
     <Content Include="Client\contact.html" />
     <Content Include="Client\css\animation.css" />
     <Content Include="Client\css\supercrmfont-codes.css" />

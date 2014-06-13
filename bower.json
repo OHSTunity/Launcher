@@ -28,6 +28,7 @@
     "polymer-ui-toggle-button": "Polymer/polymer-ui-toggle-button",
     "juicy-tile-list": "Juicy/juicy-tile-list#gh-pages",
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
+    "juicy-redirect": "Juicy/juicy-redirect#~0.1.0",
     "warpech-display-router": "warpech/warpech-display-router#0.1.0",
     "css-element-queries": "marcj/css-element-queries#master"
   }

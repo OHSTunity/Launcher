@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>&lt;link is="juicy-redirect"&gt;</title>
+
+    <!-- Importing Web Component's Polyfill (optional, allows to run it in old browsers) -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.1/platform.js"></script>
+
+    <!-- Importing Custom Elements -->
+    <link rel="import" href="src/juicy-redirect.html">
+
+    <style>
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            padding: 2em;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>&lt;link is="juicy-redirect"&gt;</h1>
+
+<p>Custom Element that changes redirects to a new URL when an attribute is changed.</p>
+
+<p>It can be configured to work using window location or History API.</p>
+
+<p>See <a href="https://github.com/Juicy/juicy-redirect">README.md</a> for docs</p>
+
+<h2>Redirect using <code>window.location</code></h2>
+
+<button id="example1">&lt;link is="juicy-redirect" url="/"&gt;</button>
+
+<link is="juicy-redirect" id="redirect1">
+
+<script>
+    document.getElementById("example1").addEventListener("click", function () {
+        document.getElementById("redirect1").setAttribute("url", "/");
+    });
+</script>
+
+<h2>Redirect using History API (<code>history.pushState</code>)</h2>
+
+<button id="example2">&lt;link is="juicy-redirect" history url="/"&gt;</button>
+
+<link is="juicy-redirect" history id="redirect2">
+
+<script>
+    document.getElementById("example2").addEventListener("click", function () {
+        document.getElementById("redirect2").setAttribute("url", "/");
+    });
+</script>
+
+</body>
+</html>
