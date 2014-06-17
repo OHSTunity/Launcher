@@ -154,7 +154,7 @@
           var parent = node;
           parent = parent.parentNode;
           while( parent && parent.tagName != "BODY" ){
-            if(parent.tagName == "JUICY-TILE-LIST"){
+            if(parent.tagName == node.tagName){
               parent.addEventListener("juicy-tile-list-refresh", fn);
               break;
             }
@@ -195,7 +195,6 @@
                 this.async(function asyncAttached(){
                     var that = this;
 
-                    this.loadFromStorage();
 
                     if(document.attachEvent){
                       element.detachEvent('onresize', this.refresh.bind(this, null, null));
@@ -206,6 +205,10 @@
                     }
 
                     window.addEventListener('resize', this.refresh.bind(this, null, null), true);
+
+                    // It's kinda strange but `loadFromStorage` initializes Packer instance <-smells badly
+                    // It also calls `.refresh()` which need to be called after setting listeners.
+                    this.loadFromStorage();
 
                     var that = this;
 
