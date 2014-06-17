@@ -17,9 +17,9 @@
     <section class="Skyper">
         <!--<h1>Friends list</h1>-->
         <template repeat="{{ Friends }}">
-	        <juicy-tile-list id="juicy-tile:{{Html}}" disabled>
+	        <juicy-tile-grid id="juicy-tile:{{Html}}" disabled>
 	            <template is="imported-template" content="{{ Html }}"></template>
-        	</juicy-tile-list>
+        	</juicy-tile-grid>
         </template>
     </section>
 

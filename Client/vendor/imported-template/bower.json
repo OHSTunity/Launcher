@@ -1,16 +1,20 @@
 {
   "name": "imported-template",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
-    "polymer": "Polymer/polymer#~0.2"
+    "polymer": "Polymer/polymer#~0.3"
   },
   "devDependencies": {
-    "polymer-ui-elements": "Polymer/polymer-ui-elements#~0.2"
+    "github-button": "zenorocha/github-button",
+    "core-menu": "Polymer/core-menu",
+    "core-item": "Polymer/core-item",
+    "core-icon": "Polymer/core-icon"
   },
   "keywords": [
+    "polymer",
     "web-components"
   ],
-  "homepage": "https://github.com/PuppetJs/imported-template",
+  "homepage": "https://github.com/Juicy/imported-template",
   "authors": [
     "Joachim Wester <joachimwester@me.com>",
     "Marcin Warpechowski <marcin@nextgen.pl>",
@@ -25,6 +29,8 @@
     "bower_components",
     "../",
     "test",
-    "tests"
+    "tests",
+    "examples",
+    "preview.png"
   ]
 }
