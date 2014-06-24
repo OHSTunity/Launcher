@@ -13,22 +13,11 @@
      div{
       border: 1px solid black;
      }
-     html,body{
-          font-family: Calibri, Helvetica, Arial, sans-serif;
-          font-size: 14px;
-          padding: 0;
-          margin: 0;
-          height: 100%;
-      }
-
-        body {
-            display: flex;
-        }
-
 
         juicy-tile-grid{
-            flex: 1 1 auto;
-            padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+            width: 300px;
+            height: 300px;
+            display: block;
         }
      </style>
 
@@ -36,8 +25,10 @@
 
 <body>
   <template id="root" bind>
-      <juicy-tile-grid>
-          <template is="imported-template" content="/SuperCRM.html"></template>  
+      <juicy-tile-grid id="first">
+        <juicy-tile-grid id="nested">
+          <template is="imported-template" content="/company.html"></template>
+        </juicy-tile-grid>
       </juicy-tile-grid>
   </template>
   <script>

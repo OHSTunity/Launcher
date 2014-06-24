@@ -1,8 +1,17 @@
-<!-- removing this fixes #82 -->
-<link rel="import" href="/company.html">
+<link rel="import" href="/vendor/juicy-redirect/src/juicy-redirect.html">
 
-<template bind>
-  <juicy-tile-grid>
-    <template is="imported-template" content="/company.html"></template>
-  </juicy-tile-grid>
+<template bind="{{SuperCRM}}">
+  <style>
+    h1 {
+      margin: 0;
+    }
+  </style>
+    <template if="{{Message}}">
+        <h2>{{Message}}</h2>
+    </template>
+    <template bind="{{FavoriteCustomer}}">
+      <juicy-tile-grid id="juicy-tile:{{Html}}" disabled>
+        <template is="imported-template" content="{{Html}}"></template>
+      </juicy-tile-grid>
+    </template>
 </template>
