@@ -1,46 +1,4 @@
-﻿
-<template bind="{{SuperCRM}}">
-
-    <style>
-        /*h1 input {
-            font-size: 0.9em;
-        }
-
-        .company {
-            background: yellow;
-        }
-
-        .contacts {
-            border: 2px dashed black;
-        }*/
-
-    </style>
-
-    <h1>Logo here</h1>
-
-
-    <div class="launcher-labeled-input">
-        <input id="Name$" type='text' value='{{ Name$ }}' placeholder='<Name>'>
-        <label for="Name$">Name</label>
-    </div>
-
-    <div class="launcher-labeled-input">
-        <input id="Revenue$" type='text' value='{{ Revenue$ }}' placeholder='<Revenue>'>
-        <label for="Revenue$">Revenue</label>
-    </div>
-
-    <div class="SuperCRM-Contacts">
-        <h1><i class="icon-adult"></i><span class="i-name">Contacts</span></h1>
-
-        <template repeat="{{ Contacts }}">
-            <juicy-tile-grid id="juicy-tile:{{Html}}" disabled>
-                <template is="imported-template" content="{{ Html }}"></template>
-            </juicy-tile-grid>
-        </template>
-        <button class="launcher-button" style="background-color:#184259" onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button>
-    </div> 
-
-    <button class="launcher-button" style="background-color:#11653B" onclick="getModel(this).Save$ = null">Save</button>
-    <link is="juicy-redirect" history url="{{ RedirectUrl$ }}">
-
+﻿<template bind>
+    <div class="launcher-labeled-input">1</div>
+    <div class="launcher-labeled-input">2</div>
 </template>

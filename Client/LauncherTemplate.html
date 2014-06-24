@@ -1,76 +1,49 @@
 <!doctype html>
 <head>
     <title>Launcher</title>
-    <script src="/vendor/fast-json-patch/src/json-patch-duplex.js"></script>
     <script src="/vendor/platform/platform.js"></script>
-    <script src="/vendor/PuppetJs/src/puppet.js"></script>
     
     <link rel="import" href="/vendor/polymer/polymer.html">
 
 
-    <link rel="import" href="/vendor/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
-    <link rel="import" href="/vendor/polymer-ui-field/polymer-ui-field.html">
-
     <link rel="import" href="/vendor/imported-template/imported-template.html">
-    <link rel="import" href="/vendor/model-operations/model-operations.html">
     <link rel="import" href="/vendor/juicy-tile-grid/src/juicy-tile-grid.html">
-    <link rel="import" href="/vendor/juicy-tile-editor/src/juicy-tile-editor.html">
-    <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
 
-    <link rel="stylesheet" href="/css/style.css">
+    <style>
+     div{
+      border: 1px solid black;
+     }
+     html,body{
+          font-family: Calibri, Helvetica, Arial, sans-serif;
+          font-size: 14px;
+          padding: 0;
+          margin: 0;
+          height: 100%;
+      }
 
-<!--    <link rel="stylesheet" href="/css/fontello.css">
-    <link rel="stylesheet" href="/css/animation.css">-->
+        body {
+            display: flex;
+        }
 
-    <link rel="stylesheet" href="/css/launcher-menu.css">
-    <link rel="stylesheet" href="/css/launcher-button.css">
-    <link rel="stylesheet" href="/css/launcher-labeledInput.css">
-    <link rel="stylesheet" href="/css/launcher-select.css">
 
-    <script src="/vendor/css-element-queries/src/ElementQueries.js"></script>
-    <script src="/vendor/css-element-queries/src/ResizeSensor.js"></script>
-
-    <!-- Import our elements -->
-    <link rel="import" href="/elements/dashboard/pj-dashboard.html">
+        juicy-tile-grid{
+            flex: 1 1 auto;
+            padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+        }
+     </style>
 
 </head>
 
 <body>
   <template id="root" bind>
-    <pj-dashboard search="{{ searchBar.query$ }}">
-      <div id="launcher-menu">
-          <ul>
-              <template bind="{{ menu }}">
-                  <template is="imported-template" content="{{ Html }}"></template>
-              </template>
-              <li><a href="/do-nothing">Do nothing</a></li>
-          </ul>
-
-      </div>
-      <template bind="{{ results }}">
-        <!-- FIXME: hardcoded priority -->
-        <juicy-tile-grid class="workspace launcher" id="juicy-tile:{{Html}}" disabled>
-          <template is="imported-template" content="{{ Html }}"></template>   
-        </juicy-tile-grid>
-      </template>
-        <template repeat="{{ workspaces }}">
-        <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
-        <juicy-tile-grid class="workspace {{appName}}" id="juicy-tile:{{master.Html}}" disabled>
-            <template bind="{{ master }}">
-                <template is="imported-template" content="{{ Html }}"></template>  
-            </template> 
-        </juicy-tile-grid>
-        <warpech-display-route match-path="^\/launcher\/[^w][^o][^r][^k][^s][^p][^a][^c][^e]" display-selector=".workspace.launcher"></warpech-display-route>
-      </template>
-    </pj-dashboard>
+      <juicy-tile-grid>
+          <template is="imported-template" content="/SuperCRM.html"></template>  
+      </juicy-tile-grid>
   </template>
   <script>
     document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
-      window.puppet = new Puppet(null, function (obj) { //setting up global for console access
-        var rootTemplate = document.getElementById("root");
-        rootTemplate.bindingDelegate = new PolymerExpressions;
-        rootTemplate.model = obj;
-      });
+      var rootTemplate = document.getElementById("root");
+        rootTemplate.model = {};
     });
   </script>
 </body>
