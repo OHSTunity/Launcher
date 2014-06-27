@@ -1,4 +1,4 @@
-#staradmin --killall
+#staradmin kill all
 
 cd Client
 star ../bin/Debug/Launcher.exe
