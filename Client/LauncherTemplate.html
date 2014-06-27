@@ -4,7 +4,6 @@
     <title>Launcher</title>
     <script src="/vendor/platform/platform.js"></script>
     
-    <link rel="import" href="/vendor/polymer/polymer.html">
 
 
     <link rel="import" href="/vendor/imported-template/imported-template.html">
@@ -19,6 +18,7 @@
             width: 300px;
             height: 300px;
             display: block;
+            padding: 10px;
         }
      </style>
 
@@ -27,9 +27,9 @@
 <body>
   <template id="root" bind>
       <juicy-tile-list id="first">
-        <div style="width: 20px; background: gray;">aaaa</div>
+        <div style="background: gray;">aaaa</div>
         <juicy-tile-list id="nested">
-          <div style="width: 20px; background: gray;">bbb</div>
+          <div style="background: gray;">bbb</div>
           <template is="imported-template" content="{{html}}">
           </template>
         </juicy-tile-list>
