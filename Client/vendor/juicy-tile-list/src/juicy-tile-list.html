@@ -8,10 +8,13 @@
     <template>
     <style>
         :host {
-            display: inline-block;
+            display: block;
+            width: 100%;
             padding: 16px;
         }
         #container{
+            display: block;
+            width: 100%;
             position: relative;
         }
         polyfill-next-selector { content: ':host #container> *'; }
@@ -20,12 +23,12 @@
             position: absolute;
             z-index: 2;
         }
-        polyfill-next-selector { content: ':host #container.animate> *'; }
+        /*polyfill-next-selector { content: ':host #container.animate> *'; }
         #container.animate ::content>*,
         #container.animate >*  {
             -webkit-transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s, -webkit-transform 0.5s;
             transition: width 0.5s ease-out, height 0.5s ease-out, top 0.5s ease-out, left 0.5s ease-out, transform 0.5s ease-out;
-        }
+        }*/
         #container {
           z-index: 0;
         }
@@ -191,6 +194,8 @@
             },
             domReady: function gridAttached(){
               var that = this;
+              this.style.width = "100%";
+              this.style.display = "block";
 
               if(document.attachEvent){
                 this.attachEvent('onresize', this.refresh.bind(this, null, null));

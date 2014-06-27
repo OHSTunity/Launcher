@@ -137,20 +137,22 @@ https://github.com/Juicy/imported-template
 
 
     XHTMLPrototype.attachedCallback = function () {
-      var that = this;
-      this.loadTemplate_();
+      // from _importHTMLImport
+        var link = document.createElement('link');
+        link.rel = "import";
+        link.href = this.getAttribute("content");
+        var xhtml = this;
+        setTimeout( processImportedDocument, 100);
+        function processImportedDocument(){
+          // this seems to be not a problme, could be commented out any way
+          var template = document.querySelector("template#external");
+          xhtml.subTemplate = document.importNode(template, true);
+          xhtml._insertTemplate();
 
-      var observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          if (mutation.type === "attributes" && 
-                (mutation.attributeName === "content" || mutation.attributeName === "iframe") ) {
-            that.loadTemplate_();
-          }
-        });
-      });
-      observer.observe(this, {
-        attributes: true
-      });
+        }
+        // this is a problem
+        document.head.appendChild(link);
+        return this;
     };
 
     document.register('imported-template', {

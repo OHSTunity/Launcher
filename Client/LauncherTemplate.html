@@ -1,4 +1,5 @@
 <!doctype html>
+<html>
 <head>
     <title>Launcher</title>
     <script src="/vendor/platform/platform.js"></script>
@@ -7,14 +8,14 @@
 
 
     <link rel="import" href="/vendor/imported-template/imported-template.html">
-    <link rel="import" href="/vendor/juicy-tile-grid/src/juicy-tile-grid.html">
+    <link rel="import" href="/vendor/juicy-tile-list/src/juicy-tile-list.html">
 
     <style>
      div{
       border: 1px solid black;
      }
 
-        juicy-tile-grid{
+        juicy-tile-list{
             width: 300px;
             height: 300px;
             display: block;
@@ -25,16 +26,28 @@
 
 <body>
   <template id="root" bind>
-      <juicy-tile-grid id="first">
-        <juicy-tile-grid id="nested">
-          <template is="imported-template" content="/company.html"></template>
-        </juicy-tile-grid>
-      </juicy-tile-grid>
+      <juicy-tile-list id="first">
+        <div style="width: 20px; background: gray;">aaaa</div>
+        <juicy-tile-list id="nested">
+          <div style="width: 20px; background: gray;">bbb</div>
+          <template is="imported-template" content="{{html}}">
+          </template>
+        </juicy-tile-list>
+      </juicy-tile-list>
   </template>
+
+
+  <template bind id="external">
+    <div>1</div>
+    <div>2</div>
+</template>
   <script>
+  model = {test:"works",html:"/company.html"};
+
     document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
       var rootTemplate = document.getElementById("root");
-        rootTemplate.model = {};
+        rootTemplate.model = model;
     });
   </script>
 </body>
+</html>
