@@ -1,70 +1,38 @@
-<!--
-`juicy-tile-list element` - masonry-like Polymer Element for sortable tiles that packs efficiently without changing HTML structure (changes CSS only).
-
-@elementjuicy-tile-list
-@demo https://Juicy.github.io/juicy-tile-list/
--->
 <!-- Import Polymer -->
 <link rel="import" href="/vendor/polymer/polymer.html">
 
-<!-- Define your custom element -->
-<polymer-element name="juicy-tile-list" constructor="JuicyTileListElement" >
+<!-- Define custom element -->
+<polymer-element name="juicy-tile-list">
     <template>
-    <style>
-        :host {
-            display: block;
-            width: 100%;
-        }
-        #container{
-            display: block;
-            width: 100%;
-        }
-    </style>
-    <div id="container"><content></content></div>
+        <style>
+            :host {
+                display: block;
+                width: 100%;
+            }
+        </style>
+        My offsetWidth on `domReady` was : {{width}}, after 200ms it is: {{resizedWidth}}.
+        <content></content>
     </template>
     <script>
-    (function( scope ){
+    Polymer('juicy-tile-list', ( {
+        domReady: function domReady(){
+            var that = this;
+            // force it with inline style - still won't help
+            this.style.width = "100%";
+            this.style.display = "block";
 
-        Polymer('juicy-tile-list', ( {
-            domReady: function domReady(){
-              var that = this;
-              this.style.width = "100%";
-              this.style.display = "block";
+            //check offsetWidth on domReady
+            console.warn("offsetWidth, at domReady:", this.offsetWidth," for me:", this);
+            this.width = (this).offsetWidth;
 
-              window.addEventListener('resize', this.refresh.bind(this, null, null), true);
-
-              this.refresh();
-
-
-              // Observe changes
-              // create an observer instance
-              var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                  if(mutation.addedNodes){
-                      //DRY, performance
-                      console.log("something was added, let's refresh")
-                      that.refresh();
-                  }
-                });
-              });
-              // pass in the target node, as well as the observer options
-              observer.observe(this, { childList: true });
-              // end of: Observe changes
-            },
-            /**
-             * Refresh everything
-             */
-          refresh: function( ) {
-            console.info("My offsetWidth:", this.offsetWidth," it was me:", this);
-
-            var container = this.$.container;
-            var width = (this).offsetWidth;
-            
-            container.style.width = width + "px";
-          }
-         }) 
-        );
-    }());
+            // check after 200ms
+            setTimeout( function(){
+                console.info("offsetWidth, after 200ms:", that.offsetWidth," for me:", that);
+                that.resizedWidth = that.offsetWidth;
+            }, 200);
+        }
+     }) 
+    );
     </script>
 
 </polymer-element>

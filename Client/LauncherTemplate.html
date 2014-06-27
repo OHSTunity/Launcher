@@ -1,24 +1,16 @@
 <!doctype html>
 <html>
 <head>
-    <title>Launcher</title>
+    <title>Template vs. HTML Import issue</title>
     <script src="/vendor/platform/platform.js"></script>
     
-
-
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/juicy-tile-list/src/juicy-tile-list.html">
 
     <style>
-     div{
-      border: 1px solid black;
-     }
-
         juicy-tile-list{
-            width: 300px;
-            height: 300px;
+            width: 100%;
             display: block;
-            padding: 10px;
         }
      </style>
 
@@ -26,27 +18,21 @@
 
 <body>
   <template id="root" bind>
-      <juicy-tile-list id="first">
-        <div style="background: gray;">aaaa</div>
-        <juicy-tile-list id="nested">
-          <div style="background: gray;">bbb</div>
-          <template is="imported-template" content="{{html}}">
-          </template>
-        </juicy-tile-list>
+      <juicy-tile-list>
+          <imported-template></imported-template>
       </juicy-tile-list>
   </template>
 
 
-  <template bind id="external">
-    <div>1</div>
-    <div>2</div>
-</template>
+  <div style="width:100%;" id="emptyDiv"></div>
   <script>
-  model = {test:"works",html:"/company.html"};
+  var div = document.getElementById("emptyDiv");
+  console.log("empty div", div, " with `width: 100%;` should have have offset width = ", div.offsetWidth );
 
-    document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
+  console.info("but when we nest it a bit with templates and polymer-elements..")
+    document.addEventListener("polymer-ready", function polymerReady(){
       var rootTemplate = document.getElementById("root");
-        rootTemplate.model = model;
+        rootTemplate.model = {};
     });
   </script>
 </body>
