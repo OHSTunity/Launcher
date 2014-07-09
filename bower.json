@@ -13,8 +13,8 @@
     "tests"
   ],
   "dependencies": {
-    "platform": "Polymer/platform#~0.3.1",
-    "polymer": "Polymer/polymer#~0.3.1",
+    "platform": "Polymer/platform#~0.3.3",
+    "polymer": "Polymer/polymer#~0.3.3",
     "fast-json-patch": "~0.3.6",
     "imported-template": "gh-pages",
     "model-operations": "polyjuice/model-operations#~0.0.1",
@@ -28,7 +28,7 @@
     "polymer-ui-toggle-button": "Polymer/polymer-ui-toggle-button",
     "juicy-tile-list": "gh-pages",
     "juicy-tile-grid": "gh-pages",
-    "juicy-tile-editor": "Juicy/juicy-tile-editor#tiles-grid",
+    "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
     "juicy-redirect": "Juicy/juicy-redirect#~0.1.0",
     "warpech-display-router": "warpech/warpech-display-router#0.1.0",
     "css-element-queries": "marcj/css-element-queries#master"
