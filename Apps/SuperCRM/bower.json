@@ -15,6 +15,6 @@
   ],
   "dependencies": {
     "gravatar-img": "warpech/gravatar-img#~0.1.2",
-    "image-mask": "~0.0.4"
+    "image-mask": "tomalec/image-mask#titleAttribute"
   }
 }
