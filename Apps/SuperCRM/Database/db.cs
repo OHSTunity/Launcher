@@ -8,6 +8,7 @@ namespace SuperCRM
     {
         public string Name;
         public decimal Revenue;
+        public string LogoUrl;
     }
 
     [Database]

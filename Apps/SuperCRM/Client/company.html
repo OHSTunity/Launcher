@@ -1,24 +1,29 @@
 ﻿<link rel="import" href="vendor/image-mask/src/image-mask.html">
 <template bind="{{SuperCRM}}">
 
-    <style>
-        /*h1 input {
-            font-size: 0.9em;
-        }
+    <div>
+        <style>
+            .SuperCRM-companyLogo{ 
+                position: relative;
+            }
+            .SuperCRM-companyLogo>input {
+                display: none;
+                position: absolute;
+                bottom: 3px;
+                left: 0;
+                margin: 0.5em;
+                width: calc( 100% - 1em);
 
-        .company {
-            background: yellow;
-        }
-
-        .contacts {
-            border: 2px dashed black;
-        }*/
-
-    </style>
-
-    <h1>
-        <image-mask size="128" title="Logo here">Logo here</image-mask>
-    </h1>
+            }
+            .SuperCRM-companyLogo:hover>input {
+                display: block;
+            }
+        </style>
+        <h1 class="SuperCRM-companyLogo">
+            <image-mask size="128" title="Company Logo" src="{{ LogoUrl$ }}">Logo here</image-mask>
+            <input id="LogoUrl$" type='text' value='{{ LogoUrl$ }}' placeholder='<LogoURL>'>
+        </h1>
+    </div>
 
 
     <div class="launcher-labeled-input">
