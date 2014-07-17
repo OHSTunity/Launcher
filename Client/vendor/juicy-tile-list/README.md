@@ -30,8 +30,8 @@ It gives you:
 2. Import Web Components' polyfill:
 
     ```html
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.0/platform.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.0/polymer.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/polymer.js"></script>
     ```
 
 3. Import Custom Element:
@@ -120,6 +120,14 @@ Name                      | Data | Description
 5. Submit a pull request :D
 
 ## History
+
+#### v0.0.5
+ - critical fix
+
+#### v0.0.4
+ - `defaultTileSetup` attribute
+ - many bug fixes
+ - update Polymer to 0.3.4
 
 #### v0.0.3
  - better separation of DOM vs packing,
