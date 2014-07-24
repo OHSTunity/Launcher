@@ -86,30 +86,12 @@ partial class Launcher : Page {
             });
 
         Handle.GET("/launcher/workspace/{?}/{?}", (String appName, String uri) =>
-        //Handle.GET("/launcher/workspace/{?}", (String uri) =>
         {
-            Launcher launcher = (Launcher)Launcher.GET("/");
-            Launcher.workspacesElementJson foundWorkspace = null;
-            for (var i = 0; i < launcher.workspaces.Count; i++)
-            {
-                if (appName == launcher.workspaces[i].appName)
-                {
-                    foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces[i];
-                    launcher.focusedWorkspace = i;
-                    break;
-                }
-            }
-
-            if (foundWorkspace == null)
-            {
-                foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces.Add();
-                foundWorkspace.appName = appName;
-                launcher.focusedWorkspace = launcher.workspaces.Count - 1;
-            }
-            foundWorkspace.master = (Json)X.GET("/" + appName + "/" + uri);
-
-            
-            return launcher;
+            return WorkspaceResponse(appName, uri);
+        });
+        Handle.GET("/launcher/workspace/{?}", (String appName) =>
+        {
+            return WorkspaceResponse(appName, null);
         });
 
         // Merges HTML partials according to provided URLs.
@@ -169,6 +151,41 @@ partial class Launcher : Page {
   
         });
         // + dummy responses from launcher itself  
+    }
+
+
+    static Response WorkspaceResponse(String appName, String uri)
+    {
+
+        Launcher launcher = (Launcher)Launcher.GET("/");
+        Launcher.workspacesElementJson foundWorkspace = null;
+        for (var i = 0; i < launcher.workspaces.Count; i++)
+        {
+            if (appName == launcher.workspaces[i].appName)
+            {
+                foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces[i];
+                launcher.focusedWorkspace = i;
+                break;
+            }
+        }
+
+        if (foundWorkspace == null)
+        {
+            foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces.Add();
+            foundWorkspace.appName = appName;
+            launcher.focusedWorkspace = launcher.workspaces.Count - 1;
+        }
+        if (uri == null)
+        {
+            foundWorkspace.master = (Json)X.GET("/" + appName );
+        }
+        else
+        {
+            foundWorkspace.master = (Json)X.GET("/" + appName + "/" + uri);
+        }
+
+
+        return launcher;
     }
 }
 
