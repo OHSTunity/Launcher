@@ -28,6 +28,9 @@ partial class Master : Page {
         Handle.GET("/supercrm/delete-all-data", GetNoiseResponse);
         Handle.GET("/skyper/friends-list", GetNoiseResponse);
         Handle.GET("/skyper/partials/friends-list", GetNoiseResponse);
+        Handle.GET("/polyjuiceboilerplate", GetNoiseResponse);
+        Handle.GET("/polyjuiceboilerplate/ingredients", GetNoiseResponse);
+        Handle.GET("/polyjuiceboilerplate/ingredients/add", GetNoiseResponse);
     }
 
     static Response GetNoiseResponse()
