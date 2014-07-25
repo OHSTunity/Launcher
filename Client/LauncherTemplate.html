@@ -54,7 +54,7 @@
         </juicy-tile-grid>
       </template>
         <template repeat="{{ workspaces }}">
-        <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}\/" display-selector=".workspace.{{appName}}"></warpech-display-route>
+        <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}" display-selector=".workspace.{{appName}}"></warpech-display-route>
         <juicy-tile-grid class="workspace {{appName}}" id="juicy-tile:{{master.Html}}" disabled>
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
