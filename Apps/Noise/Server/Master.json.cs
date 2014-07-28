@@ -31,6 +31,10 @@ partial class Master : Page {
         Handle.GET("/polyjuiceboilerplate", GetNoiseResponse);
         Handle.GET("/polyjuiceboilerplate/ingredients", GetNoiseResponse);
         Handle.GET("/polyjuiceboilerplate/ingredients/add", GetNoiseResponse);
+
+        Handle.GET("/board/threads/add", GetNoiseResponse);
+        Handle.GET("/board/threads", GetNoiseResponse);
+        Handle.GET("/board", GetNoiseResponse);
     }
 
     static Response GetNoiseResponse()
