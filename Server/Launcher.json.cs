@@ -65,14 +65,18 @@ partial class Launcher : Page {
         // Not actually a mergerer anymore but linker of sibling Json parts.
         Handle.MergeResponses((Request req, List<Response> responses) =>
         {
-            for (Int32 i = 1; i < responses.Count; i++) {
-                ((Json) responses[i].Resource).SetAppName(responses[i].AppName);
-                ((Json) responses[0].Resource).AddStepSibling((Json) responses[i].Resource);
+            var mainResponse = responses[0];
+            var json = mainResponse.Resource as Json;
+
+            if (json != null && json.GetHtmlPartialUrl() != null) {
+                json.SetAppName(mainResponse.AppName);
+
+                for (Int32 i = 1; i < responses.Count; i++) {
+                    ((Json)responses[i].Resource).SetAppName(responses[i].AppName);
+                    json.AddStepSibling((Json)responses[i].Resource);
+                }
             }
-
-            ((Json) responses[0].Resource).SetAppName(responses[0].AppName);
-
-            return responses[0];
+            return mainResponse;
         });
 
         //do-nothing handler reproduces problem with link handling in Polyjuice Launcher
