@@ -55,7 +55,6 @@ partial class Master : Page {
             {
                 page.Data = new SuperCRM.Company();
             });
-            page.Session = Session.Current;
             return page;
         });
 
@@ -77,7 +76,6 @@ partial class Master : Page {
             c.Data = company;
             //c.Uri = "/launcher/workspace/supercrm/companies/" + objectId;
             c.Transaction = new Transaction();
-            c.Session = Session.Current;
 
             var contacts = SQL<SuperCRM.Contact>("SELECT c FROM SuperCRM.Contact c WHERE Company = ?", company);
             var enumerator = contacts.GetEnumerator();
@@ -144,7 +142,6 @@ partial class Master : Page {
                 page.Data = contact;
             });*/
 
-            page.Session = Session.Current;
             return page;
         });
 
@@ -188,7 +185,6 @@ partial class Master : Page {
                 }
                 i++;
             }
-            page.Session = Session.Current;
             return page;
         });
     
@@ -196,9 +192,6 @@ partial class Master : Page {
             var m = new Master() {
                 Html = "/SuperCRM.html"
             };
-
-            m.Session = Session.Current;
-
             return m;
         });
 
