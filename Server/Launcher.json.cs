@@ -21,12 +21,8 @@ partial class Launcher : Page {
     /// </summary>
     static void Main() {
 
-        // Setting default handler level to 1.
-        HandlerOptions.DefaultHandlerLevel = 0;
-
         // Dashboard
-        Handle.GET("/", () =>
-        {
+        Handle.GET("/", () => {
             Launcher launcher;
             if (Session.Current == null)
             {
@@ -62,9 +58,8 @@ partial class Launcher : Page {
             return launcher;
         });
 
-        // Not actually a mergerer anymore but linker of sibling Json parts.
-        Handle.MergeResponses((Request req, List<Response> responses) =>
-        {
+        // Not actually a merger anymore but linker of sibling Json parts.
+        Handle.MergeResponses((Request req, List<Response> responses) => {
             var mainResponse = responses[0];
             var json = mainResponse.Resource as Json;
 
@@ -82,19 +77,17 @@ partial class Launcher : Page {
         //do-nothing handler reproduces problem with link handling in Polyjuice Launcher
         //expected: clicking on a link should result in a Patch to the client that contains only the changed part
         //actual: for some reason, the Patch replaces the whole root path (/)
-        Handle.GET("/do-nothing", () =>
-            {
-                Launcher launcher = (Launcher)Launcher.GET("/");
-                launcher.focusedWorkspace = 99;
-                return launcher;
-            });
+        Handle.GET("/do-nothing", () => {
+            Launcher launcher = (Launcher)Launcher.GET("/");
+            launcher.focusedWorkspace = 99;
+            return launcher;
+        });
 
-        Handle.GET("/launcher/workspace/{?}/{?}", (String appName, String uri) =>
-        {
+        Handle.GET("/launcher/workspace/{?}/{?}", (String appName, String uri) => {
             return WorkspaceResponse(appName, uri);
         });
-        Handle.GET("/launcher/workspace/{?}", (String appName) =>
-        {
+
+        Handle.GET("/launcher/workspace/{?}", (String appName) => {
             return WorkspaceResponse(appName, null);
         });
 
@@ -114,8 +107,7 @@ partial class Launcher : Page {
             return sb.ToString();
         });
 
-        Handle.GET("/launcher/person/123", (Request req) =>
-        {
+        Handle.GET("/launcher/person/123", (Request req) => {
             Response resp;
             X.GET("/person/123", out resp);
 
@@ -134,8 +126,7 @@ partial class Launcher : Page {
             return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
         });
 
-        Handle.GET("/launcher/search?query={?}", (string query) =>
-        {
+        Handle.GET("/launcher/search?query={?}", (string query) => {
             Response resp;
             X.GET("/search?query=" + query, out resp);
 
@@ -155,12 +146,14 @@ partial class Launcher : Page {
   
         });
         // + dummy responses from launcher itself  
-    }
 
+        // Setting default handler level to 1.
+        HandlerOptions.DefaultHandlerLevel = 1;
+        Handlers.AddExtraHandlerLevel();
+    }
 
     static Response WorkspaceResponse(String appName, String uri)
     {
-
         Launcher launcher = (Launcher)Launcher.GET("/");
         Launcher.workspacesElementJson foundWorkspace = null;
         for (var i = 0; i < launcher.workspaces.Count; i++)

@@ -12,10 +12,6 @@ partial class Master : Page {
     /// </summary>
     static void Main() {
 
-        // Setting default handler level to 1.
-        HandlerOptions.DefaultHandlerLevel = 1;
-        Handlers.AddExtraHandlerLevel();
-
         Handle.GET("/person/{?}", (String personId) =>
         {
             var s = new Store.StoreApp();

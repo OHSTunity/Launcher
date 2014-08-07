@@ -30,11 +30,6 @@ partial class Master : Page {
             return (Json)X.GET("/supercrm/partials/contacts/" + objectId, 0, h1);
         }, h0);
         
-        
-        // Setting default handler level to 1.
-        HandlerOptions.DefaultHandlerLevel = 1;
-        Handlers.AddExtraHandlerLevel();
-
         Handle.GET("/supercrm/companies/add", () =>
         {
             var page = (CompanyPage)X.GET("/supercrm/partials/companies/add");

@@ -10,10 +10,6 @@ partial class Master : Page {
     /// </summary>
     static void Main()
     {
-        // Setting default handler level to 1.
-        HandlerOptions.DefaultHandlerLevel = 1;
-        Handlers.AddExtraHandlerLevel();
-
         Handle.GET("/dashboard", GetNoiseResponse);
         Handle.GET("/menu", GetNoiseResponse);
         Handle.GET<String>("/search?query={?}", GetNoiseResponse);

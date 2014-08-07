@@ -25,10 +25,6 @@ partial class Master : Page {
             return (Json)X.GET("/skyper/partials/skyper-user/" + objectId, 0, h1);
         }, h0);
 
-        // Setting default handler level to 1.
-        HandlerOptions.DefaultHandlerLevel = 1;
-        Handlers.AddExtraHandlerLevel();
-
         Handle.GET("/skyper/friends-list", () =>
         {
             SkyperFriendsList page = (SkyperFriendsList)X.GET("/skyper/partials/friends-list");
