@@ -13,7 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "skype-button": "~0.0.2",
+    "skype-button": "~0.0.4",
     "css-element-queries": "marcj/css-element-queries#master"
   }
 }

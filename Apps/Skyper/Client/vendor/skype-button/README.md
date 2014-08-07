@@ -1,11 +1,12 @@
 # &lt;skype-button&gt;
 
-Web Component wrapper for [Skype URI buttons](http://developer.skype.com/skype-uris/skype-uri-tutorial-webpages) using [Polymer](http://polymer-project.org)
+Web Component wrapper for [Skype URI buttons](http://developer.skype.com/skype-uris/skype-uri-tutorial-webpages).
 
 > Maintained by [Tomek Wytrębowicz](https://github.com/tomalec).
 
 ## Demo
 
+![Preview](/preview.png?raw=true "Preview")
 > [Check it live](http://tomalec.github.io/skype-button).
 
 ## Install
@@ -18,13 +19,10 @@ $ bower install --save skype-button
 
 ## Usage
 
-1. Import Web Components' polyfill and Skype URI Library:
+1. Import Web Components' polyfill:
 
     ```html
-    <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/platform.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
-
-    <script type="text/javascript" src="http://cdn.dev.skype.com/uri/skype-uri.js"></script>
+    <script src="//cdn.jsdelivr.net/polymer.platform/0.3.4/platform.js"></script>
     ```
 
 2. Import Custom Element:
