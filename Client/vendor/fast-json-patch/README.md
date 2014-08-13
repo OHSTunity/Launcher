@@ -30,6 +30,25 @@ Mark Nottingham has a [nice blog]( http://www.mnot.net/blog/2012/09/05/patch) ab
 * A /bin directory will be added with minified versions
 * More unit tests
 
+
+## Install
+
+Install the current version (and save it as a dependency):
+
+### npm
+
+```sh
+$ npm install fast-json-patch --save
+```
+### bower
+
+```sh
+$ bower install fast-json-patch --save
+```
+
+### [download as ZIP](https://github.com/my-user/my-repo/archive/master.zip)
+
+
 ## Adding to your project
 
 ### In a web browser
@@ -38,12 +57,6 @@ Include `json-patch.js` if you want support for applying patches **or**
 include `json-patch-duplex.js` if you also want to generate patches.
 
 ### In Node.js
-
-Install the current version (and save it as a dependency in package.json):
-
-```
-$ npm install fast-json-patch --save
-```
 
 Call require to get the instance: 
 
@@ -159,6 +172,16 @@ Compares object trees `obj1` and `obj2` and returns the difference relative to `
 If there are no differences, returns an empty array.
 
 ## Changelog
+
+#### 0.3.9 (Aug 4, 2014)
+
+Feature:
+- expose method `jsonpatch.compare` for comparing two object trees
+
+#### 0.3.8 (Jul 18, 2014)
+
+Feature:
+- minified build now available in [dist/](https://github.com/Starcounter-Jack/JSON-Patch/tree/master/dist) directory ([#9](https://github.com/Starcounter-Jack/JSON-Patch/issues/9))
 
 #### 0.3.7 (May 5, 2014)
 

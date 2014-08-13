@@ -1,6 +1,8 @@
-// json-patch-duplex.js 0.3.7
-// (c) 2013 Joachim Wester
-// MIT license
+/*!
+ * json-patch-duplex.js 0.3.9
+ * (c) 2013 Joachim Wester
+ * MIT license
+ */
 
 interface Object {
   observe : any;
@@ -497,4 +499,5 @@ if (typeof exports !== "undefined") {
   exports.observe = jsonpatch.observe;
   exports.unobserve = jsonpatch.unobserve;
   exports.generate = jsonpatch.generate;
+  exports.compare = jsonpatch.compare;
 }
