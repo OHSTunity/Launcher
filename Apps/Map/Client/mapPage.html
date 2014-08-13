@@ -4,15 +4,14 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/polymer/0.1.4/polymer.js"></script>
 -->
 <!-- Importing Custom Element -->
+<link rel="import" href="/vendor/static-openstreetmap/src/static-openstreetmap.html">
 <template bind="{{Map}}">
 <div>
-	<link rel="import" href="/vendor/static-openstreetmap/src/static-openstreetmap.html">
-
 	<h3>Map</h3>
 	<div>
 		<input value="{{ Address$ }}">
 		Zoom: <input type="number" value="{{ Zoom$ }}" style="width: 30px">
 	</div>
-	<static-openstreetmap query="{{ Address$ }}" width="400" height="400" zoom="{{ Zoom$ }}"></static-openstreetmap>
+	<static-openstreetmap query="{{ Address$ }}" zoom="{{ Zoom$ }}"></static-openstreetmap>
 </div>
 </template>

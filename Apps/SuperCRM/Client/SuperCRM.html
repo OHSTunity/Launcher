@@ -10,7 +10,11 @@
         <h2>{{Message}}</h2>
     </template>
     <template bind="{{FavoriteCustomer}}">
-      <juicy-tile-grid id="juicy-tile:{{Html}}" disabled>
+      <juicy-tile-grid id="juicy-tile:{{Html}}" disabled defaultTileSetup="
+        {
+            'heightAuto': true,
+            'width': '100%'
+        }">
         <template is="imported-template" content="{{Html}}"></template>
       </juicy-tile-grid>
     </template>

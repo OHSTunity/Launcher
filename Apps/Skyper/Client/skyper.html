@@ -7,7 +7,11 @@
     <div class="Skyper">
         <h1>Skyper</h1>
         <template bind="{{MyOnlyFriend}}">
-	        <juicy-tile-grid id="juicy-tile:{{Html}}" disabled>
+	        <juicy-tile-grid id="juicy-tile:{{Html}}" disabled defaultTileSetup="
+        {
+            'heightAuto': true,
+            'width': '100%'
+        }">
 	            <template is="imported-template" content="{{Html}}"></template>
         	</juicy-tile-grid>
         </template>
