@@ -13,24 +13,9 @@ partial class Master : Page {
         Handle.GET("/dashboard", GetNoiseResponse);
         Handle.GET("/menu", GetNoiseResponse);
         Handle.GET<String>("/search?query={?}", GetNoiseResponse);
-        Handle.GET("/supercrm/companies/add", GetNoiseResponse);
-        Handle.GET("/supercrm/partials/companies/add", GetNoiseResponse);
-        Handle.GET<String>("/supercrm/companies/{?}", GetNoiseResponse);
-        Handle.GET<String>("/supercrm/partials/companies/{?}", GetNoiseResponse);
-        Handle.GET("/supercrm/contacts/add", GetNoiseResponse);
-        Handle.GET("/supercrm/partials/contacts/add", GetNoiseResponse);
-        Handle.GET<String>("/supercrm/contacts/{?}", GetNoiseResponse);
-        Handle.GET<String>("/supercrm/partials/contacts/{?}", GetNoiseResponse);
-        Handle.GET("/supercrm/delete-all-data", GetNoiseResponse);
-        Handle.GET("/skyper/friends-list", GetNoiseResponse);
-        Handle.GET("/skyper/partials/friends-list", GetNoiseResponse);
-        Handle.GET("/polyjuiceboilerplate", GetNoiseResponse);
-        Handle.GET("/polyjuiceboilerplate/ingredients", GetNoiseResponse);
-        Handle.GET("/polyjuiceboilerplate/ingredients/add", GetNoiseResponse);
-
-        Handle.GET("/board/threads/add", GetNoiseResponse);
-        Handle.GET("/board/threads", GetNoiseResponse);
-        Handle.GET("/board", GetNoiseResponse);
+        //after https://github.com/Polyjuice/Launcher/issues/13 was closed, Noise App is no longer needed to force namespaces also on single application outputs
+        //however, still waiting for https://github.com/Polyjuice/Launcher/issues/14 / https://github.com/Starcounter/Starcounter/issues/1568 to be able 
+        //to respond to any request with a wildcard
     }
 
     static Response GetNoiseResponse()
