@@ -7,11 +7,15 @@
     <div class="Skyper">
         <h1>Skyper</h1>
         <template bind="{{MyOnlyFriend}}">
-	        <juicy-tile-grid id="juicy-tile:{{Html}}" disabled defaultTileSetup="
-        {
-            'heightAuto': true,
-            'width': '100%'
-        }">
+            <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+            <juicy-tile-grid 
+                id="juicy-tile:{{Html}}" 
+                setup="{{_setup}}" 
+                disabled 
+                defaultTileSetup="{
+                    'heightAuto': true,
+                    'width': '100%'
+                }">
 	            <template is="imported-template" content="{{Html}}"></template>
         	</juicy-tile-grid>
         </template>

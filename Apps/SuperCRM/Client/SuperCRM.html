@@ -10,8 +10,12 @@
         <h2>{{Message}}</h2>
     </template>
     <template bind="{{FavoriteCustomer}}">
-      <juicy-tile-grid id="juicy-tile:{{Html}}" disabled defaultTileSetup="
-        {
+      <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+      <juicy-tile-grid 
+        id="juicy-tile:{{Html}}" 
+        setup="{{_setup}}"
+        disabled 
+        defaultTileSetup="{
             'heightAuto': true,
             'width': '100%'
         }">

@@ -82,7 +82,7 @@
       this.fire('juicy-tile-editor-form-tree-changed');
     },
     getContainerChildElements: function (container) {
-    	//FIXME I may not work (tomalec)
+      //FIXME I may not work (tomalec)
       var model = this.editedTiles;
       var elements = [];
       for (var i = 0, ilen = container.items.length; i < ilen; i++) {
@@ -248,7 +248,9 @@
      * Reverts setup from local storage
      */
     revertChanges: function () {
-      this.editedTiles.loadFromStorage();
+      // do it nice after we will move save-to-storage from juicy-tile-list
+        this.editedTiles.setup = this.editedTiles._storedSetup;
+        this.editedTiles.loadFromString();
       this.modified = this.editedTiles.isModified();
       this.fire('juicy-tile-editor-revert');
       this.getSource();

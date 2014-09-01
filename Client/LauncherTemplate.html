@@ -16,6 +16,7 @@
     <link rel="import" href="/vendor/juicy-tile-grid/src/juicy-tile-grid.html">
     <link rel="import" href="/vendor/juicy-tile-editor/src/juicy-tile-editor.html">
     <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
+    <link rel="import" href="/vendor/core-localstorage/core-localstorage.html">
 
     <link rel="stylesheet" href="/css/style.css">
 
@@ -49,8 +50,13 @@
       </div>
       <template bind="{{ results }}">
         <!-- FIXME: hardcoded priority -->
-        <juicy-tile-grid class="workspace launcher" id="juicy-tile:{{Html}}" disabled defaultTileSetup="
-        {
+        <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+        <juicy-tile-grid 
+          class="workspace launcher" 
+          id="juicy-tile:{{Html}}" 
+          setup="{{_setup}}"
+          disabled 
+          defaultTileSetup="{
             'heightAuto': true,
             'width': '100%'
         }">
@@ -59,11 +65,17 @@
       </template>
         <template repeat="{{ workspaces }}">
         <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}" display-selector=".workspace.{{appName}}"></warpech-display-route>
-        <juicy-tile-grid class="workspace {{appName}}" id="juicy-tile:{{master.Html}}" disabled defaultTileSetup="
-        {
-            'heightAuto': true,
-            'width': '100%'
-        }">
+
+        <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+        <juicy-tile-grid  
+          setup="{{_setup}}"
+          class="workspace {{appName}}" 
+          id="juicy-tile:{{master.Html}}" 
+          disabled 
+          defaultTileSetup="{
+              'heightAuto': true,
+              'width': '100%'
+          }">
             <template bind="{{ master }}">
                 <template is="imported-template" content="{{ Html }}"></template>  
             </template> 
@@ -79,7 +91,8 @@
         rootTemplate.bindingDelegate = new PolymerExpressions;
         rootTemplate.model = obj;
       });
-      window.puppet.useWebSocket = true;
+      // window.puppet.useWebSocket = true;
+      window.puppet.ignoreAdd = /\/_setup/;
     });
   </script>
 </body>
