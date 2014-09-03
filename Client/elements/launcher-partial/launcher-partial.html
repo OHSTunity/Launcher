@@ -1,0 +1,44 @@
+<!--
+`launcher-partial` - Custom Element that extends `<template>` (w/ Polymer's TempalteBinding)
+by providing predefined template content, which should serve to include partials.
+-->
+<!-- Import dependencies -->
+<!-- <link rel="import" href="/vendor/polymer/polymer.html"> -->
+
+<link rel="import" href="../../vendor/imported-template/imported-template.html">
+<link rel="import" href="../../vendor/juicy-tile-grid/src/juicy-tile-grid.html">
+<link rel="import" href="../../vendor/core-localstorage/core-localstorage.html">
+<!-- <link rel="import" href="../../vendor/console-log/console-log.html"> -->
+
+<template>
+  <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+  <juicy-tile-grid 
+      id="juicy-tile:{{Html}}" 
+      setup="{{_setup}}" 
+      defaultTileSetup="{
+          'heightAuto': true,
+          'width': '100%'
+      }">
+    <template is="imported-template" content="{{Html}}"></template>
+</juicy-tile-grid>
+</template>
+<script>
+  (function () {
+    var templ = document.currentScript.ownerDocument.getElementsByTagName("template")[0];
+
+    var LauncherPartialPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
+
+    /**
+     * Use predefined template content.
+     */
+    LauncherPartialPrototype.createdCallback = function LPartialCreated(){
+      this.innerHTML = templ.innerHTML;
+      // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
+    };
+
+    document.register('launcher-partial', {
+      prototype: LauncherPartialPrototype,
+      extends: "template"
+    });   
+  })();
+</script>
