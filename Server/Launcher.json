@@ -13,9 +13,6 @@
     results: {
 	},
 	user: {
-	 userId: "",
-	 password: "",
-	 thumbnail: {}
 	},
 	menu: {
 	},

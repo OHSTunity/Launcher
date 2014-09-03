@@ -40,6 +40,11 @@
 <body>
   <template id="root" bind>
     <pj-dashboard search="{{ searchBar.query$ }}">
+      <div class="pj-launcher-user">
+          <template bind="{{user}}">
+              <template is="imported-template" content="{{ Html }}"></template>
+          </template>
+      </div>
       <div id="launcher-menu">
           <ul>
               <template bind="{{ menu }}">
@@ -92,7 +97,7 @@
         rootTemplate.bindingDelegate = new PolymerExpressions;
         rootTemplate.model = obj;
       });
-      window.puppet.useWebSocket = true;
+      // window.puppet.useWebSocket = true;
       window.puppet.ignoreAdd = /\/_setup/;
     });
   </script>

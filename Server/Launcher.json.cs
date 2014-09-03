@@ -55,6 +55,14 @@ partial class Launcher : Page {
             // X.GET("/launchpad", out resp); // thumbnails only
             launcher.menu = menuResp;
 
+            Response userResp;
+            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
+            // X.GET("/" + query.Value, out resp);
+            // Functional bricks
+            X.GET("/user", out userResp);
+
+            launcher.user = userResp;
+
             return launcher;
         });
 
