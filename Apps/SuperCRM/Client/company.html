@@ -39,19 +39,7 @@
     <div class="SuperCRM-Contacts">
         <h1><i class="icon-adult"></i><span class="i-name">Contacts</span></h1>
 
-        <template repeat="{{ Contacts }}">
-            <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
-            <juicy-tile-grid 
-                id="juicy-tile:{{Html}}" 
-                setup="{{_setup}}" 
-                disabled 
-                defaultTileSetup="{
-                    'heightAuto': true,
-                    'width': '100%'
-                }">
-                <template is="imported-template" content="{{ Html }}"></template>
-            </juicy-tile-grid>
-        </template>
+        <template is="launcher-partial" repeat="{{ Contacts }}"></template>
         <button class="launcher-button" style="background-color:#184259" onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button>
     </div> 
 

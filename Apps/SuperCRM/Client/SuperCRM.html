@@ -9,17 +9,5 @@
     <template if="{{Message}}">
         <h2>{{Message}}</h2>
     </template>
-    <template bind="{{FavoriteCustomer}}">
-      <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
-      <juicy-tile-grid 
-        id="juicy-tile:{{Html}}" 
-        setup="{{_setup}}"
-        disabled 
-        defaultTileSetup="{
-            'heightAuto': true,
-            'width': '100%'
-        }">
-        <template is="imported-template" content="{{Html}}"></template>
-      </juicy-tile-grid>
-    </template>
+    <template is="launcher-partial" bind="{{FavoriteCustomer}}"></template>
 </template>
