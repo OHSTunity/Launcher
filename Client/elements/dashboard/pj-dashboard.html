@@ -134,14 +134,14 @@
 
             <content select=".pj-launcher-user"></content>
 
-            <polymer-ui-icon-button id="account" icon="account"></polymer-ui-icon-button>
+            <!--<polymer-ui-icon-button id="account" icon="account"></polymer-ui-icon-button>-->
             <polymer-ui-icon-button id="settings" icon="settings" on-click="{{toggleEditingMode}}"></polymer-ui-icon-button>
         </polymer-ui-toolbar>
        
-        <polymer-ui-dropdown id="dropdown">
+<!--        <polymer-ui-dropdown id="dropdown">
             <polymer-ui-menu-item icon="settings">Settings</polymer-ui-menu-item>
             <polymer-ui-menu-item icon="close">Log out</polymer-ui-menu-item>
-        </polymer-ui-dropdown>
+        </polymer-ui-dropdown>-->
 
         <template if="{{editingMode}}">
           <div id="elementSettings">
@@ -189,9 +189,9 @@
                 ]
             };
 
-            this.$.account.addEventListener('tap', function () {
-                this.$.dropdown.toggle();
-            }.bind(this));
+            //this.$.account.addEventListener('tap', function () {
+            //    this.$.dropdown.toggle();
+            //}.bind(this));
 
         },
         toggleEditingMode: function(){
