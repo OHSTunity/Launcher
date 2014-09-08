@@ -15,12 +15,15 @@ body {
     background-color: #333c4e;
     color: #8a98b0;
 }
+#launcher-content {
+    flex: 1;
+}
 
 pj-dashboard {
     flex: 1 1 auto;
 }
 
 juicy-tile-grid{
-    flex: 1 1 auto;
+    /*flex: 1 1 auto;*/
     padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
 }

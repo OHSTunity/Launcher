@@ -39,7 +39,9 @@
     <div class="SuperCRM-Contacts">
         <h1><i class="icon-adult"></i><span class="i-name">Contacts</span></h1>
 
-        <template is="launcher-partial" repeat="{{ Contacts }}"></template>
+        <!-- <template is="launcher-partial" repeat="{{ Contacts }}"></template> -->
+        <launcher-root-partial repeat="{{ Contacts }}"></launcher-root-partial>
+        
         <button class="launcher-button" style="background-color:#184259" onclick="getModel(this).AddContact$ = null">Add a contact in {{Name$}}</button>
     </div> 
 

@@ -1,0 +1,74 @@
+<!--
+`launcher-root-partial` - Custom Element (w/ Polymer's TempalteBinding)
+with predefined template content, which should be used to include partials.
+-->
+<!-- Import dependencies -->
+<!-- <link rel="import" href="/vendor/polymer/polymer.html"> -->
+
+<link rel="import" href="../../vendor/imported-template/imported-template.html">
+<link rel="import" href="../../vendor/juicy-tile-grid/src/juicy-tile-grid.html">
+<link rel="import" href="../../vendor/core-localstorage/core-localstorage.html">
+<!-- <link rel="import" href="../../vendor/console-log/console-log.html"> -->
+
+<template id="partial-template">
+  <template bind>
+    <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+    <juicy-tile-grid 
+        id="juicy-tile:{{Html}}" 
+        setup="{{_setup}}"
+        defaultTileSetup="{
+            'heightAuto': true,
+            'width': '100%'
+        }">
+      <template is="imported-template" content="{{Html}}"></template>
+  </juicy-tile-grid>
+  </template>
+</template>
+<script>
+  (function () {
+    var templ = document.currentScript.ownerDocument.getElementById("partial-template");
+
+    var templateAttribute = {
+      'repeat': true,
+      'bind': true,
+      'if': true
+    };
+    function rewriteTempalteAttributes(from, to){      
+      var attribs = from.attributes;
+      var count = attribs.length;
+      while (count-- > 0) {
+        var attrib = attribs[count];
+        if (templateAttribute[attrib.name]) {
+          if (attrib.name !== 'template')
+            to.setAttribute(attrib.name, attrib.value);
+          from.removeAttribute(attrib.name);
+        }
+      }
+    }
+
+    var LauncherPartialPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
+
+    /**
+     * Use predefined template content, rewrite attributes.
+     */
+    LauncherPartialPrototype.createdCallback = function LPartialCreated(){
+      var clone = document.importNode( templ.content, true);
+      rewriteTempalteAttributes( this, clone.querySelector("template") );
+      this.appendChild( clone );
+      // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
+    };
+    /**
+     * Attach model.
+     */
+    LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
+      var innerTempl = this.getElementsByTagName("template")[0];
+      innerTempl.model = this.templateInstance.model;
+      // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
+    };
+
+
+    document.register('launcher-root-partial', {
+      prototype: LauncherPartialPrototype
+    });   
+  })();
+</script>
