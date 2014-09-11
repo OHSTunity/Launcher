@@ -1,9 +1,7 @@
 <!doctype html>
 <head>
     <title>Launcher</title>
-    <script src="/vendor/fast-json-patch/src/json-patch-duplex.js"></script>
     <script src="/vendor/platform/platform.js"></script>
-    <script src="/vendor/PuppetJs/src/puppet.js"></script>
     
     <link rel="import" href="/vendor/polymer/polymer.html">
 
@@ -11,6 +9,7 @@
     <link rel="import" href="/vendor/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
     <link rel="import" href="/vendor/polymer-ui-field/polymer-ui-field.html">
 
+    <link rel="import" href="/vendor/puppet-js/src/puppet-js.html">
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/model-operations/model-operations.html">
     <link rel="import" href="/vendor/juicy-tile-grid/src/juicy-tile-grid.html">
@@ -90,15 +89,5 @@
       </template>
     </pj-dashboard>
   </template>
-  <script>
-    document.addEventListener("polymer-ready", function polymerReadyForLauncher(){
-      window.puppet = new Puppet(null, function (obj) { //setting up global for console access
-        var rootTemplate = document.getElementById("root");
-        rootTemplate.bindingDelegate = new PolymerExpressions;
-        rootTemplate.model = obj;
-      });
-      // window.puppet.useWebSocket = true;
-      window.puppet.ignoreAdd = /\/_setup/;
-    });
-  </script>
+  <puppet-js ref="root" ignoreadd="/_setup"></puppet-js>
 </body>

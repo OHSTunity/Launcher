@@ -135,9 +135,7 @@
     <Content Include="Client\primary-thread.html" />
     <Content Include="Client\vendor\x-html\x-html.html" />
     <Content Include="Client\master.html" />
-    <Content Include="Client\vendor\fast-json-patch\src\json-patch-duplex.js" />
     <Content Include="Client\vendor\platform\platform.js" />
-    <Content Include="Client\vendor\PuppetJS\src\puppet.js" />
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Server\Page.json">
