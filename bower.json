@@ -13,12 +13,12 @@
     "tests"
   ],
   "dependencies": {
-    "platform": "Polymer/platform#~0.3.4",
-    "polymer": "Polymer/polymer#~0.3.4",
-    "fast-json-patch": "~0.3.6",
+    "platform": "Polymer/platform#~0.4.0",
+    "polymer": "Polymer/polymer#~0.4.0",
+    "fast-json-patch": "~0.3.10",
     "imported-template": "gh-pages",
     "model-operations": "polyjuice/model-operations#~0.0.1",
-    "PuppetJs": "~0.1.6",
+    "PuppetJs": "~0.2.0",
     "polymer-ui-field": "Polymer/polymer-ui-field",
     "polymer-ui-dropdown": "Polymer/polymer-ui-dropdown",
     "polymer-ui-toolbar": "Polymer/polymer-ui-toolbar",

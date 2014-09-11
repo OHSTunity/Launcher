@@ -1,4 +1,4 @@
-/*! puppet.js 0.1.12
+/*! puppet.js 0.2.0
  * (c) 2013 Joachim Wester
  * MIT license
  */
@@ -6,7 +6,8 @@
 (function (global) {
   var lastClickHandler
     , lastPopstateHandler
-    , lastBlurHandler;
+    , lastBlurHandler
+    , lastPuppet;
 
   /**
    * Defines a connection to a remote PATCH server, returns callback to a object that is persistent between browser and server
@@ -15,6 +16,10 @@
    * @param obj Optional object where the parsed JSON data will be inserted
    */
   function Puppet(remoteUrl, callback, obj) {
+    if (window.Promise === undefined) {
+      throw new Error("Promise API not available. If you are using an outdated browser, make sure to load a Promise/A+ shim, e.g. https://github.com/jakearchibald/es6-promise");
+    }
+
     this.debug = true;
     this.remoteUrl = remoteUrl;
     this.callback = callback;
@@ -22,7 +27,7 @@
     this.observer = null;
     this.referer = null;
     this.useWebSocket = false; //change to TRUE to enable WebSocket connection
-    this.queue = [];
+    this.localPatchQueue = [];
     this.handleResponseCookie();
 
     this.ignoreCache = [];
@@ -34,7 +39,8 @@
     //puppet.ignoreAdd = /\/\$.+/; //ignore the "add" operations of properties that start with $
     //puppet.ignoreAdd = /\/_.+/; //ignore the "add" operations of properties that start with _
 
-    this.xhr(this.remoteUrl, 'application/json', null, this.bootstrap.bind(this));
+    this.cancelled = false;
+    this.lastRequestPromise = this.xhr(this.remoteUrl, 'application/json', null, this.bootstrap.bind(this));
 
     /**
      * There is on "onpushstate" event, so PuppetJS needs to wrap history.pushState to know when it is called
@@ -110,8 +116,8 @@
     }
   }
 
-  Puppet.prototype.bootstrap = function (event) {
-    var tmp = JSON.parse(event.target.responseText);
+  Puppet.prototype.bootstrap = function (res) {
+    var tmp = JSON.parse(res.responseText);
     recursiveExtend(this.obj, tmp);
 
     recursiveMarkObjProperties(this, "obj");
@@ -127,7 +133,11 @@
     document.body.addEventListener('click', lastClickHandler = this.clickHandler.bind(this));
     window.addEventListener('popstate', lastPopstateHandler = this.historyHandler.bind(this)); //better here than in constructor, because Chrome triggers popstate on page load
     document.body.addEventListener('blur', lastBlurHandler = this.sendLocalChange.bind(this), true);
-    this.fixShadowRootClicks();
+
+    if (!lastPuppet) {
+      lastPuppet = this;
+      this.fixShadowRootClicks();
+    }
 
     if (this.useWebSocket) {
       this.webSocketUpgrade();
@@ -147,6 +157,7 @@
     this._ws.onmessage = function (event) {
       var patches = JSON.parse(event.data);
       that.handleRemoteChange(patches);
+      that.webSocketSendResolve();
     }
   };
 
@@ -173,17 +184,19 @@
   };
 
   Puppet.prototype.setReferer = function (referer) {
-    if(this.referer && this.referer !== referer) {
+    if (this.referer && this.referer !== referer) {
       this.showError("Error: Session lost", "Server replied with a different session ID that was already set. \nPossibly a server restart happened while you were working. \nPlease reload the page.\n\nPrevious session ID: " + this.referer + "\nNew session ID: " + referer);
     }
     this.referer = referer;
   };
 
   Puppet.prototype.observe = function () {
+    this.cancelled = false;
     this.observer = jsonpatch.observe(this.obj, this.queueLocalChange.bind(this));
   };
 
   Puppet.prototype.unobserve = function () {
+    this.cancelled = true;
     if (this.observer) { //there is a bug in JSON-Patch when trying to unobserve something that is already unobserved
       jsonpatch.unobserve(this.obj, this.observer);
       this.observer = null;
@@ -191,22 +204,25 @@
   };
 
   Puppet.prototype.queueLocalChange = function (patches) {
-    Array.prototype.push.apply(this.queue, patches);
+    Array.prototype.push.apply(this.localPatchQueue, patches);
     if ((document.activeElement.nodeName !== 'INPUT' && document.activeElement.nodeName !== 'TEXTAREA') || document.activeElement.getAttribute('update-on') === 'input') {
-      this.flattenPatches(this.queue);
-      if (this.queue.length) {
-        this.handleLocalChange(this.queue);
-        this.queue.length = 0;
+      this.flattenPatches(this.localPatchQueue);
+      if (this.localPatchQueue.length) {
+        this.handleLocalChange(this.localPatchQueue);
+        this.localPatchQueue.length = 0;
       }
     }
   };
 
-  Puppet.prototype.sendLocalChange = function () {
+  Puppet.prototype.sendLocalChange = function (ev) {
+    if (ev && (ev.target === document.body || ev.target.nodeName === "BODY")) { //Polymer warps ev.target so it is not exactly document.body
+      return; //IE triggers blur event on document.body. This is not what we need
+    }
     jsonpatch.generate(this.observer);
-    this.flattenPatches(this.queue);
-    if (this.queue.length) {
-      this.handleLocalChange(this.queue);
-      this.queue.length = 0;
+    this.flattenPatches(this.localPatchQueue);
+    if (this.localPatchQueue.length) {
+      this.handleLocalChange(this.localPatchQueue);
+      this.localPatchQueue.length = 0;
     }
   };
 
@@ -231,37 +247,46 @@
   //merges redundant patches and ignores private member changes
   Puppet.prototype.flattenPatches = function (patches) {
     var seen = {};
-    for (var i = patches.length - 1; i >= 0; i--) {
-      if (this.isIgnored(patches[i].path, patches[i].op)) {
+    for (var i = 0, ilen = patches.length; i < ilen; i++) {
+      if (this.isIgnored(patches[i].path, patches[i].op)) { //if it is ignored, remove patch
         patches.splice(i, 1); //ignore changes to properties that start with PRIVATE_PREFIX
+        ilen--;
+        i--;
       }
-      else if (patches[i].op === 'replace') {
-        if (seen[patches[i].path]) {
+      else if (patches[i].op === 'replace') { //if it is already seen in the patches array, replace the previous instance
+        if (seen[patches[i].path] !== undefined) {
+          patches[seen[patches[i].path]] = patches[i];
           patches.splice(i, 1);
+          ilen--;
+          i--;
         }
         else {
-          seen[patches[i].path] = true;
+          seen[patches[i].path] = i;
         }
       }
     }
   };
 
   Puppet.prototype.handleLocalChange = function (patches) {
+    var that = this;
     var txt = JSON.stringify(patches);
     if (txt.indexOf('__Jasmine_been_here_before__') > -1) {
       throw new Error("PuppetJs did not handle Jasmine test case correctly");
     }
     if (this.useWebSocket) {
-      this._ws.send(txt);
+      this.lastRequestPromise = this.lastRequestPromise.then(function () {
+        return that.webSocketSend(txt);
+      });
     }
     else {
       //"referer" should be used as the url when sending JSON Patches (see https://github.com/PuppetJs/PuppetJs/wiki/Server-communication)
-      this.xhr(this.referer || this.remoteUrl, 'application/json-patch+json', txt, function (event) {
-        var patches = JSON.parse(event.target.responseText || '[]'); //fault tolerance - empty response string should be treated as empty patch array
-        that.handleRemoteChange(patches);
+      this.lastRequestPromise = this.lastRequestPromise.then(function () {
+        return that.xhr(that.referer || that.remoteUrl, 'application/json-patch+json', txt, function (res) {
+          var patches = JSON.parse(res.responseText || '[]'); //fault tolerance - empty response string should be treated as empty patch array
+          that.handleRemoteChange(patches);
+        })
       });
     }
-    var that = this;
     this.unobserve();
     patches.forEach(function (patch) {
       if ((patch.op === "add" || patch.op === "replace" || patch.op === "test") && patch.value === null) {
@@ -285,7 +310,7 @@
     var that = this;
     patches.forEach(function (patch) {
       if (patch.path === "/") {
-        var desc = event.target.responseText;
+        var desc = JSON.stringify(patches);
         if (desc.length > 103) {
           desc = desc.substring(0, 100) + "...";
         }
@@ -303,9 +328,11 @@
 
   Puppet.prototype.changeState = function (href) {
     var that = this;
-    this.xhr(href, 'application/json-patch+json', null, function (event) {
-      var patches = JSON.parse(event.target.responseText || '[]'); //fault tolerance - empty response string should be treated as empty patch array
-      that.handleRemoteChange(patches);
+    this.lastRequestPromise = this.lastRequestPromise.then(function () {
+      return that.xhr(href, 'application/json-patch+json', null, function (res) {
+        var patches = JSON.parse(res.responseText || '[]'); //fault tolerance - empty response string should be treated as empty patch array
+        that.handleRemoteChange(patches);
+      })
     });
   };
 
@@ -320,9 +347,9 @@
       target = target.impl;
     }
 
-    if(target.nodeName !== 'A') {
-      var parentA = closestParent(target, 'A');
-      if(parentA) {
+    if (target.nodeName !== 'A') {
+      var parentA = closestHrefParent(target, 'A');
+      if (parentA) {
         target = parentA;
       }
     }
@@ -398,37 +425,58 @@
   Puppet.prototype.xhr = function (url, accept, data, callback, beforeSend) {
     //this.handleResponseCookie();
     cookie.erase('Location'); //more invasive cookie erasing because sometimes the cookie was still visible in the requests
-
-    var req = new XMLHttpRequest();
     var that = this;
-    req.addEventListener('load', function (event) {
-      that.handleResponseCookie();
-      that.handleResponseHeader(event.target);
-      if (event.target.status >= 400 && event.target.status <= 599) {
-        that.showError('PuppetJs JSON response error', 'Server responded with error ' + event.target.status + ' ' + event.target.statusText + '\n\n' + event.target.responseText);
+    return new Promise(function (resolve, reject) {
+      if (that.cancelled) {
+        console.error("PuppetJs: Promise cancelled on request");
+        reject();
+        return;
+      }
+      var req = new XMLHttpRequest();
+      req.onload = function () {
+        var res = this;
+        that.handleResponseCookie();
+        that.handleResponseHeader(res);
+        if (res.status >= 400 && res.status <= 599) {
+          that.showError('PuppetJs JSON response error', 'Server responded with error ' + res.status + ' ' + res.statusText + '\n\n' + res.responseText);
+          reject();
+        }
+        else {
+          callback.call(that, res);
+          resolve();
+        }
+      };
+      url = url || window.location.href;
+      if (data) {
+        req.open("PATCH", url, true);
+        req.setRequestHeader('Content-Type', 'application/json-patch+json');
       }
       else {
-        callback.call(that, event);
+        req.open("GET", url, true);
       }
-    }, false);
-    url = url || window.location.href;
-    if (data) {
-      req.open("PATCH", url, true);
-      req.setRequestHeader('Content-Type', 'application/json-patch+json');
-    }
-    else {
-      req.open("GET", url, true);
-    }
-    if (accept) {
-      req.setRequestHeader('Accept', accept);
-    }
-    if (this.referer) {
-      req.setRequestHeader('X-Referer', this.referer);
-    }
-    if (beforeSend) {
-      beforeSend.call(that, req);
-    }
-    req.send(data);
+      if (accept) {
+        req.setRequestHeader('Accept', accept);
+      }
+      if (that.referer) {
+        req.setRequestHeader('X-Referer', that.referer);
+      }
+      if (beforeSend) {
+        beforeSend.call(that, req);
+      }
+      req.send(data);
+    });
+  };
+
+  /**
+   * Internal method to perform WebSocket request that returns a promise which is resolved when the response comes
+   * @param data Data payload
+   */
+  Puppet.prototype.webSocketSend = function (data) {
+    var that = this;
+    return new Promise(function (resolve, reject) {
+      that.webSocketSendResolve = resolve;
+      that._ws.send(data);
+    });
   };
 
   /**
@@ -451,9 +499,10 @@
     }
     for (var i = 0, ilen = el.childNodes.length; i < ilen; i++) {
       if (el.childNodes[i].nodeType === 1) {
-        if (el.childNodes[i].shadowRoot) {
-          out.push(el.childNodes[i].shadowRoot);
-          this.findShadowRoots(el.childNodes[i].shadowRoot, out);
+        var shadowRoot = el.childNodes[i].shadowRoot || el.childNodes[i].polymerShadowRoot_;
+        if (shadowRoot) {
+          out.push(shadowRoot);
+          this.findShadowRoots(shadowRoot, out);
         }
         this.findShadowRoots(el.childNodes[i], out);
       }
@@ -466,18 +515,23 @@
    * @see <a href="https://groups.google.com/forum/#!topic/polymer-dev/fDRlCT7nNPU">discussion</a>
    */
   Puppet.prototype.fixShadowRootClicks = function () {
+    var clickHandler = function (event) {
+      if (lastPuppet) {
+        lastPuppet.clickHandler(event);
+      }
+    };
+
     //existing shadow roots
     var shadowRoots = this.findShadowRoots(document.documentElement);
     for (var i = 0, ilen = shadowRoots.length; i < ilen; i++) {
-      (shadowRoots[i].impl || shadowRoots[i]).addEventListener("click", this.clickHandler.bind(this));
+      (shadowRoots[i].impl || shadowRoots[i]).addEventListener("click", clickHandler);
     }
 
     //future shadow roots
     var old = Element.prototype.createShadowRoot;
-    var that = this;
     Element.prototype.createShadowRoot = function () {
       var shadowRoot = old.apply(this, arguments);
-      shadowRoot.addEventListener("click", that.clickHandler.bind(that));
+      shadowRoot.addEventListener("click", clickHandler);
       return shadowRoot;
     }
   };
@@ -492,6 +546,15 @@
       //type string is reported in Polymer / Canary (Web Platform features disabled)
       var parser = document.createElement('A');
       parser.href = elem;
+
+      // @see http://stackoverflow.com/questions/736513/how-do-i-parse-a-url-into-hostname-and-path-in-javascript
+      // IE doesn't populate all link properties when setting .href with a relative URL,
+      // however .href will return an absolute URL which then can be used on itself
+      // to populate these additional fields.
+      if (parser.host == "") {
+        parser.href = parser.href;
+      }
+
       elem = parser;
     }
     return (elem.protocol == window.location.protocol && elem.host == window.location.host);
@@ -535,9 +598,9 @@
   };
 
   //goes up the DOM tree (including given element) until it finds an element that matches the nodeName
-  var closestParent = function (elem, nodeName) {
+  var closestHrefParent = function (elem) {
     while (elem != null) {
-      if (elem.nodeType === 1 && nodeName == elem.nodeName) {
+      if (elem.nodeType === 1 && (elem.href || elem.getAttribute('href'))) {
         return elem;
       }
       elem = elem.parentNode;
