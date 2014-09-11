@@ -1,59 +1,80 @@
 <!doctype html>
 <head>
     <title>Launcher</title>
-    <script src="/vendor/platform/platform.js"></script>
-    
+    <!-- Import Polymer platform -->
+    <script src="/vendor/platform/platform.js"></script>    
     <link rel="import" href="/vendor/polymer/polymer.html">
 
+    <!-- Import our elements -->
+    <link rel="import" href="/elements/launcher-layout/launcher-main.html">
+    <link rel="import" href="/elements/launcher-partial/launcher-partial.html">
+    <link rel="import" href="/elements/launcher-partial/launcher-root-partial.html">
 
-    <link rel="import" href="/vendor/polymer-ui-toggle-button/polymer-ui-toggle-button.html">
-    <link rel="import" href="/vendor/polymer-ui-field/polymer-ui-field.html">
+    <!-- Import other elements used in this document -->
+
+
+    <link rel="import" href="/vendor/core-icon/core-icon.html">
+    <link rel="import" href="/vendor/core-icon-button/core-icon-button.html">
+    <link rel="import" href="/vendor/paper-toggle-button/paper-toggle-button.html">
+    <link rel="import" href="/vendor/core-field/core-field.html">
 
     <link rel="import" href="/vendor/puppet-js/src/puppet-js.html">
     <link rel="import" href="/vendor/imported-template/imported-template.html">
     <link rel="import" href="/vendor/model-operations/model-operations.html">
-    <link rel="import" href="/vendor/juicy-tile-grid/src/juicy-tile-grid.html">
     <link rel="import" href="/vendor/juicy-tile-editor/src/juicy-tile-editor.html">
     <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
-    <link rel="import" href="/vendor/core-localstorage/core-localstorage.html">
-    <link rel="import" href="/elements/launcher-partial/launcher-partial.html">
-    <link rel="import" href="/elements/launcher-partial/launcher-root-partial.html">
 
+    <!-- Style sheets -->
     <link rel="stylesheet" href="/css/style.css">
 
 <!--    <link rel="stylesheet" href="/css/fontello.css">
     <link rel="stylesheet" href="/css/animation.css">-->
 
+    <link rel="stylesheet" href="/css/launcher-main.css">
     <link rel="stylesheet" href="/css/launcher-menu.css">
     <link rel="stylesheet" href="/css/launcher-button.css">
     <link rel="stylesheet" href="/css/launcher-labeledInput.css">
     <link rel="stylesheet" href="/css/launcher-select.css">
+    <link rel="stylesheet" href="/css/launcher-toolbar.css">
 
+    <!-- Others -->
     <script src="/vendor/css-element-queries/src/ElementQueries.js"></script>
     <script src="/vendor/css-element-queries/src/ResizeSensor.js"></script>
 
-    <!-- Import our elements -->
-    <link rel="import" href="/elements/dashboard/pj-dashboard.html">
 
 </head>
 
-<body>
+<body is="launcher-main">
   <template id="root" bind>
-    <pj-dashboard search="{{ searchBar.query$ }}">
-      <div class="pj-launcher-user">
+      <div class="launcher-toolbar launcher-topbar">
+          <a href="/"><img id="homeIcon" src="/images/elusive-iconfont/dev/icons-svg/home.svg"></a>
+          <core-field class="launcher-theme">
+              <core-icon icon="search"></core-icon>
+              <input placeholder="Search" value="{{search}}" update-on="input"/>
+          </core-field>
           <template bind="{{user}}">
               <template is="imported-template" content="{{ Html }}"></template>
           </template>
-      </div>
-      <div id="launcher-menu">
-          <ul>
-              <template bind="{{ menu }}">
-                  <template is="imported-template" content="{{ Html }}"></template>
-              </template>
-              <li><a href="/do-nothing">Do nothing</a></li>
-          </ul>
 
+          <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
+          <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" ></core-icon-button>
       </div>
+
+      <template if="{{editingMode$}}">
+        <div id="elementSettings" class="launcher-topbar">
+          <juicy-tile-editor selectionMode watchedTagNames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']"></juicy-tile-editor>
+        </div>
+      </template>
+
+      <div id="launcher-menu">
+        <ul>
+          <template bind="{{ menu }}">
+              <template is="imported-template" content="{{ Html }}"></template>
+          </template>
+          <li><a href="/do-nothing">Do nothing</a></li>
+        </ul>
+      </div>
+
       <div id="launcher-content">
           <!-- Dashboard/results -->
           <launcher-root-partial
@@ -68,8 +89,18 @@
               <launcher-root-partial
                 class="workspace {{appName}}" bind="{{master}}"></launcher-root-partial>
           </template>
+
+
       </div>
-    </pj-dashboard>
+      <div id="filters">
+          <h2>Filter</h2>
+          <template repeat="{{ appFilter }}">
+              <core-field class="align-center">
+                  <paper-toggle-button class="launcher-theme" role="button" aria-pressed="true" tabindex="0" checked="{{on$}}"></paper-toggle-button>
+                  <label>{{appName}}</label>
+              </core-field>
+          </template>
+      </div>
   </template>
   <puppet-js ref="root" ignoreadd="/_setup"></puppet-js>
 </body>

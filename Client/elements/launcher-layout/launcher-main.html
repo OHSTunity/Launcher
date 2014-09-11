@@ -1,0 +1,53 @@
+<!-- 
+ `launcher-main` - 
+ Custom Element that extends `<body>` to create Launcher main screen layout
+ Uses `.launcher-topbar` and `.launcher-menu` selectors to distribute specific content accordingly.
+-->
+<link rel="import" href="../../vendor/polymer/polymer.html">
+
+<polymer-element name="launcher-main" extends="body" noscript>
+<template>
+  <style>
+    :host {
+      display: -webkit-flex;
+      display: flex;
+
+      -webkit-flex-direction: column;
+      flex-direction: column;
+
+      -webkit-flex: 1 1 auto;
+      flex: 1 1 auto;
+    }
+    #top {
+      display: -webkit-flex;
+      display: flex;
+
+      -webkit-flex-direction: column;
+      flex-direction: column;
+
+      -webkit-flex: 0 1 auto;
+      flex: 0 1 auto;
+
+      z-index: 100;
+    }
+
+    #main {
+      display: -webkit-flex;
+      display: flex;
+
+      -webkit-flex: 1 1 auto;
+      flex: 1 1 auto;
+
+      -webkit-flex-direction: row;
+      flex-direction: row;
+    }
+  </style>
+  <div id="top">
+      <content select=".launcher-topbar"></content>
+  </div>
+  <div id="main">
+      <content select=".launcher-menu"></content>
+      <content></content>
+  </div>
+</template>
+</polymer-element>

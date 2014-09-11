@@ -6,21 +6,12 @@
     height: 100%;
 }
 
-body {
-    display: flex;
-}
-
 #launcher-menu {
     flex: 0 1 auto;
-    background-color: #333c4e;
     color: #8a98b0;
 }
 #launcher-content {
     flex: 1;
-}
-
-pj-dashboard {
-    flex: 1 1 auto;
 }
 
 juicy-tile-grid{

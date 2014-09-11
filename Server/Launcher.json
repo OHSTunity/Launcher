@@ -1,26 +1,25 @@
 {
-   homeThumbnail: {},
-   homeUrl: "",
-   searchBar: {
-     query$: "",
-	 feedback: [{
-	   text: "",
-	   matchScore: 0.5,
-	   url: "",
-	   thumbnail: {}
-	 }]
-   },
-    results: {
+	homeThumbnail: {},
+	homeUrl: "",
+	editingMode$: false,
+	searchBar: {
+		query$: "",
+		feedback: [{
+		text: "",
+		matchScore: 0.5,
+		url: "",
+		thumbnail: {}
+		}]
 	},
-	user: {
-	},
-	menu: {
-	},
-	appFilter: {
-	  on: true,
+	results: {},
+	user: {},
+	menu: {},
+	appFilter: [{
+	  appName: "",
+	  on$: true,
 	  text: "",
 	  thumbnail: {}
-	},
+	}],
 	uri: "",
 	focusedWorkspace: 1,
 	workspaces: [

@@ -26,10 +26,14 @@ partial class Launcher : Page {
             Launcher launcher;
             if (Session.Current == null)
             {
-                launcher = new Launcher()
-            {
-                Html = "/LauncherTemplate.html"
-            };
+                launcher = new Launcher(){
+                    Html = "/LauncherTemplate.html"
+                };
+
+                launcher.appFilter.Add(new appFilterElementJson() { appName = "Super CRM" });
+                launcher.appFilter.Add(new appFilterElementJson() { appName = "Skyper" });
+                launcher.appFilter.Add(new appFilterElementJson() { appName = "Noise" });
+                launcher.appFilter.Add(new appFilterElementJson() { appName = "Map" });
                 launcher.Session = new Session();
             }
             else
