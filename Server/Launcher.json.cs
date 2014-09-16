@@ -86,10 +86,20 @@ partial class Launcher : Page {
             return mainResponse;
         });
 
+        Handle.GET("/launcher/dashboard", () =>
+        {
+            Launcher launcher = (Launcher)X.GET("/");
+            Response resp;
+            X.GET("/app-icon", out resp);
+            launcher.dashboard = resp;
+            return launcher;
+
+        });
         //do-nothing handler reproduces problem with link handling in Polyjuice Launcher
         //expected: clicking on a link should result in a Patch to the client that contains only the changed part
         //actual: for some reason, the Patch replaces the whole root path (/)
-        Handle.GET("/do-nothing", () => {
+        Handle.GET("/do-nothing", () =>
+        {
             Launcher launcher = (Launcher)Launcher.GET("/");
             launcher.focusedWorkspace = 99;
             return launcher;
@@ -162,6 +172,20 @@ partial class Launcher : Page {
         // Setting default handler level to 1.
         HandlerOptions.DefaultHandlerLevel = 1;
         Handlers.AddExtraHandlerLevel();
+
+
+        // Launcher's entries for the menu
+        // does not get merged :(
+        // HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
+        // Handle.GET("/menu", () =>
+        // {
+        //     var p = new Page()
+        //     {
+        //         Html = "/LauncherMenu.html"
+        //     };
+        //     return p;
+        // }, h1);
+
     }
 
     static Response WorkspaceResponse(String appName, String uri)
