@@ -72,7 +72,11 @@
 }
 
 /* Input */
-.launcher-labeled-input input[type=text] {
+.launcher-labeled-input input[type=text], 
+.launcher-labeled-input input[type=email], 
+.launcher-labeled-input input[type=checkbox], 
+.launcher-labeled-input input[type=password], 
+.launcher-labeled-input input[type=number]{
 	-webkit-flex: 1 1 auto;
 	flex: 1 1 auto;
 
@@ -95,7 +99,11 @@
 
 
 /* Input (lable ontop) */
-.launcher-labeled-input[max-width="300px"] input[type=text] {
+.launcher-labeled-input[max-width="300px"] input[type=text], 
+.launcher-labeled-input[max-width="300px"] input[type=email],
+.launcher-labeled-input[max-width="300px"] input[type=checkbox],
+.launcher-labeled-input[max-width="300px"] input[type=password],
+.launcher-labeled-input[max-width="300px"] input[type=number]{
 	align-self: stretch;
 
 	margin: 0px;

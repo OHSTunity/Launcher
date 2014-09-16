@@ -31,3 +31,8 @@
 .launcher-button:focus {
 	border:1px solid black;
 }
+
+.launcher-button:disabled {
+	background-color: #dddddd;
+	color: #777777;
+}
