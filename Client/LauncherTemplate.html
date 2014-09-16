@@ -45,8 +45,7 @@
 </head>
 
 <body is="launcher-main">
-  <template id="root" bind >
-  <template bind="{{Launcher}}">
+  <template id="root" bind>
       <div class="launcher-toolbar launcher-topbar">
           <a href="/"><img id="homeIcon" src="/images/elusive-iconfont/dev/icons-svg/home.svg"></a>
           <core-field class="launcher-theme">
@@ -103,6 +102,5 @@
           </template>
       </div>
   </template>
-  </template>
-  <puppet-js ref="root" ignoreadd="/_setup"></puppet-js>
+  <puppet-js ref="root" ignoreadd="/_setup" useWebSocket></puppet-js>
 </body>
