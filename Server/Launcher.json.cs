@@ -72,13 +72,7 @@ partial class Launcher : Page {
 
         // Not actually a merger anymore but linker of sibling Json parts.
         Handle.MergeResponses((Request req, List<Response> responses) => {
-            
             var mainResponse = responses[0];
-
-            // Checking if there is only one response, so we don't merge.
-            if (responses.Count == 1)
-                return mainResponse;
-           
             var json = mainResponse.Resource as Json;
 
             if (json != null && json.GetHtmlPartialUrl() != null) {
