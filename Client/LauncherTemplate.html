@@ -50,7 +50,7 @@
           <a href="/"><img id="homeIcon" src="/images/elusive-iconfont/dev/icons-svg/home.svg"></a>
           <core-field class="launcher-theme">
               <core-icon icon="search"></core-icon>
-              <input placeholder="Search" value="{{search}}" update-on="input"/>
+              <input placeholder="Search" value="{{searchBar.query$}}" update-on="input"/>
           </core-field>
           <template bind="{{user}}">
               <template is="imported-template" content="{{ Html }}"></template>
