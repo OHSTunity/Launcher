@@ -1,0 +1,91 @@
+<!-- 
+    Polymer Element to handle `<juicy-tile-list>` (or `-grid`) setup changes (staging, reverting, saving to storage).
+-->
+
+<!-- Import Polymer -->
+<!-- <link rel="import" href="../../polymer/polymer.html"> -->
+
+<!-- Define your custom element -->
+<polymer-element name="juicy-tiles-setup-sync" attributes="storedValue history currentValue autoSave">
+    <script>
+        Polymer('juicy-tiles-setup-sync', {
+            storedValue: null,
+            tileList: null,
+            //history: [],
+    
+            /**
+             * Current data.
+             *
+             * @attribute currentValue
+             * @type object
+             * @default null
+             */
+            // gimme Vanilla setters
+            // currentValue: null,
+            // {
+            //     set: function( value ){
+            //         console.info("currentValue set", arguments);
+            //         this.tileList.setup = value;
+            //     },
+            //     get: function(){
+            //         console.info("currentValue get");
+            //         return this.tileList.setup;
+            //     }
+            // },
+            
+            /**
+             * If true, auto save is enabled.
+             *
+             * @attribute autoSave
+             * @type boolean
+             * @default false
+             */
+            // autoSave: false,
+            
+            attached: function() {
+              // wait for bindings are all setup
+              globme = this;
+              this.tileList = this.nextElementSibling;
+              // this.currentValue = this.tileList.setup;
+              this.tileList.sync = this;
+            },
+            detached: function(){
+              delete this.tileList.sync;
+              this.tileList = null;  
+              // this.currentValue = null;
+            },
+    
+    
+            // load: function( revisionNumber ) {
+            // },
+    
+            /** 
+             * Saves the current value.
+             *
+             * @method save
+             */
+            save: function() {
+                this.storedValue = JSON.parse( JSON.stringify( this.tileList.setup ) );
+            },
+            revert: function(){
+                // this.currentValue = JSON.parse(JSON.stringify( this.storedValue ));
+                this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify( this.storedValue ));
+            },
+            isModified: function(){
+                // return JSON.stringify( this.storedValue ) != JSON.stringify( this.currentValue );
+                return JSON.stringify( this.storedValue ) != JSON.stringify( this.tileList.setup );
+            },
+
+            storedValueChanged: function(oldVal, newVal){
+                var newJson = JSON.stringify( newVal );
+                // if( JSON.stringify( this.currentValue ) != newJson ){
+                if( JSON.stringify( this.tileList.setup ) != newJson ){
+                    // this.currentValue = JSON.parse( newJson );
+                    this.tileList.setup = JSON.parse( newJson );
+                }
+                console.log("storedValueChanged", oldVal, newVal)
+            }
+        });
+    </script>
+
+</polymer-element>

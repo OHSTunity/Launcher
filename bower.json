@@ -25,9 +25,10 @@
     "juicy-redirect": "Juicy/juicy-redirect#~0.1.0",
     "warpech-display-router": "warpech/warpech-display-router#0.1.0",
     "css-element-queries": "marcj/css-element-queries#master",
-    "core-localstorage": "Polymer/core-localstorage#0.3.4",
+    "core-localstorage": "Polymer/core-localstorage#~0.4.1",
     "puppet-js": "~0.0.3",
     "core-icon-button": "Polymer/core-icon-button#~0.4.0",
-    "core-field": "Polymer/core-field#~0.4.0"
+    "core-field": "Polymer/core-field#~0.4.0",
+    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages"
   }
 }
