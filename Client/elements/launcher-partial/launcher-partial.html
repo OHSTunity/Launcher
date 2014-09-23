@@ -7,14 +7,17 @@ by providing predefined template content, which should serve to include partials
 
 <link rel="import" href="../../vendor/imported-template/imported-template.html">
 <link rel="import" href="../../vendor/juicy-tile-grid/src/juicy-tile-grid.html">
+<link rel="import" href="../../vendor/juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
 <link rel="import" href="../../vendor/core-localstorage/core-localstorage.html">
 <!-- <link rel="import" href="../../vendor/console-log/console-log.html"> -->
 
 <template>
+  <juicy-tiles-setup-sync name="juicy-tile:{{Html}}" value="{{_setup}}"></juicy-tiles-setup-sync>
   <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
+  <juicy-tiles-setup-sync name="juicy-tile:{{Html}}" storedValue="{{_setup}}" ></juicy-tiles-setup-sync>
   <juicy-tile-grid 
       id="juicy-tile:{{Html}}" 
-      setup="{{_setup}}" 
+      setup="[[_setup | clonedSetup ]]" 
       defaultTileSetup="{
           'heightAuto': true,
           'width': '100%'
@@ -33,6 +36,26 @@ by providing predefined template content, which should serve to include partials
      */
     LauncherPartialPrototype.createdCallback = function LPartialCreated(){
       this.innerHTML = templ.innerHTML;
+      this.bindingDelegate = new PolymerExpressions();
+      this.bindingDelegate.clonedSetup = {
+
+        toDOM: function (json, letter) {
+          // debugger
+          if(typeof json == "object"){
+            return JSON.parse(JSON.stringify(json));
+          } else{
+            return json;
+          }
+        },
+        toModel: function (json, letter) {
+          // debugger
+          if(typeof json == "object"){
+            return JSON.parse(JSON.stringify(json));
+          } else{
+            return json;
+          }
+        }
+      }
       // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
     };
 
