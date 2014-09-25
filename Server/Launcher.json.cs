@@ -50,6 +50,10 @@ partial class Launcher : Page {
             // X.GET("/launchpad", out resp); // thumbnails only
             launcher.results = resp;
 
+            Response icons;
+            X.GET("/app-icon", out icons); // thumbnails only
+            launcher.launchpad.icons = icons;
+
             Response menuResp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);

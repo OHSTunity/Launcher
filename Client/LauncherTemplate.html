@@ -23,6 +23,7 @@
     <link rel="import" href="/vendor/model-operations/model-operations.html">
     <link rel="import" href="/vendor/juicy-tile-editor/src/juicy-tile-editor.html">
     <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
+    <link rel="import" href="/vendor/x-html/juicy-html.html">
 
     <!-- Style sheets -->
     <link rel="stylesheet" href="/css/style.css">
@@ -76,6 +77,43 @@
       </div>
 
       <div id="launcher-content">
+          <!-- Launchpad -->
+          Launchpad
+          <template is="juicy-html" content="/app-name"></template>
+          <template is="juicy-html" content="/app-icon"></template>
+          merger:<template is="imported-template" content="{{launchpad.icons.Html}}"></template>
+
+          <template bind="{{launchpad.icons}}">
+              <juicy-tile-grid 
+                  id="juicy-tile:{{Html}}" 
+                  defaultTileSetup="{
+                      'height': 66,
+                      'width': 66
+                  }"
+                  gutter="20"
+                  class="launchpad">
+                  <style>
+                  .launchpad{
+                    width: 100%;
+                    display: block;
+                  }
+
+                  .launchpad > *{
+                    padding: 2px;
+                    border-radius: 13px;
+                  }
+                  .launchpad > *:hover {
+                    box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
+
+                  }
+                  </style>
+                 <template is="imported-template" content="{{Html}}"></template>
+              </juicy-tile-grid>
+          </template>
+          <!-- <launcher-root-partial -->
+            <!-- class="workspace launcher" bind="{{ results }}"></launcher-root-partial> -->
+            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
+
           <!-- Dashboard/results -->
           <launcher-root-partial
             class="workspace launcher" bind="{{ results }}"></launcher-root-partial>

@@ -14,7 +14,10 @@
 	results: {},
 	user: {},
 	menu: {},
-	launchpad: {},
+	launchpad: {
+		icons: {},
+		names:{}
+	},
 	dashboard:{},
 	appFilter: [{
 	  appName: "",
