@@ -41,6 +41,15 @@ partial class Launcher : Page {
                 launcher = (Launcher)Session.Current.Data;
             }
 
+            // Check if there is any App that would like to occupy "/" location.
+            Response otherAppIndex;
+            X.GET("/index", out otherAppIndex);
+            if (otherAppIndex.Resource != null) //TODO: Provide nicer check (tomalec)
+            {
+                return otherAppIndex;
+            }
+            // if not proceed as usuall
+
             Response resp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
@@ -76,6 +85,14 @@ partial class Launcher : Page {
 
         // Not actually a merger anymore but linker of sibling Json parts.
         Handle.MergeResponses((Request req, List<Response> responses) => {
+            // Handle "/"-> "/index" request in special way, so app may replace Launcher's response
+            if (req.Uri == "/index")
+            {
+                // responses.Sort( by Priority )
+                return responses[0];
+            }
+
+
             var mainResponse = responses[0];
             var json = mainResponse.Resource as Json;
 
