@@ -23,10 +23,26 @@ partial class Launcher : Page {
 
         // Dashboard
         Handle.GET("/", () => {
+            // Check if there is any App that would like to occupy "/" location.
+            Response otherAppIndex;
+            X.GET("/index", out otherAppIndex);
+            if (otherAppIndex.Resource != null) //TODO: Provide nicer check (tomalec)
+            {
+                return otherAppIndex;
+            }
+            else // if not proceed with Launcher's one
+            {
+                return (Launcher)X.GET("/launcher");
+            }
+
+        });
+        Handle.GET("/launcher", () =>
+        {
             Launcher launcher;
             if (Session.Current == null)
             {
-                launcher = new Launcher(){
+                launcher = new Launcher()
+                {
                     Html = "/LauncherTemplate.html"
                 };
 
@@ -40,15 +56,6 @@ partial class Launcher : Page {
             {
                 launcher = (Launcher)Session.Current.Data;
             }
-
-            // Check if there is any App that would like to occupy "/" location.
-            Response otherAppIndex;
-            X.GET("/index", out otherAppIndex);
-            if (otherAppIndex.Resource != null) //TODO: Provide nicer check (tomalec)
-            {
-                return otherAppIndex;
-            }
-            // if not proceed as usuall
 
             Response resp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
