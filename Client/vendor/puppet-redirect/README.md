@@ -1,20 +1,20 @@
-# &lt;link is="juicy-redirect"&gt;
+# &lt;link is="puppet-redirect"&gt;
 
 > Custom Element that redirects to a new URL when an attribute is changed. It can be configured to work using window location or History API.
 
 ## Demo
 
-[Check it live!](http://juicy.github.io/juicy-redirect)
+[Check it live!](http://PuppetJs.github.io/puppet-redirect)
 
 ## Install
 
 Install the component using [Bower](http://bower.io/):
 
 ```sh
-$ bower install juicy-redirect --save
+$ bower install puppet-redirect --save
 ```
 
-Or [download as ZIP](https://github.com/juicy/juicy-redirect/archive/gh-pages.zip).
+Or [download as ZIP](https://github.com/PuppetJs/puppet-redirect/archive/gh-pages.zip).
 
 ## Usage
 
@@ -27,13 +27,13 @@ Or [download as ZIP](https://github.com/juicy/juicy-redirect/archive/gh-pages.zi
 2. Import Custom Element:
 
     ```html
-    <link rel="import" href="bower_components/juicy-redirect/src/juicy-redirect.html">
+    <link rel="import" href="bower_components/puppet-redirect/src/puppet-redirect.html">
     ```
 
 3. Start using it!
 
     ```html
-    <link is="juicy-redirect" url=""></juicy-redirect>
+    <link is="puppet-redirect" url=""></puppet-redirect>
     ```
 
 ## Attributes
@@ -48,7 +48,7 @@ Attribute      | Options            | Default  | Description
 
 Name                       | Details             | Bubbles  | Description
 ---                        | ---                 | ---      | ---
-`juicy-redirect-pushstate` | `{url: "/new/path"}` |   yes    | Triggers every tie `history.state` is changed by the element
+`puppet-redirect-pushstate`| `{url: "/new/path"}` |   yes    | Triggers every tie `history.state` is changed by the element. This event is being listened by PuppetJs, and triggers updating its state.
 
 ## Methods
 
@@ -66,7 +66,7 @@ Name       | Parameters     | Returns                            | Description
 
 ## History
 
-For detailed changelog, check [Releases](https://github.com/juicy/redirect/releases).
+For detailed changelog, check [Releases](https://github.com/PuppetJs/redirect/releases).
 
 ## License
 

@@ -1,23 +1,23 @@
 <script>
     (function (global) {
-        var JuicyRedirectElementPrototype = Object.create(HTMLLinkElement.prototype);
+        var PuppetRedirectElementPrototype = Object.create(HTMLLinkElement.prototype);
 
-        JuicyRedirectElementPrototype.attachedCallback = function(){
+        PuppetRedirectElementPrototype.attachedCallback = function(){
             this.redirect( this.getAttribute("url") );
         }
         /**
-         * @event juicy-redirect-pushstate
+         * @event puppet-redirect-pushstate
          * Called whenever `history.state` is changed.
          * @property {String} url new URL
          */
-        JuicyRedirectElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
+        PuppetRedirectElementPrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
             switch(attributeName) {
                 case "url":
                     document.contains(this) && this.redirect( newVal );
                     break;
             }
         };
-        JuicyRedirectElementPrototype.redirect = function(url){
+        PuppetRedirectElementPrototype.redirect = function(url){
             if(!url){
                 return false;
             }
@@ -28,7 +28,7 @@
                 history.pushState(null, null, url);
                 this.dispatchEvent(
                     new CustomEvent(
-                        "juicy-redirect-pushstate",
+                        "puppet-redirect-pushstate",
                         {
                             "detail":{"url":url},
                             "bubbles": true
@@ -43,8 +43,8 @@
             return url;
         }
 
-        global.JuicyRedirectElement = document.registerElement('juicy-redirect', {
-            prototype: JuicyRedirectElementPrototype,
+        global.PuppetRedirectElement = document.registerElement('puppet-redirect', {
+            prototype: PuppetRedirectElementPrototype,
             extends: "link"
         });
     })(window);
