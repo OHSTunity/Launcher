@@ -20,7 +20,6 @@ partial class Launcher : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
-
         // Dashboard
         Handle.GET("/", () => {
             // Check if there is any App that would like to occupy "/" location.
@@ -57,18 +56,13 @@ partial class Launcher : Page {
                 launcher = (Launcher)Session.Current.Data;
             }
 
-            Response resp;
-            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
-            // X.GET("/" + query.Value, out resp);
-            // Functional bricks
-            X.GET("/dashboard", out resp);
-
-            // X.GET("/launchpad", out resp); // thumbnails only
-            launcher.results = resp;
-
             Response icons;
             X.GET("/app-icon", out icons); // thumbnails only
             launcher.launchpad.icons = icons;
+
+            Response names;
+            X.GET("/app-name", out names);
+            launcher.launchpad.names = names;
 
             Response menuResp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
@@ -122,10 +116,18 @@ partial class Launcher : Page {
 
         Handle.GET("/launcher/dashboard", () =>
         {
-            Launcher launcher = (Launcher)X.GET("/");
+            Launcher launcher = (Launcher)X.GET("/launcher");
+
             Response resp;
-            X.GET("/app-icon", out resp);
-            launcher.dashboard = resp;
+            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
+            // X.GET("/" + query.Value, out resp);
+            // Functional bricks
+            X.GET("/dashboard", out resp);
+
+            // X.GET("/launchpad", out resp); // thumbnails only
+            launcher.results = resp;
+
+
             return launcher;
 
         });
@@ -148,16 +150,38 @@ partial class Launcher : Page {
         });
 
         // Merges HTML partials according to provided URLs.
-        Handle.GET("/polyjuice-merger?{?}", (String s) => {
+        Handle.GET("/polyjuice-merger?{?}", (String s) =>
+        {
             StringBuilder sb = new StringBuilder();
 
             String[] allPartialInfos = s.Split(new char[] { '&' });
 
-            foreach (String appNamePlusPartialUrl in allPartialInfos) {
+            foreach (String appNamePlusPartialUrl in allPartialInfos)
+            {
                 String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
                 Response resp;
                 X.GET(a[1], out resp);
                 sb.Append(resp.Body);
+            }
+
+            return sb.ToString();
+        });
+
+        // Merges HTML partials according to provided URLs.
+        Handle.GET("/launchpad/polyjuice-merger?{?}", (String s) =>
+        {
+            StringBuilder sb = new StringBuilder();
+
+            String[] allPartialInfos = s.Split(new char[] { '&' });
+
+            foreach (String appNamePlusPartialUrl in allPartialInfos)
+            {
+                String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
+                Response resp;
+                X.GET(a[1], out resp);
+                sb.Append("<launchpad-tile appname=\""+ a[0] +"\">");
+                sb.Append(resp.Body);
+                sb.Append("</launchpad-tile>");
             }
 
             return sb.ToString();
