@@ -224,7 +224,7 @@ partial class Launcher : Page {
 
     static Response WorkspaceResponse(String appName, String uri)
     {
-        Launcher launcher = (Launcher)Launcher.GET("/");
+        Launcher launcher = (Launcher)Launcher.GET("/launcher");
         Launcher.workspacesElementJson foundWorkspace = null;
         for (var i = 0; i < launcher.workspaces.Count; i++)
         {
