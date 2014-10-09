@@ -9,6 +9,9 @@
     <link rel="import" href="/elements/launcher-layout/launcher-main.html">
     <link rel="import" href="/elements/launcher-partial/launcher-partial.html">
     <link rel="import" href="/elements/launcher-partial/launcher-root-partial.html">
+    <link rel="import" href="/elements/launcher-launchpad/launcher-launchpad.html">
+
+    <link rel="import" href="/vendor/console-log/console-log.html">
 
     <!-- Import other elements used in this document -->
 
@@ -36,6 +39,7 @@
     <link rel="stylesheet" href="/css/launcher-labeledInput.css">
     <link rel="stylesheet" href="/css/launcher-select.css">
     <link rel="stylesheet" href="/css/launcher-toolbar.css">
+    <link rel="stylesheet" href="/css/launcher-launchpad.css">
 
     <!-- Others -->
     <script src="/vendor/css-element-queries/src/ElementQueries.js"></script>
@@ -68,6 +72,7 @@
 
       <div id="launcher-menu">
         <ul>
+          <li><a href="/launcher/dashboard"><core-icon icon="drive-site"></core-icon>Dashboard</a></li>
           <template bind="{{ menu }}">
               <template is="imported-template" content="{{ Html }}"></template>
           </template>
@@ -75,39 +80,25 @@
         </ul>
       </div>
 
-      <div id="launcher-content">
-          <!-- Launchpad -->
+      <div id="launcher-content">          
+        <div class="launchpad">
+          <h1>Launchpad</h1>
+          <juicy-tile-grid 
+              id="juicy-tile:/launchpad" 
+              defaultTileSetup="{
+                  'height': 82,
+                  'width': 68
+              }"
+              gutter="20"
+              class="launchpad-grid">
 
-          <template bind="{{launchpad.icons}}">
-              <div class="launchpad">
-              <h1>Launchpad</h1>
-              <juicy-tile-grid 
-                  id="juicy-tile:{{Html}}" 
-                  defaultTileSetup="{
-                      'height': 66,
-                      'width': 66
-                  }"
-                  gutter="20"
-                  class="launchpad-icons">
-                  <style>
-                  .launchpad-icons{
-                    width: 100%;
-                    display: block;
-                  }
-
-                  .launchpad-icons > *{
-                    padding: 2px;
-                    border-radius: 13px;
-                  }
-                  .launchpad-icons > *:hover {
-                    box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
-
-                  }
-                  </style>
-                 <template is="imported-template" content="{{Html}}"></template>
-              </juicy-tile-grid>
-              <warpech-display-route match-path="^\/$|\/launcher" display-selector=".launchpad"></warpech-display-route>
-          </template>
+            <!-- `<template is=` is needed only because `juicy-tile-list` filtering -->
+            <template is="launcher-launchpad" json="{{launchpad}}"></template>
+            <!-- <launcher-launchpad json="{{launchpad}}"></launcher-launchpad> -->
+          </juicy-tile-grid>
+        </div>
+        <warpech-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></warpech-display-route>
+          
           <!-- <launcher-root-partial -->
             <!-- class="workspace launcher" bind="{{ results }}"></launcher-root-partial> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
@@ -117,7 +108,7 @@
             class="workspace launcher" bind="{{ results }}">
             </launcher-root-partial>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-          <warpech-display-route match-path="^\/$|(\/launcher\/(?!workspace))" display-selector=".workspace.launcher"></warpech-display-route>
+          <warpech-display-route match-path="^\/launcher\/(?!workspace)" display-selector=".workspace.launcher"></warpech-display-route>
                 
           <!-- Workspaces -->
           <template repeat="{{ workspaces }}">

@@ -1,0 +1,173 @@
+<link rel="import" href="../../vendor/polymer/polymer.html">
+
+<template id="launchpad-tile">
+  <launchpad-tile>
+    <a href="/workspace/{{name.name}}">
+      <launchpad-icon>
+        <!-- icon goes here -->
+      </launchpad-icon>
+      <h5 title="{{name.description}}">{{name.name}}</h5>
+    </a>
+  </launchpad-tile>
+
+</template>
+
+<polymer-element name="launcher-launchpad" attributes="json" extends="template">
+<script>
+  (function () {
+    var tileTempl = document.currentScript.ownerDocument.getElementById("launchpad-tile");
+    var LauncherLaunchpadPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
+
+    function mapPerAppName(json){
+      var map = {};
+
+      for (var appName in json.icons) {
+        if( json.icons.hasOwnProperty( appName ) ) {
+          map[appName] = {
+            icon: json.icons[appName]
+            //, name: null
+          }
+        } 
+      }
+      for (var appName in json.names) {
+        if( json.names.hasOwnProperty( appName ) ) {
+          if(map[appName]){
+            map[appName].name = json.names[appName];
+          } else{
+            map[appName] = {
+              name: json.names[appName]
+              //, icon: null
+            }
+          }
+        } 
+      }
+      return map;
+    }
+
+    /**
+     * Import icons partial via HTML Import, and replicate its `<template>`.
+     * @IDEA: return promise (if supported) for document load (tomalec)
+     * @public only for debugging.
+     * @return {launcher-launchpad}      self
+     */
+    LauncherLaunchpadPrototype.loadTemplate_ = function _importHTMLImport() {
+      var href = "/launchpad" + this.json.icons.Html;
+      //href is a URL, load the partial from the HTTP server/cache
+      var link = document.createElement('link');
+      link.rel = "import";
+      link.href = href;
+      var launchpad = this;
+      link.onload =  function processImportedDocument(){
+        launchpad.clear();
+        // TODO: clear previous template (tomalec)
+        var tiles = this.import.querySelectorAll("launchpad-tile");
+        var templates = this.import.querySelectorAll("template");
+        var template;
+        // debugger
+        // many teamplates (merged partial), wrap them with one.
+        if( templates.length > 1 ){
+          var template = this.import.createElement("template");
+          template.setAttribute("bind","");
+          // move entire content to tempalte
+          // TODO: check if moving by text is faster, 
+          //      as we assume those are templates => document fragments (tomalec)
+          for( var nodeNo=0; nodeNo < tiles.length; nodeNo++){
+            var tile = tiles[nodeNo];
+            var appName = tile.getAttribute("appname");
+            // get exact template for icon (as some imports/scripts could be there)
+            var appIconTempl = tile.querySelector("template");
+            // change binding to match launchpad's own json structure.
+            appIconTempl.setAttribute("bind","{{icon}}");
+            // clone our tile template
+            var newTile = document.importNode(tileTempl.content, true);
+            // distribute icon into tile
+            appIconTempl && newTile.querySelector("launchpad-icon").appendChild(appIconTempl)
+            // wrap tile into binding namespace
+            var tileAppNamespace = this.import.createElement("template");
+            tileAppNamespace.setAttribute("bind","{{"+appName +"}}");
+            tileAppNamespace.content.appendChild(newTile);
+            // put bound tile into template of aggregated tiles
+            template.content.appendChild(tileAppNamespace);
+          }
+          // put aggregated template into imported doc.
+          this.import.body.appendChild(template);
+
+        } else {
+          // TODO: profile this scenario (tomalec)
+          template = templates[0];
+        }
+        // stamp template into main document
+        // var launchpad.subTemplate = document.importNode(template.content, true);
+        launchpad.subTemplate = document.importNode(template, true);
+        launchpad._insertTemplate();
+
+      };
+      // guessed workaround for Polyjuice/Launcher#82, Polymer/polymer#554
+      setTimeout( function appendAsync(){
+          document.head.appendChild(link);
+      });
+      return this;
+    };
+
+    /**
+     * Insert template into DOM.
+     * @public only for debugging.
+     * @return {launcher-launchpad}      self
+     */
+    LauncherLaunchpadPrototype._insertTemplate = function(){
+      this.subTemplate.bindingDelegate = new PolymerExpressions; //use PolymerExpressions. This allows <template if="{{val == 1}}">, etc
+      
+      this.parentNode.insertBefore(this.subTemplate, this.nextSibling);
+      // this.subTemplate.model = this.model;
+      // this.subTemplate.model = this.json.icons;
+      this.subTemplate.model = mapPerAppName(this.json);
+      return this;
+    };
+
+    /**
+     * Empty xhml content.
+     * @requires HTMLTemplateElement#clear (https://github.com/Polymer/TemplateBinding/blob/51df59c16e0922dec041cfe604016aac00918d5d/src/TemplateBinding.js#L595)
+     * TODO: profile this (tomalec)
+     * @extends HTMLTemplateElement.prototype.clear
+     * @return  see HTMLTemplateElement.prototype.clear
+     */
+    LauncherLaunchpadPrototype.clear = function(){
+      // return false;
+      return this.subTemplate
+            && ( !this.subTemplate.clear || this.subTemplate.clear() || true)
+            && this.subTemplate.parentNode.removeChild(this.subTemplate);
+      // IDEA: clear also content? (tomalec)        
+      //      && HTMLTemplateElement.prototype.clear.call(this);
+    }
+
+
+    LauncherLaunchpadPrototype.attachedCallback = function () {
+      var that = this;
+      this.loadTemplate_();
+
+      var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === "attributes" && 
+                (mutation.attributeName === "content") ) {
+            that.loadTemplate_();
+          }
+        });
+      });
+      observer.observe(this, {
+        attributes: true
+      });
+    };
+    // LauncherLaunchpadPrototype.createdCallback = function () {
+    //   // debugger
+    // };
+
+    // document.register('launcher-launchpad', {
+    //   prototype: LauncherLaunchpadPrototype,
+    //   extends: "template"
+    // });
+    Polymer(LauncherLaunchpadPrototype)
+
+
+   
+  })();
+</script>
