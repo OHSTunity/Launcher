@@ -1,1 +1,2 @@
-star --resourcedir=Client bin/Debug/Launcher.exe
+@echo off
+star --resourcedir=%~dp0Client %~dp0bin/Debug/Launcher.exe
