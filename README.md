@@ -6,26 +6,13 @@ Application Launcher
 ### How to run
 
 1. Check out Polyjuice/Launcher repo from GitHub
-2. Set up the Launcher solution in your Visual Studio:
-   - go to Solution properties > Startup Project
-   - enable "Multiple startup projects"
-   - set them in the order:
-     - Launcher - Start
-     - SuperCRM - Start
-     - Skyper - Start
-     - Map - Start
-     - Store - None
-     - Noise - Start
-3. Set up the working directories for the projects:
-     - Launcher - `Client\`
-     - SuperCRM - `Apps\SuperCRM\Client\`
-     - Skyper - `Apps\Skyper\Client\`
-     - Map - `Apps\Map\Client\`
-     - Store - `Apps\Store\Client\`
-     - Noise - `Apps\Noise\Client\`
+2. Open `Launcher.proj` in Visual Studio
+3. Set the subdirectory `Client` as the working directory for the project. This is the root of the static files accessed using the build-in the HTTP server.
 4. Build the solution
-5. Run it using `run.bat` or Visual Studio
+5. Run it by launching `run.bat` in Windows, or executing `cmd //c "run.bat"` in Git Bash, or using Debug in Visual Studio
 6. Go to [http://localhost:8080/](http://localhost:8080/)
+
+This will bring you an empty Launcher (with Launchpad, Dashboard and Search field). You need to repeat the above steps to run the actual apps (available in [Polyjuice](https://github.com/Polyjuice) organisation). You can bulk multiple app projects into a single Visual Studio solution.
 
 ### Browsers
 
