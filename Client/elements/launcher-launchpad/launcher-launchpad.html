@@ -61,16 +61,14 @@
         launchpad.clear();
         // TODO: clear previous template (tomalec)
         var tiles = this.import.querySelectorAll("launchpad-tile");
-        var templates = this.import.querySelectorAll("template");
+        // var templates = this.import.querySelectorAll("template");
         var template;
         // debugger
         // many teamplates (merged partial), wrap them with one.
-        if( templates.length > 1 ){
+        if( tiles ){
           var template = this.import.createElement("template");
           template.setAttribute("bind","");
           // move entire content to tempalte
-          // TODO: check if moving by text is faster, 
-          //      as we assume those are templates => document fragments (tomalec)
           for( var nodeNo=0; nodeNo < tiles.length; nodeNo++){
             var tile = tiles[nodeNo];
             var appName = tile.getAttribute("appname");
@@ -92,9 +90,6 @@
           // put aggregated template into imported doc.
           this.import.body.appendChild(template);
 
-        } else {
-          // TODO: profile this scenario (tomalec)
-          template = templates[0];
         }
         // stamp template into main document
         // var launchpad.subTemplate = document.importNode(template.content, true);
