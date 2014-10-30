@@ -2,7 +2,7 @@
 
 <template id="launchpad-tile">
   <launchpad-tile>
-    <a href="/workspace/{{name.name}}">
+    <a href="/workspace/{{appName}}">
       <launchpad-icon>
         <!-- icon goes here -->
       </launchpad-icon>
@@ -24,6 +24,7 @@
       for (var appName in json.icons) {
         if( json.icons.hasOwnProperty( appName ) ) {
           map[appName] = {
+            appName: appName,
             icon: json.icons[appName]
             //, name: null
           }
@@ -35,6 +36,7 @@
             map[appName].name = json.names[appName];
           } else{
             map[appName] = {
+              appName: appName,
               name: json.names[appName]
               //, icon: null
             }
