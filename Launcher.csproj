@@ -79,6 +79,8 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\JuicyTilesSetup.cs" />
+    <Compile Include="Server\JuicyTilesSetupHandlers.cs" />
     <Compile Include="Server\Launcher.json.cs">
       <DependentUpon>Launcher.json</DependentUpon>
     </Compile>
@@ -108,9 +110,7 @@
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Database\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(StarcounterBin)\Starcounter.MsBuild.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

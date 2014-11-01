@@ -20,6 +20,8 @@ partial class Launcher : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
+        JuicyTiles.JuicyTilesSetupHandlers.Setup();
+
         // Dashboard
         Handle.GET("/", () => {
             // Check if there is any App that would like to occupy "/" location.
