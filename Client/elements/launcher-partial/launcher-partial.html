@@ -20,7 +20,8 @@ by providing predefined template content, which should serve to include partials
       setup="[[_setup | clonedSetup ]]" 
       defaultTileSetup="{
           'heightAuto': true,
-          'width': '100%'
+          'width': '100%',
+          'heightDynamic': true
       }">
     <template is="imported-template" content="{{Html}}"></template>
 </juicy-tile-grid>
