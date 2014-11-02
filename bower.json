@@ -13,8 +13,8 @@
     "tests"
   ],
   "dependencies": {
-    "platform": "Polymer/platform#~0.4.0",
-    "polymer": "Polymer/polymer#~0.4.0",
+    "platform": "Polymer/platform#~0.4.2",
+    "polymer": "Polymer/polymer#~0.4.2",
     "imported-template": "gh-pages",
     "model-operations": "polyjuice/model-operations#~0.0.1",
     "core-toolbar": "Polymer/core-toolbar#~0.4.0",
