@@ -57,6 +57,10 @@ with predefined template content, which should be used to include partials.
      * Use predefined template content, rewrite attributes.
      */
     LauncherPartialPrototype.createdCallback = function LPartialCreated(){
+      // this.style.display = "block";
+      var sroot = this.createShadowRoot();
+      sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
+
       var clone = document.importNode( templ.content, true);
       rewriteTempalteAttributes( this, clone.querySelector("template") );
       this.appendChild( clone );
