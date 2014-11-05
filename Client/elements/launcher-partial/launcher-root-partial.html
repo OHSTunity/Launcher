@@ -8,14 +8,12 @@ with predefined template content, which should be used to include partials.
 <link rel="import" href="../../vendor/imported-template/imported-template.html">
 <link rel="import" href="../../vendor/juicy-tile-grid/src/juicy-tile-grid.html">
 <link rel="import" href="../../vendor/juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
-<link rel="import" href="../../vendor/core-localstorage/core-localstorage.html">
 <!-- <link rel="import" href="../../vendor/console-log/console-log.html"> -->
 
 <template id="partial-template">
   <template bind>
    <!-- unfortunately [[ obj ]] does not work deep (for nested properties) -->
-    <core-localstorage name="juicy-tile:{{Html}}" value="{{_setup}}"></core-localstorage>
-    <juicy-tiles-setup-sync name="juicy-tile:{{Html}}" storedValue="{{_setup}}" ></juicy-tiles-setup-sync>
+    <juicy-tiles-setup-sync name="{{Html}}" storedValue="{{_setup}}" ></juicy-tiles-setup-sync>
     <juicy-tile-grid 
         id="juicy-tile:{{Html}}" 
         setup="[[ _setup | clonedSetup  ]]"

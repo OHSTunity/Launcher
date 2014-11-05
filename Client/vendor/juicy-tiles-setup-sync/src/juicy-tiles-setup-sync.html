@@ -6,7 +6,7 @@
 <!-- <link rel="import" href="../../polymer/polymer.html"> -->
 
 <!-- Define your custom element -->
-<polymer-element name="juicy-tiles-setup-sync" attributes="storedValue history currentValue autoSave">
+<polymer-element name="juicy-tiles-setup-sync" attributes="storedValue history currentValue autoSave name">
     <template><style>:host{display: none;}</style></template>
     <script>
         Polymer('juicy-tiles-setup-sync', {
@@ -67,6 +67,20 @@
              */
             save: function() {
                 this.storedValue = JSON.parse( JSON.stringify( this.tileList.setup ) );
+
+                // FIXME: temporary workaround for servers not accepting JSON-Patch
+                var req = new XMLHttpRequest();
+                req.open("POST", "/juicytilessetup?"+this.name, true);
+                req.onreadystatechange = function () {
+                  if (req.readyState == 4){
+                    if (!(req.status >= 200 && req.status <= 299)) {
+                      console.error("Failed to save juicy-tile-list configuration");
+                      return;
+                    }
+                    console.info("juicy-tile-list configuration saved");
+                  }
+                };
+                return req.send( JSON.stringify(this.storedValue) );
             },
             revert: function(){
                 // this.currentValue = JSON.parse(JSON.stringify( this.storedValue ));
