@@ -77,7 +77,7 @@
                 '</div>';
             element.appendChild(element.resizeSensor);
 
-            if ('absolute' !== getComputedStyle(element, 'position')) {
+            if (!{fixed: 1, absolute: 1}[getComputedStyle(element, 'position')]) {
                 element.style.position = 'relative';
             }
 
@@ -128,7 +128,7 @@
             });
         }
 
-        if ('array' === typeof element
+        if ("[object Array]" === Object.prototype.toString.call(element)
             || ('undefined' !== typeof jQuery && element instanceof jQuery) //jquery
             || ('undefined' !== typeof Elements && element instanceof Elements) //mootools
             ) {

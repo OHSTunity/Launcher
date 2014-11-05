@@ -119,7 +119,7 @@
     refresh: function () {
       if (this.editedTiles) {
         this.editedTiles.refresh();
-        this.modified = this.editedTiles.sync.isModified();
+        this.modified = this.editedTiles.sync && this.editedTiles.sync.isModified();
         this.getSource();
       }
     },
@@ -227,6 +227,14 @@
           break;
         }
         node = node.parentNode;
+      }
+    },
+    toNumber: { 
+      toModel: function(arg){
+        return parseInt(arg, 10) || 0;
+      },
+      toDOM: function(arg){
+        return arg;
       }
     },
     applyChange: function (ev) {
