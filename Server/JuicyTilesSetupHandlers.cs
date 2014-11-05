@@ -5,7 +5,7 @@ namespace JuicyTiles {
         public static void Setup() {
             JuicyTilesSetup.CreateIndex();
 
-            Handle.PUT("/juicytilessetup?{?}", (Request request, string key) => {
+            Handle.POST("/juicytilessetup?{?}", (Request request, string key) => {
                 Db.Transaction(() => {
                     var setup = JuicyTilesSetup.GetSetup(key);
                     if (setup == null)
