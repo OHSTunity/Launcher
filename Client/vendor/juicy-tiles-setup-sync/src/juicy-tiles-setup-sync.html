@@ -92,13 +92,15 @@
             },
 
             storedValueChanged: function(oldVal, newVal){
+              if(this.tileList){
                 var newJson = JSON.stringify( newVal );
                 // if( JSON.stringify( this.currentValue ) != newJson ){
                 if( JSON.stringify( this.tileList.setup ) != newJson ){
                     // this.currentValue = JSON.parse( newJson );
                     this.tileList.setup = JSON.parse( newJson );
                 }
-                console.log("storedValueChanged", oldVal, newVal)
+                console.log("storedValueChanged", oldVal, newVal);
+              }
             }
         });
     </script>

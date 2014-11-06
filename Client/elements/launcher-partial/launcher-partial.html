@@ -11,7 +11,8 @@ by providing predefined template content, which should serve to include partials
 <!-- <link rel="import" href="../../vendor/console-log/console-log.html"> -->
 
 <template>
-  <juicy-tiles-setup-sync name="{{Html}}" storedValue="{{_setup}}" ></juicy-tiles-setup-sync>
+  <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
+  <juicy-tiles-setup-sync name="{{Html}}" storedValue="[[_setup]]" ></juicy-tiles-setup-sync>
   <juicy-tile-grid 
       id="juicy-tile:{{Html}}" 
       setup="[[_setup | clonedSetup ]]" 
