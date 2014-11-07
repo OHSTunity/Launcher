@@ -8,15 +8,12 @@
 <polymer-element name="launcher-main" extends="body" noscript>
 <template>
   <style>
-    :host {
+    #wrapper {
       display: -webkit-flex;
       display: flex;
 
       -webkit-flex-direction: column;
       flex-direction: column;
-
-      -webkit-flex: 1 1 auto;
-      flex: 1 1 auto;
     }
     #top {
       display: -webkit-flex;
@@ -42,12 +39,14 @@
       flex-direction: row;
     }
   </style>
-  <div id="top">
+  <div id="wrapper">
+    <div id="top">
       <content select=".launcher-topbar"></content>
-  </div>
-  <div id="main">
-      <content select=".launcher-menu"></content>
-      <content></content>
+    </div>
+    <div id="main">
+        <content select=".launcher-menu"></content>
+        <content></content>
+    </div>
   </div>
 </template>
 </polymer-element>
