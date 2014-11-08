@@ -7,15 +7,8 @@
 
 #launcher-menu ul {
 	margin: 0px;
-
-	padding-top: 11px;
-	padding-bottom: 11px;
-
-	padding-left: 9px;
-	padding-right: 9px;
-
+	padding: 9px;
  	list-style-type: none;	/* Remove bullets */
-
 }
 
 #launcher-menu ul li:hover {
@@ -43,4 +36,12 @@
 #launcher-menu a:active{
 	color:inherit;
 	text-decoration:none;
+}
+
+.launcher-dashboard-icon{
+	height: 1.15em;
+	width: 1.15em;
+	margin-right: calc( 0.2em - 0.07em );
+	margin-top: -0.2em;
+	margin-left: calc( 0.2em - 0.07em );
 }
