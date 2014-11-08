@@ -86,6 +86,26 @@
                 // this.currentValue = JSON.parse(JSON.stringify( this.storedValue ));
                 this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify( this.storedValue ));
             },
+            /** 
+             * Resets the current value.
+             */
+            clear: function() {
+                this.storedValue = null;
+
+                // FIXME: temporary workaround for servers not accepting JSON-Patch
+                var req = new XMLHttpRequest();
+                req.open("DELETE", "/juicytilessetup?"+this.name, true);
+                req.onreadystatechange = function () {
+                  if (req.readyState == 4){
+                    if (!(req.status >= 200 && req.status <= 299)) {
+                      console.error("Failed to delete juicy-tile-list configuration");
+                      return;
+                    }
+                    console.info("juicy-tile-list configuration deleted");
+                  }
+                };
+                return req.send();
+            },
             isModified: function(){
                 // return JSON.stringify( this.storedValue ) != JSON.stringify( this.currentValue );
                 return JSON.stringify( this.storedValue ) != JSON.stringify( this.tileList.setup );

@@ -54,8 +54,9 @@ Property      | Type              | Description
 
 Method        | Parameters | Returns   | Description
 ---           | ---        | ---       | ---
-`save()`      | None.      | self      | Saves current setup value of associated `<juicy-tile-list>`.
+`save()`      | None.      | self      | Saves current setup value of associated `<juicy-tile-list>`
 `revert()`    | None.      | self      | Reverts current stored setup into `<juicy-tile-list>.setup`
+`clear()`     | None.      | self      | Clears any storedValue
 `isModified()`| None.      | *Boolean* | `true` if current setup differs from stored one.
 
 
