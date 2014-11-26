@@ -20,23 +20,24 @@ partial class Launcher : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
+        
         JuicyTiles.JuicyTilesSetupHandlers.Setup();
 
         // Dashboard
         Handle.GET("/", () => {
+
             // Check if there is any App that would like to occupy "/" location.
             Response otherAppIndex;
             X.GET("/index", out otherAppIndex);
-            if (otherAppIndex.Resource != null) //TODO: Provide nicer check (tomalec)
-            {
+
+            if ((otherAppIndex != null) && (otherAppIndex.Resource != null)) {
                 return otherAppIndex;
-            }
-            else // if not proceed with Launcher's one
-            {
-                return (Launcher)X.GET("/launcher");
+            } else { // if not proceed with Launcher's one
+                return (Launcher) X.GET("/launcher");
             }
 
         });
+
         Handle.GET("/launcher", () =>
         {
             Launcher launcher;
@@ -60,11 +61,15 @@ partial class Launcher : Page {
 
             Response icons;
             X.GET("/app-icon", out icons); // thumbnails only
-            launcher.launchpad.icons = icons;
+            if (icons != null) {
+                launcher.launchpad.icons = icons;
+            }
 
             Response names;
             X.GET("/app-name", out names);
-            launcher.launchpad.names = names;
+            if (names != null) {
+                launcher.launchpad.names = names;
+            }
 
             Response menuResp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
@@ -72,8 +77,11 @@ partial class Launcher : Page {
             // Functional bricks
             X.GET("/menu", out menuResp);
 
+            if (menuResp != null) {
+                launcher.menu = menuResp;
+            }
+
             // X.GET("/launchpad", out resp); // thumbnails only
-            launcher.menu = menuResp;
 
             Response userResp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
@@ -81,7 +89,9 @@ partial class Launcher : Page {
             // Functional bricks
             X.GET("/user", out userResp);
 
-            launcher.user = userResp;
+            if (userResp != null) {
+                launcher.user = userResp;
+            }
 
             return launcher;
         });
@@ -118,17 +128,16 @@ partial class Launcher : Page {
 
         Handle.GET("/launcher/dashboard", () =>
         {
-            Launcher launcher = (Launcher)X.GET("/launcher");
+            Launcher launcher = (Launcher) X.GET("/launcher");
 
             Response resp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
             // Functional bricks
             X.GET("/dashboard", out resp);
-
-            // X.GET("/launchpad", out resp); // thumbnails only
-            launcher.results = resp;
-
+            if (resp != null) {
+                launcher.results = resp;
+            }
 
             return launcher;
 
@@ -138,7 +147,7 @@ partial class Launcher : Page {
         //actual: for some reason, the Patch replaces the whole root path (/)
         Handle.GET("/do-nothing", () =>
         {
-            Launcher launcher = (Launcher)Launcher.GET("/");
+            Launcher launcher = (Launcher) X.GET("/");
             launcher.focusedWorkspace = 99;
             return launcher;
         });
@@ -229,11 +238,6 @@ partial class Launcher : Page {
         });
         // + dummy responses from launcher itself  
 
-        // Setting default handler level to 1.
-        HandlerOptions.DefaultHandlerLevel = 1;
-        Handlers.AddExtraHandlerLevel();
-
-
         // Launcher's entries for the menu
         // does not get merged :(
         // HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
@@ -246,11 +250,13 @@ partial class Launcher : Page {
         //     return p;
         // }, h1);
 
+        // Disabling registration in gateway.
+        HandlerOptions.DefaultHandlerOptions.HandlerLevel = HandlerOptions.HandlerLevels.ApplicationLevel;
     }
 
     static Response WorkspaceResponse(String appName, String uri)
     {
-        Launcher launcher = (Launcher)Launcher.GET("/launcher");
+        Launcher launcher = (Launcher) X.GET("/launcher");
         Launcher.workspacesElementJson foundWorkspace = null;
         for (var i = 0; i < launcher.workspaces.Count; i++)
         {
@@ -282,7 +288,6 @@ partial class Launcher : Page {
     }
 }
 
-
 [Launcher_json.searchBar]
 partial class SearchBar : Json {
     void Handle(Input.query query) {
@@ -291,6 +296,3 @@ partial class SearchBar : Json {
         ((Launcher)this.Parent).results = resp;
     }
 }
-
-
-

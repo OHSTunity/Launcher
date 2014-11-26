@@ -12,7 +12,6 @@ partial class Page : Json {
         return base.AsMimeType(type);
     }
 
-
     /// <summary>
     /// Whenever we set a bound data object to this page, we update the
     /// URI property on this page.
