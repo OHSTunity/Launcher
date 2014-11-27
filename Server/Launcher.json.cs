@@ -237,10 +237,9 @@ partial class Launcher : Page {
   
         });
         // + dummy responses from launcher itself  
-
+        
         // Launcher's entries for the menu
         // does not get merged :(
-        // HandlerOptions h1 = new HandlerOptions() { HandlerLevel = 1 };
         // Handle.GET("/menu", () =>
         // {
         //     var p = new Page()
@@ -248,7 +247,7 @@ partial class Launcher : Page {
         //         Html = "/LauncherMenu.html"
         //     };
         //     return p;
-        // }, h1);
+        // }, HandlerOptions.ApplicationLevel);
 
         // Disabling registration in gateway.
         HandlerOptions.DefaultHandlerOptions.HandlerLevel = HandlerOptions.HandlerLevels.ApplicationLevel;
