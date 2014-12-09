@@ -140,15 +140,6 @@ partial class Launcher : Page {
             return launcher;
 
         });
-        //do-nothing handler reproduces problem with link handling in Polyjuice Launcher
-        //expected: clicking on a link should result in a Patch to the client that contains only the changed part
-        //actual: for some reason, the Patch replaces the whole root path (/)
-        Handle.GET("/do-nothing", () =>
-        {
-            Launcher launcher = (Launcher) X.GET("/");
-            launcher.focusedWorkspace = 99;
-            return launcher;
-        });
 
         Handle.GET("/launcher/workspace/{?}/{?}", (String appName, String uri) => {
             return WorkspaceResponse(appName, uri);
