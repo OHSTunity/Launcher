@@ -254,6 +254,7 @@ partial class SearchBar : Json {
     void Handle(Input.query query) {
         Response resp;
         X.GET("/search?query=" + HttpUtility.UrlEncode(query.Value), out resp);
+        searchEngineResultPageUrl = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
         ((Launcher)this.Parent).results = resp;
     }
 }

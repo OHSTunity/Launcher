@@ -26,6 +26,7 @@
     <link rel="import" href="/vendor/model-operations/model-operations.html">
     <link rel="import" href="/vendor/juicy-tile-editor/src/juicy-tile-editor.html">
     <link rel="import" href="/vendor/warpech-display-router/warpech-display-router.html">
+    <link rel="import" href="/vendor/juicy-redirect/src/juicy-redirect.html">
 
     <!-- Style sheets -->
     <link rel="stylesheet" href="/css/style.css">
@@ -55,6 +56,7 @@
           <core-field class="launcher-theme">
               <core-icon icon="search"></core-icon>
               <input placeholder="Search" value="{{searchBar.query$}}" update-on="input"/>
+              <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}">
           </core-field>
           <template bind="{{user}}">
               <template is="imported-template" content="{{ Html }}"></template>
