@@ -4,6 +4,7 @@
 	editingMode$: false,
 	searchBar: {
 		query$: "",
+		searchEngineResultPageUrl$: "",
 		feedback: [{
 		text: "",
 		matchScore: 0.5,
