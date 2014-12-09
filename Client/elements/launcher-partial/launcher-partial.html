@@ -58,7 +58,7 @@ by providing predefined template content, which should serve to include partials
       // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
     };
 
-    document.register('launcher-partial', {
+    document.registerElement('launcher-partial', {
       prototype: LauncherPartialPrototype,
       extends: "template"
     });   
