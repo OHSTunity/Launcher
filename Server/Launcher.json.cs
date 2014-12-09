@@ -18,7 +18,7 @@ partial class Launcher : Page {
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
     /// </summary>
     static void Main() {
-        
+
         JuicyTiles.JuicyTilesSetupHandlers.Setup();
 
         // Dashboard
@@ -31,7 +31,7 @@ partial class Launcher : Page {
             if ((otherAppIndex != null) && (otherAppIndex.Resource != null)) {
                 return otherAppIndex;
             } else { // if not proceed with Launcher's one
-                return (Launcher) X.GET("/launcher");
+                return X.GET<Launcher>("/launcher");
             }
 
         });
@@ -126,7 +126,7 @@ partial class Launcher : Page {
 
         Handle.GET("/launcher/dashboard", () =>
         {
-            Launcher launcher = (Launcher) X.GET("/launcher");
+            Launcher launcher = X.GET<Launcher>("/launcher");
 
             Response resp;
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
@@ -188,7 +188,7 @@ partial class Launcher : Page {
         });
 
         Handle.GET("/launcher/search?query={?}", (string query) => {
-            Launcher launcher = (Launcher)X.GET("/launcher");
+            Launcher launcher = X.GET<Launcher>("/launcher");
 
             Response resp;
             X.GET("/search?query=" + query, out resp);
@@ -217,7 +217,7 @@ partial class Launcher : Page {
 
     static Response WorkspaceResponse(String appName, String uri)
     {
-        Launcher launcher = (Launcher) X.GET("/launcher");
+        Launcher launcher = X.GET<Launcher>("/launcher");
         Launcher.workspacesElementJson foundWorkspace = null;
         for (var i = 0; i < launcher.workspaces.Count; i++)
         {
@@ -237,11 +237,11 @@ partial class Launcher : Page {
         }
         if (uri == null)
         {
-            foundWorkspace.master = (Json)X.GET("/" + appName );
+            foundWorkspace.master = X.GET<Json>("/" + appName );
         }
         else
         {
-            foundWorkspace.master = (Json)X.GET("/" + appName + "/" + uri);
+            foundWorkspace.master = X.GET<Json>("/" + appName + "/" + uri);
         }
 
 
