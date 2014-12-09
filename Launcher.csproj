@@ -85,9 +85,6 @@
       <DependentUpon>Launcher.json</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server\Page.json.cs">
-      <DependentUpon>Page.json</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="Server\Launcher.json">
@@ -104,11 +101,6 @@
     <Content Include="Client\elements\dashboard\pj-dashboard.html" />
     <Content Include="Client\LauncherMenu.html" />
     <Content Include="Client\LauncherTemplate.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypedJSON Include="Server\Page.json">
-      <Generator>MsBuild:Compile</Generator>
-    </TypedJSON>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
