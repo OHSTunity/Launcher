@@ -13,8 +13,6 @@ using Starcounter.Advanced.XSON;
 [Launcher_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
 partial class Launcher : Page {
 
-    static String[] RootHtml = File.ReadAllText(Starcounter.Application.Current.WorkingDirectory + "\\LauncherTemplate.html").Split(new String[] { "@AppsHtml@" }, StringSplitOptions.RemoveEmptyEntries);
-
     /// <summary>
     /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
     /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
@@ -198,43 +196,16 @@ partial class Launcher : Page {
             return sb.ToString();
         });
 
-        Handle.GET("/launcher/person/123", (Request req) => {
-            Response resp;
-            X.GET("/person/123", out resp);
-
-            if (Session.InitialRequest.PreferredMimeType == MimeType.Text_Html)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(RootHtml[0]);
-                sb.Append(resp.GetContentString(MimeType.Text_Html));
-                sb.Append(RootHtml[1]);
-                resp = new Response() { Body = sb.ToString() };
-            }
-
-            if (Session.Current == null)
-                Session.Current = new Session();
-
-            return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
-        });
-
         Handle.GET("/launcher/search?query={?}", (string query) => {
+            Launcher launcher = (Launcher)X.GET("/launcher");
+
             Response resp;
             X.GET("/search?query=" + query, out resp);
-
-            if (Session.InitialRequest.PreferredMimeType == MimeType.Text_Html)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(RootHtml[0]);
-                sb.Append(resp.GetContentString(MimeType.Text_Html));
-                sb.Append(RootHtml[1]);
-                resp = new Response() { Body = sb.ToString() };
+            if (resp != null) {
+                launcher.results = resp;
             }
 
-            if (Session.Current == null)
-                Session.Current = new Session();
-
-            return resp;                               // Return the JSON or the HTML depending on the type asked for. See Page.json on how Starcounter knowns what to return.
-  
+            return launcher;
         });
         // + dummy responses from launcher itself  
         
