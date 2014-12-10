@@ -150,31 +150,37 @@ partial class Launcher : Page {
 
         // Not actually a merger anymore but linker of sibling Json parts.
         Handle.MergeResponses((Request req, List<Response> responses) => {
-            // Handle "/"-> "/index" request in special way, so app may replace Launcher's response
-            if (req.Uri == "/index")
-            {
-                // responses.Sort( by Priority )
-                return responses[0];
-            }
-
 
             var mainResponse = responses[0];
-            var json = mainResponse.Resource as Json;
+            Int32 mainResponseId = 0;
 
-            // Merge every JSON that is not response from Launcher itself
-            // TODO: change it to somethind nicer than hardcoded "Launcher" name (tomalec)
-            // if (json != null && mainResponse.AppName != this.AppName)
-            // if (mainResponse.isMergable)
-            if (json != null && mainResponse.AppName != "Launcher")
-            {
-                json.SetAppName(mainResponse.AppName);
+            // Searching for the current application in responses.
+            for (Int32 i = 0; i < responses.Count; i++) {
 
-                for (Int32 i = 1; i < responses.Count; i++)
-                {
-                    ((Json)responses[i].Resource).SetAppName(responses[i].AppName);
-                    json.AddStepSibling((Json)responses[i].Resource);
+                if (responses[i].AppName == StarcounterEnvironment.AppName) {
+
+                    mainResponse = responses[i];
+                    mainResponseId = i;
+                    break;
                 }
             }
+
+            var json = mainResponse.Resource as Json;
+
+            if ((json != null) && (mainResponse.AppName != StarcounterConstants.LauncherAppName)) {
+
+                json.SetAppName(mainResponse.AppName);
+
+                for (Int32 i = 0; i < responses.Count; i++) {
+
+                    if (mainResponseId != i) {
+
+                        ((Json)responses[i].Resource).SetAppName(responses[i].AppName);
+                        json.AddStepSibling((Json)responses[i].Resource);
+                    }
+                }
+            }
+
             return mainResponse;
         });
 
