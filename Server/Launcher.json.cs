@@ -19,6 +19,8 @@ partial class Launcher : Page {
     /// </summary>
     static void Main() {
 
+        PolyjuiceNamespace.Polyjuice.Init();
+
         JuicyTiles.JuicyTilesSetupHandlers.Setup();
 
         // Dashboard
@@ -58,13 +60,13 @@ partial class Launcher : Page {
             }
 
             Response icons;
-            X.GET("/app-icon", out icons); // thumbnails only
+            X.GET("/launcher/app-icon", out icons, null, 0, HandlerOptions.ApplicationLevel); // thumbnails only
             if (icons != null) {
                 launcher.launchpad.icons = icons;
             }
 
             Response names;
-            X.GET("/app-name", out names);
+            X.GET("/launcher/app-name", out names, null, 0, HandlerOptions.ApplicationLevel);
             if (names != null) {
                 launcher.launchpad.names = names;
             }
@@ -73,7 +75,7 @@ partial class Launcher : Page {
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
             // Functional bricks
-            X.GET("/menu", out menuResp);
+            X.GET("/launcher/menu", out menuResp, null, 0, HandlerOptions.ApplicationLevel);
 
             if (menuResp != null) {
                 launcher.menu = menuResp;
@@ -85,7 +87,7 @@ partial class Launcher : Page {
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
             // Functional bricks
-            X.GET("/user", out userResp);
+            X.GET("/launcher/user", out userResp, null, 0, HandlerOptions.ApplicationLevel);
 
             if (userResp != null) {
                 launcher.user = userResp;
@@ -124,7 +126,7 @@ partial class Launcher : Page {
             return mainResponse;
         });
 
-        Handle.GET("/launcher/dashboard", () =>
+        Handle.GET("/dashboard", () =>
         {
             Launcher launcher = X.GET<Launcher>("/launcher");
 
@@ -132,7 +134,7 @@ partial class Launcher : Page {
             // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
             // X.GET("/" + query.Value, out resp);
             // Functional bricks
-            X.GET("/dashboard", out resp);
+            X.GET("/launcher/dashboard", out resp, null, 0, HandlerOptions.ApplicationLevel);
             if (resp != null) {
                 launcher.results = resp;
             }
@@ -200,19 +202,7 @@ partial class Launcher : Page {
         });
         // + dummy responses from launcher itself  
         
-        // Launcher's entries for the menu
-        // does not get merged :(
-        // Handle.GET("/menu", () =>
-        // {
-        //     var p = new Page()
-        //     {
-        //         Html = "/LauncherMenu.html"
-        //     };
-        //     return p;
-        // }, HandlerOptions.ApplicationLevel);
-
-        // Disabling registration in gateway.
-        HandlerOptions.DefaultHandlerOptions.HandlerLevel = HandlerOptions.HandlerLevels.ApplicationLevel;
+        StarcounterEnvironment.PolyjuiceAppsFlag = true;
     }
 
     static Response WorkspaceResponse(String appName, String uri)
@@ -253,7 +243,7 @@ partial class Launcher : Page {
 partial class SearchBar : Json {
     void Handle(Input.query query) {
         Response resp;
-        X.GET("/search?query=" + HttpUtility.UrlEncode(query.Value), out resp);
+        X.GET("/launcher/search?query=" + HttpUtility.UrlEncode(query.Value), out resp, null, 0, HandlerOptions.ApplicationLevel);
         searchEngineResultPageUrl = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
         ((Launcher)this.Parent).results = resp;
     }
