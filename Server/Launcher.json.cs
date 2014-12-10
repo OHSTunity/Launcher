@@ -192,12 +192,15 @@ partial class Launcher : Page {
         Handle.GET("/launcher/search?query={?}", (string query) => {
             Launcher launcher = X.GET<Launcher>("/launcher");
 
+            string uri = "/launcher/search?query=" + HttpUtility.UrlEncode(query);
             Response resp;
-            X.GET("/search?query=" + query, out resp);
+            X.Forget(uri);
+            X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
             if (resp != null) {
                 launcher.results = resp;
             }
 
+            launcher.searchBar.query = query;
             return launcher;
         });
         // + dummy responses from launcher itself  
@@ -243,8 +246,10 @@ partial class Launcher : Page {
 partial class SearchBar : Json {
     void Handle(Input.query query) {
         Response resp;
-        X.GET("/launcher/search?query=" + HttpUtility.UrlEncode(query.Value), out resp, null, 0, HandlerOptions.ApplicationLevel);
-        searchEngineResultPageUrl = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
+        string uri = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
+        X.Forget(uri);
+        X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
+        searchEngineResultPageUrl = uri;
         ((Launcher)this.Parent).results = resp;
     }
 }
