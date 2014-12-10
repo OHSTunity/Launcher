@@ -132,21 +132,13 @@ partial class Launcher : Page {
             }
 
             Response menuResp;
-            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
-            // X.GET("/" + query.Value, out resp);
-            // Functional bricks
             X.GET("/launcher/menu", out menuResp, null, 0, HandlerOptions.ApplicationLevel);
 
             if (menuResp != null) {
                 launcher.menu = menuResp;
             }
 
-            // X.GET("/launchpad", out resp); // thumbnails only
-
             Response userResp;
-            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
-            // X.GET("/" + query.Value, out resp);
-            // Functional bricks
             X.GET("/launcher/user", out userResp, null, 0, HandlerOptions.ApplicationLevel);
 
             if (userResp != null) {
@@ -186,15 +178,14 @@ partial class Launcher : Page {
             return mainResponse;
         });
 
-        Handle.GET("/dashboard", () =>
+        Handle.GET("/launcher/dashboard", () =>
         {
             Launcher launcher = X.GET<Launcher>("/launcher");
 
+            String uri = "/launcher/dashboard";
             Response resp;
-            // It would be nice to call "/" on other apps, except this one, to prevent infinite loop
-            // X.GET("/" + query.Value, out resp);
-            // Functional bricks
-            X.GET("/launcher/dashboard", out resp, null, 0, HandlerOptions.ApplicationLevel);
+            X.Forget(uri);
+            X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
             if (resp != null) {
                 launcher.results = resp;
             }
@@ -277,7 +268,6 @@ partial class Launcher : Page {
             if (appName == launcher.workspaces[i].appName)
             {
                 foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces[i];
-                launcher.focusedWorkspace = i;
                 break;
             }
         }
@@ -286,7 +276,6 @@ partial class Launcher : Page {
         {
             foundWorkspace = (Launcher.workspacesElementJson)launcher.workspaces.Add();
             foundWorkspace.appName = appName;
-            launcher.focusedWorkspace = launcher.workspaces.Count - 1;
         }
         if (uri == null)
         {

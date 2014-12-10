@@ -27,7 +27,6 @@
 	  thumbnail: {}
 	}],
 	uri: "",
-	focusedWorkspace: 1,
 	workspaces: [
 	  {
 	    appName: "",
