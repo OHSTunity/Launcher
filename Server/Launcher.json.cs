@@ -20,57 +20,6 @@ partial class Launcher : Page {
     static void InitSocietyObjects() {
 
         PolyjuiceNamespace.Polyjuice.Init();
-
-        Polyjuice.GlobalTypesList = new List<Polyjuice.SoType>();
-
-        Polyjuice.SoType entity = new Polyjuice.SoType() {
-            Inherits = null,
-            Name = "entity",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(entity);
-
-        Polyjuice.SoType physicalobject = new Polyjuice.SoType() {
-            Inherits = entity,
-            Name = "physicalobject",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(physicalobject);
-
-        Polyjuice.SoType product = new Polyjuice.SoType() {
-            Inherits = physicalobject,
-            Name = "product",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(product);
-
-        Polyjuice.SoType vertebrate = new Polyjuice.SoType() {
-            Inherits = physicalobject,
-            Name = "vertebrate",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(vertebrate);
-
-        Polyjuice.SoType human = new Polyjuice.SoType() {
-            Inherits = vertebrate,
-            Name = "human",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(human);
-
-        Polyjuice.SoType person = new Polyjuice.SoType() {
-            Inherits = vertebrate,
-            Name = "person",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(person);
-
-        Polyjuice.SoType organization = new Polyjuice.SoType() {
-            Inherits = entity,
-            Name = "organization",
-            Handlers = new List<Polyjuice.HandlerForSoType>()
-        };
-        Polyjuice.GlobalTypesList.Add(organization);
     }
 
     /// <summary>
