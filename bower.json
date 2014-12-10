@@ -8,7 +8,7 @@
     "**/examples",
     "node_modules",
     "bower_components",
-    "vendor",
+    "sys",
     "test",
     "tests"
   ],
