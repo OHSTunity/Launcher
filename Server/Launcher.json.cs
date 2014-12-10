@@ -305,6 +305,8 @@ partial class SearchBar : Json {
         X.Forget(uri);
         X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
         searchEngineResultPageUrl = uri;
-        ((Launcher)this.Parent).results = resp;
+        if (resp != null) {
+            ((Launcher)this.Parent).results = resp;
+        }
     }
 }
