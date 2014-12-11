@@ -15,18 +15,6 @@
     }
     obj[property] = power;
   }
-
-  function isUseWebSocket(useWebSocketStr) {
-    if(!useWebSocketStr) {
-      return true;
-    }
-    else if(useWebSocketStr == "false") {
-      return false;
-    }
-    else {
-      return true;
-    }
-  }
   
   Polymer('juicy-tile-editor-form', {
     modified: false,
@@ -47,7 +35,7 @@
     priority: null,
     innerHTML: null,
     layout: null,
-    useWebSocket: isUseWebSocket(window.localStorage.getItem("launcher-puppet-js-useWebSocket")), //in future - move this out of juicy-tile-editor-form, because it is not part of the layout
+    useWebSocket: null, //in future - move this out of juicy-tile-editor-form, because it is not part of the layout
     newGroupFromSelection: function () {
       if (!this.selectedItems.length > 1) {
         return;
@@ -329,6 +317,9 @@
           input.setAttribute('placeholder', '');
         }
       }.bind(this));
+    },
+    ready: function() {
+      this.useWebSocket = isUseWebSocket(window.localStorage.getItem("launcher-puppet-js-useWebSocket"))
     },
     useWebSocketChanged: function(oldVal, newVal) {
       document.querySelector("puppet-js").useWebSocket = newVal;
