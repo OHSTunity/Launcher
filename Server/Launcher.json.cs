@@ -139,7 +139,7 @@ partial class Launcher : Page {
 
             String uri = "/launcher/dashboard";
             Response resp;
-            X.Forget(uri);
+
             X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
             if (resp != null) {
                 launcher.results = resp;
@@ -200,7 +200,7 @@ partial class Launcher : Page {
 
             string uri = "/launcher/search?query=" + HttpUtility.UrlEncode(query);
             Response resp;
-            X.Forget(uri);
+
             X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
             if (resp != null) {
                 launcher.results = resp;
@@ -251,7 +251,7 @@ partial class SearchBar : Json {
     void Handle(Input.query query) {
         Response resp;
         string uri = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
-        X.Forget(uri);
+
         X.GET(uri, out resp, null, 0, HandlerOptions.ApplicationLevel);
         searchEngineResultPageUrl = uri;
         if (resp != null) {
