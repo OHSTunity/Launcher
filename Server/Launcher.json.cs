@@ -186,6 +186,10 @@ partial class Launcher : Page {
             {
                 String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
                 Response resp;
+
+                if (string.IsNullOrEmpty(a[1]))
+                    continue;
+
                 X.GET(a[1], out resp);
                 sb.Append("<launchpad-tile appname=\""+ a[0] +"\">");
                 sb.Append(resp.Body);
