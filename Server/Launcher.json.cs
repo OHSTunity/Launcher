@@ -65,7 +65,8 @@ partial class Launcher : Page {
             }
             else
             {
-                launcher = (Launcher)Session.Current.Data;
+               return (Launcher)Session.Current.Data;
+               
             }
 
             Response icons;
