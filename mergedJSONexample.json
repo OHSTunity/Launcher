@@ -13,7 +13,7 @@
     "Skype": {
       "Name": "Albert",
       "SkypeId": "EMC2",
-      "Call": null,
+      "Call": false,
       //NOTE: for now we assume `Html` is always a path.
       "Html": "/skyper-user.html" // not used anyways
     },
@@ -34,7 +34,7 @@
     "Skype": {
       "Name": "Albert",
       "SkypeId": "EMC2",
-      "Call": null,
+      "Call": false,
       //NOTE: for now we assume `Html` is always a path.
       "Html": "/skyper-user.html" // not used anyways
     },
