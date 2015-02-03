@@ -43,7 +43,7 @@
   <ItemGroup>
     <Reference Include="Polyjuice, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Polyjuice\src\bin\Debug\Polyjuice.dll</HintPath>
+      <HintPath>$(StarcounterBin)\EditionLibraries\Polyjuice.dll</HintPath>
     </Reference>
     <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
