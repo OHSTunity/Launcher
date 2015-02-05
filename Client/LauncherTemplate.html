@@ -5,6 +5,10 @@
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="/sys/polymer/polymer.html">
 
+    <!-- Import Starcounter specific components -->
+    <link rel="import" href="/sys/starcounter.html">
+    <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html">
+
     <!-- Import our elements -->
     <link rel="import" href="/elements/launcher-layout/launcher-main.html">
     <link rel="import" href="/elements/launcher-partial/launcher-partial.html">
@@ -21,9 +25,7 @@
     <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html">
     <link rel="import" href="/sys/core-field/core-field.html">
 
-    <link rel="import" href="/sys/puppet-js/src/puppet-js.html">
     <link rel="import" href="/sys/imported-template/imported-template.html">
-    <link rel="import" href="/sys/model-operations/model-operations.html">
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html">
     <link rel="import" href="/sys/warpech-display-router/warpech-display-router.html">
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html">
@@ -136,6 +138,7 @@
   </template>
 
   <puppet-js ref="root" ignoreadd="/_setup"></puppet-js>
+  <starcounter-debug-aid></starcounter-debug-aid>
 
   <script>
     function isUseWebSocket(useWebSocketStr) {
