@@ -137,22 +137,7 @@
       </div> -->
   </template>
 
-  <puppet-js ref="root" ignoreadd="/_setup"></puppet-js>
+  <!-- localVersionPath set to falsy "" to disable versioning -->
+  <puppet-client ref="root" localVersionPath=""></puppet-client>
   <starcounter-debug-aid></starcounter-debug-aid>
-
-  <script>
-    function isUseWebSocket(useWebSocketStr) {
-      if(!useWebSocketStr) {
-        return true;
-      }
-      else if(useWebSocketStr == "false") {
-        return false;
-      }
-      else {
-        return true;
-      }
-    }
-
-    document.querySelector("puppet-js").useWebSocket = isUseWebSocket(window.localStorage.getItem("launcher-puppet-js-useWebSocket"));
-  </script>
 </body>
