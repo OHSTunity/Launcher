@@ -18,8 +18,14 @@
     var tileTempl = document.currentScript.ownerDocument.getElementById("launchpad-tile");
     var LauncherLaunchpadPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
 
-    function mapPerAppName(json){
+    /**
+     * Merge two SC merged responses into one.
+     * @param  {[type]} json [description]
+     * @return {[type]}      [description]
+     */
+    LauncherLaunchpadPrototype.parseJson = function parseJson(json){
       var map = {};
+      var iconlessNames = [];
 
       for (var appName in json.icons) {
         if( json.icons.hasOwnProperty( appName ) ) {
@@ -27,10 +33,10 @@
             appName: appName,
             icon: json.icons[appName]
             //, name: null
-          }
+          };
         } 
       }
-      for (var appName in json.names) {
+      for ( appName in json.names) {
         if( json.names.hasOwnProperty( appName ) ) {
           if(map[appName]){
             map[appName].name = json.names[appName];
@@ -39,90 +45,51 @@
               appName: appName,
               name: json.names[appName]
               //, icon: null
-            }
+            };
+            iconlessNames.push(appName);
           }
         } 
       }
-      return map;
-    }
+      this.mapPerAppName = map;
+      this.iconlessNames = iconlessNames;
+    };
 
     /**
-     * Import icons partial via HTML Import, and replicate its `<template>`.
-     * @IDEA: return promise (if supported) for document load (tomalec)
-     * @public only for debugging.
-     * @return {launcher-launchpad}      self
+     * Import partial via HTML Import.
+     * @return {HTMLLinkElement}      HTML Import element
      */
-    LauncherLaunchpadPrototype.loadTemplate_ = function _importHTMLImport() {
-      var href = "/launchpad" + this.json.icons.Html;
-      //href is a URL, load the partial from the HTTP server/cache
+    function loadIconsTemplate( href, callback ) {
       var link = document.createElement('link');
       link.rel = "import";
       link.href = href;
-      var launchpad = this;
-      link.onload =  function processImportedDocument(){
-        launchpad.clear();
-        // TODO: clear previous template (tomalec)
-        var tiles = this.import.querySelectorAll("launchpad-tile");
-        // var templates = this.import.querySelectorAll("template");
-        var template;
-        // debugger
-        // many teamplates (merged partial), wrap them with one.
-        if( tiles ){
-          var template = this.import.createElement("template");
-          template.setAttribute("bind","");
-          // move entire content to tempalte
-          for( var nodeNo=0; nodeNo < tiles.length; nodeNo++){
-            var tile = tiles[nodeNo];
-            var appName = tile.getAttribute("appname");
-            // get exact template for icon (as some imports/scripts could be there)
-            var appIconTempl = tile.querySelector("template");
-            // change binding to match launchpad's own json structure.
-            appIconTempl.setAttribute("bind","{{icon}}");
-            // clone our tile template
-            var newTile = document.importNode(tileTempl.content, true);
-            // distribute icon into tile
-            appIconTempl && newTile.querySelector("launchpad-icon").appendChild(appIconTempl)
-            // wrap tile into binding namespace
-            var tileAppNamespace = this.import.createElement("template");
-            tileAppNamespace.setAttribute("bind","{{"+appName +"}}");
-            tileAppNamespace.content.appendChild(newTile);
-            // put bound tile into template of aggregated tiles
-            template.content.appendChild(tileAppNamespace);
-          }
-          // put aggregated template into imported doc.
-          this.import.body.appendChild(template);
-
-        }
-        // stamp template into main document
-        // var launchpad.subTemplate = document.importNode(template.content, true);
-        launchpad.subTemplate = document.importNode(template, true);
-        launchpad._insertTemplate();
-
-      };
+      link.onload =  callback;
       // guessed workaround for Polyjuice/Launcher#82, Polymer/polymer#554
       setTimeout( function appendAsync(){
           document.head.appendChild(link);
       });
       return this;
-    };
+    }
 
     /**
      * Insert template into DOM.
-     * @public only for debugging.
-     * @return {launcher-launchpad}      self
+     * @param {launcher-launchpad}
+     * @returns {HTMLTemaplteElement} inserted template (launchpad.subTemplate)
      */
-    LauncherLaunchpadPrototype._insertTemplate = function(){
-      this.subTemplate.bindingDelegate = new PolymerExpressions; //use PolymerExpressions. This allows <template if="{{val == 1}}">, etc
+    function insertTemplate(launchpad){
+      launchpad.subTemplate.bindingDelegate = new PolymerExpressions(); //use PolymerExpressions. This allows <template if="{{val == 1}}">, etc
       
-      this.parentNode.insertBefore(this.subTemplate, this.nextSibling);
+      launchpad.parentNode.insertBefore(launchpad.subTemplate, launchpad.nextSibling);
       // this.subTemplate.model = this.model;
       // this.subTemplate.model = this.json.icons;
-      this.subTemplate.model = mapPerAppName(this.json);
-      return this;
-    };
+      // Wait for any polymer-elements in icons templates.
+      Polymer.whenReady(function attachModelWhenPolymerReady(){
+        launchpad.subTemplate.model = launchpad.mapPerAppName;
+      });
+      return launchpad.subTemplate;
+    }
 
     /**
-     * Empty xhml content.
+     * Empty template content.
      * @requires HTMLTemplateElement#clear (https://github.com/Polymer/TemplateBinding/blob/51df59c16e0922dec041cfe604016aac00918d5d/src/TemplateBinding.js#L595)
      * TODO: profile this (tomalec)
      * @extends HTMLTemplateElement.prototype.clear
@@ -135,34 +102,77 @@
             && this.subTemplate.parentNode.removeChild(this.subTemplate);
       // IDEA: clear also content? (tomalec)        
       //      && HTMLTemplateElement.prototype.clear.call(this);
+    };
+
+
+    // or more importantly, or once Server-side could handle merging
+    // iconsHtml changed
+    LauncherLaunchpadPrototype.jsonChanged = function (oldVal, newVal) {
+      this.parseJson(newVal);
+
+      if( newVal.icons.Html ){
+        var launchpad = this;
+        loadIconsTemplate(
+          "/launchpad" + newVal.icons.Html,
+          function processImportedDocument(){
+            launchpad.clear();
+
+            createAndInsertMergedTemplate(
+              launchpad, 
+              this.import.querySelectorAll("launchpad-tile")
+            );
+
+          }
+        );
+      } else {
+        createAndInsertMergedTemplate(this);
+      }
+    };
+
+    function createAndInsertMergedTemplate(launchpad, tiles){
+        var template = document.createElement("template");
+        template.setAttribute("bind","");
+
+        if( tiles ){
+          // wrap each tile in template and add to aggregated one
+          for( var nodeNo=0; nodeNo < tiles.length; nodeNo++){
+            var tile = tiles[nodeNo];
+            var appName = tile.getAttribute("appname");
+            // get exact template for icon (as some imports/scripts could be there)
+            var appIconTempl = tile.querySelector("template");
+            // change binding to match launchpad's own json structure.
+            appIconTempl.setAttribute("bind","{{icon}}");
+            // clone our tile template
+            var newTile = document.importNode(tileTempl.content, true);
+            // distribute icon into tile
+            appIconTempl && newTile.querySelector("launchpad-icon").appendChild(appIconTempl);
+            // wrap tile into binding namespace
+            var tileAppNamespace = document.createElement("template");
+            tileAppNamespace.setAttribute("bind","{{"+appName +"}}");
+            tileAppNamespace.content.appendChild(newTile);
+            // put bound tile into template of aggregated tiles
+            template.content.appendChild(tileAppNamespace);
+          }
+
+        }
+        // add tiles for iconless apps
+        for( var nodeNo=0; nodeNo < launchpad.iconlessNames.length; nodeNo++){
+          var appName = launchpad.iconlessNames[nodeNo];
+          var newTile = document.importNode(tileTempl.content, true);
+          // wrap tile into binding namespace
+          var tileAppNamespace = document.createElement("template");
+          tileAppNamespace.setAttribute("bind","{{"+appName +"}}");
+          tileAppNamespace.content.appendChild(newTile);
+          // put bound tile into template of aggregated tiles
+          template.content.appendChild(tileAppNamespace);
+        }
+        // stamp template into main document
+        launchpad.subTemplate = template;
+        insertTemplate(launchpad);
+
     }
 
-
-    LauncherLaunchpadPrototype.attachedCallback = function () {
-      var that = this;
-      this.loadTemplate_();
-
-      var observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          if (mutation.type === "attributes" && 
-                (mutation.attributeName === "content") ) {
-            that.loadTemplate_();
-          }
-        });
-      });
-      observer.observe(this, {
-        attributes: true
-      });
-    };
-    // LauncherLaunchpadPrototype.createdCallback = function () {
-    //   // debugger
-    // };
-
-    // document.register('launcher-launchpad', {
-    //   prototype: LauncherLaunchpadPrototype,
-    //   extends: "template"
-    // });
-    Polymer(LauncherLaunchpadPrototype)
+    Polymer(LauncherLaunchpadPrototype);
 
 
    

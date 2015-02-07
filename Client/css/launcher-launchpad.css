@@ -8,11 +8,13 @@ launchpad-tile launchpad-icon{
   padding: 2px;
   border-radius: 13px;
   display: block;
+  min-height: 64px;
 }
 launchpad-tile:hover launchpad-icon {
   box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
 }
 launchpad-tile>a{
+  display: block;
   color: black;
   text-decoration: none;
 }
