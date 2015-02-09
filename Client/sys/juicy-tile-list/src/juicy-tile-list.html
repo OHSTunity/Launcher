@@ -5,12 +5,14 @@
 @demo https://Juicy.github.io/juicy-tile-list/
 -->
 <!-- Import Polymer -->
+<link rel="import" href="../../polymer/polymer.html">
+
 <script src="rectangle.js"></script>
 <script src="packer.js"></script>
 <script src="package.js"></script>
 
 <!-- Define your custom element -->
-<polymer-element name="juicy-tile-list" constructor="JuicyTileListElement" attributes="setup layersOrientation defaultTileSetup gutter">
+<polymer-element name="juicy-tile-list" constructor="JuicyTileListElement" attributes="setup duration layersOrientation defaultTileSetup gutter">
     <template>
     <style>
         :host {
@@ -28,8 +30,8 @@
         polyfill-next-selector { content: ':host #container.animate> *'; }
         #container.animate ::content>*,
         #container.animate >*  {
-            -webkit-transition: width 0.5s, height 0.5s, top 0.5s, left 0.5s, -webkit-transform 0.5s;
-            transition: width 0.5s ease-out, height 0.5s ease-out, top 0.5s ease-out, left 0.5s ease-out, transform 0.5s ease-out;
+            -webkit-transition: width {{duration}}s, height {{duration}}s, top {{duration}}s, left {{duration}}s, -webkit-transform {{duration}}s;
+            transition: width {{duration}}s ease-out, height {{duration}}s ease-out, top {{duration}}s ease-out, left {{duration}}s ease-out, transform {{duration}}s ease-out;
         }
         #container {
           z-index: 0;
@@ -162,9 +164,11 @@
             //  containerName: {setup: setupObject, items: , packer: packer}        
             items: null,// {}, 
 
+            duration: .5,
+
             defaultTileSetup: defaultTileSetup,
             created: function(){
-              this.setup = {};
+              this.setup = {}; // Polymer's type detection.
             },
             sorter: function byPriority(itemA, itemB){
                 return itemB.priority - itemA.priority;
@@ -181,8 +185,9 @@
             },
             domReady: function gridAttached(){
               var that = this;
-
-              Package.call(this, this.setup);
+              // pass setup if contains something (not `{}`-used for Polymer type detection)
+              // IDEA: consider merging with createItemsList, and re-flow setup, to fix Polyjuice glitches (tomalec)
+              Package.call(this, this.setup && this.setup.items !== undefined ? this.setup : undefined);
               if(this.gutter != undefined){
                 this.setup.gutter = parseInt(this.gutter, 10);
               }
@@ -195,7 +200,7 @@
               } else {
                 //FIXME: async timeout look ugly (tomalec)
                 //we wait for transition, so innerHeight won't miss the planned size
-                workaroundOnResizeEvent( this, this.async.bind(this, "refresh", [null, null],500+1) );
+                workaroundOnResizeEvent( this, this.async.bind(this, "refresh", [null, null], this.duration*100 +1) );
               }
 
               window.addEventListener('resize', this.refresh.bind(this, null, null), true);
@@ -419,10 +424,10 @@
           /**
            * Renderer method, used to render packed tree to DOM
            */
-          renderer: function positionAbsolute( node, elements, offsetX, offsetY ){
+          renderer: function positionAbsolute( node, elements, offsetX, offsetY, hideAll ){
             var childNodeNo = node.items.length,
                 child,
-                element, elementStyle, left, top;  
+                element, elementStyle, left, top, hidden;  
             while(childNodeNo--){
               child = node.items[childNodeNo]
               element = elements[ child.name || child.index ];
@@ -430,19 +435,28 @@
                 continue; //if element is not found, perhaps DOM was not yet rendered? Skip gracefully
               }
               elementStyle = element.style;
-              left = ( child.x || 0 ) + offsetX; 
-              top = ( child.y || 0 ) + offsetY;
-              var oversize = child.oversize || 0;
-              elementStyle.left = ( left - oversize ) + "px";
-              elementStyle.top = ( top - oversize ) + "px";
-              elementStyle.width = ( child.width + 2 * oversize ) + "px";
-              elementStyle.height = ( child.height + 2 * oversize ) + "px";
-              if(child.background !== undefined) {
-                elementStyle.backgroundColor = child.background || "transparent";
+              // hide items marked as hidden ;)
+              hidden = hideAll || child.hidden;
+              if(hidden){
+                elementStyle.display = "none";
+                //continue; // do not process children?
+              } else {
+                // force default - block 
+                elementStyle.display = "";
+                left = ( child.x || 0 ) + offsetX; 
+                top = ( child.y || 0 ) + offsetY;
+                var oversize = child.oversize || 0;
+                elementStyle.left = ( left - oversize ) + "px";
+                elementStyle.top = ( top - oversize ) + "px";
+                elementStyle.width = ( child.width + 2 * oversize ) + "px";
+                elementStyle.height = ( child.height + 2 * oversize ) + "px";
+                if(child.background !== undefined) {
+                  elementStyle.backgroundColor = child.background || "transparent";
+                }
               }
               
               if(child.items){// virtual container
-                positionAbsolute( child, elements, left, top);
+                positionAbsolute( child, elements, left, top, hidden);
               }
             }
           }

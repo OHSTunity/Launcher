@@ -30,8 +30,7 @@ It gives you:
 2. Import Web Components' polyfill:
 
     ```html
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/polymer.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     ```
 
 3. Import Custom Element:
@@ -52,8 +51,9 @@ Attribute                    | Options             | Default      | Description
 ---                          | ---                 | ---          | ---
 `defaultTileSetup`           | *Object*            | see below    | Overwrites default values for Tiles (`setup.items[?].?`)
 `gutter`                     | *Number*            | `0`          | Overwrites default value of `setup.gutter`
+`duration`                   | *Number*            | `0.5`        | Duration of repack animation (in seconds).
 `setup`                      | *Object*            |              | Tiles setup
-`setup.gutter`                  | *Number*            | `0`       | Gutter/cell-spacing size in px
+`setup.gutter`               | *Number*            | `0`          | Gutter/cell-spacing size in px
 `setup.direction`            | *String*            | `rightDown`  | How to align our package (horizontal layers `rightDown`, or vertiaval layers: `downRight`)
 `setup.items`                | *Array*             | `[]`         | Tiles setup
 `setup.items[?].priority`    | *Number* (0-1)      | `0`          | Importance of tile, used for sorting elements.
@@ -71,7 +71,8 @@ Attribute                    | Options             | Default      | Description
 
 Name                 | Options        | Description
 ---                  | ---            | ---
-`elements`   | *Array*        | Array of children which are going to be arranged.
+`elements`           | *Array*        | Array of children which are going to be arranged.
+`duration`           | *Number*       | `0.5`        | Duration of repack animation (in seconds).
 `setup`              | *Object*       | Up to date tiles setup. Structure as in attributes.
 `items`              | *Object*       | Map of setup nodes. Ones reflecting real DOM elements are indexed with `0-n` as in HTML, virtual containers are mapped with names. Root container is available under `items['root']`.
 `items[.].container` | *Object*       | Reference to container item. (non-enumerable property)
@@ -122,41 +123,7 @@ Name                      | Data | Description
 
 ## History
 
-#### v0.0.7
- - gap renamed to gutter
- - removed localStorage features (use [`<juicy-tiles-setup-sync>`](https://github.com/Juicy/juicy-tiles-setup-sync) if needed)
- - auto height fixes
-
-#### v0.0.6
- - minifying task - dist folder for production use.
-
-#### v0.0.5
- - critical fix
-
-#### v0.0.4
- - `defaultTileSetup` attribute
- - many bug fixes
- - update Polymer to 0.3.4
-
-#### v0.0.3
- - better separation of DOM vs packing,
- - oversizing containers,
- - innerHTML property for virtual containers,
- - better `heightAuto`, `widthAuto` behavior,
- - auto same to storage removed,
- - update to Polymer 0.3.0,
- - containers stretching behavior in case of  overflow,
- - rename to `juicy-tile-list`,
- - [`juicy-tile-editor`](https://github.com/Juicy/juicy-tile-editor), and [`juicy-highlight`](https://github.com/Juicy/juicy-highlight) separated to its own repos,
- - tons of fixes, tests, and minor changes.
-
-#### v0.0.2
- - Virtual grouping,
- - advanced editor features,
- - gaps
-
-#### v0.0.1
-
+For detailed changelog, check [Releases](https://github.com/Juicy/juicy-tile-list/releases).
 
 
 ## License

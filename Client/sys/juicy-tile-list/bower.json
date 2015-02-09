@@ -1,6 +1,6 @@
 {
   "name": "juicy-tile-list",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "homepage": "https://github.com/Juicy/juicy-tile-list",
   "description": "<juicy-tile-list> is a Polymer Element with sortable tiles that packs efficiently without changing HTML structure (changes CSS only).",
   "license": "MIT",
@@ -22,7 +22,6 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "platform": "Polymer/platform#~0.3.4",
-    "polymer": "Polymer/polymer#~0.3.4"
+    "polymer": "<0.8.0"
   }
 }
