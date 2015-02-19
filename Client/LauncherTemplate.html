@@ -60,9 +60,7 @@
               <input placeholder="Search" value="{{searchBar.query$}}" update-on="input"/>
               <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}">
           </core-field>
-          <template bind="{{user}}">
-              <template is="imported-template" content="{{ Html }}"></template>
-          </template>
+          <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
 
           <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
           <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" ></core-icon-button>
@@ -77,9 +75,7 @@
       <div id="launcher-menu">
         <ul>
           <li><a href="/launcher/dashboard"><core-icon class="launcher-dashboard-icon" icon="drive-site"></core-icon> <span>Dashboard</span></a></li>
-          <template bind="{{ menu }}">
-              <template is="imported-template" content="{{ Html }}"></template>
-          </template>
+          <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
         </ul>
       </div>
 
