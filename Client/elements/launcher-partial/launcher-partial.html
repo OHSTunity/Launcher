@@ -26,7 +26,7 @@ by providing predefined template content, which should serve to include partials
 </template>
 <script>
   (function () {
-    var templ = document.currentScript.ownerDocument.getElementsByTagName("template")[0];
+    var templ = (document._currentScript || document.currentScript).ownerDocument.getElementsByTagName("template")[0];
 
     var LauncherPartialPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
 

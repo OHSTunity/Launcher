@@ -29,7 +29,7 @@
   </template>
 <script>
   (function () {
-    var currentDocument = (document.currentScript || document._currentScript).ownerDocument;
+    var currentDocument = (document._currentScript || document.currentScript).ownerDocument;
     var tileTempl = currentDocument.getElementById("launchpad-tile");
     var tilesGrid = currentDocument.getElementById("tilesGrid");
     // var LauncherLaunchpadPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
