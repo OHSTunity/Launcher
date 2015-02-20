@@ -82,22 +82,7 @@
       <div id="launcher-content">          
         <div class="launchpad">
           <h1>Launchpad</h1>
-          <!-- Yes, it makes not much sense, but Launchpad only shows correct layout if `setup` attribute exists (used with `juicy-tiles-setup-sync`)-->
-          <juicy-tiles-setup-sync name="juicy-tile:/launchpad" storedValue="[[_setup]]" ></juicy-tiles-setup-sync>
-          <juicy-tile-grid 
-              id="juicy-tile:/launchpad"
-              setup="[[ _setup | clonedSetup  ]]"
-              defaultTileSetup="{
-                  'height': 82,
-                  'width': 68
-              }"
-              gutter="20"
-              class="launchpad-grid">
-
-            <!-- `<template is=` is needed only because `juicy-tile-list` filtering -->
-            <template is="launcher-launchpad" json="{{launchpad}}"></template>
-            <!-- <launcher-launchpad json="{{launchpad}}"></launcher-launchpad> -->
-          </juicy-tile-grid>
+          <launcher-launchpad json="{{launchpad}}"></launcher-launchpad>
         </div>
         <warpech-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></warpech-display-route>
           
