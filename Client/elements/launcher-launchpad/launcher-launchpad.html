@@ -12,12 +12,46 @@
 
 </template>
 
-<polymer-element name="launcher-launchpad" attributes="json" extends="template">
+<polymer-element name="launcher-launchpad" attributes="json">
+  <template id="tilesGrid">
+    <juicy-tiles-setup-sync name="juicy-tile:/launchpad" storedValue="{{json._setup | forceJson}}" ></juicy-tiles-setup-sync>
+      <juicy-tile-grid 
+          id="launchpadGrid"
+          class="launchpad-grid"
+          defaultTileSetup="{
+              'height': 82,
+              'width': 68
+          }"
+          gutter="20"
+          setup="[[ json._setup | clonedSetup ]]">
+        <content></content>
+    </juicy-tile-grid>
+  </template>
 <script>
   (function () {
-    var tileTempl = document.currentScript.ownerDocument.getElementById("launchpad-tile");
-    var LauncherLaunchpadPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
+    var currentDocument = (document._currentScript || document.currentScript).ownerDocument;
+    var tileTempl = currentDocument.getElementById("launchpad-tile");
+    var tilesGrid = currentDocument.getElementById("tilesGrid");
+    // var LauncherLaunchpadPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
 
+    var LauncherLaunchpadPrototype = {};
+    LauncherLaunchpadPrototype.parseDeclaration = function(elementElement){
+      this.lightFromTemplate(this.fetchTemplate(elementElement));
+    };
+    LauncherLaunchpadPrototype.clonedSetup = function (json) {
+      switch(typeof json){
+        case "object":
+          return JSON.parse(JSON.stringify(json));
+        case "string":
+          return json && JSON.parse(json) ;
+      }
+    };
+
+    // workaround for Starcounter/Starcounter#2571
+    LauncherLaunchpadPrototype.forceJson = function (json) {
+        return typeof json === "string" ? json && JSON.parse(json) || undefined : json;
+      
+    };
     /**
      * Merge two SC merged responses into one.
      * @param  {[type]} json [description]
@@ -78,7 +112,7 @@
     function insertTemplate(launchpad){
       launchpad.subTemplate.bindingDelegate = new PolymerExpressions(); //use PolymerExpressions. This allows <template if="{{val == 1}}">, etc
       
-      launchpad.parentNode.insertBefore(launchpad.subTemplate, launchpad.nextSibling);
+      launchpad.$.launchpadGrid.appendChild(launchpad.subTemplate);
       // this.subTemplate.model = this.model;
       // this.subTemplate.model = this.json.icons;
       // Wait for any polymer-elements in icons templates.
@@ -109,7 +143,7 @@
     // iconsHtml changed
     LauncherLaunchpadPrototype.jsonChanged = function (oldVal, newVal) {
       this.parseJson(newVal);
-
+ 
       if( newVal.icons.Html ){
         var launchpad = this;
         loadIconsTemplate(

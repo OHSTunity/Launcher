@@ -31,7 +31,7 @@ with predefined template content, which should be used to include partials.
   (function () {
 
 
-    var templ = document.currentScript.ownerDocument.getElementById("partial-template");
+    var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
 
     var templateAttribute = {
       'repeat': true,
