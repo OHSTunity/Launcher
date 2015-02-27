@@ -110,9 +110,6 @@ UpgradeLog*.XML
 # JetBrains IDE files
 .idea
 
-# Bower tempoarary files
-.bower.json
-
 # NPM packages
 node_modules
 

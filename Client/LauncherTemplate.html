@@ -60,9 +60,7 @@
               <input placeholder="Search" value="{{searchBar.query$}}" update-on="input"/>
               <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}">
           </core-field>
-          <template bind="{{user}}">
-              <template is="imported-template" content="{{ Html }}"></template>
-          </template>
+          <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
 
           <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
           <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" ></core-icon-button>
@@ -77,31 +75,14 @@
       <div id="launcher-menu">
         <ul>
           <li><a href="/launcher/dashboard"><core-icon class="launcher-dashboard-icon" icon="drive-site"></core-icon> <span>Dashboard</span></a></li>
-          <template bind="{{ menu }}">
-              <template is="imported-template" content="{{ Html }}"></template>
-          </template>
+          <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
         </ul>
       </div>
 
       <div id="launcher-content">          
         <div class="launchpad">
           <h1>Launchpad</h1>
-          <!-- Yes, it makes not much sense, but Launchpad only shows correct layout if `setup` attribute exists (used with `juicy-tiles-setup-sync`)-->
-          <juicy-tiles-setup-sync name="juicy-tile:/launchpad" storedValue="[[_setup]]" ></juicy-tiles-setup-sync>
-          <juicy-tile-grid 
-              id="juicy-tile:/launchpad"
-              setup="[[ _setup | clonedSetup  ]]"
-              defaultTileSetup="{
-                  'height': 82,
-                  'width': 68
-              }"
-              gutter="20"
-              class="launchpad-grid">
-
-            <!-- `<template is=` is needed only because `juicy-tile-list` filtering -->
-            <template is="launcher-launchpad" json="{{launchpad}}"></template>
-            <!-- <launcher-launchpad json="{{launchpad}}"></launcher-launchpad> -->
-          </juicy-tile-grid>
+          <launcher-launchpad json="{{launchpad}}"></launcher-launchpad>
         </div>
         <warpech-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></warpech-display-route>
           
