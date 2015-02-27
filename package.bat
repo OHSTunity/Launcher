@@ -19,7 +19,7 @@ xcopy "%~dp0Client" "%~dp0temp\content" /s /e
 
 REM Copy icon and config
 xcopy "%~dp0package\*.png" "%~dp0temp"
-xcopy "%~dp0package\*.config "%~dp0temp"
+xcopy "%~dp0package\*.config" "%~dp0temp"
 
 REM Get folder name for the zip name
 for %%a in (%~dp0.) do set currentfolder=%%~na
