@@ -1,0 +1,20 @@
+{
+  "name": "warpech-display-router",
+  "version": "0.1.1",
+  "main": [
+    "warpech-display-router.html"
+  ],
+  "keywords": [
+    "web-components"
+  ],
+  "homepage": "https://github.com/warpech/warpech-display-router",
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.1",
+    "commit": "65263dd7a5c142ac1a2ba4a99eff8c89830c4006"
+  },
+  "_source": "git://github.com/warpech/warpech-display-router.git",
+  "_target": "~0.1.1",
+  "_originalSource": "warpech/warpech-display-router"
+}

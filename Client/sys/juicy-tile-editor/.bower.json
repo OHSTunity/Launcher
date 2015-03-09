@@ -1,0 +1,37 @@
+{
+  "name": "juicy-tile-editor",
+  "homepage": "https://github.com/Juicy/juicy-tile-editor",
+  "description": "<juicy-tile-editor> is an editor form for <juicy-tile-list>",
+  "license": "MIT",
+  "main": "src/juicy-tile-editor.html",
+  "keywords": [
+    "polymer",
+    "web-components"
+  ],
+  "ignore": [
+    "**/.*",
+    "examples",
+    "bower_components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer",
+    "core-selector": "Polymer/core-selector",
+    "juicy-highlight": "Juicy/juicy-highlight#gh-pages",
+    "juicy-popover": "Juicy/juicy-popover#gh-pages",
+    "core-icon": "Polymer/core-icon#~0.5.2",
+    "core-icon-button": "Polymer/core-icon-button#~0.5.2"
+  },
+  "devDependencies": {
+    "core-localstorage": "Polymer/core-localstorage#0.4.1",
+    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#master"
+  },
+  "_release": "f11493fc98",
+  "_resolution": {
+    "type": "branch",
+    "branch": "gh-pages",
+    "commit": "f11493fc981d5a6887dfb68d41f4151ddd82adf5"
+  },
+  "_source": "git://github.com/Juicy/juicy-tile-editor.git",
+  "_target": "gh-pages",
+  "_originalSource": "Juicy/juicy-tile-editor"
+}

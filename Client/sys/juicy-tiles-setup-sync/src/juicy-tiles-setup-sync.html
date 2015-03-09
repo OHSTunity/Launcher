@@ -70,7 +70,7 @@
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
-                req.open("POST", "/launcher/juicytilessetup?"+this.name, true);
+                req.open("POST", "/juicytilessetup?"+this.name, true);
                 req.onreadystatechange = function () {
                   if (req.readyState == 4){
                     if (!(req.status >= 200 && req.status <= 299)) {
@@ -94,7 +94,7 @@
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
-                req.open("DELETE", "/launcher/juicytilessetup?"+this.name, true);
+                req.open("DELETE", "/juicytilessetup?"+this.name, true);
                 req.onreadystatechange = function () {
                   if (req.readyState == 4){
                     if (!(req.status >= 200 && req.status <= 299)) {
