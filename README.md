@@ -14,6 +14,13 @@ Application Launcher
 
 This will bring you an empty Launcher (with Launchpad, Dashboard and Search field). You need to repeat the above steps to run the actual apps (available in [Polyjuice](https://github.com/Polyjuice) organisation). You can bulk multiple app projects into a single Visual Studio solution.
 
+### How to test
+
+1. Install node
+2. Start the Launcher on http://localhost:8080
+3. run 'npm install'
+4. run 'npm test'
+
 ### Browsers
 
 #### Chrome Stable & Dev Channel
