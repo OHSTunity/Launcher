@@ -4,7 +4,7 @@ var assert = require('assert'),
     app = 'http://localhost:8080'
 
 describe('GET /', function(){
-    it('Shuold respond with html when Accept="text/html"', function(done){
+    it('Should respond with html when Accept="text/html"', function(done){
         request(app)
         .get('/')
         .set('Accept', 'text/html')
@@ -41,7 +41,7 @@ describe('GET /', function(){
         .expect(200)
         .expect(function(res) {
             var json = JSON.parse(res.text)
-            assert(json.Launcher.results);
+            assert(json.results);
         })
         .end(function(err, res){
             if (err) return done(err);
