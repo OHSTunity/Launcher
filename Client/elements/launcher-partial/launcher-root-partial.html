@@ -51,26 +51,37 @@ with predefined template content, which should be used to include partials.
       }
     }
 
-    var LauncherPartialPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
+    function inDocumentFragment(element){
+      var parent = element.parentNode;
+      while( parent && !(parent instanceof DocumentFragment) ){
+        parent = parent.parentNode;
+      }
+      return parent instanceof DocumentFragment;
+    }
+
+    var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
 
     /**
      * Use predefined template content, rewrite attributes.
      */
     LauncherPartialPrototype.createdCallback = function LPartialCreated(){
-      // this.style.display = "block";
+      // ugly https://code.google.com/p/chromium/issues/detail?id=430578 workaround
+      if( inDocumentFragment( this ) ){
+        return ;
+      }
       var sroot = this.createShadowRoot();
       sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
 
       var clone = document.importNode( templ.content, true);
-      rewriteTempalteAttributes( this, clone.querySelector("template") );
+      this.innerTempl = clone.querySelector("template");
+      rewriteTempalteAttributes( this, this.innerTempl );
       this.appendChild( clone );
-      // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
     };
     /**
      * Attach model.
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
-      var innerTempl = this.getElementsByTagName("template")[0];
+      var innerTempl = this.innerTempl;
       innerTempl.bindingDelegate = new PolymerExpressions();
       innerTempl.bindingDelegate.clonedSetup = {
         toDOM: function (json, letter) {
@@ -92,7 +103,6 @@ with predefined template content, which should be used to include partials.
       }
 
       innerTempl.model = this.templateInstance.model;
-      // return (HTMLTemplateElement || HTMLElement ).prototype.createdCallback.apply(this, arguments);
     };
 
 
