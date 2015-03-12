@@ -73,15 +73,7 @@ with predefined template content, which should be used to include partials.
       sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
 
       var clone = document.importNode( templ.content, true);
-      this.innerTempl = clone.querySelector("template");
-      rewriteTempalteAttributes( this, this.innerTempl );
-      this.appendChild( clone );
-    };
-    /**
-     * Attach model.
-     */
-    LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
-      var innerTempl = this.innerTempl;
+      var innerTempl = clone.querySelector("template");
       innerTempl.bindingDelegate = new PolymerExpressions();
       innerTempl.bindingDelegate.clonedSetup = {
         toDOM: function (json, letter) {
@@ -100,9 +92,16 @@ with predefined template content, which should be used to include partials.
             return json;
           }
         }
-      }
-
-      innerTempl.model = this.templateInstance.model;
+      };
+      rewriteTempalteAttributes( this, innerTempl );
+      this.innerTempl = innerTempl;
+      this.appendChild( clone );
+    };
+    /**
+     * Attach model.
+     */
+    LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
+      this.innerTempl.model = this.templateInstance.model;
     };
 
 
