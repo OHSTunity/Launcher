@@ -14,17 +14,20 @@
 
 <polymer-element name="launcher-launchpad" attributes="json">
   <template id="tilesGrid">
-    <juicy-tiles-setup-sync name="juicy-tile:/launchpad" storedValue="{{json._setup | forceJson}}" ></juicy-tiles-setup-sync>
-      <juicy-tile-grid 
-          id="launchpadGrid"
-          class="launchpad-grid"
-          defaultTileSetup="{
-              'height': 82,
-              'width': 68
+    <juicy-tiles-setup-sync 
+        name="juicy-tile:/launchpad" 
+        storedValue="{{json._setup | forceJson}}"
+        apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
+    <juicy-tile-grid 
+        id="launchpadGrid"
+        class="launchpad-grid"
+        defaultTileSetup="{
+            'height': 82,
+            'width': 68
           }"
-          gutter="20"
-          setup="[[ json._setup | clonedSetup ]]">
-        <content></content>
+        gutter="20"
+        setup="[[ json._setup | clonedSetup ]]">
+      <content></content>
     </juicy-tile-grid>
   </template>
 <script>
