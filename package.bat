@@ -8,7 +8,6 @@ IF EXIST "%~dp0temp\NUL" (
  md "%~dp0temp"
 )
 
-
 REM Prepare Executables
 md "%~dp0temp\app"
 xcopy "%~dp0bin\Debug\*.*" "%~dp0temp\app"
@@ -22,7 +21,7 @@ xcopy "%~dp0package\*.png" "%~dp0temp"
 xcopy "%~dp0package\*.config" "%~dp0temp"
 
 REM Get folder name for the zip name
-for %%a in (%~dp0.) do set currentfolder=%%~na
+for %%a in ("%~dp0.") do set currentfolder=%%~na
 
 
 IF NOT EXIST "%~dp0dist" (
