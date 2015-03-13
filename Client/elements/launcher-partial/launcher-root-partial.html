@@ -1,6 +1,10 @@
 <!--
 `launcher-root-partial` - Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
+It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
+
+Uses name attribute to assign identifier for juicy-tiles setup in DB.
+@TODO(tomalec): fetch it automatically from binded
 -->
 <!-- Import dependencies -->
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
@@ -14,12 +18,13 @@ with predefined template content, which should be used to include partials.
   <template bind>
     <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
     <juicy-tiles-setup-sync 
-        name="{{Html}}" 
-        storedValue="[[_setup]]"
+        name="{{__Launcher.name}}" 
+        storedValue="[[__Launcher.juicyTilesSetup]]" 
         apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
     <juicy-tile-grid 
-        id="juicy-tile:{{Html}}" 
-        setup="[[ _setup | clonedSetup  ]]"
+        id="{{__Launcher.name}}" 
+        name="{{__Launcher.name}}"
+        setup="[[ __Launcher.juicyTilesSetup | clonedSetup  ]]"
         defaultTileSetup="{
             'heightAuto': true,
             'width': '100%',
@@ -36,23 +41,23 @@ with predefined template content, which should be used to include partials.
 
     var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
 
-    var templateAttribute = {
-      'repeat': true,
-      'bind': true,
-      'if': true
-    };
-    function rewriteTempalteAttributes(from, to){      
-      var attribs = from.attributes;
-      var count = attribs.length;
-      while (count-- > 0) {
-        var attrib = attribs[count];
-        if (templateAttribute[attrib.name]) {
-          if (attrib.name !== 'template')
-            to.setAttribute(attrib.name, attrib.value);
-          from.removeAttribute(attrib.name);
-        }
-      }
-    }
+    // var templateAttribute = {
+    //   'repeat': true,
+    //   'bind': true,
+    //   'if': true
+    // };
+    // function rewriteTempalteAttributes(from, to){      
+    //   var attribs = from.attributes;
+    //   var count = attribs.length;
+    //   while (count-- > 0) {
+    //     var attrib = attribs[count];
+    //     if (templateAttribute[attrib.name]) {
+    //       if (attrib.name !== 'template')
+    //         to.setAttribute(attrib.name, attrib.value);
+    //       from.removeAttribute(attrib.name);
+    //     }
+    //   }
+    // }
 
     function inDocumentFragment(element){
       var parent = element.parentNode;
@@ -96,7 +101,7 @@ with predefined template content, which should be used to include partials.
           }
         }
       };
-      rewriteTempalteAttributes( this, innerTempl );
+      // rewriteTempalteAttributes( this, innerTempl );
       this.innerTempl = innerTempl;
       this.appendChild( clone );
     };
@@ -104,8 +109,49 @@ with predefined template content, which should be used to include partials.
      * Attach model.
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
-      this.innerTempl.model = this.templateInstance.model;
+      var model = this.innerTempl.templateInstance.model;
+      var that = this;
+      // workaround for hardcoded in serverside Html in merged partial (tomalec)
+        model.__Launcher = {};
+        model.__Launcher.name = getParentHtml(model) + ":" +this.getAttribute("name");
+        // should be something like:
+        //model.Launcher.name = requestedURL + ":" +this.getAttribute("name");
+
+      // workaround for lack of consistent server-side support for merged-partials (tomalec)
+        var req = new XMLHttpRequest();
+        req.onload = function () {
+          var res = this;
+          if(res.status == 404){
+            model.__Launcher.juicyTilesSetup = null;
+          } else if (res.status >= 400 && res.status <= 599) {
+            console.error("Failed to delete juicy-tile-list configuration" 
+                + res.status + ' ' + res.statusText + '\n\n' + res.responseText);
+          } else {
+            model.__Launcher.juicyTilesSetup = res.responseText && JSON.parse( res.responseText ) || null; 
+          }
+          that.innerTempl.model = model;
+        };
+        req.open("GET", "/launcher/juicytilessetup?" + model.__Launcher.name, true);
+        req.send();
+
+      
+      // this.innerTempl.model = model;
+      // // this.innerTempl.model = this.templateInstance.model;
+      // //
+      // // this.innerTempl.model = this.innerTempl.templateInstance ?
+      // //     this.innerTempl.templateInstance.model :
+      // //     this.templateInstance.model;
     };
+
+    function getParentHtml(model){
+      var parent = model;
+      // workaround for lack of consistent server-side support for merged-partials (tomalec)
+        parent=parent.$parent;
+      while(parent && !parent.Html){
+        parent = parent.$parent;
+      }
+      return parent && parent.Html || "";
+    }
 
 
     document.registerElement('launcher-root-partial', {
