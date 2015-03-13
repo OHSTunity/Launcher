@@ -6,12 +6,13 @@
 <!-- <link rel="import" href="../../polymer/polymer.html"> -->
 
 <!-- Define your custom element -->
-<polymer-element name="juicy-tiles-setup-sync" attributes="storedValue history currentValue autoSave name">
+<polymer-element name="juicy-tiles-setup-sync" attributes="storedValue history currentValue autoSave name apiUrl">
     <template><style>:host{display: none;}</style></template>
     <script>
         Polymer('juicy-tiles-setup-sync', {
             storedValue: null,
             tileList: null,
+            apiUrl: "/juicytilessetup",
             //history: [],
     
             /**
@@ -70,7 +71,7 @@
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
-                req.open("POST", "/juicytilessetup?"+this.name, true);
+                req.open("POST", this.apiUrl + "?"+this.name, true);
                 req.onreadystatechange = function () {
                   if (req.readyState == 4){
                     if (!(req.status >= 200 && req.status <= 299)) {
@@ -94,7 +95,7 @@
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
-                req.open("DELETE", "/juicytilessetup?"+this.name, true);
+                req.open("DELETE", this.apiUrl + "?"+this.name, true);
                 req.onreadystatechange = function () {
                   if (req.readyState == 4){
                     if (!(req.status >= 200 && req.status <= 299)) {
