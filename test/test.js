@@ -3,7 +3,7 @@ var assert = require('assert'),
     cheerio = require('cheerio'),
     app = 'http://localhost:8080'
 
-describe('GET /', function(){
+describe('Launcher App', function(){
     it('Should respond with html when Accept="text/html"', function(done){
         request(app)
         .get('/')
