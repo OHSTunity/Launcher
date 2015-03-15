@@ -14,7 +14,7 @@ xcopy "%~dp0bin\Debug\*.*" "%~dp0temp\app"
 
 REM Prepare Content
 md "%~dp0temp\content"
-xcopy "%~dp0Client" "%~dp0temp\content" /s /e
+xcopy "%~dp0wwwroot" "%~dp0temp\content" /s /e
 
 REM Copy icon and config
 xcopy "%~dp0package\*.png" "%~dp0temp"

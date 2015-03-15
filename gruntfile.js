@@ -9,11 +9,11 @@ module.exports = function(grunt) {
 
             livereload: {
                 files: [
-                    'Client/*.{html,css}',
-                    'Client/**/*.html',
-                    'Client/**/*.css',
-                    'Apps/*/Client/*.html',
-                    'Apps/*/Client/*.css'
+                    'wwwroot/*.{html,css}',
+                    'wwwroot/**/*.html',
+                    'wwwroot/**/*.css',
+                    'Apps/*/wwwroot/*.html',
+                    'Apps/*/wwwroot/*.css'
                 ]
             }
         }
