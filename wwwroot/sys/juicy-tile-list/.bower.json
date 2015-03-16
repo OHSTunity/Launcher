@@ -23,13 +23,13 @@
   "dependencies": {
     "polymer": "<0.8.0"
   },
-  "_release": "dbe68b6398",
+  "_release": "311db43445",
   "_resolution": {
     "type": "branch",
-    "branch": "gh-pages",
-    "commit": "dbe68b6398e5ec9289436859ea9be6cb6af102ee"
+    "branch": "issues/22-tiles-in-ShadowDOM",
+    "commit": "311db43445c53f4534acbc41b2495c32b094085e"
   },
   "_source": "git://github.com/Juicy/juicy-tile-list.git",
-  "_target": "gh-pages",
+  "_target": "issues/22-tiles-in-ShadowDOM",
   "_originalSource": "juicy-tile-list"
 }
