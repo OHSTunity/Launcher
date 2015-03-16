@@ -23,13 +23,13 @@
   "dependencies": {
     "polymer": "<0.8.0"
   },
-  "_release": "311db43445",
+  "_release": "4707a7eab3",
   "_resolution": {
     "type": "branch",
-    "branch": "issues/22-tiles-in-ShadowDOM",
-    "commit": "311db43445c53f4534acbc41b2495c32b094085e"
+    "branch": "scoping",
+    "commit": "4707a7eab30ae13e3edb34ac1430bed6d456cdc6"
   },
   "_source": "git://github.com/Juicy/juicy-tile-list.git",
-  "_target": "issues/22-tiles-in-ShadowDOM",
+  "_target": "scoping",
   "_originalSource": "juicy-tile-list"
 }

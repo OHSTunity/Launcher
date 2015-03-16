@@ -29,13 +29,13 @@
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
   "homepage": "https://github.com/Juicy/juicy-tile-grid",
-  "_release": "282146ace0",
+  "_release": "f23c105a75",
   "_resolution": {
     "type": "branch",
-    "branch": "tiles-in-ShadowDOM",
-    "commit": "282146ace064a1763b53441ceda1a8ca697f4dd4"
+    "branch": "tilesProperty",
+    "commit": "f23c105a758ea5a35bf0c7c29fce73dbc7455915"
   },
   "_source": "git://github.com/Juicy/juicy-tile-grid.git",
-  "_target": "tiles-in-ShadowDOM",
+  "_target": "tilesProperty",
   "_originalSource": "juicy-tile-grid"
 }

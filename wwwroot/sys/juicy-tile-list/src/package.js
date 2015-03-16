@@ -6,48 +6,48 @@
 
 /**
  * Extend JSON setup, with circular references to items' containers.
- * Creates an array of items and virtual containers, 
+ * Creates an array of all items and virtual containers, 
  * that maps to nodes in setup tree.
- * Applies default container name.
+ * Applies default container id.
  * @param {Object} setup packer setup
  * @param {Item} [container] parent node
- * @param {Object} [items={}] map of items to update
+ * @param {Object} [allItems={}] map of items to update
  * @returns {Array} array of updated/created items
  */
-function parseSetup( setup, container, items ){
-    items = items || {};
-    var name, currentContainer;
+function parseSetup( setup, container, allItems ){
+    allItems = allItems || {};
+    var id, currentContainer;
     if( !container ){
-      name = setup.name = "root";
+      id = setup.id = "root";
       container = null;
     } else {
-      name = setup.name || ( (container && container.name) + "_" + sNo );
+      id = setup.id || ( (container && container.id) + "_" + sNo );
       // FIXME i'm ugly
-      setup.name = name;
+      setup.id = id;
     }
     // create item for current container
-    items[ name ] = currentContainer = setup;
+    allItems[ id ] = currentContainer = setup;
     Object.defineProperty(setup, "container", {value: container, writable: true});
 
-    // create items list
+    // create allItems list
     for(var sNo = 0, sLen = setup.items.length; sNo < sLen; sNo++) {
       var itemSetup = setup.items[sNo];
 
       // walk the tree recursively
       if(itemSetup.items){
         // FIXME I'm ugly
-        // create default name
-        if(!itemSetup.name){
-          itemSetup.name = ( currentContainer.name + "_" + sNo );
+        // create default id
+        if(!itemSetup.id){
+          itemSetup.id = ( currentContainer.id + "_" + sNo );
         }
-        parseSetup( itemSetup, currentContainer, items );
+        parseSetup( itemSetup, currentContainer, allItems );
       } else {
-        // TODO: make index not mandatory (tomalec)
-        items[ itemSetup.index ] = itemSetup;
+        // TODO: make index/id not mandatory (tomalec)
+        allItems[ itemSetup.id ] = itemSetup;
         Object.defineProperty(itemSetup, "container", {value: currentContainer, writable: true });
       }
     }
-    return items;
+    return allItems;
 }
  /**
  * Returns the minimum value of the priority property from the given array of objects
@@ -77,18 +77,18 @@ function Package( setup ){
   if(setup){
     this.setup = setup;
     // XXX: this is used only by layer above (juicy-tile-list to match with elements)
-    this.items = parseSetup( setup );
+    this.allItems = parseSetup( setup );
   }else{
     this.setup = {
-      name: "root",
+      id: "root",
       direction: "rightDown",
       gutter: 0,
       items: []
     };
-    this.items = {root: this.setup};
+    this.allItems = {root: this.setup};
   }
 }
-Package.prototype.items = null;
+Package.prototype.allItems = null;
 Package.prototype.setup = null;
 
 
@@ -151,7 +151,8 @@ Package.prototype.packItems = function packItems( setup ) {
 
 /**
  * Change priority of given item
- * @param  {Item | Number | String} itemIndex    item index (the original item index in DOM), container name, or item itself
+ * @//param  {Item | Number | String} itemIndex    item/container id (by default the original item index in DOM), or item itself
+ * @param  {Item} item    item to be re-prioritized
  * @param  {Boolean} increase  true - increases priority, false - decreases
  * @param  {Boolean} [end=false] true to move to the end
  * @return {juicy-tile-list}        self
@@ -234,7 +235,8 @@ Package.prototype.reprioritizeItem =  function( item, increase, end ){
 
 /**
  * Resize given item.
- * @param  {SetupItemRef} item   item from list, or item index (the original item index in DOM)
+ * @//param  {SetupItemRef} item   item from list, or item id (by default the original item index in DOM)
+ * @param  {SetupItemRef} item   item from list
  * @param  {Number} width  number of cells/columns
  * @param  {Number} height number of cells/rows
  * @return {juicy-tile-list}        self
@@ -254,8 +256,10 @@ Package.prototype.resizeItem = function(item, width, height){
 };
 /**
  * 
- * @param  {SetupItemRef} what item referrence or element index or container name
- * @param  {SetupItemRef} [where]    Reference to, or name of destination container.    If name given in *string* is not found in existing containers list, new one will be created and wrapped around given item.
+ * @//param  {SetupItemRef | String} what item reference or id
+ * @param  {SetupItemRef} what item reference
+ * @//param  {SetupItemRef} [where]    Reference to, or id of destination container.    If id given in *string* is not found in existing containers list, new one will be created and wrapped around given item.
+ * @param  {SetupItemRef} [where]    Reference to destination container.
  * @param {Boolean} [noPacking=false]
  * @return {[type]}              [description]
  */
@@ -294,7 +298,8 @@ Package.prototype.moveToContainer = function( what, where, noPacking ){
 };
 /**
  * Delete virtual container, move items (if any) to one above.
- * @param  {Item | String} what        Reference to, or name of the container to delete.
+ * @//param  {Item | String} what        Reference to, or id of the container to delete.
+ * @param  {Item} what        Reference to the container to delete.
  * @param  {Boolean} [noRepacking=false]  `true` to prevent  re-packing after setup change.
  * @return {Object}             deleted item
  */
@@ -302,11 +307,11 @@ Package.prototype.deleteContainer = function( what, noRepacking ){
   // if( typeof what === "string" ){
   //   what = this.items[what];
   // }
-  if( what.index ){
+  if( what.items === undefined ){
     throw new RangeError( "Cannot delete real element");
   }
   var container = what.container;
-  if( what.name == "root" || !container ){
+  if( what.id == "root" || !container ){
     throw new RangeError( "Cannot delete root container");
   }
   // cache some stuff;
@@ -322,7 +327,7 @@ Package.prototype.deleteContainer = function( what, noRepacking ){
   // remove setup
   var removed = siblingsList.splice( siblingsList.indexOf(what), 1)[0];
   // remove item
-  delete this.items[what.name];
+  delete this.allItems[what.id];
 
 
   if(!noRepacking){
@@ -332,26 +337,27 @@ Package.prototype.deleteContainer = function( what, noRepacking ){
   return removed;
 };
 /**
- * Create a unique name for a container
+ * Create a unique id for a container
  * @param {Object} parent container
  * @return {String}
  */
 Package.prototype.generatePackageName = function (container) {
   var i = 0;
-  while (this.items[container.name + '_' + i]) {
+  while (this.allItems[container.id + '_' + i]) {
     i++;
   }
-  return container.name + '_' + i;
+  return container.id + '_' + i;
 };
 /**
  * Create new empty virtual container.
- * @param  {String} name        Name for the container. If empty, a unique name will be generated
- * @param  {Item | String} [inContainer="root"] Container item
+ * @param  {String} id        Id for the container. If empty, a unique id will be generated
+ * @//param  {Item | String} [inContainer="root"] Container item or id
+ * @param  {Item} [inContainer=root container] Container item
  * @param  {Rectangle} [rectangle]   rectangle setup (width, height, priority)
  * @param  {Boolean} [noRepacking=false] `true` block re-packing items after setup change
  * @return {item}             created container
  */
-Package.prototype.createNewContainer = function( name, inContainer, rectangle, noRepacking ){
+Package.prototype.createNewContainer = function( id, inContainer, rectangle, noRepacking ){
   // if( typeof inContainer === "string" ){
   //   inContainer = this.items[inContainer];
   // } else {
@@ -359,23 +365,22 @@ Package.prototype.createNewContainer = function( name, inContainer, rectangle, n
   // }
   // cache smth
 
-  if (!name) {
-    name = this.generatePackageName(inContainer);
+  if (!id) {
+    id = this.generatePackageName(inContainer);
   }
 
-  // TODO check if name exists
   var siblings = inContainer.items;
 
 ////-----------------
   var setup = {
       gutter: 0,
       items: [],
-      name: name,
+      id: id,
       priority: rectangle ? rectangle.priority : getMinimumPriority(siblings)/2,
       width: rectangle && rectangle.width || 0,  // consider use of this.defaultTileSetup
       height: rectangle && rectangle.height || 0 // consider use of this.defaultTileSetup
   };
-  this.items[ name ] = setup;
+  this.allItems[ id ] = setup;
   // 
   // XXX: setter?
   Object.defineProperty(setup, "container", { value: inContainer, writable: true });

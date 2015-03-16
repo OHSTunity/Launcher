@@ -115,10 +115,10 @@
          * @param {Array} item
          * @param {Object} defaultTileSetup
          */
-        function defaultSetup( tiles, setupItems, items, defaultTileSetup ){
+        function defaultSetup( tiles, setupItems, allItems, defaultTileSetup ){
             for(var elNo = 0, eLen = tiles.length; elNo < eLen; elNo++) {
-              var element = tiles[elNo];
-              if( !items[elNo] ){
+              var tile = tiles[elNo];
+              if( !allItems[tile.id] ){
                 var itemSetup = JSON.parse(JSON.stringify(defaultTileSetup));
                 if(setupItems.length == 0) {
                   itemSetup.priority = 0.5;
@@ -126,10 +126,12 @@
                 else {
                   itemSetup.priority = getMinimumPriority(setupItems) * (1-1/eLen);
                 }
-                itemSetup.index = elNo;
-                Object.defineProperty(itemSetup, "container", {value:items["root"], writable: true})
+                //scoping magic
+                  itemSetup.id = tile.id;
+                // itemSetup.id = elNo;
+                Object.defineProperty(itemSetup, "container", {value:allItems["root"], writable: true})
                 setupItems.push(itemSetup);
-                items[elNo] = itemSetup;
+                allItems[tile.id] = itemSetup;
               }
             }
         }
@@ -172,21 +174,40 @@
             element.$.container.innerHTML = "";
           }
           // console.log("updateWrappers", tileDecorator);
-          var tiles = [], frag, tile;
+          var tiles = [], frag, tile, child, id,
+            //scoping magic
+            scopePrefix = "", scopedIndex=0;
           var wrappers = document.createDocumentFragment();
           for (var i=0, len = elementsArray.length; i < len; i++) {
+            child = elementsArray[i];
+            //scoping magic
+            //  
+              if(child.tagName === "JUICY-TILE-GROUP"){
+                scopePrefix = child.getAttribute("name") || "";
+                scopePrefix += "/";
+                scopedIndex = 0;
+                continue;
+              }
+              id = scopePrefix + scopedIndex;
+              scopedIndex++;
+            //id = i;
+
+
+
             frag = document.importNode(tileDecorator, true);
             tile = frag.firstChild;
-            tile.id = i;
-            tile.firstChild.setAttribute("select", "[juicytile='"+i+"']");
+            tile.id = id;
+            tile.firstChild.setAttribute("select", "[juicytile='"+id+"']");
             wrappers.appendChild(frag);
 
             //if (elem.setAttribute) {
               // attach a selectable key to each light-dom node
-              elementsArray[i].setAttribute('juicytile', i);
+              child.setAttribute('juicytile', id);
               // specify a <content> with that key
               tiles.push(tile);
-              // tiles.push(elementsArray[i]);
+              // add also key based
+              tiles[id] = tile;
+              // tiles.push(child);
             //}
           }
           element.$.container.appendChild(wrappers);
@@ -213,9 +234,9 @@
               //   return this.shadowRoot.getElementById(id);
               // },
             // {
-            //  index_in_DOM: {element: DOMElement, setup: setupObject, container},..
-            //  containerName: {setup: setupObject, items: , packer: packer}        
-            items: null,// {}, 
+            //  id_of_element_in_DOM: {element: DOMElement, setup: setupObject, container},..
+            //  id_of_v_container: {setup: setupObject, items: , packer: packer}        
+            allItems: null,// {}, 
 
             duration: 0.5,
 
@@ -231,13 +252,13 @@
               this.elements = filterNodes(this.children);
               this.tiles = updateWrappers(this.elements, this);
               // this.tiles["root"] = this.$.container;
-              this.tiles["root"] = this.$.container;
               defaultSetup(
-                this.elements,
+                this.tiles,
                 this.setup.items,
-                this.items,
+                this.allItems,
                 this.defaultTileSetup
               );
+              this.tiles["root"] = this.$.container;
             },
             parseDeclaration: function(elementElement) {
               var template = this.fetchTemplate(elementElement);
@@ -314,14 +335,15 @@
            * Delete virtual container, move items (if any) to one above.
            * @extends Package#deleteContainer
            * Remove corresponding ShadowDOM element.
-           * @param  {Item | String} what        Reference to, or name of the container to delete.
+           * @//param  {Item | String} what        Reference to, or id of the container to delete.
+           * @param  {Item} what        Reference to the container to delete.
            * @param  {Boolean} [noRepacking=false]  `true` to prevent  re-packing after setup change.
            * @return {Object}             deleted item
            */
           deleteContainer: function( what, noRepacking ){
             var deletedItem = Package.prototype.deleteContainer.call(this, what, noRepacking);
-            var deletedElement = this.tiles[deletedItem.name];
-              // var deletedElement = this.getTile(deletedItem.name);
+            var deletedElement = this.tiles[deletedItem.id];
+              // var deletedElement = this.getTile(deletedItem.id);
             deletedElement.parentNode.removeChild(deletedElement);
             return deletedItem;
           },
@@ -362,14 +384,14 @@
               while( itemsLength--){
                   // TODO: do it more lightweight
                   itemSetup = setup.items[itemsLength];
-                  tile = tiles[ itemSetup.name || itemSetup.index ];
-                  // tile = this.getTile( itemSetup.name || itemSetup.index );
-                  if (itemSetup.name !== undefined) { // virtual group
+                  tile = tiles[ itemSetup.id ];
+                  // tile = this.getTile( itemSetup.id );
+                  if (itemSetup.items !== undefined) { // virtual group
                     if (!tile) {
                       tile = document.createElement('DIV');
                       tile.className = 'containerBackground';
-                      tiles[ itemSetup.name ] = tile;
-                        tile.id = itemSetup.name;
+                      tiles[ itemSetup.id ] = tile;
+                        tile.id = itemSetup.id;
                       this.$.container.appendChild(tile);
                     }
 
@@ -441,9 +463,9 @@
 
                 Package.call(this, this.setup);
                 defaultSetup(
-                  this.elements,
+                  this.tiles,
                   this.setup.items,
-                  this.items,
+                  this.allItems,
                   this.defaultTileSetup
                 );
                 var that = this;
@@ -521,8 +543,8 @@
                 element, elementStyle, left, top, hidden;  
             while(childNodeNo--){
               child = node.items[childNodeNo]
-              element = tiles[ child.name || child.index ];
-                // element = this.getTile( child.name || child.index );
+              element = tiles[ child.id ];
+                // element = this.getTile( child.id );
               if(!element) {
                 continue; //if element is not found, perhaps DOM was not yet rendered? Skip gracefully
               }
