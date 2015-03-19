@@ -29,11 +29,11 @@
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
   "homepage": "https://github.com/Juicy/juicy-tile-grid",
-  "_release": "f23c105a75",
+  "_release": "95285c7cc1",
   "_resolution": {
     "type": "branch",
     "branch": "tilesProperty",
-    "commit": "f23c105a758ea5a35bf0c7c29fce73dbc7455915"
+    "commit": "95285c7cc13ab31d887bb0630f08b9e3a84ffc12"
   },
   "_source": "git://github.com/Juicy/juicy-tile-grid.git",
   "_target": "tilesProperty",

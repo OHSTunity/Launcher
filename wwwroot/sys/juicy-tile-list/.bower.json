@@ -23,11 +23,11 @@
   "dependencies": {
     "polymer": "<0.8.0"
   },
-  "_release": "4707a7eab3",
+  "_release": "1748858422",
   "_resolution": {
     "type": "branch",
     "branch": "scoping",
-    "commit": "4707a7eab30ae13e3edb34ac1430bed6d456cdc6"
+    "commit": "1748858422b99ec4ffa39c6f7fe50cd4286081a5"
   },
   "_source": "git://github.com/Juicy/juicy-tile-list.git",
   "_target": "scoping",
