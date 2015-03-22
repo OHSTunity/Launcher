@@ -90,12 +90,12 @@
             </launcher-root-partial>
           </template>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-          <warpech-display-route match-path="^\/launcher\/(?!workspace)" display-selector=".workspace.launcher"></warpech-display-route>
+          <warpech-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></warpech-display-route>
                 
           <!-- Workspaces -->
           <template repeat="{{ workspaces }}">
               <!-- - workspace -->
-              <warpech-display-route match-path="^\/launcher\/workspace\/{{appName}}" display-selector=".workspace.{{appName}}"></warpech-display-route>
+              <warpech-display-route match-path="^\/{{appName}}" display-selector=".workspace.{{appName}}"></warpech-display-route>
               <template bind="{{master}}">
                 <launcher-root-partial
                   class="workspace {{$parent.appName}}" name="workspaces/{{$parent.appName}}"></launcher-root-partial>
