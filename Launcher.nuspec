@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://starcounter.com</licenseUrl>
+    <projectUrl>http://starcounter.com</projectUrl>
+    <iconUrl>http://starcounter.com</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Launcher Application (tested with Starcounter 2.0.3094.3)</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Polyjuice</tags>
+  </metadata>
+</package>
