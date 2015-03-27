@@ -15,10 +15,10 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 
 ### How to test
 
-1. Install node
-2. Start the Launcher on http://localhost:8080
-3. run 'npm install'
-4. run 'npm test'
+1. Install [Node.js](https://nodejs.org/)
+2. Run `npm install` to install the test framework
+3. Start Launcher on [http://localhost:8080/](http://localhost:8080/)
+4. Run `npm test`
 
 ### Browsers
 
