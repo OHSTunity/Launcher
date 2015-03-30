@@ -17,14 +17,11 @@
     "**/.*",
     "bower_components"
   ],
-  "dependencies": {
-    "polymer-platform": "~0.3.4"
-  },
-  "_release": "7250d879e0",
+  "_release": "85da6f8deb",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "7250d879e0e29104aaf74569cbb0631714249b99"
+    "commit": "85da6f8deb17652913fef9dc53b76f4fdaf1f245"
   },
   "_source": "git://github.com/Juicy/juicy-popover.git",
   "_target": "gh-pages",

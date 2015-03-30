@@ -15,11 +15,11 @@
   "dependencies": {
     "polymer": "Polymer/polymer"
   },
-  "_release": "583de6bcaf",
+  "_release": "120066781f",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "583de6bcaf197c464afe4760e000636a49862266"
+    "commit": "120066781fa86e66649fde05ad6c20d253f73d77"
   },
   "_source": "git://github.com/Juicy/juicy-highlight.git",
   "_target": "gh-pages",
