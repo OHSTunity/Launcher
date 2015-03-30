@@ -89,15 +89,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="wwwroot\css\launcher-button.css" />
-    <Content Include="wwwroot\css\launcher-labeledInput.css" />
-    <Content Include="wwwroot\css\launcher-select.css" />
-    <Content Include="wwwroot\css\launcher-toolbar.css" />
-    <Content Include="wwwroot\css\launcher-menu.css" />
-    <Content Include="wwwroot\css\style.css" />
-    <Content Include="wwwroot\elements\dashboard\pj-dashboard.html" />
-    <Content Include="wwwroot\LauncherMenu.html" />
-    <Content Include="wwwroot\LauncherTemplate.html" />
+    <Content Include="wwwroot\Launcher\css\launcher-button.css" />
+    <Content Include="wwwroot\Launcher\css\launcher-labeledInput.css" />
+    <Content Include="wwwroot\Launcher\css\launcher-select.css" />
+    <Content Include="wwwroot\Launcher\css\launcher-toolbar.css" />
+    <Content Include="wwwroot\Launcher\css\launcher-menu.css" />
+    <Content Include="wwwroot\Launcher\css\style.css" />
+    <Content Include="wwwroot\Launcher\elements\dashboard\pj-dashboard.html" />
+    <Content Include="wwwroot\Launcher\LauncherMenu.html" />
+    <Content Include="wwwroot\Launcher\LauncherTemplate.html" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

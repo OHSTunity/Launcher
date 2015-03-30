@@ -10,10 +10,10 @@
     <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html">
 
     <!-- Import our elements -->
-    <link rel="import" href="/elements/launcher-layout/launcher-main.html">
-    <link rel="import" href="/elements/launcher-partial/launcher-partial.html">
-    <link rel="import" href="/elements/launcher-partial/launcher-root-partial.html">
-    <link rel="import" href="/elements/launcher-launchpad/launcher-launchpad.html">
+    <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html">
+    <link rel="import" href="/Launcher/elements/launcher-partial/launcher-partial.html">
+    <link rel="import" href="/Launcher/elements/launcher-partial/launcher-root-partial.html">
+    <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html">
 
     <link rel="import" href="/sys/console-log/console-log.html">
 
@@ -31,24 +31,24 @@
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html">
 
     <!-- Style sheets -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/Launcher/css/style.css">
 
-<!--    <link rel="stylesheet" href="/css/fontello.css">
-    <link rel="stylesheet" href="/css/animation.css">-->
+<!--    <link rel="stylesheet" href="/Launcher/css/fontello.css">
+    <link rel="stylesheet" href="/Launcher/css/animation.css">-->
 
-    <link rel="stylesheet" href="/css/launcher-main.css">
-    <link rel="stylesheet" href="/css/launcher-menu.css">
-    <link rel="stylesheet" href="/css/launcher-button.css">
-    <link rel="stylesheet" href="/css/launcher-labeledInput.css">
-    <link rel="stylesheet" href="/css/launcher-select.css">
-    <link rel="stylesheet" href="/css/launcher-toolbar.css">
-    <link rel="stylesheet" href="/css/launcher-launchpad.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-main.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-menu.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-button.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-labeledInput.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-select.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-toolbar.css">
+    <link rel="stylesheet" href="/Launcher/css/launcher-launchpad.css">
 </head>
 
 <body is="launcher-main">
   <template id="root" bind>
       <div class="launcher-toolbar launcher-topbar">
-          <a href="/"><img id="homeIcon" src="/images/elusive-iconfont/dev/icons-svg/home.svg"></a>
+          <a href="/"><img id="homeIcon" src="/Launcher/images/elusive-iconfont/dev/icons-svg/home.svg"></a>
           <core-field class="launcher-theme">
               <core-icon icon="search"></core-icon>
               <input placeholder="Search" value="{{searchBar.query$}}" update-on="input"/>

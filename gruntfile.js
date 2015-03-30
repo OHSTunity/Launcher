@@ -11,9 +11,7 @@ module.exports = function(grunt) {
                 files: [
                     'wwwroot/*.{html,css}',
                     'wwwroot/**/*.html',
-                    'wwwroot/**/*.css',
-                    'Apps/*/wwwroot/*.html',
-                    'Apps/*/wwwroot/*.css'
+                    'wwwroot/**/*.css'
                 ]
             }
         }
