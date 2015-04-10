@@ -50,7 +50,7 @@ describe('Launcher App', function () {
     });
 
     //Requires SignIn app running
-    /*it("Application name should be case insensitive", function (done) {
+    it("Application name should be case insensitive", function (done) {
         var test = function (url, referer, callback) {
             request(app)
             .get(url)
@@ -96,5 +96,5 @@ describe('Launcher App', function () {
                 });
             });
         });
-    });*/
+    });
 });
