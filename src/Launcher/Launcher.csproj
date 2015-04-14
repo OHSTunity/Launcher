@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -85,21 +85,20 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="api\MainHandlers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="wwwroot\Launcher\css\launcher-button.css" />
-    <Content Include="wwwroot\Launcher\css\launcher-labeledInput.css" />
-    <Content Include="wwwroot\Launcher\css\launcher-select.css" />
-    <Content Include="wwwroot\Launcher\css\launcher-toolbar.css" />
-    <Content Include="wwwroot\Launcher\css\launcher-menu.css" />
     <Content Include="wwwroot\Launcher\css\style.css" />
     <Content Include="wwwroot\Launcher\elements\dashboard\pj-dashboard.html" />
     <Content Include="wwwroot\Launcher\LauncherMenu.html" />
     <Content Include="wwwroot\Launcher\LauncherTemplate.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="viewmodels\" />
+    <Folder Include="wwwroot\Launcher\viewmodels\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(StarcounterBin)\Starcounter.MsBuild.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
