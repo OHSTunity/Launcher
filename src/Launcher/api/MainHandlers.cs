@@ -28,6 +28,16 @@ namespace Launcher {
 
                 return sb.ToString();
             });
+
+            Handle.GET("/launcher/removeallstyles/{?}", (string confirm) => {
+                if (confirm == "true") {
+                    Db.Transact(() => {
+                        Db.SlowSQL("DELETE FROM JuicyTiles.JuicyTilesSetup");
+                    });
+                }
+                
+                return 200;
+            });
         }
     }
 }
