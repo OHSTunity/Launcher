@@ -217,9 +217,16 @@ core-field.launcher-theme input:-ms-input-placeholder { /* Internet Explorer 10+
     font-size:30px;
 }
 
+launchpad-tile a {
+    text-align:center;
+    min-width:80px;
+    display:block;
+    text-align:center;
+}
+
 launchpad-tile launchpad-icon {
-    padding: 6px;
-    border-radius: 13px;
+    padding: 8px;
+    border-radius: 8px;
     display: block;
     min-height: 64px;
 }
@@ -239,4 +246,5 @@ launchpad-tile h5 {
     text-align: center;
     margin: 2px;
     height: 14px;
+    font-size:13px;
 }
