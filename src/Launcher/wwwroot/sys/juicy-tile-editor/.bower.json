@@ -25,13 +25,13 @@
     "core-localstorage": "Polymer/core-localstorage#0.4.1",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#master"
   },
-  "_release": "c938590bac",
+  "_release": "4c27cb9b39",
   "_resolution": {
     "type": "branch",
-    "branch": "tilesProperty",
-    "commit": "c938590bac6e77f83724f8c5464f15a362b658ba"
+    "branch": "gh-pages",
+    "commit": "4c27cb9b3972ec393a23798adf1617b63740a398"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
-  "_target": "tilesProperty",
+  "_target": "gh-pages",
   "_originalSource": "Juicy/juicy-tile-editor"
 }
