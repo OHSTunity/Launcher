@@ -34,6 +34,13 @@
 </head>
 <body is="launcher-main">
     <template id="root" bind>
+        <template if="{{editingMode$}}">
+            <div id="elementSettings" class="launcher-topbar">
+                <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height"></juicy-tile-editor>
+            </div>
+            <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
+        </template>
+
         <div class="launcher-toolbar launcher-topbar">
             <a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
             <core-field class="launcher-theme">
@@ -46,12 +53,6 @@
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
             <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" ></core-icon-button>
         </div>
-
-        <template if="{{editingMode$}}">
-            <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selectionMode watchedTagNames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']"></juicy-tile-editor>
-            </div>
-        </template>
 
         <div id="launcher-menu">
             <ul>
@@ -89,4 +90,34 @@
     </template>
     <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
+
+    <!--<script>
+        window.addEventListener("load", function () {
+            console.log("load");
+            document.addEventListener("scroll", function () {
+                var div = document.getElementById("elementSettings");
+
+                if (!div) {
+                    return;
+                }
+
+                var h = div.offsetHeight;
+                var doc = document.documentElement;
+                var sidebar = document.querySelector("juicy-tile-editor").getSidebar();
+                //var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
+                var top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+
+                if (top > 70) {
+                    div.style.position = "fixed";
+                    div.style.top = "0px";
+                    div.style.left = "0px";
+                    div.style.width = "100%";
+                    document.querySelector("body").style.paddingTop = h + "px"
+                } else {
+                    div.style.position = "";
+                    document.querySelector("body").style.paddingTop = "0px"
+                }
+            });
+        });
+    </script>-->
 </body>
