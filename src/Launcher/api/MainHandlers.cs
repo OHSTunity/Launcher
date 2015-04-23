@@ -17,7 +17,7 @@ namespace Launcher {
 
                     if (string.IsNullOrEmpty(a[1])) {
                         continue;
-                    }   
+                    }
 
                     //X.GET(a[1], out resp);
                     resp = Self.GET(a[1]);
@@ -27,16 +27,6 @@ namespace Launcher {
                 }
 
                 return sb.ToString();
-            });
-
-            Handle.GET("/launcher/removeallstyles/{?}", (string confirm) => {
-                if (confirm == "true") {
-                    Db.Transact(() => {
-                        Db.SlowSQL("DELETE FROM JuicyTiles.JuicyTilesSetup");
-                    });
-                }
-                
-                return 200;
             });
         }
     }
