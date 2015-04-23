@@ -18,12 +18,12 @@ Uses name attribute to assign identifier for juicy-tiles setup in DB.
   <template bind>
     <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
     <juicy-tiles-setup-sync 
-        name="{{__Launcher.name}}" 
+        name="{{__Launcher.PartialId}}" 
         storedValue="[[__Launcher.juicyTilesSetup]]" 
         apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
     <juicy-tile-grid 
-        id="{{__Launcher.name}}" 
-        name="{{__Launcher.name}}"
+        id="{{__Launcher.PartialId}}" 
+        name="{{__Launcher.PartialId}}"
         setup="[[ __Launcher.juicyTilesSetup | clonedSetup  ]]"
         defaultTileSetup="{
             'heightAuto': true,
@@ -111,13 +111,23 @@ Uses name attribute to assign identifier for juicy-tiles setup in DB.
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
       var model = this.innerTempl.templateInstance.model;
       var that = this;
-      // workaround for hardcoded in serverside Html in merged partial (tomalec)
-        model.__Launcher = {};
-        model.__Launcher.name = getParentHtml(model) + ":" +this.getAttribute("name");
-        // should be something like:
-        //model.Launcher.name = requestedURL + ":" +this.getAttribute("name");
+      
+      // Mock desired Launcher scope
+      model.__Launcher = model.__Launcher || {};
+      !model.PartialId && console.warn("PartialId for", this, "is missing");
+      model.__Launcher.PartialId = this.getAttribute("name") || model.PartialId;
+      if(!model.__Launcher.PartialId){
+        console.warn("Custom name for partial", this, "is also missing");
+        console.info("trying to build something from parent .Html");
+        model.__Launcher.PartialId = getParentHtml(model);
+      }
 
-      // workaround for lack of consistent server-side support for merged-partials (tomalec)
+
+      if(model.juicyTilesSetup){
+        model.__Launcher.juicyTilesSetup = model.juicyTilesSetup;
+        this.innerTempl.model = model;
+      } else {
+        // workaround for lack of consistent server-side support for merged-partials (tomalec)
         var req = new XMLHttpRequest();
         req.onload = function () {
           var res = this;
@@ -131,9 +141,9 @@ Uses name attribute to assign identifier for juicy-tiles setup in DB.
           }
           that.innerTempl.model = model;
         };
-        req.open("GET", "/launcher/juicytilessetup?" + model.__Launcher.name, true);
+        req.open("GET", "/launcher/juicytilessetup?" + model.__Launcher.PartialId, true);
         req.send();
-
+      }
       
       // this.innerTempl.model = model;
       // // this.innerTempl.model = this.templateInstance.model;
