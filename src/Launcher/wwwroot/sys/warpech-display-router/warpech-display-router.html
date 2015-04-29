@@ -1,4 +1,8 @@
 <script>
+  /**
+   * warpech-display-router 0.1.2
+   * MIT license
+   */
   (function (global) {
     var pushState = global.history.pushState;
     global.history.pushState = function (state) {
@@ -34,7 +38,7 @@
     };
     WarpechDisplayRoutePrototype.attributeChangedCallback = function (attributeName, oldVal, newVal) {
       if (attributeName == 'match-path') {
-        this.matchPath = new RegExp(newVal);
+        this.matchPath = new RegExp(newVal, "i");
       }
     };
     WarpechDisplayRoutePrototype.attachedCallback = function () { //needs to be 'attached' not 'created', otherwise does not work with Polymer's TemplateBinding in attributes
