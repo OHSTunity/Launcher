@@ -14,6 +14,7 @@
     <link rel="import" href="/Launcher/elements/launcher-partial/launcher-partial.html" />
     <link rel="import" href="/Launcher/elements/launcher-partial/launcher-root-partial.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
+    <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
 
     <link rel="import" href="/sys/console-log/console-log.html" />
 
@@ -34,6 +35,8 @@
 </head>
 <body is="launcher-main">
     <template id="root" bind>
+        <launcher-hot-key keys="Ctrl+Z" onkeyup="getModel(this).editingMode$ = !getModel(this).editingMode$"></launcher-hot-key>
+        <launcher-hot-key keys="Esc" onkeyup="getModel(this).editingMode$ = false"></launcher-hot-key>
         <template if="{{editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
                 <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height"></juicy-tile-editor>
@@ -60,13 +63,13 @@
             </ul>
         </div>
 
-        <div id="launcher-content">          
+        <div id="launcher-content">
             <div class="launchpad">
                 <h1>Launchpad</h1>
                 <launcher-launchpad json="{{launchpad}}"></launcher-launchpad>
             </div>
             <warpech-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></warpech-display-route>
-          
+
             <!-- <launcher-root-partial -->
             <!-- class="workspace launcher" bind="{{ results }}"></launcher-root-partial> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
@@ -77,14 +80,12 @@
             </template>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <warpech-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></warpech-display-route>
-                
+
             <!-- Workspaces -->
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
-                <warpech-display-route match-path="^\/{{appName}}" display-selector=".workspace.{{appName}}"></warpech-display-route>
-                <template bind="{{master}}">
-                <launcher-root-partial class="workspace {{$parent.appName}}"></launcher-root-partial>
-                </template>
+                <warpech-display-route match-path="^\/{{Launcher.appName}}" display-selector=".workspace.{{Launcher.appName}}"></warpech-display-route>
+                <launcher-root-partial class="workspace {{Launcher.appName}}"></launcher-root-partial>
             </template>
         </div>
     </template>
