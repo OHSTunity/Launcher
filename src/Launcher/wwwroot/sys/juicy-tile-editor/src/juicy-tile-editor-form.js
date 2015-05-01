@@ -23,7 +23,6 @@
     selectedItems: [],
     editedTiles: null,
     itemName: null,
-    itemId: null,
     background: null,
     width: null,
     widthAuto: null,
@@ -298,7 +297,6 @@
       }
     },
     selectedItemsChanged: function () {
-      this.itemId = this.getCommonValue("id");
       this.itemName = this.getCommonValue("itemName");
       this.background = this.getCommonValue("background");
       this.width = this.getCommonValue("width");
@@ -317,7 +315,8 @@
       this.isSingleSelection = (this.selectedItems.length == 1);
       this.isContainer = this.isContainerInSelection();
       this.isRoot = this.isRootInSelection();
-      this.getSource();
+      //this.getSource();
+      this.refresh();
 
       Array.prototype.forEach.call(this.shadowRoot.querySelectorAll('input[placeholder]'), function (input) {
         if (this.isSelection && !this.isSingleSelection) {

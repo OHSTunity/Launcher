@@ -1,0 +1,57 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html" />
+
+<polymer-element name="launcher-hot-key" attributes="keys">
+    <template>
+        <style>
+            :host {
+                display: none;
+            }
+        </style>
+    </template>
+    <script>
+        Polymer("launcher-hot-key", {
+            domReady: function () {
+                var keys = this.keys.split(" ");
+                var that = this;
+
+                document.addEventListener("keyup", function (e) {
+                    for (var i = 0; i < keys.length; i++) {
+                        if (that.isMatch(e, keys[i])) {
+                            that.fire("keyup", e);
+                            return;
+                        }
+                    }
+                });
+            },
+            isMatch: function (e, key) {
+                var keys = key.split("+");
+                var match = true;
+                var ch = String.fromCharCode(e.which).toLowerCase();
+
+                for (var i = 0; i < keys.length; i++) {
+                    var k = keys[i].toLowerCase();
+
+                    switch (k) {
+                        case "ctrl":
+                            match = match && e.ctrlKey;
+                            break;
+                        case "alt":
+                            match = match && e.altKey;
+                            break;
+                        case "esc":
+                        case "escape":
+                            match = match && e.which == 27;
+                            break;
+                        case "enter":
+                            match = match && e.which == 13;
+                        default:
+                            match = match && (k == ch);
+                            break;
+                    }
+                }
+
+                return match;
+            }
+        });
+    </script>
+</polymer-element>

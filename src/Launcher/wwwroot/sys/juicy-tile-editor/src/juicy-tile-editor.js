@@ -163,7 +163,7 @@
       // this.tileLists = this.parentRoot.getElementsByTagName('juicy-tile-list');
       this.attachTileLists();
 
-      this.$.tileEdited.show(this.selectedElements.length ? this.selectedElements[0] : null);
+      //this.$.tileEdited.show(this.selectedElements.length ? this.selectedElements[0] : null);
 
       // trigger change manually to start listening,
       // if needed according to initial state of selectionMode
@@ -203,6 +203,15 @@
       });
 
       restoreSidebarPosition(this.$.sidebar);
+
+      /*window.addEventListener("beforeunload", function (e) {
+          if (that.$.form.modified) {
+              var message = "You have unsaved layout setup changes!";
+
+              (e || window.event).returnValue = message;
+              return message;
+          }
+      });*/
     },
     detached: function () {
       this.$.tileEdited.hide();
@@ -281,6 +290,7 @@
           }
           else {
             editor.treeHighlightAction(highlightedItem, this);
+            editor.$.treeView.openBranch(highlightedItem);
             editor.$.treeView.highlightBranch(highlightedItem);
           }
         }
@@ -372,6 +382,18 @@
       this.selectedElements.length = 0;
       this.selectedElements.push(tile);
     },
+    treeHoverAction: function (item, tileList) {
+        if (item.detail) {  //is tree event
+            tileList = item.detail.tiles;
+            item = item.detail.branch;
+        }
+
+        var tile = tileList.tiles[item.id];
+        this.$.tileRollover.show(tile);
+    },
+    treeBlurAction: function (item, tileList) {
+        this.$.tileRollover.hide();
+    },
     /**
      * [treeRefresh description]
      * @return {[type]} [description]
@@ -390,7 +412,9 @@
     treeRefresh: function() {
       // notify observer/two-way-binding/tempalte only once
       // Idea calculate this only once
-      this.tree = reducedInductedSpanningTree(this.tileLists);
+        if (!this.tree.length) {
+            this.tree = reducedInductedSpanningTree(this.tileLists);
+        }
     },
     treeHighlightExtendAction: function(item) {
       if(item.detail) {  //is tree event
