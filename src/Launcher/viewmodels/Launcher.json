@@ -1,0 +1,32 @@
+{
+	Html: "",
+	homeThumbnail: {},
+	homeUrl: "",
+	editingMode$: false,
+	searchBar: {
+		query$: "",
+		searchEngineResultPageUrl$: "",
+		feedback: [{
+		text: "",
+		matchScore: 0.5,
+		url: "",
+		thumbnail: {}
+		}]
+	},
+	results: {},
+	user: {},
+	menu: {},
+	launchpad: {
+		icons: {},
+		names:{}
+	},
+	dashboard:{},
+	appFilter: [{
+	  appName: "",
+	  on$: true,
+	  text: "",
+	  thumbnail: {}
+	}],
+	uri: "",
+	workspaces: []
+}

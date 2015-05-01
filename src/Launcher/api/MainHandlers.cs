@@ -3,7 +3,8 @@ using System.Text;
 using Polyjuice;
 using Starcounter;
 
-namespace Launcher {
+namespace LauncherNamespace {
+
     internal class MainHandlers {
         public void Register() {
             // Merges HTML partials according to provided URLs.

@@ -3,7 +3,7 @@ using System.Text;
 using Polyjuice;
 using Starcounter;
 
-namespace Launcher {
+namespace LauncherNamespace {
     public class Program {
         public static void Main() {
             MainHandlers handlers = new MainHandlers();
