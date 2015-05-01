@@ -81,10 +81,8 @@
             <!-- Workspaces -->
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
-                <warpech-display-route match-path="^\/{{appName}}" display-selector=".workspace.{{appName}}"></warpech-display-route>
-                <template bind="{{master}}">
-                <launcher-root-partial class="workspace {{$parent.appName}}"></launcher-root-partial>
-                </template>
+                <warpech-display-route match-path="^\/{{Launcher.appName}}" display-selector=".workspace.{{Launcher.appName}}"></warpech-display-route>
+                <launcher-root-partial class="workspace {{Launcher.appName}}"></launcher-root-partial>
             </template>
         </div>
     </template>
