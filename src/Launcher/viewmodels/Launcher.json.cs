@@ -20,11 +20,11 @@ namespace LauncherNamespace {
     [Launcher_json.searchBar]
     partial class SearchBar : Json {
         void Handle(Input.query query) {
-
             string uri = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
+            Response resp = Self.GET(uri);
 
-            Response resp = X.GET(uri);
             searchEngineResultPageUrl = uri;
+
             if (resp != null) {
                 this.Parent = resp;
             }
