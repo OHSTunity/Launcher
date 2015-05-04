@@ -2,9 +2,9 @@
 `launcher-root-partial` - Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
+Uses juicy-tiles setup given from DB as juicyTilesSetup.
 
-Uses name attribute to assign identifier for juicy-tiles setup in DB.
-@TODO(tomalec): fetch it automatically from binded
+@FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 -->
 <!-- Import dependencies -->
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
@@ -18,21 +18,20 @@ Uses name attribute to assign identifier for juicy-tiles setup in DB.
   <template bind>
     <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
     <juicy-tiles-setup-sync 
-        name="{{__Launcher.PartialId}}" 
-        storedValue="[[__Launcher.juicyTilesSetup]]" 
+        name="{{PartialId}}" 
+        storedValue="[[juicyTilesSetup]]" 
         apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
-    <juicy-tile-grid 
-        id="{{__Launcher.PartialId}}" 
-        name="{{__Launcher.PartialId}}"
-        setup="[[ __Launcher.juicyTilesSetup | clonedSetup  ]]"
+    <juicy-tile-grid
+        name="{{PartialId}}"
+        setup="[[ juicyTilesSetup | clonedSetup  ]]"
         defaultTileSetup="{
             'heightAuto': true,
             'width': '100%',
             'heightDynamic': true
         }">
       <template is="imported-template" content="{{Html}}"></template>
-  </juicy-tile-grid>
-   <!-- unfortunately [[ obj ]] does not work deep (for nested properties) sp we need clonedSetup-->
+    </juicy-tile-grid>
+   <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->
   </template>
 </template>
 <script>
@@ -110,59 +109,16 @@ Uses name attribute to assign identifier for juicy-tiles setup in DB.
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
       var model = this.innerTempl.templateInstance.model;
-      var that = this;
-      
-      // Mock desired Launcher scope
-      model.__Launcher = model.__Launcher || {};
+      // var model = this.templateInstance.model;
+      //
+      // var model = this.innerTempl.templateInstance ?
+      //     this.innerTempl.templateInstance.model :
+      //     this.templateInstance.model;
+
       !model.PartialId && console.warn("PartialId for", this, "is missing");
-      model.__Launcher.PartialId = this.getAttribute("name") || model.PartialId;
-      if(!model.__Launcher.PartialId){
-        console.warn("Custom name for partial", this, "is also missing");
-        console.info("trying to build something from parent .Html");
-        model.__Launcher.PartialId = getParentHtml(model);
-      }
-
-
-      if(model.juicyTilesSetup){
-        model.__Launcher.juicyTilesSetup = model.juicyTilesSetup;
-        this.innerTempl.model = model;
-      } else {
-        // workaround for lack of consistent server-side support for merged-partials (tomalec)
-        var req = new XMLHttpRequest();
-        req.onload = function () {
-          var res = this;
-          if(res.status == 404){
-            model.__Launcher.juicyTilesSetup = null;
-          } else if (res.status >= 400 && res.status <= 599) {
-            console.error("Failed to delete juicy-tile-list configuration" 
-                + res.status + ' ' + res.statusText + '\n\n' + res.responseText);
-          } else {
-            model.__Launcher.juicyTilesSetup = res.responseText && JSON.parse( res.responseText ) || null; 
-          }
-          that.innerTempl.model = model;
-        };
-        req.open("GET", "/launcher/juicytilessetup?" + model.__Launcher.PartialId, true);
-        req.send();
-      }
       
-      // this.innerTempl.model = model;
-      // // this.innerTempl.model = this.templateInstance.model;
-      // //
-      // // this.innerTempl.model = this.innerTempl.templateInstance ?
-      // //     this.innerTempl.templateInstance.model :
-      // //     this.templateInstance.model;
+      this.innerTempl.model = model;
     };
-
-    function getParentHtml(model){
-      var parent = model;
-      // workaround for lack of consistent server-side support for merged-partials (tomalec)
-        parent=parent.$parent;
-      while(parent && !parent.Html){
-        parent = parent.$parent;
-      }
-      return parent && parent.Html || "";
-    }
-
 
     document.registerElement('launcher-root-partial', {
       prototype: LauncherPartialPrototype

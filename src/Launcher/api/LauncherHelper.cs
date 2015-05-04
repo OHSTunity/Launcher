@@ -165,15 +165,18 @@ namespace LauncherNamespace {
                         break;
                     }
                 }
+
                 // if not create new LauncherPage for this appname
                 if (foundWorkspace == null)
                 {
-                    var p = new LauncherPage() {
-                        Html = null,
-                        appName = appName
-                    };
-                    // p.PartialId = "/Launcher/workspaces/" + appName;
-                    // p.juicyTilesSetup = X.GET("/launcher/juicytilessetup?" + foundWorkspace.PartialId);
+                    var p = new LauncherPage();
+                    // move serializer magic to here:
+                    // set partial ID, find juicy tiles, build HTML path, set appname, etc.
+                    // p.appName = mainApp.AppName;
+                    p.appName = appName;
+                    // p.partialId = mainApp.Html;
+                    // p.juicyTilesSetup = X.GET("/launcher/juicytilessetup?" + p.partialId);
+                    // p.listOfAppsRunning = appnames;
 
                     // and add it to the array
                     launcher.workspaces.Add(p);
