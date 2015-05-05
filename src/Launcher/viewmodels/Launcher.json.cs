@@ -24,10 +24,6 @@ namespace LauncherNamespace {
             Response resp = Self.GET(uri);
 
             searchEngineResultPageUrl = uri;
-
-            if (resp != null) {
-                this.Parent = resp;
-            }
         }
     }
 
