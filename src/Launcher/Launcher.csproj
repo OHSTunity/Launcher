@@ -100,7 +100,6 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="api\JuicyTilesSetup.cs" />
     <Compile Include="api\JuicyTilesSetupHandlers.cs" />
     <Compile Include="api\LauncherHelper.cs" />
     <Compile Include="api\MainHandlers.cs" />
