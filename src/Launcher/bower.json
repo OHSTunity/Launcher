@@ -21,7 +21,7 @@
     "juicy-tile-grid": ">=0.1.0",
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
     "juicy-redirect": "Juicy/juicy-redirect#~0.1.0",
-    "warpech-display-router": "warpech/warpech-display-router#~0.1.1",
+    "juicy-display-router": "Juicy/juicy-display-router#~1.0.0",
     "core-icon-button": "Polymer/core-icon-button#~0.5.0",
     "core-field": "Polymer/core-field#~0.5.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",

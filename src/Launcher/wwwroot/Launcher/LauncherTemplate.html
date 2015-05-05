@@ -26,7 +26,7 @@
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
-    <link rel="import" href="/sys/warpech-display-router/warpech-display-router.html" />
+    <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" />
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" />
 
     <!-- Style sheets -->
@@ -68,7 +68,7 @@
                 <h1>Launchpad</h1>
                 <launcher-launchpad json="{{launchpad}}"></launcher-launchpad>
             </div>
-            <warpech-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></warpech-display-route>
+            <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
             <!-- <launcher-root-partial -->
             <!-- class="workspace launcher" bind="{{ results }}"></launcher-root-partial> -->
@@ -79,12 +79,12 @@
                 <launcher-root-partial class="workspace launcher" name="/Launcher/results"></launcher-root-partial>
             </template>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <warpech-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></warpech-display-route>
+            <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
 
             <!-- Workspaces -->
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
-                <warpech-display-route match-path="^\/{{Launcher.appName}}" display-selector=".workspace.{{Launcher.appName}}"></warpech-display-route>
+                <juicy-display-route match-path="^\/{{Launcher.appName}}" display-selector=".workspace.{{Launcher.appName}}"></juicy-display-route>
                 <launcher-root-partial class="workspace {{Launcher.appName}}"></launcher-root-partial>
             </template>
         </div>
