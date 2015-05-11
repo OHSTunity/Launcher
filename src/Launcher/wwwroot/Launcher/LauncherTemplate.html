@@ -35,8 +35,8 @@
 </head>
 <body is="launcher-main">
     <template id="root" bind>
-        <launcher-hot-key keys="Ctrl+Z" onkeyup="getModel(this).editingMode$ = !getModel(this).editingMode$"></launcher-hot-key>
-        <launcher-hot-key keys="Esc" onkeyup="getModel(this).editingMode$ = false"></launcher-hot-key>
+        <launcher-hot-key keys="Ctrl+E" onkeypress="getModel(this).editingMode$ = !getModel(this).editingMode$"></launcher-hot-key>
+        <launcher-hot-key keys="Esc" onkeypress="getModel(this).editingMode$ = false"></launcher-hot-key>
         <template if="{{editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
                 <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height"></juicy-tile-editor>
