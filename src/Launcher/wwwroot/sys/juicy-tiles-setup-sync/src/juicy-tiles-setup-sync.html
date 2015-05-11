@@ -90,8 +90,12 @@
             /** 
              * Resets the current value.
              */
-            clear: function() {
-                this.storedValue = null;
+            clear: function () {
+                if (this.storedValue === null) {
+                    this.storedValueChanged(null, null);
+                } else {
+                    this.storedValue = null;
+                }
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
