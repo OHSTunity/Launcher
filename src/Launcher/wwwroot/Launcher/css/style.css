@@ -38,19 +38,6 @@
     flex-direction: row;
 }
 
-#elementSettings {
-    padding: 10px;
-    background-color: #252526;
-    color:#FFF;
-    left:0px;
-    top:0px;
-    height:60px;
-    width:100%;
-    position:fixed;
-    z-index:10;
-    border-bottom:1px solid #333333;
-}
-
 #filters {
     -webkit-flex: 0 1 auto;
     flex: 0 1 auto;
