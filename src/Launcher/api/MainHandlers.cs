@@ -20,7 +20,7 @@ namespace LauncherNamespace {
                         continue;
                     }
 
-                    //X.GET(a[1], out resp);
+                    //Self.GET(a[1], out resp);
                     resp = Self.GET(a[1]);
                     sb.Append("<launchpad-tile appname=\"" + a[0] + "\">");
                     sb.Append(resp.Body);
