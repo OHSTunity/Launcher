@@ -59,24 +59,24 @@ namespace LauncherNamespace {
 
                     launcher.Session = new Session(SessionOptions.PatchVersioning);
 
-                    launcher.launchpad.icons = X.GET<Json>("/polyjuice/app-icon", () => {
+                    launcher.launchpad.icons = Self.GET<Json>("/polyjuice/app-icon", () => {
                         var p = new Page();
                         return p;
                     });
 
-                    launcher.launchpad.names = X.GET<Json>("/polyjuice/app-name", () => {
+                    launcher.launchpad.names = Self.GET<Json>("/polyjuice/app-name", () => {
                         var p = new Page();
                         return p;
                     });
 
-                    launcher.menu = X.GET<Json>("/polyjuice/menu", () => {
+                    launcher.menu = Self.GET<Json>("/polyjuice/menu", () => {
                         var p = new Page() {
                             Html = "/Launcher/LauncherMenu.html"
                         };
                         return p;
                     });
 
-                    launcher.user = X.GET("/polyjuice/user", () => {
+                    launcher.user = Self.GET("/polyjuice/user", () => {
                         var p = new Page();
                         return p;
                     });
@@ -91,9 +91,9 @@ namespace LauncherNamespace {
 
             Handle.GET("/launcher/dashboard", () => {
 
-                Launcher launcher = X.GET<Launcher>("/launcher");
+                Launcher launcher = Self.GET<Launcher>("/launcher");
 
-                launcher.results = X.GET<Json>("/polyjuice/dashboard", () => {
+                launcher.results = Self.GET<Json>("/polyjuice/dashboard", () => {
                     var p = new Page();
                     return p;
                 });
@@ -102,11 +102,11 @@ namespace LauncherNamespace {
             });
 
             Handle.GET("/launcher/search?query={?}", (string query) => {
-                Launcher launcher = X.GET<Launcher>("/launcher");
+                Launcher launcher = Self.GET<Launcher>("/launcher");
 
                 string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(query);
 
-                launcher.results = X.GET<Json>(uri, () => {
+                launcher.results = Self.GET<Json>(uri, () => {
                     var p = new Page();
                     return p;
                 });
@@ -131,7 +131,7 @@ namespace LauncherNamespace {
                     if (String.IsNullOrEmpty(a[1]))
                         continue;
 
-                    Response resp = X.GET(a[1]);
+                    Response resp = Self.GET(a[1]);
                     sb.Append("<imported-template-scope scope=\"{{" + a[0] + "}}\">");
                     sb.Append("<template><juicy-tile-group name=\"" + a[0] + "\"></juicy-tile-group></template>");
                     sb.Append(resp.Body);
@@ -175,7 +175,7 @@ namespace LauncherNamespace {
                     // p.appName = mainApp.AppName;
                     p.appName = appName;
                     // p.partialId = mainApp.Html;
-                    // p.juicyTilesSetup = X.GET("/launcher/juicytilessetup?" + p.partialId);
+                    // p.juicyTilesSetup = Self.GET("/launcher/juicytilessetup?" + p.partialId);
                     // p.listOfAppsRunning = appnames;
 
                     // and add it to the array
