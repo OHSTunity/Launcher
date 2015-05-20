@@ -1,6 +1,6 @@
 # &lt;juicy-highlight&gt;
 
-`<juicy-highlight>` is a Polymer Element that highlights a DOM element on screen using a SVG overlay and/or border
+`<juicy-highlight>` is a Custom Element that highlights a DOM element on screen using a SVG overlay and/or border
 
 ## Demo
 
@@ -12,30 +12,25 @@
 
     ```sh
     $ bower install juicy-highlight --save
-    ```
+	```
 
-2. Import Web Components' polyfill:
-
-    ```html
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/polymer.js"></script>
-    ```
-
-3. Import Custom Element:
+2. Import Custom Element:
 
     ```html
     <link rel="import" href="bower_components/juicy-highlight/src/juicy-highlight.html">
     ```
 
-4. Start using it!
+3. Start using it!
 
     ```html
     <juicy-highlight id="border" strokeWidth="2" strokeColor="#222222" strokeOffset="4"></juicy-highlight>
     <script>
-      window.addEventListener("polymer-ready", function() {
-        document.querySelector("#border").show( document.querySelectorAll("li") );
-      });
-    </script>
+		document.addEventListener("DOMContentLoaded", function() {
+			setTimeout(function() {
+				document.querySelector("#border").show(document.querySelectorAll("li"));
+			}, 100);
+		});
+	</script>
     ```
 
 ## Attributes
@@ -46,6 +41,7 @@ Attribute         | Type           | Default      | Description
 `strokeWidth`     | *Number*       | `1`          | Border width in px
 `strokeColor`     | *String*       | `#000000`    | Border color
 `strokeOffset`    | *Number*       | `1`          | Border offset (distance from the element) in px
+`fill`            | *Color*        | `none`       | Color to fill selected area. Accepts HEX `#FFFF00`, RGB `rgb(255,255,0)`, RGBA `rgba(255,255,0,0.5)`, and color name `yellow`.
 
 ## Methods
 
