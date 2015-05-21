@@ -97,8 +97,9 @@
                     this.storedValue = null;
                 }
 
+                //Due to https://github.com/Juicy/juicy-tile-editor/issues/48 the Clear button should not automatically save changes.
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
-                var req = new XMLHttpRequest();
+                /*var req = new XMLHttpRequest();
                 req.open("DELETE", this.apiUrl + "?"+this.name, true);
                 req.onreadystatechange = function () {
                   if (req.readyState == 4){
@@ -109,7 +110,7 @@
                     console.info("juicy-tile-list configuration deleted");
                   }
                 };
-                return req.send();
+                return req.send();*/
             },
             isModified: function(){
                 // return JSON.stringify( this.storedValue ) != JSON.stringify( this.currentValue );
