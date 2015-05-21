@@ -1,6 +1,6 @@
 {
     "name": "juicy-tiles-setup-sync",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Polymer Element to handle `<juicy-tile-list>` (or `-grid`) setup changes (staging, reverting, saving to storage).",
     "license": "MIT",
     "main": "src/juicy-tiles-setup-sync.html",
