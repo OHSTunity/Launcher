@@ -308,13 +308,17 @@ version: 0.1.0
               // TODO: Make it cleaner
               // create an observer instance
               var observer = new MutationObserver(function(mutations) {
+                var doRefresh = false;
                 mutations.forEach(function(mutation) {
-                  console.log("observation", mutation.type, arguments, mutations);
+                  //console.log("observation", mutation.type, arguments, mutations);
                   if(mutation.addedNodes){
+                      doRefresh = true;
                       //DRY, performance
                       // console.log("something was added")
-                      that.createItemsList();
-                      that.refresh();
+                  }
+                  if(doRefresh) {
+                    that.createItemsList();
+                    that.refresh();
                   }
                 });
               });

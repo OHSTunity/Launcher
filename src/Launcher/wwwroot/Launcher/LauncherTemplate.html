@@ -95,21 +95,39 @@
     <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
-        var resizeTimeout = null;
+        var slowResizeTimeout = null;
+        var fastResizeTimeout = null;
+        var mutationObserver;
 
-        function resizeWindow() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function () {
+        function slowResize() {
+            clearTimeout(slowResizeTimeout);
+            slowResizeTimeout = setTimeout(function () {
                 window.dispatchEvent(new Event("resize"));
             }, 500);
         }
 
-        window.addEventListener("polymer-ready", function (e) {
-            window.PuppetListener.getPuppetClient().addEventListener("patchreceived", function () {
-                resizeWindow();
-            });
+        function fastResize() {
+            clearTimeout(fastResizeTimeout);
+            fastResizeTimeout = setTimeout(function () {
+                window.dispatchEvent(new Event("resize"));
+            }, 50);
+        }
 
-            resizeWindow();
+        window.addEventListener("polymer-ready", function (e) {
+            if ("MutationObserver" in window) {
+                if (!mutationObserver) {
+                    mutationObserver = new MutationObserver(function (mutations) {
+                        slowResize();
+                        fastResize();
+                    });
+                    mutationObserver.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+            };
+
+            slowResize();
         });
     </script>
 </body>
