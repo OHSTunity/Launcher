@@ -94,34 +94,22 @@
 
     <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
+    <script>
+        var resizeTimeout = null;
 
-    <!--<script>
-        window.addEventListener("load", function () {
-            console.log("load");
-            document.addEventListener("scroll", function () {
-                var div = document.getElementById("elementSettings");
+        function resizeWindow() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () {
+                window.dispatchEvent(new Event("resize"));
+            }, 500);
+        }
 
-                if (!div) {
-                    return;
-                }
-
-                var h = div.offsetHeight;
-                var doc = document.documentElement;
-                var sidebar = document.querySelector("juicy-tile-editor").getSidebar();
-                //var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
-                var top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-
-                if (top > 70) {
-                    div.style.position = "fixed";
-                    div.style.top = "0px";
-                    div.style.left = "0px";
-                    div.style.width = "100%";
-                    document.querySelector("body").style.paddingTop = h + "px"
-                } else {
-                    div.style.position = "";
-                    document.querySelector("body").style.paddingTop = "0px"
-                }
+        window.addEventListener("polymer-ready", function (e) {
+            window.PuppetListener.getPuppetClient().addEventListener("patchreceived", function () {
+                resizeWindow();
             });
+
+            resizeWindow();
         });
-    </script>-->
+    </script>
 </body>
