@@ -28,15 +28,13 @@
     "juicy-tile-grid": ">=0.1.0",
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages"
   },
-  "version": "0.0.2",
-  "_release": "0.0.2",
+  "_release": "20f70575ec",
   "_resolution": {
-    "type": "version",
-    "tag": "0.0.2",
-    "commit": "f3a6445fdaca7c6370b24228cfe9c56922b8552b"
+    "type": "branch",
+    "branch": "master",
+    "commit": "20f70575eccfb68105a133d68dc81dbd136830d7"
   },
   "_source": "git://github.com/Polyjuice/launcher-include.git",
-  "_target": "~0.0.2",
-  "_originalSource": "Polyjuice/launcher-include",
-  "_direct": true
+  "_target": "master",
+  "_originalSource": "Polyjuice/launcher-include"
 }

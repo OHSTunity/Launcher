@@ -26,6 +26,6 @@
     "core-field": "Polymer/core-field#~0.5.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "console-log": "console-log#~1.0.0",
-    "polyjuice-include": "Polyjuice/launcher-include#~0.0.2"
+    "polyjuice-include": "Polyjuice/launcher-include#master"
   }
 }
