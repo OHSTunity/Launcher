@@ -1,0 +1,127 @@
+<!--
+`launcher-root-partial` - Custom Element (w/ Polymer's TempalteBinding)
+with predefined template content, which should be used to include partials.
+It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
+Uses juicy-tiles setup given from DB as juicyTilesSetup.
+
+@FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
+-->
+<!-- Import dependencies -->
+<!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
+
+<link rel="import" href="/sys/imported-template/imported-template.html">
+<link rel="import" href="/sys/juicy-tile-grid/src/juicy-tile-grid.html">
+<link rel="import" href="/sys/juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
+<!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
+
+<template id="partial-template">
+  <template bind>
+    <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
+    <juicy-tiles-setup-sync 
+        name="{{PartialId}}" 
+        storedValue="[[juicyTilesSetup]]" 
+        apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
+    <juicy-tile-grid
+        name="{{PartialId}}"
+        setup="[[ juicyTilesSetup | clonedSetup  ]]"
+        defaultTileSetup="{
+            'heightAuto': true,
+            'width': '100%',
+            'heightDynamic': true
+        }">
+      <template is="imported-template" content="{{Html}}"></template>
+    </juicy-tile-grid>
+   <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->
+  </template>
+</template>
+<script>
+  (function () {
+
+
+    var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
+
+    // var templateAttribute = {
+    //   'repeat': true,
+    //   'bind': true,
+    //   'if': true
+    // };
+    // function rewriteTempalteAttributes(from, to){      
+    //   var attribs = from.attributes;
+    //   var count = attribs.length;
+    //   while (count-- > 0) {
+    //     var attrib = attribs[count];
+    //     if (templateAttribute[attrib.name]) {
+    //       if (attrib.name !== 'template')
+    //         to.setAttribute(attrib.name, attrib.value);
+    //       from.removeAttribute(attrib.name);
+    //     }
+    //   }
+    // }
+
+    function inDocumentFragment(element){
+      var parent = element.parentNode;
+      while( parent && !(parent instanceof DocumentFragment) ){
+        parent = parent.parentNode;
+      }
+      return parent instanceof DocumentFragment;
+    }
+
+    var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
+
+    /**
+     * Use predefined template content, rewrite attributes.
+     */
+    LauncherPartialPrototype.createdCallback = function LPartialCreated(){
+      // ugly https://code.google.com/p/chromium/issues/detail?id=430578 workaround
+      if( inDocumentFragment( this ) ){
+        return ;
+      }
+      var sroot = this.createShadowRoot();
+      sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
+
+      var clone = document.importNode( templ.content, true);
+      var innerTempl = clone.querySelector("template");
+      innerTempl.bindingDelegate = new PolymerExpressions();
+      innerTempl.bindingDelegate.clonedSetup = {
+        toDOM: function (json, letter) {
+          // debugger
+          if(typeof json == "object"){
+            return JSON.parse(JSON.stringify(json));
+          } else{
+            return json;
+          }
+        },
+        toModel: function (json, letter) {
+          // debugger
+          if(typeof json == "object"){
+            return JSON.parse(JSON.stringify(json));
+          } else{
+            return json;
+          }
+        }
+      };
+      // rewriteTempalteAttributes( this, innerTempl );
+      this.innerTempl = innerTempl;
+      this.appendChild( clone );
+    };
+    /**
+     * Attach model.
+     */
+    LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
+      var model = this.innerTempl.templateInstance.model;
+      // var model = this.templateInstance.model;
+      //
+      // var model = this.innerTempl.templateInstance ?
+      //     this.innerTempl.templateInstance.model :
+      //     this.templateInstance.model;
+
+      !model.PartialId && console.warn("PartialId for", this, "is missing");
+      
+      this.innerTempl.model = model;
+    };
+
+    document.registerElement('launcher-root-partial', {
+      prototype: LauncherPartialPrototype
+    });   
+  })();
+</script>

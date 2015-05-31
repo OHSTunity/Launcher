@@ -11,9 +11,10 @@
 
     <!-- Import our elements -->
     <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
-    <link rel="import" href="/Launcher/elements/launcher-partial/launcher-root-partial.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
+    <link rel="import" href="/sys/polyjuice-include/launcher-root-partial.html" />
+    <link rel="import" href="/sys/polyjuice-include/polyjuice-include.html" />
 
     <link rel="import" href="/sys/console-log/console-log.html" />
 
@@ -22,6 +23,7 @@
     <link rel="import" href="/sys/core-icon-button/core-icon-button.html" />
     <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" />
     <link rel="import" href="/sys/core-field/core-field.html" />
+
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
@@ -64,13 +66,13 @@
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
-            <!-- <launcher-root-partial -->
-            <!-- class="workspace launcher" bind="{{ results }}"></launcher-root-partial> -->
+            <!-- <polyjuice-include -->
+            <!-- class="workspace launcher" bind="{{ results }}"></polyjuice-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
             <template bind="{{results}}">
-                <launcher-root-partial class="workspace launcher" name="/Launcher/results"></launcher-root-partial>
+                <polyjuice-include class="workspace launcher" name="/Launcher/results"></polyjuice-include>
             </template>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
@@ -79,7 +81,7 @@
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
                 <juicy-display-route match-path="^\/{{AppName}}" display-selector=".workspace.{{AppName}}"></juicy-display-route>
-                <launcher-root-partial class="workspace {{AppName}}"></launcher-root-partial>
+                <polyjuice-include class="workspace {{AppName}}" partial="{{ }}" content="a"></polyjuice-include>
             </template>
         </div>
 

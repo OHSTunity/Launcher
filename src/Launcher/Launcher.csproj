@@ -117,8 +117,6 @@
     <Content Include="wwwroot\Launcher\elements\launcher-hot-key\launcher-hot-key.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-launchpad\launcher-launchpad.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-layout\launcher-main.html" />
-    <Content Include="wwwroot\Launcher\elements\launcher-partial\launcher-partial.html" />
-    <Content Include="wwwroot\Launcher\elements\launcher-partial\launcher-root-partial.html" />
     <Content Include="wwwroot\Launcher\LauncherMenu.html" />
     <Content Include="wwwroot\Launcher\LauncherTemplate.html" />
   </ItemGroup>
