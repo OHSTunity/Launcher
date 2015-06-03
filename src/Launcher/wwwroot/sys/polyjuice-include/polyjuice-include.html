@@ -3,15 +3,16 @@
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
 Uses juicy-tiles setup given from DB as juicyTilesSetup.
+version: 0.0.3
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 -->
 <!-- Import dependencies -->
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
 
-<link rel="import" href="/sys/imported-template/imported-template.html">
-<link rel="import" href="/sys/juicy-tile-grid/src/juicy-tile-grid.html">
-<link rel="import" href="/sys/juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
+<link rel="import" href="../imported-template/imported-template.html">
+<link rel="import" href="../juicy-tile-grid/src/juicy-tile-grid.html">
+<link rel="import" href="../juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
 <!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
 <template id="partial-template">
@@ -68,6 +69,8 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
 
     var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
 
+    LauncherPartialPrototype.partial = null;
+    LauncherPartialPrototype.isAttached = false;
     /**
      * Use predefined template content, rewrite attributes.
      */
@@ -76,6 +79,21 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
       if( inDocumentFragment( this ) ){
         return ;
       }
+      var partial = undefined;
+      var polyjuiceInclude = this;
+      // define a setter for partial attribute, 
+      // so it could be change by VanillaJs without Polymer Template Binding
+      Object.defineProperty(this,"partial",{
+        set: function(newValue){
+          //d console.log("partial set");
+          partial = newValue;
+          polyjuiceInclude.partialChanged(partial);
+        },
+        get: function(){
+          return partial;
+        }
+      });
+
       var sroot = this.createShadowRoot();
       sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
 
@@ -106,18 +124,69 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
     };
     /**
      * Attach model.
+     * @see Polyjuice/polyjuice-include#attachedCallback It's just a copy
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
-      var model = this.innerTempl.templateInstance.model;
-      // var model = this.templateInstance.model;
-      //
-      // var model = this.innerTempl.templateInstance ?
-      //     this.innerTempl.templateInstance.model :
-      //     this.templateInstance.model;
-
-      !model.PartialId && console.warn("PartialId for", this, "is missing");
-      
-      this.innerTempl.model = model;
+      this.isAttached = true;
+      //d console.log("polyjuice-partial attached");
+      this.partialChanged();
+    };
+    /**
+     * @see Polyjuice/polyjuice-include#detachedCallback It's just a copy
+     * @return {[type]} [description]
+     */
+    LauncherPartialPrototype.detachedCallback = function(){
+      this.isAttached = false;
+      //d console.log("polyjuice-partial detached");
+    };
+    /**
+     * Updates inner `imported-template` with partial data given (if applicable)
+     * @see Polyjuice/polyjuice-include#partialChanged it's alsmost a copy
+     * @param  {Object} newVal new partial value
+     */
+    LauncherPartialPrototype.partialChanged = function(newVal){
+      if(this.partial){
+        var html = this.partial.Html;
+        !html && console.warn("partial.Html for", this, "is missing.");
+        !this.partial.PartialId && console.warn("partial.PartialId for", this, "is missing.");
+        if(this.isAttached && html){
+          this.innerTempl.model = this.partial;
+        }
+      }      
+    };
+    /**
+     * Support for Polymers object to attribute binding
+     * @see Polyjuice/polyjuice-include#bind It's just a copy
+     * @param  {String} name       [description]
+     * @param  {Object} observable [description]
+     * @param  {Boolean} oneTime   [description]
+     * @return {Object}            observer
+     */
+    LauncherPartialPrototype.bind = function(name, observable, oneTime) {
+      if (name === 'partial') {
+        // observable callback
+        var self = this;
+        function updateValue(value) {
+          //d console.log(name, "updated");
+          self[name] = value;
+        }
+        // resolve initial value
+        var value = observable.open(updateValue);
+        updateValue(value);
+        // register and return observable
+        var observer = {
+          close: function() {
+            observable.close();
+          }
+        };
+        this[name+"Observer"] = observer;
+        return observer;
+      }
+      else {
+         return HTMLElement.prototype.bind.call(
+          this, name, observable, oneTime
+        );
+      }
     };
 
     document.registerElement('polyjuice-include', {

@@ -60,6 +60,10 @@ Or [download as ZIP](https://github.com/Polyjuice/launcher-include/archive/maste
     document.querySelector("polyjuice-include").partial = ViewModel;
     ```
 
+## Test suite
+
+ - local browser `./tests/index.html`
+ - [online](http://polyjuice.github.io/polyjuice-include/tests)
 
 ## Contributing
 

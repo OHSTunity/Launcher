@@ -67,13 +67,11 @@
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
             <!-- <polyjuice-include -->
-            <!-- class="workspace launcher" bind="{{ results }}"></polyjuice-include> -->
+            <!-- class="workspace launcher" partial="{{ results }}"></polyjuice-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
-            <template bind="{{results}}">
-                <polyjuice-include class="workspace launcher" name="/Launcher/results"></polyjuice-include>
-            </template>
+            <polyjuice-include class="workspace launcher" name="/Launcher/results" partial="{{results}}"></polyjuice-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
 
@@ -81,7 +79,7 @@
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
                 <juicy-display-route match-path="^\/{{AppName}}" display-selector=".workspace.{{AppName}}"></juicy-display-route>
-                <polyjuice-include class="workspace {{AppName}}" partial="{{ }}" content="a"></polyjuice-include>
+                <polyjuice-include class="workspace {{AppName}}" partial="{{}}"></polyjuice-include>
             </template>
         </div>
 
@@ -97,39 +95,39 @@
     <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
-        var slowResizeTimeout = null;
-        var fastResizeTimeout = null;
-        var mutationObserver;
+        // var slowResizeTimeout = null;
+        // var fastResizeTimeout = null;
+        // var mutationObserver;
 
-        function slowResize() {
-            clearTimeout(slowResizeTimeout);
-            slowResizeTimeout = setTimeout(function () {
-                window.dispatchEvent(new Event("resize"));
-            }, 500);
-        }
+        // function slowResize() {
+        //     clearTimeout(slowResizeTimeout);
+        //     slowResizeTimeout = setTimeout(function () {
+        //         window.dispatchEvent(new Event("resize"));
+        //     }, 500);
+        // }
 
-        function fastResize() {
-            clearTimeout(fastResizeTimeout);
-            fastResizeTimeout = setTimeout(function () {
-                window.dispatchEvent(new Event("resize"));
-            }, 50);
-        }
+        // function fastResize() {
+        //     clearTimeout(fastResizeTimeout);
+        //     fastResizeTimeout = setTimeout(function () {
+        //         window.dispatchEvent(new Event("resize"));
+        //     }, 50);
+        // }
 
-        window.addEventListener("polymer-ready", function (e) {
-            if ("MutationObserver" in window) {
-                if (!mutationObserver) {
-                    mutationObserver = new MutationObserver(function (mutations) {
-                        slowResize();
-                        fastResize();
-                    });
-                    mutationObserver.observe(document.body, {
-                        childList: true,
-                        subtree: true
-                    });
-                }
-            };
+        // window.addEventListener("polymer-ready", function (e) {
+        //     if ("MutationObserver" in window) {
+        //         if (!mutationObserver) {
+        //             mutationObserver = new MutationObserver(function (mutations) {
+        //                 slowResize();
+        //                 fastResize();
+        //             });
+        //             mutationObserver.observe(document.body, {
+        //                 childList: true,
+        //                 subtree: true
+        //             });
+        //         }
+        //     };
 
-            slowResize();
-        });
+        //     slowResize();
+        // });
     </script>
 </body>

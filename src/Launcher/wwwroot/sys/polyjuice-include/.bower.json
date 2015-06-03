@@ -3,7 +3,7 @@
   "authors": [
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
-  "homepage": "https://github.com/Polyjuice/polyjuice-include",
+  "homepage": "https://github.com/Polyjuice/launcher-include",
   "description": "Custom Element to include HTML partials/templates from Polyjuice, enhanced witch Launcher layout features.",
   "main": "polyjuice-include.html",
   "keywords": [
@@ -23,18 +23,21 @@
     "tests"
   ],
   "dependencies": {
-    "imported-template": "~0.0.9",
+    "imported-template": "~0.0.10",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "juicy-tile-grid": ">=0.1.0",
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages"
   },
-  "_release": "20f70575ec",
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#~3.1.3"
+  },
+  "_release": "4e4aea2d3a",
   "_resolution": {
     "type": "branch",
-    "branch": "master",
-    "commit": "20f70575eccfb68105a133d68dc81dbd136830d7"
+    "branch": "gh-pages",
+    "commit": "4e4aea2d3a23d449d7680c1683205b10fefc8ee6"
   },
   "_source": "git://github.com/Polyjuice/launcher-include.git",
-  "_target": "master",
+  "_target": "gh-pages",
   "_originalSource": "Polyjuice/launcher-include"
 }
