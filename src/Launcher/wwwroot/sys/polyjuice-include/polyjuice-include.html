@@ -3,9 +3,10 @@
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
 Uses juicy-tiles setup given from DB as juicyTilesSetup.
-version: 0.0.3
+version: 0.0.4
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
+@FIXME (tomalec): DRY with default polyjuice-include
 -->
 <!-- Import dependencies -->
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
@@ -41,24 +42,6 @@ version: 0.0.3
 
     var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
 
-    // var templateAttribute = {
-    //   'repeat': true,
-    //   'bind': true,
-    //   'if': true
-    // };
-    // function rewriteTempalteAttributes(from, to){      
-    //   var attribs = from.attributes;
-    //   var count = attribs.length;
-    //   while (count-- > 0) {
-    //     var attrib = attribs[count];
-    //     if (templateAttribute[attrib.name]) {
-    //       if (attrib.name !== 'template')
-    //         to.setAttribute(attrib.name, attrib.value);
-    //       from.removeAttribute(attrib.name);
-    //     }
-    //   }
-    // }
-
     function inDocumentFragment(element){
       var parent = element.parentNode;
       while( parent && !(parent instanceof DocumentFragment) ){
@@ -71,6 +54,18 @@ version: 0.0.3
 
     LauncherPartialPrototype.partial = null;
     LauncherPartialPrototype.isAttached = false;
+
+    /**
+     * @see Polyjuice/polyjuice-include - partialAttributeToProperty It's just a copy
+     */
+    function partialAttributeToProperty(element){
+      var attrVal = element.getAttribute("partial");
+      // no value, or Polymer binding
+      if(!attrVal || attrVal.match(/\{\{.*\}\}|\[\[.*\]\]/)){
+        return;
+      }
+      element.partial = JSON.parse(attrVal);
+    }
     /**
      * Use predefined template content, rewrite attributes.
      */
@@ -127,6 +122,7 @@ version: 0.0.3
      * @see Polyjuice/polyjuice-include#attachedCallback It's just a copy
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
+      partialAttributeToProperty(this);
       this.isAttached = true;
       //d console.log("polyjuice-partial attached");
       this.partialChanged();
@@ -138,6 +134,13 @@ version: 0.0.3
     LauncherPartialPrototype.detachedCallback = function(){
       this.isAttached = false;
       //d console.log("polyjuice-partial detached");
+    };
+    /**
+     * @see Polyjuice/polyjuice-include#attributeChangedCallback It's just a copy
+     */
+    LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal){
+      partialAttributeToProperty(this);
+      //d console.log("polyjuice-partial attr changed");
     };
     /**
      * Updates inner `imported-template` with partial data given (if applicable)
