@@ -152,6 +152,8 @@ namespace LauncherNamespace {
         static Response WrapInLauncher(Request req, String appName) {
             Launcher launcher = Self.GET<Launcher>("/launcher");
 
+            appName = appName.ToLower();
+
             // Call proxed request
             Response resp = Self.CallUsingExternalRequest(req, () =>
             {
@@ -159,7 +161,7 @@ namespace LauncherNamespace {
                 Json foundWorkspace = null;
                 for (var i = 0; i < launcher.workspaces.Count; i++)
                 {
-                    if ((launcher.workspaces[i] as LauncherPage).appName.ToLower() == appName.ToLower())
+                    if ((launcher.workspaces[i] as LauncherPage).appName == appName)
                     {
                         foundWorkspace = launcher.workspaces[i];
                         break;

@@ -78,8 +78,8 @@
             <!-- Workspaces -->
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
-                <juicy-display-route match-path="^\/{{AppName}}" display-selector=".workspace.{{AppName}}"></juicy-display-route>
-                <polyjuice-include class="workspace {{AppName}}" partial="{{}}"></polyjuice-include>
+                <juicy-display-route match-path="^\/{{Launcher.appName}}" display-selector=".workspace.{{Launcher.appName}}"></juicy-display-route>
+                <polyjuice-include class="workspace {{Launcher.appName}}" partial="{{}}"></polyjuice-include>
             </template>
         </div>
 
