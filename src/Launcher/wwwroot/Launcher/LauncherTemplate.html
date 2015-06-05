@@ -88,6 +88,11 @@
         <template if="{{editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
                 <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height"></juicy-tile-editor>
+                <script>
+                    document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
+                        getModel(e.target).editingMode$ = false;
+                    });
+                </script>
             </div>
         </template>
     </template>
