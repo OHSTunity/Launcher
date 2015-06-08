@@ -50,7 +50,12 @@
             <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
 
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
-            <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" ></core-icon-button>
+            <template if="{{!layoutModified$}}">
+                <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$"></core-icon-button>
+            </template>
+            <template if="{{layoutModified$}}">
+                <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" class="modified" title="You have unsaved layout changes on this page!"></core-icon-button>
+            </template>
         </div>
 
         <div id="launcher-menu">
@@ -87,7 +92,7 @@
         <launcher-hot-key keys="Esc" onkeypress="getModel(this).editingMode$ = false"></launcher-hot-key>
         <template if="{{editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height"></juicy-tile-editor>
+                <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{layoutModified$}}"></juicy-tile-editor>
                 <script>
                     document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
                         getModel(e.target).editingMode$ = false;

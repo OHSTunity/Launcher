@@ -149,6 +149,13 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     margin: 0;
 }
 
+.launcher-toolbar core-icon-button.modified,
+.launcher-toolbar core-icon-button.modified:hover,
+.launcher-toolbar core-icon-button.modified:hover /deep/ path {
+    color: red;
+    fill: red;
+}
+
 .launcher-toolbar core-icon-button.launcher-theme:hover {
     background-color: #6794AC;
 }

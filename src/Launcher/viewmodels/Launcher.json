@@ -3,6 +3,7 @@
     "homeThumbnail": { },
     "homeUrl": "",
     "editingMode$": false,
+    "layoutModified$": false,
     "searchBar": {
         "query$": "",
         "searchEngineResultPageUrl$": "",
