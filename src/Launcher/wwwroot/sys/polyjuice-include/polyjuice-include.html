@@ -3,7 +3,7 @@
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
 Uses juicy-tiles setup given from DB as juicyTilesSetup.
-version: 0.0.4
+version: 0.0.5
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default polyjuice-include
@@ -30,7 +30,9 @@ version: 0.0.4
             'heightAuto': true,
             'width': '100%',
             'heightDynamic': true
-        }">
+        }"
+        refreshonmutation
+        refreshonresize>
       <template is="imported-template" content="{{Html}}"></template>
     </juicy-tile-grid>
    <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->

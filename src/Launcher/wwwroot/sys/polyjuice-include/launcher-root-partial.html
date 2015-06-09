@@ -28,7 +28,9 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
             'heightAuto': true,
             'width': '100%',
             'heightDynamic': true
-        }">
+        }"
+        refreshonmutation
+        refreshonresize>
       <template is="imported-template" content="{{Html}}"></template>
     </juicy-tile-grid>
    <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->

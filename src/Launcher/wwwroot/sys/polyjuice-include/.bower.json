@@ -32,11 +32,11 @@
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#~3.1.3"
   },
-  "_release": "3d44aa7f3c",
+  "_release": "204628ac5f",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "3d44aa7f3cbfc4abc470323c6a6a481895aea1c6"
+    "commit": "204628ac5f89ddff19bfcdd586cc5ca3f8eee2d3"
   },
   "_source": "git://github.com/Polyjuice/launcher-include.git",
   "_target": "gh-pages",
