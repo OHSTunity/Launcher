@@ -6,6 +6,7 @@
 
 It gives you:
  - masonry-like, gap-less layout (bin-packing), 
+ - layout applied in Shadow DOM - so it doesn't mess with your styles,
  - prioritizing items, 
  - grouping into virtual, nested containers,
  - alignment in different orientations/directions,
@@ -65,13 +66,16 @@ Attribute                    | Options             | Default      | Description
 `setup.items[?].items`       | *Array(Items)*      |              | Recursive setup (for virtual containers)
 `setup.items[?].gutter`      | *Number*            | `0`          | Recursive setup (for virtual containers)
 `setup.items[?].direction`   | *String*            |              | Recursive setup (for virtual containers)
+`refreshOnMutation`          | *Boolean*           | `false`      | If set to `true`, tile-list will be repacked and re-rendered once nodes are added or removed.
+`refreshOnResize`            | *Boolean*           | `false`      | If set to `true`, tile-list will be repacked and re-rendered once window or container gets resized
+`refreshOnAttached`          | *Boolean*           | `true`       | If set to `true`, tile-list will be repacked and re-rendered once (re-)attached to DOM
 
 ## Properties
 
 Name                 | Options        | Description
 ---                  | ---            | ---
 `elements`           | *Array*        | Array of children which are going to be arranged.
-`duration`           | *Number*       | `0.5`        | Duration of repack animation (in seconds).
+`duration`           | *Number*       | Duration of repack animation (in seconds).
 `setup`              | *Object*       | Up to date tiles setup. Structure as in attributes.
 `allItems`           | *Object*       | Map of setup nodes. Root container is available under `allItems['root']`.
 `items[.].container` | *Object*       | Reference to container item. (non-enumerable property)
@@ -106,6 +110,10 @@ Name               | Param name | Type               | Default | Description
 Name                      | Data | Description
 ---                       | ---  | ---   
 `juicy-tile-list-refresh` |  -   | Triggered once layout is refreshed
+
+## Refresh/repack
+
+`<juicy-tile-list>` can refresh/repack your tiles interactively. You can set it by attributes: `refreshOnMutation`, `refreshOnResize`, `refreshOnAttached`.
 
 ## Tile ids
 

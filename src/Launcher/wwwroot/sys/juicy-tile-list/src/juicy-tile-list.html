@@ -3,7 +3,7 @@
 
 @element juicy-tile-list
 @demo https://Juicy.github.io/juicy-tile-list/
-version: 0.1.0
+version: 0.2.2
 -->
 <!-- Import Polymer -->
 <link rel="import" href="../../polymer/polymer.html">
@@ -16,7 +16,7 @@ version: 0.1.0
 <template id="juicy-tile"><div class="juicy-tile"><content></content></div></template>
 
 <!-- Define your custom element -->
-<polymer-element name="juicy-tile-list" constructor="JuicyTileListElement" attributes="setup duration layersOrientation defaultTileSetup gutter">
+<polymer-element name="juicy-tile-list" constructor="JuicyTileListElement" attributes="setup duration layersOrientation defaultTileSetup gutter refreshOnMutation refreshOnResize refreshOnAttached">
     <template>
     <style>
         :host {
@@ -153,12 +153,24 @@ version: 0.1.0
           }
           return min;
         }
-        function workaroundOnResizeEvent(node, fn){
+        function workaroundAddResizeListener(node, fn){
           var parent = node;
           parent = parent.parentNode;
           while( parent && parent.tagName != "BODY" ){
             if(parent.tagName == node.tagName){
               parent.addEventListener("juicy-tile-list-refresh", fn);
+              break;
+            }
+            parent = parent.parentNode;
+          }
+        }
+        // FIXME: DRY
+        function workaroundRemoveResizeListener(node, fn){
+          var parent = node;
+          parent = parent.parentNode;
+          while( parent && parent.tagName != "BODY" ){
+            if(parent.tagName == node.tagName){
+              parent.removeEventListener("juicy-tile-list-refresh", fn);
               break;
             }
             parent = parent.parentNode;
@@ -238,10 +250,34 @@ version: 0.1.0
             allItems: null,// {}, 
 
             duration: 0.5,
+            refreshOnMutation: false,
+            refreshOnResize: false,
+            refreshOnAttached: true,
 
             defaultTileSetup: defaultTileSetup,
             created: function(){
               this.setup = {}; // Polymer's type detection.
+              // Define mutation observer to observe changes
+              // TODO: Make it cleaner
+              // create an observer instance
+              var that = this;
+              this.observer = new MutationObserver(function(mutations) {
+                var doRefresh = false;
+                mutations.forEach(function(mutation) {
+                  // console.log("observation", mutation.type, arguments, mutations);
+                  if(mutation.addedNodes.length || mutation.removedNodes.length){
+                      // console.log("something was added or removed")
+                      doRefresh = true;
+                  }
+                });
+                if(doRefresh){
+                  //DRY, performance
+                  that.createItemsList();
+                  that.refresh();
+                }
+              });
+              // bind this to #refresh for listeners
+              this.refresh = this.refresh.bind(this);
             },
             sorter: function byPriority(itemA, itemB){
                 return itemB.priority - itemA.priority;
@@ -291,41 +327,18 @@ version: 0.1.0
               this.createItemsList();
 
 
-              if(document.attachEvent){
-                this.attachEvent('onresize', this.refresh.bind(this, null, null));
-              } else {
-                //FIXME: async timeout look ugly (tomalec)
-                //we wait for transition, so innerHeight won't miss the planned size
-                workaroundOnResizeEvent( this, this.async.bind(this, "refresh", [null, null], this.duration*100 +1) );
+              if(this.refreshOnResize){
+                this.addResizeListeners();
               }
 
-              window.addEventListener('resize', this.refresh.bind(this, null, null), true);
-
+              if(this.refreshOnAttached){
                 that.refresh();
+              }
 
+              if(this.refreshOnMutation){
+                this.observer.observe(this, { childList: true });
+              }
 
-              // Observe changes
-              // TODO: Make it cleaner
-              // create an observer instance
-              var observer = new MutationObserver(function(mutations) {
-                var doRefresh = false;
-                mutations.forEach(function(mutation) {
-                  //console.log("observation", mutation.type, arguments, mutations);
-                  if(mutation.addedNodes){
-                      doRefresh = true;
-                      //DRY, performance
-                      // console.log("something was added")
-                  }
-                  if(doRefresh) {
-                    that.createItemsList();
-                    that.refresh();
-                  }
-                });
-              });
-              // pass in the target node, as well as the observer options
-              observer.observe(that, { childList: true });
-              // end of: Observe changes
-              
               // console.timeEnd("attached");
               // console.profileEnd("attached");
               // This is ugly hack not to run attrChanged observers until domReady and our element is fully set up.(tomalec)
@@ -334,7 +347,34 @@ version: 0.1.0
                 that.isReady = true;
               });
             },
-            //TODO: detached: function(){}, //clean .elements, etc. (tomalec)
+
+            detached: function(){
+              this.observer.disconnect();
+
+            }, //clean .elements, etc. (tomalec)
+            addResizeListeners: function(){
+              if(document.attachEvent){
+                this.attachEvent('onresize', this.refresh);
+              } else {
+                //FIXME: async timeout look ugly (tomalec)
+                //we wait for transition, so innerHeight won't miss the planned size
+                //FIXME: transition was disregarded to simplify removing listener
+                // workaroundAddResizeListener( this, this.async.bind(this, "refresh", undefined, this.duration*100 +1) );
+                workaroundAddResizeListener( this, this.refresh );
+              }
+
+              window.addEventListener('resize', this.refresh, true);
+            },
+            removeResizeListeners: function(){
+              if(document.attachEvent){
+                this.detachEvent('onresize', this.refresh);
+              } else {
+                //FIXME: transition was disregarded to simplify removing listener
+                workaroundRemoveResizeListener( this, this.refresh );
+              }
+
+              window.removeEventListener('resize', this.refresh, true);
+            },
           /**
            * Delete virtual container, move items (if any) to one above.
            * @extends Package#deleteContainer
@@ -459,33 +499,39 @@ version: 0.1.0
             // trigger event
             this.dispatchEvent( new CustomEvent("juicy-tile-list-refresh") );
           },
+          attributeChanged: function(name, oldVal, newVal){
+            switch(name){
+              case "setup":
+                // do nothing before domReady
+                if(this.isReady){
+                  // console.info("setupChanged");
+                  this.cleanupDOM();
 
-          // attributeChanged: function (attr, oldVal, newVal){
-          //   if(attr =="setup"){
-          //     console.log("setupChanged", "\n",oldVal, newVal, this.setup, this.elements, this, arguments);
-          //     this.cleanupDOM();
-
-          //     Package.call(this, this.setup);
-          //     this.createItemsList();
-          //     this.refresh();
-          //   }
-          // },
-          setupChanged: function ( oldVal, newVal){
-              // do nothing before domReady
-              if(this.isReady){
-                // console.info("setupChanged");
-                this.cleanupDOM();
-
-                Package.call(this, this.setup);
-                defaultSetup(
-                  this.tiles,
-                  this.setup.items,
-                  this.allItems,
-                  this.defaultTileSetup
-                );
-                var that = this;
-                that.refresh();
-              }
+                  Package.call(this, this.setup);
+                  defaultSetup(
+                    this.tiles,
+                    this.setup.items,
+                    this.allItems,
+                    this.defaultTileSetup
+                  );
+                  this.refresh();
+                }
+                break;
+              case "refreshonmutation":
+                if(this.refreshOnMutation){
+                  this.observer.observe(this, { childList: true });
+                } else {
+                  this.observer.disconnect();
+                }
+                break;
+              case "refreshonresize":
+                if(this.refreshOnResize){
+                  this.addResizeListeners();
+                } else {
+                  this.removeResizeListeners();
+                }
+                break;
+            }
           },
 
           /**
