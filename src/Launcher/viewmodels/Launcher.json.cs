@@ -19,11 +19,26 @@ namespace LauncherNamespace {
 
     [Launcher_json.searchBar]
     partial class SearchBar : Json {
-        void Handle(Input.query query) {
-            string uri = "/launcher/search?query=" + HttpUtility.UrlEncode(query.Value);
+        void Handle(Input.query action) {
+            string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(action.Value);
+
+            this.previewVisible = true;
+            this.preview = Self.GET(uri, () => {
+                var p = new Page();
+                return p;
+            });
+        }
+
+        void Handle(Input.submit action) {
+            string uri = "/launcher/search?query=" + this.query;
             Response resp = Self.GET(uri);
 
             searchEngineResultPageUrl = uri;
+        }
+
+        void Handle(Input.close action) {
+            this.preview = null;
+            this.previewVisible = false;
         }
     }
 

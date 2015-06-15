@@ -143,6 +143,29 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     margin:0px 11px;
 }
 
+.launcher-toolbar a.icon {
+    height: 18px;
+}
+
+.launcher-toolbar div.preview {
+    position: absolute;
+    background-color: white;
+    width: 400px;
+    border: 1px solid #C0C0C0;
+    padding: 10px;
+    border-radius: 2px;
+    box-shadow: 0px 0px 3px #C0C0C0;
+    max-height:300px;
+    overflow:auto;
+    left: 88px;
+    top: 55px;
+    box-sizing:border-box;
+}
+
+.launcher-toolbar polyjuice-include.preview {
+    width:360px;
+}
+
 .launcher-toolbar core-icon-button {
     color: white;
     padding: 8px;
@@ -182,7 +205,8 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     transform: rotate(360deg);
 }
 
-core-field.launcher-theme input {
+core-field.launcher-theme input,
+core-field.launcher-theme /deep/ input {
     color: white;
     background: #7B8AA6;
     padding: 4px;
@@ -191,19 +215,23 @@ core-field.launcher-theme input {
 }
 
 /* Change plaveholder text color */
-core-field.launcher-theme input::-webkit-input-placeholder { /* WebKit browsers */
+core-field.launcher-theme input::-webkit-input-placeholder,
+core-field.launcher-theme /deep/ input::-webkit-input-placeholder { /* WebKit browsers */
     color: white;
 }
 
-core-field.launcher-theme input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+core-field.launcher-theme input:-moz-placeholder,
+core-field.launcher-theme /deep/ input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
     color: white;
 }
 
-core-field.launcher-theme input::-moz-placeholder { /* Mozilla Firefox 19+ */
+core-field.launcher-theme input::-moz-placeholder,
+core-field.launcher-theme /deep/ input::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: white;
 }
 
-core-field.launcher-theme input:-ms-input-placeholder { /* Internet Explorer 10+ */
+core-field.launcher-theme input:-ms-input-placeholder,
+core-field.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+ */
     color: white;
 }
 

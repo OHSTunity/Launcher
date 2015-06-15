@@ -13,6 +13,7 @@
     <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
+    <link rel="import" href="/Launcher/elements/laucnher-search-input/launcher-search-input.html" />
     <link rel="import" href="/sys/polyjuice-include/launcher-root-partial.html" />
     <link rel="import" href="/sys/polyjuice-include/polyjuice-include.html" />
 
@@ -45,9 +46,14 @@
         <div class="launcher-toolbar launcher-topbar">
             <a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
             <core-field class="launcher-theme">
-                <i class="glyphicon glyphicon-search"></i>
-                <input placeholder="Search" value="{{searchBar.query$}}" update-on="input" />
+                <a href="javascript:" onclick="getModel(this).searchBar.submit$++" class="icon">
+                    <i class="glyphicon glyphicon-search"></i>
+                </a>
+                <launcher-search-input placeholder="Search" value="{{searchBar.query$}}" closeaction="{{searchBar.close$}}" submitaction="{{searchBar.submit$}}"></launcher-search-input>
                 <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}" />
+                <div class="preview" hidden?="{{!searchBar.previewVisible}}">
+                    <polyjuice-include class="preview" partial="{{searchBar.preview}}"></polyjuice-include>
+                </div>
             </core-field>
             <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
 
