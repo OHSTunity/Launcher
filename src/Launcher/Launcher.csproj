@@ -106,10 +106,10 @@
     <Content Include="wwwroot\Launcher\elements\launcher-layout\launcher-main.html" />
     <Content Include="wwwroot\Launcher\LauncherMenu.html" />
     <Content Include="wwwroot\Launcher\LauncherTemplate.html" />
+    <Content Include="wwwroot\Launcher\viewmodels\ResultPage.html" />
+    <Content Include="wwwroot\Launcher\viewmodels\SearchPreviewPage.html" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\Launcher\viewmodels\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>

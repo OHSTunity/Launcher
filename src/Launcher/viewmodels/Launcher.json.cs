@@ -23,8 +23,8 @@ namespace LauncherNamespace {
             string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(action.Value);
 
             this.previewVisible = true;
-            this.preview = Self.GET(uri, () => {
-                var p = new Page();
+            this.preview = Self.GET<SearchBarPreviewPage>(uri, () => {
+                var p = new SearchBarPreviewPage();
                 return p;
             });
         }
@@ -37,9 +37,17 @@ namespace LauncherNamespace {
         }
 
         void Handle(Input.close action) {
-            this.preview = null;
+            this.preview = new SearchBarPreviewPage();
             this.previewVisible = false;
         }
     }
 
+    [Launcher_json.searchBar.preview]
+    partial class SearchBarPreviewPage : Page { 
+
+    }
+
+    [Launcher_json.results]
+    public partial class LauncherResultsPage : Page {
+    }
 }

@@ -16,11 +16,17 @@
                 "thumbnail": { }
             }
         ],
-        "preview": { },
+        "preview": {
+            "Html": "/Launcher/viewmodels/SearchPreviewPage.html",
+            "PartialId": "/Launcher/viewmodels/SearchPreviewPage.html"
+        },
         "previewVisible": false,
         "close$": 0
     },
-    "results": { },
+    "results": { 
+        "Html": "/Launcher/viewmodels/ResultPage.html",
+        "PartialId": "/Launcher/viewmodels/ResultPage.html"
+    },
     "user": { },
     "menu": { },
     "launchpad": {

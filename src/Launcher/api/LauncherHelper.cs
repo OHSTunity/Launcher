@@ -93,8 +93,9 @@ namespace LauncherNamespace {
 
                 Launcher launcher = Self.GET<Launcher>("/launcher");
 
-                launcher.results = Self.GET<Json>("/polyjuice/dashboard", () => {
-                    var p = new Page();
+                launcher.results = Self.GET<LauncherResultsPage>("/polyjuice/dashboard", () => {
+                    var p = new LauncherResultsPage();
+
                     return p;
                 });
 
@@ -106,8 +107,8 @@ namespace LauncherNamespace {
 
                 string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(query);
 
-                launcher.results = Self.GET<Json>(uri, () => {
-                    var p = new Page();
+                launcher.results = Self.GET<LauncherResultsPage>(uri, () => {
+                    var p = new LauncherResultsPage();
                     return p;
                 });
 
@@ -187,6 +188,5 @@ namespace LauncherNamespace {
 
             return launcher;
         }
-
     }
 }
