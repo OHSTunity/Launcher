@@ -18,20 +18,22 @@
     "core-selector": "Polymer/core-selector",
     "juicy-highlight": "Juicy/juicy-highlight#gh-pages",
     "juicy-popover": "Juicy/juicy-popover#gh-pages",
+    "juicy-color-picker": "Juicy/juicy-color-picker#gh-pages",
     "core-icon": "Polymer/core-icon#~0.5.2",
     "core-icon-button": "Polymer/core-icon-button#~0.5.2"
   },
   "devDependencies": {
     "core-localstorage": "Polymer/core-localstorage#0.4.1",
-    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#master"
+    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
+    "juicy-tile-grid": "Juicy/juicy-tile-grid#fractions"
   },
-  "_release": "4c27cb9b39",
+  "_release": "1eb399f2d4",
   "_resolution": {
     "type": "branch",
-    "branch": "gh-pages",
-    "commit": "4c27cb9b3972ec393a23798adf1617b63740a398"
+    "branch": "fractions",
+    "commit": "1eb399f2d4ce7740472b4ff78f405481dacc7289"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
-  "_target": "gh-pages",
+  "_target": "fractions",
   "_originalSource": "Juicy/juicy-tile-editor"
 }

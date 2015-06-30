@@ -83,7 +83,7 @@ allowtransparency="true" frameborder="0" scrolling="0" width="90" height="30"></
         </div>
         <script>
             document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
-                getModel(e.target).editingMode = false;
+                e.target.templateInstance.model.editingMode = false;
             });
         </script>
     </template>

@@ -17,9 +17,9 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
 <template id="partial-template">
   <template bind>
     <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
-    <juicy-tiles-setup-sync 
-        name="{{PartialId}}" 
-        storedValue="[[juicyTilesSetup]]" 
+    <juicy-tiles-setup-sync
+        name="{{PartialId}}"
+        storedValue="[[juicyTilesSetup]]"
         apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
     <juicy-tile-grid
         name="{{PartialId}}"
@@ -27,10 +27,10 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
         defaultTileSetup="{
             'heightAuto': true,
             'width': '100%',
-            'heightDynamic': true
+            'widthFlexible': true,
+            'heightFlexible': true
         }"
-        refreshonmutation
-        refreshonresize>
+        refreshonmutation>
       <template is="imported-template" content="{{Html}}"></template>
     </juicy-tile-grid>
    <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->
@@ -47,7 +47,7 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
     //   'bind': true,
     //   'if': true
     // };
-    // function rewriteTempalteAttributes(from, to){      
+    // function rewriteTempalteAttributes(from, to){
     //   var attribs = from.attributes;
     //   var count = attribs.length;
     //   while (count-- > 0) {
@@ -118,12 +118,12 @@ Uses juicy-tiles setup given from DB as juicyTilesSetup.
       //     this.templateInstance.model;
 
       !model.PartialId && console.warn("PartialId for", this, "is missing");
-      
+
       this.innerTempl.model = model;
     };
 
     document.registerElement('launcher-root-partial', {
       prototype: LauncherPartialPrototype
-    });   
+    });
   })();
 </script>

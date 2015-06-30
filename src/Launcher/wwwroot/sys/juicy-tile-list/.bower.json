@@ -1,6 +1,5 @@
 {
   "name": "juicy-tile-list",
-  "version": "0.2.2",
   "homepage": "https://github.com/Juicy/juicy-tile-list",
   "description": "<juicy-tile-list> is a Polymer Element with sortable tiles that packs efficiently without changing HTML structure (changes CSS only).",
   "license": "MIT",
@@ -27,13 +26,13 @@
   "devDependencies": {
     "web-component-tester": "~3.1.3"
   },
-  "_release": "0.2.2",
+  "_release": "db27235a3e",
   "_resolution": {
-    "type": "version",
-    "tag": "0.2.2",
-    "commit": "6694c07e5005bfb013ae3563d6d026bcea27d1e5"
+    "type": "branch",
+    "branch": "gh-pages",
+    "commit": "db27235a3e4a286baa72bf5b06df0fc3a1e1b1de"
   },
   "_source": "git://github.com/Juicy/juicy-tile-list.git",
-  "_target": ">=0.1.0",
+  "_target": "gh-pages",
   "_originalSource": "juicy-tile-list"
 }
