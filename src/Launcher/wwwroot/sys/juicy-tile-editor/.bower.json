@@ -27,11 +27,11 @@
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "juicy-tile-grid": "Juicy/juicy-tile-grid#fractions"
   },
-  "_release": "1eb399f2d4",
+  "_release": "a9a8412a89",
   "_resolution": {
     "type": "branch",
     "branch": "fractions",
-    "commit": "1eb399f2d4ce7740472b4ff78f405481dacc7289"
+    "commit": "a9a8412a89e90410b9c20a6e21e614ca4c739e6a"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
   "_target": "fractions",
