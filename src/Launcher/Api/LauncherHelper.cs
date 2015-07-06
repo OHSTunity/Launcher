@@ -1,12 +1,12 @@
-﻿using Starcounter;
-using Starcounter.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Starcounter;
+using Starcounter.Internal;
 using PolyjuiceNamespace;
 
 namespace Launcher {
@@ -18,8 +18,9 @@ namespace Launcher {
         /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
         /// </summary>
         public static void Init() {
+            JuicyTilesSetupHandlers handlers = new JuicyTilesSetupHandlers();
 
-            JuicyTiles.JuicyTilesSetupHandlers.Setup();
+            handlers.Register();
 
             Handle.AddFilterToMiddleware((Request req) => {
 
@@ -49,11 +50,11 @@ namespace Launcher {
 
             Handle.GET("/launcher", () => {
 
-                Launcher launcher;
+                LauncherPage launcher;
 
                 if (Session.Current == null) {
 
-                    launcher = new Launcher() {
+                    launcher = new LauncherPage() {
                         Html = "/Launcher/viewmodels/LauncherTemplate.html"
                     };
 
@@ -85,13 +86,13 @@ namespace Launcher {
 
                 } else {
 
-                    return (Launcher) Session.Current.Data;
+                    return (LauncherPage)Session.Current.Data;
                 }
             });
 
             Handle.GET("/launcher/dashboard", () => {
 
-                Launcher launcher = Self.GET<Launcher>("/launcher");
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                 launcher.results = Self.GET<LauncherResultsPage>("/polyjuice/dashboard", () => {
                     var p = new LauncherResultsPage();
@@ -103,7 +104,7 @@ namespace Launcher {
             });
 
             Handle.GET("/launcher/search?query={?}", (string query) => {
-                Launcher launcher = Self.GET<Launcher>("/launcher");
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                 string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(query);
 
@@ -118,15 +119,13 @@ namespace Launcher {
             });
             // + dummy responses from launcher itself  
             // Merges HTML partials according to provided URLs.
-            Handle.GET(StarcounterConstants.PolyjuiceHtmlMergerPrefix + "{?}", (String s) =>
-            {
+            Handle.GET(StarcounterConstants.PolyjuiceHtmlMergerPrefix + "{?}", (String s) => {
 
                 StringBuilder sb = new StringBuilder();
 
                 String[] allPartialInfos = s.Split(new char[] { '&' });
 
-                foreach (String appNamePlusPartialUrl in allPartialInfos)
-                {
+                foreach (String appNamePlusPartialUrl in allPartialInfos) {
 
                     String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
                     if (String.IsNullOrEmpty(a[1]))
@@ -140,8 +139,7 @@ namespace Launcher {
                 }
 
                 return sb.ToString();
-            }, new HandlerOptions()
-            {
+            }, new HandlerOptions() {
                 ProxyDelegateTrigger = true,
                 AllowNonPolyjuiceHandler = true,
                 ReplaceExistingDelegate = true
@@ -151,26 +149,22 @@ namespace Launcher {
         }
 
         static Response WrapInLauncher(Request req, String appName) {
-            Launcher launcher = Self.GET<Launcher>("/launcher");
+            LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
             // Call proxed request
-            Response resp = Self.CallUsingExternalRequest(req, () =>
-            {
+            Response resp = Self.CallUsingExternalRequest(req, () => {
                 // check if there is already workspaces array item for given appname
                 Json foundWorkspace = null;
-                for (var i = 0; i < launcher.workspaces.Count; i++)
-                {
-                    if ((launcher.workspaces[i] as LauncherPage).appName.ToLower() == appName.ToLower())
-                    {
+                for (var i = 0; i < launcher.workspaces.Count; i++) {
+                    if ((launcher.workspaces[i] as LauncherWrapperPage).appName.ToLower() == appName.ToLower()) {
                         foundWorkspace = launcher.workspaces[i];
                         break;
                     }
                 }
 
                 // if not create new LauncherPage for this appname
-                if (foundWorkspace == null)
-                {
-                    var p = new LauncherPage();
+                if (foundWorkspace == null) {
+                    var p = new LauncherWrapperPage();
                     // move serializer magic to here:
                     // set partial ID, find juicy tiles, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
