@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using PolyjuiceNamespace;
 
-namespace LauncherNamespace {
+namespace Launcher {
 
     public static class LauncherHelper {
 
@@ -54,7 +54,7 @@ namespace LauncherNamespace {
                 if (Session.Current == null) {
 
                     launcher = new Launcher() {
-                        Html = "/Launcher/LauncherTemplate.html"
+                        Html = "/Launcher/viewmodels/LauncherTemplate.html"
                     };
 
                     launcher.Session = new Session(SessionOptions.PatchVersioning);
@@ -71,7 +71,7 @@ namespace LauncherNamespace {
 
                     launcher.menu = Self.GET<Json>("/polyjuice/menu", () => {
                         var p = new Page() {
-                            Html = "/Launcher/LauncherMenu.html"
+                            Html = "/Launcher/viewmodels/LauncherMenu.html"
                         };
                         return p;
                     });

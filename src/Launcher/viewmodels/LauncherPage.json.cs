@@ -1,6 +1,6 @@
 using Starcounter;
 
-namespace LauncherNamespace
+namespace Launcher
 {
     partial class LauncherPage : Page {
     }

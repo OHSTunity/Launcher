@@ -11,7 +11,7 @@ using System.Web;
 using Starcounter.Advanced.XSON;
 using PolyjuiceNamespace;
 
-namespace LauncherNamespace {
+namespace Launcher {
 
     [Launcher_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
     partial class Launcher : Page {
