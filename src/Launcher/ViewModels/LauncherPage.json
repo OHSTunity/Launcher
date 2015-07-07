@@ -31,7 +31,8 @@
     "menu": { },
     "launchpad": {
         "icons": { },
-        "names": { }
+        "names": { },
+		"juicyTilesSetup": {}
     },
     "dashboard": { },
     "appFilter": [

@@ -14,11 +14,11 @@
 
 <polymer-element name="launcher-launchpad" attributes="json">
   <template id="tilesGrid">
-    <juicy-tiles-setup-sync 
-        name="juicy-tile:/launchpad" 
-        storedValue="{{json._setup | forceJson}}"
+    <juicy-tiles-setup-sync
+        name="/launcher/launchpad"
+        storedValue="{{json.juicyTilesSetup}}"
         apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
-    <juicy-tile-grid 
+    <juicy-tile-grid
         id="launchpadGrid"
         class="launchpad-grid"
         defaultTileSetup="{
@@ -26,7 +26,7 @@
             'width': 68
           }"
         gutter="20"
-        setup="[[ json._setup | clonedSetup ]]"
+        setup="[[ json.juicyTilesSetup | clonedSetup ]]"
         refreshonmutation
         refreshonresize>
     </juicy-tile-grid>
@@ -51,11 +51,7 @@
       }
     };
 
-    // workaround for Starcounter/Starcounter#2571
-    LauncherLaunchpadPrototype.forceJson = function (json) {
-        return typeof json === "string" ? json && JSON.parse(json) || undefined : json;
-      
-    };
+
     /**
      * Merge two SC merged responses into one.
      * @param  {[type]} json [description]
@@ -72,7 +68,7 @@
             icon: json.icons[appName]
             //, name: null
           };
-        } 
+        }
       }
       for ( appName in json.names) {
         if( json.names.hasOwnProperty( appName ) ) {
@@ -86,7 +82,7 @@
             };
             iconlessNames.push(appName);
           }
-        } 
+        }
       }
       this.mapPerAppName = map;
       this.iconlessNames = iconlessNames;
@@ -115,7 +111,7 @@
      */
     function insertTemplate(launchpad){
       launchpad.subTemplate.bindingDelegate = new PolymerExpressions(); //use PolymerExpressions. This allows <template if="{{val == 1}}">, etc
-      
+
       launchpad.$.launchpadGrid.appendChild(launchpad.subTemplate);
       // this.subTemplate.model = this.model;
       // this.subTemplate.model = this.json.icons;
@@ -138,7 +134,7 @@
       return this.subTemplate
             && ( !this.subTemplate.clear || this.subTemplate.clear() || true)
             && this.subTemplate.parentNode.removeChild(this.subTemplate);
-      // IDEA: clear also content? (tomalec)        
+      // IDEA: clear also content? (tomalec)
       //      && HTMLTemplateElement.prototype.clear.call(this);
     };
 
@@ -147,7 +143,6 @@
     // iconsHtml changed
     LauncherLaunchpadPrototype.jsonChanged = function (oldVal, newVal) {
       this.parseJson(newVal);
- 
       if( newVal.icons.Html ){
         var launchpad = this;
         loadIconsTemplate(
@@ -156,7 +151,7 @@
             launchpad.clear();
 
             createAndInsertMergedTemplate(
-              launchpad, 
+              launchpad,
               this.import.querySelectorAll("launchpad-tile")
             );
 
@@ -213,7 +208,7 @@
     Polymer(LauncherLaunchpadPrototype);
 
 
-   
+
   })();
 </script>
 </polymer-element>

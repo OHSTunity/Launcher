@@ -8,6 +8,7 @@ using System.Web;
 using Starcounter;
 using Starcounter.Internal;
 using PolyjuiceNamespace;
+using JuicyTiles;
 
 namespace Launcher {
 
@@ -69,6 +70,17 @@ namespace Launcher {
                         var p = new Page();
                         return p;
                     });
+                    var setup = JuicyTilesSetup.GetSetup("/launcher/launchpad");
+
+                    if (setup == null)
+                    {
+                        launcher.launchpad.juicyTilesSetup = null;
+                    }
+                    else
+                    {
+                        dynamic setupJson = new Json(setup.Value);
+                        launcher.launchpad.juicyTilesSetup = setupJson;
+                    }
 
                     launcher.menu = Self.GET<Json>("/polyjuice/menu", () => {
                         var p = new Page() {
@@ -117,7 +129,7 @@ namespace Launcher {
 
                 return launcher;
             });
-            // + dummy responses from launcher itself  
+            // + dummy responses from launcher itself
             // Merges HTML partials according to provided URLs.
             Handle.GET(StarcounterConstants.PolyjuiceHtmlMergerPrefix + "{?}", (String s) => {
 
