@@ -30,7 +30,8 @@ namespace Launcher {
                 // Checking if we should process this request.
                 if ("/" == uri ||
                     Handle.IsSystemHandlerUri(uri) ||
-                    uri.StartsWith("/" + StarcounterEnvironment.AppName, StringComparison.InvariantCultureIgnoreCase)) {
+                    uri.StartsWith("/" + StarcounterEnvironment.AppName + "/", StringComparison.InvariantCultureIgnoreCase) ||
+                    uri.Equals("/" + StarcounterEnvironment.AppName, StringComparison.InvariantCultureIgnoreCase)) {
 
                     return null;
                 }
