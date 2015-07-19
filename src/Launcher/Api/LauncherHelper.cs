@@ -28,11 +28,7 @@ namespace Launcher {
                 String uri = req.Uri;
 
                 // Checking if we should process this request.
-                if ("/" == uri ||
-                    Handle.IsSystemHandlerUri(uri) ||
-                    uri.StartsWith("/" + StarcounterEnvironment.AppName + "/", StringComparison.InvariantCultureIgnoreCase) ||
-                    uri.Equals("/" + StarcounterEnvironment.AppName, StringComparison.InvariantCultureIgnoreCase)) {
-
+                if (("/" == uri) || (uri.StartsWith("/launcher", StringComparison.InvariantCultureIgnoreCase))) {
                     return null;
                 }
 
