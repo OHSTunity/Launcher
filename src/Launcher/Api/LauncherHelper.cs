@@ -28,7 +28,7 @@ namespace Launcher {
                 String uri = req.Uri;
 
                 // Checking if we should process this request.
-                if (("/" == uri) || (uri.StartsWith("/launcher", StringComparison.InvariantCultureIgnoreCase))) {
+                if (("/" == uri) || (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) || (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase))) {
                     return null;
                 }
 
