@@ -17,15 +17,15 @@
     "polymer": "Polymer/polymer#~0.5.5",
     "core-toolbar": "Polymer/core-toolbar#~0.5.0",
     "paper-toggle-button": "Polymer/paper-toggle-button",
-    "juicy-tile-list": ">=0.1.0",
-    "juicy-tile-grid": ">=0.1.0",
-    "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
+    "juicy-tile-list": ">=0.3.0",
+    "juicy-tile-grid": ">=0.2.0",
+    "juicy-tile-editor": "Juicy/juicy-tile-editor#>=0.1.0",
     "juicy-redirect": "Juicy/juicy-redirect#~0.1.0",
-    "juicy-display-router": "Juicy/juicy-display-router#~1.0.0",
+    "juicy-display-router": "Juicy/juicy-display-router#gh-pages",
     "core-icon-button": "Polymer/core-icon-button#~0.5.0",
     "core-field": "Polymer/core-field#~0.5.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "console-log": "console-log#~1.0.0",
-    "polyjuice-include": "Polyjuice/launcher-include#gh-pages"
+    "polyjuice-include": "Polyjuice/launcher-include#>=0.0.6"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "launcher-include",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Custom Element to include HTML partials/templates from Polyjuice, enhanced witch Launcher layout features.",
   "main": "polyjuice-include.html",
   "directories": {

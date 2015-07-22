@@ -3,7 +3,7 @@
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
 Uses juicy-tiles setup given from DB as juicyTilesSetup.
-version: 0.0.5
+version: 0.0.6
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default polyjuice-include
@@ -19,9 +19,9 @@ version: 0.0.5
 <template id="partial-template">
   <template bind>
     <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
-    <juicy-tiles-setup-sync 
-        name="{{PartialId}}" 
-        storedValue="[[juicyTilesSetup]]" 
+    <juicy-tiles-setup-sync
+        name="{{PartialId}}"
+        storedValue="[[juicyTilesSetup]]"
         apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
     <juicy-tile-grid
         name="{{PartialId}}"
@@ -29,10 +29,9 @@ version: 0.0.5
         defaultTileSetup="{
             'precalculateHeight': true,
             'width': '100%',
-            'heightDynamic': true
+            'widthFlexible': true
         }"
-        refreshonmutation
-        refreshonresize>
+        refreshonmutation>
       <template is="imported-template" content="{{Html}}"></template>
     </juicy-tile-grid>
    <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->
@@ -78,7 +77,7 @@ version: 0.0.5
       }
       var partial = undefined;
       var polyjuiceInclude = this;
-      // define a setter for partial attribute, 
+      // define a setter for partial attribute,
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
@@ -157,7 +156,7 @@ version: 0.0.5
         if(this.isAttached && html){
           this.innerTempl.model = this.partial;
         }
-      }      
+      }
     };
     /**
      * Support for Polymers object to attribute binding
@@ -196,6 +195,6 @@ version: 0.0.5
 
     document.registerElement('polyjuice-include', {
       prototype: LauncherPartialPrototype
-    });   
+    });
   })();
 </script>
