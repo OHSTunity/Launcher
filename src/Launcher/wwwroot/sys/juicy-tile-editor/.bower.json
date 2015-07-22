@@ -1,5 +1,6 @@
 {
   "name": "juicy-tile-editor",
+  "version": "0.1.0",
   "homepage": "https://github.com/Juicy/juicy-tile-editor",
   "description": "<juicy-tile-editor> is an editor form for <juicy-tile-list>",
   "license": "MIT",
@@ -18,22 +19,20 @@
     "core-selector": "Polymer/core-selector",
     "juicy-highlight": "Juicy/juicy-highlight#gh-pages",
     "juicy-popover": "Juicy/juicy-popover#gh-pages",
-    "juicy-color-picker": "Juicy/juicy-color-picker#gh-pages",
-    "core-icon": "Polymer/core-icon#~0.5.2",
-    "core-icon-button": "Polymer/core-icon-button#~0.5.2"
+    "juicy-color-picker": "Juicy/juicy-color-picker#gh-pages"
   },
   "devDependencies": {
     "core-localstorage": "Polymer/core-localstorage#0.4.1",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
-    "juicy-tile-grid": "Juicy/juicy-tile-grid#fractions"
+    "juicy-tile-grid": ">=0.3.0"
   },
-  "_release": "a9a8412a89",
+  "_release": "0.1.0",
   "_resolution": {
-    "type": "branch",
-    "branch": "fractions",
-    "commit": "a9a8412a89e90410b9c20a6e21e614ca4c739e6a"
+    "type": "version",
+    "tag": "0.1.0",
+    "commit": "92934e9cdf41282dd635b1a4b5a9deb351c8f4aa"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
-  "_target": "fractions",
+  "_target": ">=0.1.0",
   "_originalSource": "Juicy/juicy-tile-editor"
 }

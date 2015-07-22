@@ -26,19 +26,19 @@
   "dependencies": {
     "imported-template": "~0.0.10",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
-    "juicy-tile-grid": ">=0.1.0",
-    "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages"
+    "juicy-tile-grid": ">=0.2.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#~3.1.3"
   },
-  "_release": "0e0156c49c",
+  "version": "0.0.6",
+  "_release": "0.0.6",
   "_resolution": {
-    "type": "branch",
-    "branch": "fractions",
-    "commit": "0e0156c49cbbcb9a34ef6cce20169fb680571501"
+    "type": "version",
+    "tag": "0.0.6",
+    "commit": "e8c4970e0844b3de71bbd477e7ba890171624b6a"
   },
   "_source": "git://github.com/Polyjuice/launcher-include.git",
-  "_target": "fractions",
+  "_target": ">=0.0.6",
   "_originalSource": "Polyjuice/launcher-include"
 }
