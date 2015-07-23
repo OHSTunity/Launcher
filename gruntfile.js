@@ -49,11 +49,26 @@ module.exports = function(grunt) {
           '\\.\\d+)?(-\\d+)?)[\\d||A-a|.|-]*([\'|\"]?)', 'i'
         )
       }
+    },
+    commands:{
+      package: {
+          cmd  : 'package.bat'
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-commands');
+
+  grunt.registerTask(
+     'package',
+     "Generate Polyjuice AppStore package with bumped version",
+     function(versionType, incOrCommitOnly) {
+        grunt.task.run("replace", "bump" + (versionType ? ":"+versionType : ""), "commands:package");
+
+    }
+  );
 
 };
