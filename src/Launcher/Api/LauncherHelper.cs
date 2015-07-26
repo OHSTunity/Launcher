@@ -151,7 +151,7 @@ namespace Launcher {
             }, new HandlerOptions() {
                 ProxyDelegateTrigger = true,
                 AllowNonPolyjuiceHandler = true,
-                ReplaceExistingDelegate = true
+                ReplaceExistingHandler = true
             });
 
             PolyjuiceNamespace.Polyjuice.Map("/launcher", "/");
