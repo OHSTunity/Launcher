@@ -1,8 +1,8 @@
-Launcher's &lt;polyjuice-include&gt;
+Launcher's &lt;starcounter-include&gt;
 ==============
 
-This is Launcher's version of [`<polyjuice-include>`](https://github.com/Polyjuice/polyjuice-include).
-Launcher overwrites it with is a custom element that not only let's you load HTML partials into your Polyjuice page with full control over loaded `<script>`s and `<link rel="import">`s, but also allows you to gently manage output from many apps mixed by Polyjuice mappings.
+This is Launcher's version of [`<starcounter-include>`](https://github.com/Polyjuice/starcounter-include).
+Launcher overwrites it with is a custom element that not only let's you load HTML partials into your Starcounter page with full control over loaded `<script>`s and `<link rel="import">`s, but also allows you to gently manage output from many apps mixed by Polyjuice mappings.
 
 ## Demo/Examples
 :construction:
@@ -10,7 +10,7 @@ Launcher overwrites it with is a custom element that not only let's you load HTM
 
 ## Related custom elements
 
- - [`<polyjuice-include>`](https://github.com/Polyjuice/polyjuice-include) - includes Polyjuice Partial,
+ - [`<starcounter-include>`](https://github.com/Polyjuice/starcounter-include) - includes Starcounter Partial,
  - [`<imported-template>`](https://github.com/Juicy/imported-template) - includes HTML Template,
  - [`<juicy-tile-grid>`](https://github.com/Juicy/juicy-tile-grid),
  - [`<juicy-tile-list>`](https://github.com/Juicy/juicy-tile-list),
@@ -26,7 +26,7 @@ Launcher overwrites it with is a custom element that not only let's you load HTM
 
 ## Install
 
-[Launcher](https://github.com/Polyjuice/Launcher) has it already pre-installed, under `/sys/polyjuice-include/polyjuice-include.html` (overwrites Polyjuice's one), but if you want to use it separately as well.
+[Launcher](https://github.com/Polyjuice/Launcher) has it already pre-installed, under `/sys/starcounter-include/starcounter-include.html` (overwrites Starcounter's one), but if you want to use it separately as well.
 
 Install the component using [Bower](http://bower.io/):
 
@@ -47,27 +47,27 @@ Or [download as ZIP](https://github.com/Polyjuice/launcher-include/archive/maste
 2. Import Custom Element:
 
     ```html
-    <link rel="import" href="bower_components/polyjuice-include/polyjuice-include.html">
+    <link rel="import" href="bower_components/starcounter-include/starcounter-include.html">
     ```
 
 3. Start using it!
 
     ```html
-    <polyjuice-include partial="{{ViewModel}}"></polyjuice-include>
+    <starcounter-include partial="{{ViewModel}}"></starcounter-include>
     ```
     or without mustache-style data-binding:
     ```js
-    document.querySelector("polyjuice-include").partial = ViewModel;
+    document.querySelector("starcounter-include").partial = ViewModel;
     ```
     or with inline JSON:
     ```js
-    <polyjuice-include partial="{&quot;Html&quot;: &quot;/path/to/file.html&quot;, &quot;some&quot;: &quot;data&quot;}"></polyjuice-include>
+    <starcounter-include partial="{&quot;Html&quot;: &quot;/path/to/file.html&quot;, &quot;some&quot;: &quot;data&quot;}"></starcounter-include>
     ```
 
 ## Test suite
 
  - local browser `./tests/index.html`
- - [online](http://polyjuice.github.io/polyjuice-include/tests)
+ - [online](http://polyjuice.github.io/starcounter-include/tests)
 
 ## Contributing
 

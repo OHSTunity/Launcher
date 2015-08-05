@@ -3,10 +3,10 @@
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
 Uses juicy-tiles setup given from DB as juicyTilesSetup.
-version: 0.0.6
+version: 0.0.7
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
-@FIXME (tomalec): DRY with default polyjuice-include
+@FIXME (tomalec): DRY with default starcounter-include
 -->
 <!-- Import dependencies -->
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
@@ -57,7 +57,7 @@ version: 0.0.6
     LauncherPartialPrototype.isAttached = false;
 
     /**
-     * @see Polyjuice/polyjuice-include - partialAttributeToProperty It's just a copy
+     * @see Polyjuice/starcounter-include - partialAttributeToProperty It's just a copy
      */
     function partialAttributeToProperty(element){
       var attrVal = element.getAttribute("partial");
@@ -76,14 +76,14 @@ version: 0.0.6
         return ;
       }
       var partial = undefined;
-      var polyjuiceInclude = this;
+      var starcounterInclude = this;
       // define a setter for partial attribute,
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
           //d console.log("partial set");
           partial = newValue;
-          polyjuiceInclude.partialChanged(partial);
+          starcounterInclude.partialChanged(partial);
         },
         get: function(){
           return partial;
@@ -120,32 +120,32 @@ version: 0.0.6
     };
     /**
      * Attach model.
-     * @see Polyjuice/polyjuice-include#attachedCallback It's just a copy
+     * @see Polyjuice/starcounter-include#attachedCallback It's just a copy
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
       partialAttributeToProperty(this);
       this.isAttached = true;
-      //d console.log("polyjuice-partial attached");
+      //d console.log("starcounter-partial attached");
       this.partialChanged();
     };
     /**
-     * @see Polyjuice/polyjuice-include#detachedCallback It's just a copy
+     * @see Polyjuice/starcounter-include#detachedCallback It's just a copy
      * @return {[type]} [description]
      */
     LauncherPartialPrototype.detachedCallback = function(){
       this.isAttached = false;
-      //d console.log("polyjuice-partial detached");
+      //d console.log("starcounter-partial detached");
     };
     /**
-     * @see Polyjuice/polyjuice-include#attributeChangedCallback It's just a copy
+     * @see Polyjuice/starcounter-include#attributeChangedCallback It's just a copy
      */
     LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal){
       partialAttributeToProperty(this);
-      //d console.log("polyjuice-partial attr changed");
+      //d console.log("starcounter-partial attr changed");
     };
     /**
      * Updates inner `imported-template` with partial data given (if applicable)
-     * @see Polyjuice/polyjuice-include#partialChanged it's alsmost a copy
+     * @see Polyjuice/starcounter-include#partialChanged it's alsmost a copy
      * @param  {Object} newVal new partial value
      */
     LauncherPartialPrototype.partialChanged = function(newVal){
@@ -160,7 +160,7 @@ version: 0.0.6
     };
     /**
      * Support for Polymers object to attribute binding
-     * @see Polyjuice/polyjuice-include#bind It's just a copy
+     * @see Polyjuice/starcounter-include#bind It's just a copy
      * @param  {String} name       [description]
      * @param  {Object} observable [description]
      * @param  {Boolean} oneTime   [description]
@@ -193,7 +193,7 @@ version: 0.0.6
       }
     };
 
-    document.registerElement('polyjuice-include', {
+    document.registerElement('starcounter-include', {
       prototype: LauncherPartialPrototype
     });
   })();

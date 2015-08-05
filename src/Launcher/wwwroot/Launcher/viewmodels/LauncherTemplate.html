@@ -14,7 +14,7 @@
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/laucnher-search-input/launcher-search-input.html" />
-    <link rel="import" href="/sys/polyjuice-include/polyjuice-include.html" />
+    <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <link rel="import" href="/sys/console-log/console-log.html" />
 
@@ -51,7 +51,7 @@
                 <launcher-search-input placeholder="Search" value="{{searchBar.query$}}" closeaction="{{searchBar.close$}}" submitaction="{{searchBar.submit$}}"></launcher-search-input>
                 <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}" />
                 <div class="preview" hidden?="{{!searchBar.previewVisible}}">
-                    <polyjuice-include class="preview" partial="{{searchBar.preview}}"></polyjuice-include>
+                    <starcounter-include class="preview" partial="{{searchBar.preview}}"></starcounter-include>
                 </div>
             </core-field>
             <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
@@ -78,12 +78,12 @@
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
-            <!-- <polyjuice-include -->
-            <!-- class="workspace launcher" partial="{{ results }}"></polyjuice-include> -->
+            <!-- <starcounter-include -->
+            <!-- class="workspace launcher" partial="{{ results }}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
-            <polyjuice-include class="workspace launcher" name="/Launcher/results" partial="{{results}}"></polyjuice-include>
+            <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{results}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
 
@@ -91,7 +91,7 @@
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
                 <juicy-display-route match-path="^\/{{AppName}}" display-selector=".workspace.{{AppName}}"></juicy-display-route>
-                <polyjuice-include class="workspace {{AppName}}" partial="{{}}"></polyjuice-include>
+                <starcounter-include class="workspace {{AppName}}" partial="{{}}"></starcounter-include>
             </template>
         </div>
 
