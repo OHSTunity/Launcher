@@ -13,7 +13,8 @@
     <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
-    <link rel="import" href="/Launcher/elements/laucnher-search-input/launcher-search-input.html" />
+    <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
+    <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <link rel="import" href="/sys/console-log/console-log.html" />
@@ -66,9 +67,11 @@
         </div>
 
         <div id="launcher-menu">
-            <ul>
-                <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
-            </ul>
+            <launcher-menu>
+                <ul>
+                    <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
+                </ul>
+            </launcher-menu>
         </div>
 
         <div id="launcher-content">
