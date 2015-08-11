@@ -143,7 +143,7 @@
     // iconsHtml changed
     LauncherLaunchpadPrototype.jsonChanged = function (oldVal, newVal) {
       this.parseJson(newVal);
-      if( newVal.icons.Html ){
+      if (newVal.icons && newVal.icons.Html) {
         var launchpad = this;
         loadIconsTemplate(
           "/launcher/launchpad" + newVal.icons.Html,
