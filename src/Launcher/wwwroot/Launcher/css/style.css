@@ -275,3 +275,34 @@ launchpad-tile h5 {
     height: 14px;
     font-size:13px;
 }
+
+.css-grid-error {
+    display: block;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 750px;
+    background-color: #ffffff;
+    z-index: 100;
+    padding: 10px 20px;
+    box-shadow: 0 0 15px #fb1f68;
+    font-size: 18px;
+    margin-top: -200px;
+    margin-left: -375px;
+    transition: opacity 0.5s;
+}
+
+.css-grid-error p {
+    margin-bottom: 10px;
+}
+
+.css-grid-error a.dismiss {
+    float: right;
+    font-size: 95%;
+}
+
+@supports ((display: grid)) {
+    .css-grid-error {
+        display: none;
+    }
+}

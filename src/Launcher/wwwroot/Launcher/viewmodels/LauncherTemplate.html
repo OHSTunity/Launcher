@@ -149,4 +149,18 @@
         //     slowResize();
         // });
     </script>
+    <div class="css-grid-error">
+        <h4>This app requires support for CSS Grid Layout in your web browser</h4>
+        <p>To enable it in Google Chrome:</p>
+        <ol>
+            <li>Go to "chrome://flags"</li>
+            <li>Search for "Enable experimental Web Platform features" option</li>
+            <li>Press "Enable" link</li>
+            <li>Restart Chrome</li>
+        </ol>
+        <p>
+            <a href="javascript:" onclick="document.querySelector('.css-grid-error').style.opacity = 0; setTimeout(function () { document.querySelector('.css-grid-error').style.display = 'none'; }, 500);" class="dismiss">dismiss</a>
+            We are working on extending support to all modern web browsers.
+        </p>
+    </div>
 </body>
