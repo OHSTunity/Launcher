@@ -1,7 +1,7 @@
 Launcher
 ========
 
-Application Launcher
+Wrap all apps in a UI frame with a common launchpad, menu and a search bar.
 
 ### How to run
 
