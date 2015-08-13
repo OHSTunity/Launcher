@@ -1,6 +1,6 @@
 {
   "name": "juicy-tile-editor",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "homepage": "https://github.com/Juicy/juicy-tile-editor",
   "description": "<juicy-tile-editor> is an editor form for <juicy-tile-list>",
   "license": "MIT",
@@ -26,13 +26,13 @@
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "juicy-tile-grid": ">=0.3.0"
   },
-  "_release": "0.1.2",
+  "_release": "0.1.3",
   "_resolution": {
     "type": "version",
-    "tag": "0.1.2",
-    "commit": "5f65222dad17666d9e5db9dda3f69e8500e542ea"
+    "tag": "0.1.3",
+    "commit": "c97c576fd6570999865ec453f54bb46c05ca309b"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
-  "_target": ">=0.1.1",
+  "_target": ">=0.1.0",
   "_originalSource": "Juicy/juicy-tile-editor"
 }
