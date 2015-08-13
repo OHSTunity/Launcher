@@ -9,9 +9,9 @@ module.exports = function(grunt) {
 
       livereload: {
         files: [
-          'wwwroot/*.{html,css}',
-          'wwwroot/**/*.html',
-          'wwwroot/**/*.css'
+          'src/Launcher/wwwroot/*.{html,css}',
+          'src/Launcher/wwwroot/**/*.html',
+          'src/Launcher/wwwroot/**/*.css'
         ]
       }
     },
