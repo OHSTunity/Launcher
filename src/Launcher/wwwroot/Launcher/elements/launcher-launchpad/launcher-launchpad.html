@@ -157,8 +157,12 @@
 
           }
         );
+      } else if (newVal) {
+          //This row suppose to help debugging of a strange polymer exception.
+          console.warn("A wrong value has been assigned to launch-pad.json", newVal, this);
+          createAndInsertMergedTemplate(this);
       } else {
-        createAndInsertMergedTemplate(this);
+          createAndInsertMergedTemplate(this);
       }
     };
 
