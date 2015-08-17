@@ -353,7 +353,9 @@
     getHighlightContent: function (el) {
         var setup = this.editedTiles.allItems[el.id] || this.editedTiles.allItems["root"];
         var rec = el.getBoundingClientRect();
-        var html = ["<div style='background-color:rgba(230, 67, 94, 0.7); padding:1px; font-size:11px; line-height:11px;'>Size: [", rec.width, ", ", rec.height, "]<br/>Setup: [", setup.width, ", ", setup.height, "]</div>"].join("");
+        var w = Math.round(rec.width);
+        var h = Math.round(rec.height);
+        var html = ["<div style='background-color:rgb(260, 97, 124); padding:1px 2px; font-size:11px; line-height:11px;'>", w, " x ", h, "</div>"].join("");
 
         return html;
     },
