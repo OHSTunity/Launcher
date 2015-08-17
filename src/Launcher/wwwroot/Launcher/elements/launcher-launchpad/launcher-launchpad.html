@@ -173,8 +173,17 @@
         if( tiles ){
             tiles = Array.prototype.slice.call(tiles, 0);
             tiles.sort(function (a, b) {
-                var at = a.getAttribute("appname").trim();
-                var bt = b.getAttribute("appname").trim();
+                var aName = a.getAttribute("appname").trim();
+                var bName = b.getAttribute("appname").trim();
+
+                aName = launchpad.mapPerAppName[aName].name;
+                bName = launchpad.mapPerAppName[bName].name;
+
+                var at = typeof aName.sortNumber == "undefined" ? aName.name : aName.sortNumber;
+                var bt = typeof bName.sortNumber == "undefined" ? bName.name : bName.sortNumber;
+
+                at = at.toString();
+                bt = bt.toString();
 
                 if (at < bt) {
                     return -1;
