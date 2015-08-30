@@ -153,8 +153,6 @@ namespace Launcher {
                 AllowNonPolyjuiceHandler = true,
                 ReplaceExistingHandler = true
             });
-
-            PolyjuiceNamespace.Polyjuice.Map("/launcher", "/");
         }
 
         static Response WrapInLauncher(Request req, String appName) {
