@@ -6,14 +6,14 @@ var assert = require('assert'),
 describe('Launcher App', function () {
     it('Should respond with html when Accept="text/html"', function (done) {
         request(app)
-        .get('/')
+        .get('/launcher')
         .set('Accept', 'text/html')
         .expect('Content-Type', /html/)
         .expect(200, done);
     });
     it('<title> should be "Launcher"', function (done) {
         request(app)
-            .get('/')
+            .get('/launcher')
             .set('Accept', 'text/html')
             .expect('Content-Type', /html/)
             .expect(200)
@@ -28,14 +28,14 @@ describe('Launcher App', function () {
     });
     it('Should respond with json when Accept="application/json"', function (done) {
         request(app)
-        .get('/')
+        .get('/launcher')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200, done);
     });
     it('Json respond should contain Launcher.results"', function (done) {
         request(app)
-        .get('/')
+        .get('/launcher')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
