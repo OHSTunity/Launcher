@@ -1,6 +1,6 @@
 ﻿<link rel="import" href="/sys/polymer/polymer.html" />
 
-<polymer-element name="launcher-hot-key" attributes="keys">
+<dom-module id="launcher-hot-key">
     <template>
         <style>
             :host {
@@ -9,8 +9,12 @@
         </style>
     </template>
     <script>
-        Polymer("launcher-hot-key", {
-            domReady: function () {
+        Polymer({
+            is: "launcher-hot-key",
+            properties: {
+                keys: String
+            },
+            ready: function () {
                 var keys = this.keys.split(" ");
                 var that = this;
 
@@ -55,4 +59,4 @@
             }
         });
     </script>
-</polymer-element>
+</dom-module>

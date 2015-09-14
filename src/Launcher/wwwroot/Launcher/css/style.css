@@ -212,6 +212,7 @@ core-field.launcher-theme /deep/ input {
     padding: 4px;
     border: 1px solid #3d4860;
     border-radius: 4px;
+    font-size: 14px;
 }
 
 /* Change plaveholder text color */

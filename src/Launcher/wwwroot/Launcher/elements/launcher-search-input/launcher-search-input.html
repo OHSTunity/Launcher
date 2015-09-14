@@ -1,11 +1,30 @@
 ﻿<link rel="import" href="/sys/polymer/polymer.html" />
 
-<polymer-element name="launcher-search-input" attributes="closeAction submitAction value placeholder">
+<dom-module id="launcher-search-input">
     <template>
-        <input placeholder="{{placeholder}}" value="{{value}}" on-keypress="{{onKeyPress}}" on-blur="{{onBlur}}" />
+        <input placeholder="{{placeholder}}" value="{{value::change}}" on-keypress="onKeyPress" on-blur="onBlur" />
     </template>
     <script>
-        Polymer("launcher-search-input", {
+        Polymer({
+            is: "launcher-search-input",
+            properties: {
+                closeAction: {
+                    type: Number,
+                    notify: true
+                },
+                submitAction: {
+                    type: Number,
+                    notify: true
+                },
+                value: {
+                    type: String,
+                    observer: "valueChanged",
+                    notify: true
+                },
+                placeholder: {
+                    type: String
+                }
+            },
             colors: [],
             ready: function () {
             },
@@ -14,17 +33,15 @@
             },
             onKeyPress: function (e) {
                 if (e.which == 13) {
-                    this.submitAction++;
-                    this.closeAction++;
+                    this.set("submitAction", this.submitAction + 1);
+                    this.set("closeAction", this.closeAction + 1);
                 }
             },
             onBlur: function (e) {
-                var that = this;
-
                 setTimeout(function () {
-                    that.closeAction++;
-                }, 100);
+                    this.set("closeAction", this.closeAction + 1);
+                }.bind(this), 100);
             }
         });
     </script>
-</polymer-element>
+</dom-module>

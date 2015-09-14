@@ -10,11 +10,11 @@
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html" /> -->
 
     <!-- Import our elements -->
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
+    <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
-    <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" /> -->
+    <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
@@ -52,9 +52,11 @@
                 </a>
                 <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" closeaction="{{model.searchBar.close$}}" submitaction="{{model.searchBar.submit$}}"></launcher-search-input>
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
-                <div class="preview" hidden?="{{!model.searchBar.previewVisible}}">
-                    <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
-                </div>
+                <template is="dom-if" if="{{model.searchBar.previewVisible}}">
+                    <div class="preview">
+                        <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
+                    </div>
+                </template>
             </core-field>
             <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
 
