@@ -1,47 +1,52 @@
 <link rel="import" href="../../polymer/polymer.html">
 
-<polymer-element name="juicy-toggle-icon-button" attributes="iconOn iconOff altOn altOff checked disabled value" >
-  <template>
-      <link href="css/jte-fontawesome.css" rel="stylesheet" />
-    <style>
-      :host{
-        display: inline-block;
-      }
-      input{
-        display: none;
-      }
-    </style>
-    <label>
-        <template if="{{checked}}">
-            <i class="jte-icon {{iconOn}}"></i>
-        </template>
-        <template if="{{!checked}}">
-            <i class="jte-icon {{iconOff}}"></i>
-        </template>
-      <input
-        type="checkbox"
-        checked="{{checked}}"
-        disabled?="{{disabled}}"
-        value="{{value}}">
-        <!-- value="[[value]]"> -->
-    </label>
-  </template>
-  <script>
-    Polymer({
-      // value: null,
-      publish:{
-        checked: {
-          value: false,
-          reflect: true
-        },
-        disabled: {
-          value: false,
-          reflect: true
-        }
-      }
-      // ,created: function(){
-      //   this.value = {};
-      // }
-    });
-  </script>
-</polymer-element>
+<dom-module id="juicy-toggle-icon-button">
+    <template>
+        <link href="css/jte-fontawesome.css" rel="stylesheet" />
+        <style>
+            :host {
+                display: inline-block;
+            }
+
+            input {
+                display: none;
+            }
+
+            label {
+                cursor: pointer;
+            }
+        </style>
+        <label>
+            <template is="dom-if" if="{{checked}}" restamp="true">
+                <i class$="{{getOnClass(checked, iconOn)}}"></i>
+            </template>
+            <template is="dom-if" if="{{!checked}}" restamp="true">
+                <i class$="{{getOffClass(checked, iconOff)}}"></i>
+            </template>
+            <input type="checkbox" checked="{{checked::change}}" disabled?="{{disabled}}" value="{{value}}" />
+        </label>
+    </template>
+    <script>
+        Polymer({
+            is: "juicy-toggle-icon-button",
+            ready: function () {
+            },
+            properties: {
+                iconOn: { type: String },
+                iconOff: { type: String },
+                checked: { type: Boolean, value: false, observer: "checkedChanged", reflectToAttribute: true },
+                disabled: { type: Boolean, value: false },
+                value: { type: String }
+            },
+            getOnClass: function (checked, icon) {
+                return ["jte-icon", this.iconOn].join(" ");
+            },
+            getOffClass: function (checked, icon) {
+                return ["jte-icon", this.iconOff].join(" ");
+            },
+            checkedChanged: function () {
+                this.fire("change");
+            }
+        });
+    </script>
+</dom-module>
