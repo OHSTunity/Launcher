@@ -29,7 +29,7 @@
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" /> -->
+    <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" /> -->
 
     <!-- Style sheets -->
@@ -82,21 +82,20 @@
             <div class="launchpad">
                 <launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>
             </div>
-            <!-- Disable untill migrated to Polymer1 <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route> -->
+            <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
-            <!-- <starcounter-include -->
-            <!-- class="workspace launcher" partial="{{ results }}"></starcounter-include> -->
+            <starcounter-include class="workspace launcher" partial="{{results}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
             <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{model.results}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <!-- <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route> -->
+            <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
 
             <!-- Workspaces -->
             <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
-                <juicy-display-route match-path="{{concat('^\/', item.AppName)}}" display-selector="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
+                <juicy-display-route match-path="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
                 App name<span>{{item.AppName}}</span>
                 <starcounter-include class="{{concat('workspace', item.AppName)}}" partial="{{item}}"></starcounter-include>
             </template>
@@ -119,9 +118,9 @@
         <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
     </template>
     <script>
-      document.currentScript.previousElementSibling.concat = function(a,b){
-         return a+b;
-      }
+        document.currentScript.previousElementSibling.concat = function () {
+            return Array.prototype.join.call(arguments, "");
+        };
     </script>
 
     <puppet-client ref="root"></puppet-client>
