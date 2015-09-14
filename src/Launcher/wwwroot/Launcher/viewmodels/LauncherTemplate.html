@@ -95,9 +95,8 @@
             <!-- Workspaces -->
             <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
-                <juicy-display-route match-path="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
-                App name<span>{{item.AppName}}</span>
-                <starcounter-include class="{{concat('workspace', item.AppName)}}" partial="{{item}}"></starcounter-include>
+                <juicy-display-route match-path$="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
+                <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
             </template>
         </div>
 
