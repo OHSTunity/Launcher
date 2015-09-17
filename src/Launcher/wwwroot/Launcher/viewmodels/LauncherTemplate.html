@@ -13,8 +13,9 @@
     <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
-    <link rel="import" href="/sys/polyjuice-include/launcher-root-partial.html" />
-    <link rel="import" href="/sys/polyjuice-include/polyjuice-include.html" />
+    <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
+    <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
+    <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <link rel="import" href="/sys/console-log/console-log.html" />
 
@@ -45,9 +46,14 @@
         <div class="launcher-toolbar launcher-topbar">
             <a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
             <core-field class="launcher-theme">
-                <i class="glyphicon glyphicon-search"></i>
-                <input placeholder="Search" value="{{searchBar.query$}}" update-on="input" />
+                <a href="javascript:" onclick="getModel(this).searchBar.submit$++" class="icon">
+                    <i class="glyphicon glyphicon-search"></i>
+                </a>
+                <launcher-search-input placeholder="Search" value="{{searchBar.query$}}" closeaction="{{searchBar.close$}}" submitaction="{{searchBar.submit$}}"></launcher-search-input>
                 <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}" />
+                <div class="preview" hidden?="{{!searchBar.previewVisible}}">
+                    <starcounter-include class="preview" partial="{{searchBar.preview}}"></starcounter-include>
+                </div>
             </core-field>
             <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
 
@@ -61,24 +67,25 @@
         </div>
 
         <div id="launcher-menu">
-            <ul>
-                <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
-            </ul>
+            <launcher-menu>
+                <ul>
+                    <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
+                </ul>
+            </launcher-menu>
         </div>
 
         <div id="launcher-content">
             <div class="launchpad">
-                <h1>Launchpad</h1>
                 <launcher-launchpad json="{{launchpad}}"></launcher-launchpad>
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
-            <!-- <polyjuice-include -->
-            <!-- class="workspace launcher" partial="{{ results }}"></polyjuice-include> -->
+            <!-- <starcounter-include -->
+            <!-- class="workspace launcher" partial="{{ results }}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
-            <polyjuice-include class="workspace launcher" name="/Launcher/results" partial="{{results}}"></polyjuice-include>
+            <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{results}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
 
@@ -86,7 +93,7 @@
             <template repeat="{{ workspaces }}">
                 <!-- - workspace -->
                 <juicy-display-route match-path="^\/{{AppName}}" display-selector=".workspace.{{AppName}}"></juicy-display-route>
-                <polyjuice-include class="workspace {{AppName}}" partial="{{}}"></polyjuice-include>
+                <starcounter-include class="workspace {{AppName}}" partial="{{}}"></starcounter-include>
             </template>
         </div>
 
@@ -142,4 +149,18 @@
         //     slowResize();
         // });
     </script>
+    <div class="css-grid-error-back"></div>
+    <div class="css-grid-error">
+        <h4>This app requires support for CSS Grid Layout in your web browser</h4>
+        <p>To enable it in Google Chrome:</p>
+        <ol>
+            <li>Go to "chrome://flags"</li>
+            <li>Search for "Enable experimental Web Platform features" option</li>
+            <li>Press "Enable" link</li>
+            <li>Restart Chrome</li>
+        </ol>
+        <p>
+            We are working on extending support to all modern web browsers.
+        </p>
+    </div>
 </body>

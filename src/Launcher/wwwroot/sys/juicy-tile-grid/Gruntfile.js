@@ -7,9 +7,11 @@ module.exports = function(grunt) {
                     livereload: true
                 },
                 files: [
+                    'src/*.html',
                     '*.html',
                     'examples/**/*.html',
-                    'tests/*.js'
+                    'tests/*.*',
+                    'tests/**/*.html'
                 ],
                 // tasks: ['jshint'],
             },

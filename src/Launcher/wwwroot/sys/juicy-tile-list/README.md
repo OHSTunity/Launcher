@@ -2,13 +2,14 @@
 
 > `<juicy-tile-list>` is masonry-like Polymer Element for sortable tiles that packs efficiently without changing HTML structure (changes CSS only).
 
-## Features 
+## Features
 
 It gives you:
- - masonry-like, gap-less layout (bin-packing), 
- - prioritizing items, 
+ - masonry-like, gap-less layout (bin-packing),
+ - layout applied in Shadow DOM - so it doesn't mess with your styles,
+ - prioritizing items,
  - grouping into virtual, nested containers,
- - alignment in different orientations/directions,
+ - alignment in different orientations and directions,
  - dynamically changing size,
  - auto adjusting container sizes,
  - gutter/cell-spacing between tiles,
@@ -53,25 +54,36 @@ Attribute                    | Options             | Default      | Description
 `gutter`                     | *Number*            | `0`          | Overwrites default value of `setup.gutter`
 `duration`                   | *Number*            | `0.5`        | Duration of repack animation (in seconds).
 `setup`                      | *Object*            |              | Tiles setup
+`setup.width`                | *Number*            |              | Container width to be used for packing in `horizontal` direction, if not given  `innerWidth(this)` will be used.
+`setup.heigh`                | *Number*            |              | Container height to be used for packing in `vertical` direction, if not given  `innerWidth(this)` will be used.
 `setup.gutter`               | *Number*            | `0`          | Gutter/cell-spacing size in px
-`setup.direction`            | *String*            | `rightDown`  | How to align our package (horizontal layers `rightDown`, or vertiaval layers: `downRight`)
+`setup.direction`            | *String*            | `horizontal` | How to align our package (horizontal layers `horizontal`, or vertiacal layers: `vertical`)
+`setup.rightToLeft`          | *Boolean*           | `false`      | If set to `true`, tiles within this container will be arranged from the right to the left.
+`setup.bottomUp`             | *Boolean*           | `false`      | If set to `true`, tiles within this container will be arranged from the bottom to the top.
 `setup.items`                | *Array*             | `[]`         | Tiles setup
 `setup.items[?].priority`    | *Number* (0-1)      | `0`          | Importance of tile, used for sorting elements.
-`setup.items[?].width`       | *Number*            | `1`          | Tile width (number of columns)
-`setup.items[?].heigh`       | *Number*            | `1`          | Tile height (number of rows)
+`setup.items[?].width`       | *Number*            | `1`          | Tile width
+`setup.items[?].precalculateWidth` | *Boolean*     | `false`      | Set to `true` to automatically pre-calculate width before every (re-)packing.
+`setup.items[?].heigh`       | *Number*            | `1`          | Tile height
+`setup.items[?].precalculateHeight`| *Boolean*     | `false`      | Set to `true` to automatically pre-calculate height before every (re-)packing.
 `setup.items[?].id`          | *String*            |              | Element/group id by default order in DOM will be used
 `setup.items[?].content`     | *String*            |              | HTML content for (for virtual containers)
 `setup.items[?].oversize`    | *Number*            | `0`          | Make container's box & background bleed for this amount of pixels out of packed box. So, render box bigger, but pack with its original size (for virtual containers)
 `setup.items[?].items`       | *Array(Items)*      |              | Recursive setup (for virtual containers)
 `setup.items[?].gutter`      | *Number*            | `0`          | Recursive setup (for virtual containers)
 `setup.items[?].direction`   | *String*            |              | Recursive setup (for virtual containers)
+`setup.items[?].rightToLeft` | *Boolean*           |              | Recursive setup (for virtual containers)
+`setup.items[?].bottomUp`    | *Boolean*           |              | Recursive setup (for virtual containers)
+`refreshOnMutation`          | *Boolean*           | `false`      | If set to `true`, tile-list will be repacked and re-rendered once nodes are added or removed.
+`refreshOnResize`            | *Boolean*           | `false`      | If set to `true`, tile-list will be repacked and re-rendered once window or container gets resized
+`refreshOnAttached`          | *Boolean*           | `true`       | If set to `true`, tile-list will be repacked and re-rendered once (re-)attached to DOM
 
 ## Properties
 
 Name                 | Options        | Description
 ---                  | ---            | ---
 `elements`           | *Array*        | Array of children which are going to be arranged.
-`duration`           | *Number*       | `0.5`        | Duration of repack animation (in seconds).
+`duration`           | *Number*       | Duration of repack animation (in seconds).
 `setup`              | *Object*       | Up to date tiles setup. Structure as in attributes.
 `allItems`           | *Object*       | Map of setup nodes. Root container is available under `allItems['root']`.
 `items[.].container` | *Object*       | Reference to container item. (non-enumerable property)
@@ -81,31 +93,35 @@ Name                 | Options        | Description
 Name               | Param name | Type               | Default | Description
 ---                | ---        | ---                | ---     | ---
 `resizeItem`       |            |                    |         | Resize any item (real element or virtual container)
-                   | item       | *Item*, *Number* or *String* |         | Item, item index or item name.
+                   | item       | *Item*             |         | Reference to the setup item
                    | width      | *Number*           | `0`     | new width
                    | height     | *Number*           | `0`     | new height
 `reprioritizeItem` |            |                    |         | Change priority/weight of any item
-                   | item       | *Item*, *Number* or *String* |         | Item, item index or item name.
+                   | item       | *Item*             |         | Reference to the setup item
                    | increase   | *Boolean*          | `false` | `true` - increases, `false` decreases priority
                    | end        | *Boolean*          | `false` | `true` to move to the end of list
 `moveToContainer`  |            |                    |         | Move any item to given container, or wrap it with new one
-                   | what       | *Item*, *Number* or *String* |         | Item, item index or item name.
-                   | where      | *String* or *Item* |         | Reference to, or name of destination container.    If name given in *string* is not found in existing containers list, new one will be created and wrapped around given item.
+                   | what       | *Item*             |         | Reference to the setup item
+                   | where      | *Item*             |         | Reference to the destination container item.
                    | noPacking  | *Boolean*          | `false` | `true` to prevent  re-packing after setup change.
 `createNewContainer`|           |                    |         | Create new empty virtual container.
                    | name       | *String*           |         | Name for the container
-                   | where      | *String* or *Item* | `"root"`| Container name or item
+                   | where      | *Item*             | `"root"`| Reference to the container setup item
                    | rectangle  | *Rectangle*        |         | Rectangle setup (width, height, priority)
                    | noPacking  | *Boolean*          | `false` | `true` to prevent  re-packing after setup change.
 `deleteContainer`  |            |                    |         | Delete virtual container, move items (if any) to one above.
-                   | what       | *Item* or *String* |         | Reference to, or name of the container to delete.
+                   | what       | *Item*             |         | Reference to the container setup item to delete.
                    | noPacking  | *Boolean*          | `false` | `true` to prevent  re-packing after setup change.
 
 ## Events
 
 Name                      | Data | Description
----                       | ---  | ---   
+---                       | ---  | ---
 `juicy-tile-list-refresh` |  -   | Triggered once layout is refreshed
+
+## Refresh/repack
+
+`<juicy-tile-list>` can refresh/repack your tiles interactively. You can set it by attributes: `refreshOnMutation`, `refreshOnResize`, `refreshOnAttached`.
 
 ## Tile ids
 

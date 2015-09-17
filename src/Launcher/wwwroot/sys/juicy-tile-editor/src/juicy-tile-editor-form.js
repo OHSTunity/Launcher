@@ -15,7 +15,7 @@
     }
     obj[property] = power;
   }
-  
+
   Polymer('juicy-tile-editor-form', {
     isSelection: false,
     isSingleSelection: false,
@@ -27,16 +27,22 @@
     background: null,
     outline: null,
     width: null,
-    widthAuto: null,
+    precalculateWidth: null,
+    widthFlexible: null,
+    widthDynamic: null,
     height: null,
-    heightAuto: null,
+    precalculateHeight: null,
+    heightFlexible: null,
     heightDynamic: null,
-    heightAdaptive: null,
     gutter: null,
+    tightGroup: null,
+    rightToLeft: null,
+    bottomUp: null,
     oversize: 0,
     priority: null,
     content: null,
-    layout: null,
+    actualWidth: null,
+    actualHeight: null,
     newGroupFromSelection: function (width, isEmpty) {
       if (!this.selectedItems.length > 1) {
         return;
@@ -74,10 +80,10 @@
       } else {
           newContainer.width = dimensions.width;
       }
-      
+
       newContainer.height = dimensions.height;
 
-      this.refresh();
+      this.refresh(true);
       this.fire('juicy-tile-editor-form-tree-changed');
     },
     newInlineGroupFromSelection: function () {
@@ -105,7 +111,7 @@
       container.width = dimensions.width;
       container.height = dimensions.height;
 
-      this.refresh();
+      this.refresh(true);
       this.fire('juicy-tile-editor-form-tree-changed');
     },
     getContainerChildElements: function (container) {
@@ -132,10 +138,8 @@
     gutterIncrease: function () {
       this.gutter++;
     },
-    gutterDecrease: function () {
-      if (this.gutter >= 1) {
-        this.gutter--;
-      }
+    gutterIncrease: function () {
+      this.gutter++;
     },
     oversizeIncrease: function () {
       if (this.oversize >= 1) {
@@ -150,9 +154,9 @@
         this.oversize--;
       }
     },
-    refresh: function () {
+    refresh: function (hard) {
       if (this.editedTiles) {
-        this.editedTiles.refresh();
+        this.editedTiles.refresh(hard);
         this.refreshModified();
         this.getSource();
       }
@@ -163,19 +167,75 @@
     widthDecrease: function () {
       powerDecrease(this, "width");
     },
+    widthCalculate: function () {
+        if (!this.selectedItems.length || !this.editedTiles) {
+            return;
+        }
+
+        var tile = this.editedTiles.tiles[this.selectedItems[0].id];
+        var item = this.selectedItems[0];
+
+        this.precalculateWidth = true;
+        item.precalculateWidth = true;
+
+        setTimeout(function () {
+            var rec = tile.getBoundingClientRect();
+
+            item.precalculateWidth = false;
+            item.width = parseInt(rec.width);
+            this.precalculateWidth = false;
+            this.width = item.width;
+
+            this.calculateActualSize();
+        }.bind(this));
+    },
+    widthChanged: function () {
+        if (this.precalculateWidth) {
+            this.precalculateWidth = false;
+            this.setCommonValue("precalculateWidth", false, false);
+        }
+    },
     heightIncrease: function () {
       if (this.height == 'auto') { //turn off auto
         this.height = 32;
-        this.heightAuto = false;
+        this.precalculateHeight = false;
       }
       powerIncrease(this, "height");
     },
     heightDecrease: function () {
       if (this.height == 'auto') { //turn off auto
         this.height = 32;
-        this.heightAuto = false;
+        this.precalculateHeight = false;
       }
       powerDecrease(this, "height");
+    },
+    heightCalculate: function () {
+        if (!this.selectedItems.length || !this.editedTiles) {
+            return;
+        }
+
+        var tile = this.editedTiles.tiles[this.selectedItems[0].id];
+        var item = this.selectedItems[0];
+
+        this.precalculateHeight = true;
+        item.precalculateHeight = true;
+
+        setTimeout(function () {
+            var rec = tile.getBoundingClientRect();
+
+            item.precalculateHeight = false;
+            item.height = parseInt(rec.height);
+            this.precalculateHeight = false;
+            this.height = item.height;
+
+            this.calculateActualSize();
+        }.bind(this));
+    },
+    heightChanged: function () {
+        if (this.precalculateHeight) {
+            this.precalculateHeight = false;
+            this.setCommonValue("precalculateHeight", false, false);
+        }
     },
     priorityIncrease: function () {
       if (!this.selectedItems.length == 1) {
@@ -199,7 +259,7 @@
       var deleteElement = this.selectedItems[0];
       this.selectedItems[0] = deleteElement.container;
       this.editedTiles.deleteContainer(deleteElement, true);
-      this.refresh();
+      this.refresh(true);
       this.fire('juicy-tile-editor-form-tree-changed');
     },
     changeDirection: function(event, i, element){
@@ -207,11 +267,23 @@
       this.direction = element.value;
       this.refresh();
     },
+    changeRightToLeft: function (event, i, element) {
+        var value = !!(element.value / 1);
+        this.selectedItems[0].rightToLeft = value;
+        this.rightToLeft = value;
+        this.refresh();
+    },
+    changeBottomUp: function (event, i, element) {
+        var value = !!(element.value / 1);
+        this.selectedItems[0].bottomUp = value;
+        this.bottomUp = value;
+        this.refresh();
+    },
     /*stackItems: function () {
       for (var i = 0, ilen = this.selectedItems.length; i < ilen; i++) {
         if (this.selectedItems[i].items) {
           this.selectedItems[i].direction = "rightDown";
-          this.selectedItems[i].heightAuto = true;
+          this.selectedItems[i].precalculateHeight = true;
           for (var j = 0, jlen = this.selectedItems[i].items.length; j < jlen; j++) {
             this.selectedItems[i].items[j].width = "100%";
           }
@@ -254,12 +326,12 @@
         return val;
       }
     },
-    setCommonValue: function (propName, val) {
+    setCommonValue: function (propName, val, hard) {
       if (this.selectedItems.length) {
         for (var i = 0, ilen = this.selectedItems.length; i < ilen; i++) {
           this.selectedItems[i][propName] = val;
         }
-        this.refresh();
+        this.refresh(hard);
       }
     },
     setValueFromButton: function (ev) {
@@ -272,9 +344,17 @@
         node = node.parentNode;
       }
     },
-    toNumber: { 
+    toNumber: {
       toModel: function(arg){
         return parseInt(arg, 10) || 0;
+      },
+      toDOM: function(arg){
+        return arg;
+      }
+    },
+    toNumberOrPercentage: {
+      toModel: function(arg){
+        return arg.indexOf("%")>-1 ? arg : parseInt(arg, 10) || 0;
       },
       toDOM: function(arg){
         return arg;
@@ -284,7 +364,7 @@
       var node = ev.target;
       while (node) {
         if (node.dataset && node.dataset.applyvalue) {
-          this.setCommonValue(node.dataset.applyvalue, this[node.dataset.applyvalue]);
+          this.setCommonValue(node.dataset.applyvalue, this[node.dataset.applyvalue], !!node.dataset.hardrefresh);
           break;
         }
         node = node.parentNode;
@@ -294,7 +374,7 @@
         for (var i = 0; i < this.tileLists.length; i++) {
             var list = this.tileLists[i];
 
-            if (list.sync.isModified()) {
+            if (list.sync && list.sync.isModified()) {
                 list.sync.save();
             }
         }
@@ -322,10 +402,6 @@
       this.getSource();
       this.fire('juicy-tile-editor-clear');
     },
-    applyLayout: function () {
-      this.editedTiles.setAttribute('layout', this.layout);
-      this.editedTiles.refresh();
-    },
     getSource: function () {
       this.source = this.editedTiles ? JSON.stringify(this.editedTiles.setup) : '';
     },
@@ -351,7 +427,7 @@
         }
 
         this.selectedItemsChanged();
-        this.refresh();
+        this.refresh(true);
         this.fire('juicy-tile-editor-form-tree-changed');
     },
     resetItemStyles: function (item, isSelected, groups) {
@@ -392,17 +468,21 @@
       this.background = this.getCommonValue("background");
       this.outline = this.getCommonValue("outline");
       this.width = this.getCommonValue("width");
-      this.widthAuto = this.getCommonValue("widthAuto") || false;
+      this.precalculateWidth = this.getCommonValue("precalculateWidth") || false;
+      this.widthFlexible = this.getCommonValue("widthFlexible") || false;
+      this.widthDynamic = this.getCommonValue("widthDynamic") || false;
       this.height = this.getCommonValue("height");
-      this.heightAuto = this.getCommonValue("heightAuto") || false;
+      this.precalculateHeight = this.getCommonValue("precalculateHeight") || false;
+      this.heightFlexible = this.getCommonValue("heightFlexible") || false;
       this.heightDynamic = this.getCommonValue("heightDynamic") || false;
-      this.heightAdaptive = this.getCommonValue("heightAdaptive") || false;
       this.gutter = this.getCommonValue("gutter");
+      this.tightGroup = this.getCommonValue("tightGroup") || false;
+      this.rightToLeft = this.getCommonValue("rightToLeft") || false;
+      this.bottomUp = this.getCommonValue("bottomUp") || false;
       this.oversize = this.getCommonValue("oversize");
       this.priority = this.getCommonValue("priority");
       this.direction = this.getCommonValue("direction");
       this.content = this.getCommonValue("content") || ""; //set content to empty string if undefined is returned
-      this.layout = this.editedTiles ? this.editedTiles.getAttribute('layout') : '';
       this.isSelection = (this.selectedItems.length > 0);
       this.isSingleSelection = (this.selectedItems.length == 1);
       this.isContainer = this.isContainerInSelection();
@@ -411,6 +491,7 @@
       this.isGroup = (this.isContainer && !this.isRoot);
       this.isRemovable = (this.isContainer && !this.isRoot) && this.isGroupable;
       //this.getSource();
+      // ??? (tomalec): why do we need this?
       this.refresh();
 
       Array.prototype.forEach.call(this.shadowRoot.querySelectorAll('input[placeholder]'), function (input) {
@@ -421,6 +502,8 @@
           input.setAttribute('placeholder', '');
         }
       }.bind(this));
+
+      this.calculateActualSize();
     },
     popoverExpand: function (ev, index, target) {
         var index = this.style.zIndex || 0;
@@ -432,6 +515,17 @@
     },
     closeClick: function (ev, index, target) {
         this.fire("juicy-tile-editor-form-close");
+    },
+    calculateActualSize: function () {
+        if (this.selectedItems.length != 1 || !this.editedTiles) {
+            this.actualWidth = "N/A";
+            this.actualHeight = "N/A";
+        } else {
+            var tile = this.editedTiles.tiles[this.selectedItems[0].id];
+            var rec = tile.getBoundingClientRect();
+            this.actualWidth = parseInt(rec.width) + "px";
+            this.actualHeight = parseInt(rec.height) + "px";
+        }
     }
   });
 })();

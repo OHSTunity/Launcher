@@ -1,7 +1,7 @@
 Launcher
 ========
 
-Application Launcher
+Wrap all apps in a UI frame with a common launchpad, menu and a search bar.
 
 ### How to run
 
@@ -19,6 +19,13 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 2. Run `npm install` to install the test framework
 3. Start Launcher on [http://localhost:8080/](http://localhost:8080/)
 4. Run `npm test`
+
+### How to release a package
+
+1. Install [Node.js](https://nodejs.org/)
+2. Run `npm install` to install all dependencies
+2. Run `grunt package` to generate a packaged version, (you can use `:minor`, `:major`, etc. as [grunt-bump](https://github.com/vojtajina/grunt-bump) does)
+4. Publish `dist/<AppName>.zip` package to the App Store.
 
 ### Browsers
 

@@ -23,11 +23,11 @@
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
   "homepage": "https://github.com/Juicy/juicy-tiles-setup-sync",
-  "_release": "2658143bbd",
+  "_release": "0527b543bd",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "2658143bbdc5a3406d1f4f7b2aa63c06cfa0ee32"
+    "commit": "0527b543bdc6382d18a8c29bf856d0be309d69eb"
   },
   "_source": "git://github.com/Juicy/juicy-tiles-setup-sync.git",
   "_target": "gh-pages",

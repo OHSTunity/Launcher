@@ -1,0 +1,30 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html" />
+
+<polymer-element name="launcher-search-input" attributes="closeAction submitAction value placeholder">
+    <template>
+        <input placeholder="{{placeholder}}" value="{{value}}" on-keypress="{{onKeyPress}}" on-blur="{{onBlur}}" />
+    </template>
+    <script>
+        Polymer("launcher-search-input", {
+            colors: [],
+            ready: function () {
+            },
+            valueChanged: function () {
+                this.fire("juicy-color-picker-value-changed");
+            },
+            onKeyPress: function (e) {
+                if (e.which == 13) {
+                    this.submitAction++;
+                    this.closeAction++;
+                }
+            },
+            onBlur: function (e) {
+                var that = this;
+
+                setTimeout(function () {
+                    that.closeAction++;
+                }, 100);
+            }
+        });
+    </script>
+</polymer-element>

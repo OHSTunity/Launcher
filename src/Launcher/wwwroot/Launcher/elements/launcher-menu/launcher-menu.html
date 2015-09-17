@@ -1,0 +1,49 @@
+<link rel="import" href="/sys/polymer/polymer.html">
+
+<polymer-element name="launcher-menu">
+    <template id="launcher-menu">
+        <style></style>
+        <content id="content"></content>
+    </template>
+    <script>
+        (function () {
+            Polymer("launcher-menu", {
+                busy: false,
+                domReady: function () {
+                    this.$.content.addEventListener("DOMNodeInserted", this.sortItems.bind(this));
+                },
+                sortItems: function () {
+                    if (this.busy) {
+                        return;
+                    }
+
+                    this.busy = true;
+
+                    var lis = this.querySelectorAll("html /deep/ li");
+
+                    lis = Array.prototype.slice.call(lis, 0);
+                    lis.sort(function (a, b) {
+                        var at = a.dataset.sortNumber || a.innerText.trim();
+                        var bt = b.dataset.sortNumber || b.innerText.trim();
+
+                        if (at < bt) {
+                            return -1;
+                        } else if (at > bt) {
+                            return 1;
+                        }
+
+                        return 0;
+                    });
+
+                    var ul = this.querySelector("html /deep/ ul");
+
+                    for (var i = 0, l = lis.length; i < l; i++) {
+                        ul.appendChild(lis[i]);
+                    }
+
+                    this.busy = false;
+                }
+            });
+        })();
+    </script>
+</polymer-element>

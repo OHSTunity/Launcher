@@ -208,6 +208,7 @@
   }
 
   Polymer('juicy-tile-editor', {
+    closeReady: false,
     selectionMode: false,
     editedElement: null,
     highlightedTile: null,
@@ -313,6 +314,12 @@
           that.treeRefresh();
       });
 
+      this.closeReady = false;
+
+      setTimeout(function () {
+          that.closeReady = true;
+      }, 200);
+
       /*window.addEventListener("beforeunload", function (e) {
           if (that.$.form.modified) {
               var message = "You have unsaved layout setup changes!";
@@ -343,6 +350,15 @@
         this.unlisten();
       }
     },
+    getHighlightContent: function (el) {
+        var setup = this.editedTiles.allItems[el.id] || this.editedTiles.allItems["root"];
+        var rec = el.getBoundingClientRect();
+        var w = Math.round(rec.width);
+        var h = Math.round(rec.height);
+        var html = ["<div style='background-color:rgb(260, 97, 124); padding:1px 2px; font-size:11px; line-height:11px;'>", w, " x ", h, "</div>"].join("");
+
+        return html;
+    },
     listen: function () {
       var editor = this;
       // Highlight hovered tile
@@ -352,7 +368,7 @@
         if (highlightedTile) {
           if (editor.highlightedTile !== highlightedTile) {
             editor.highlightedTile = highlightedTile;
-            editor.$.tileRollover.show( highlightedTile);
+            editor.$.tileRollover.show(highlightedTile);
           }
           ev.stopImmediatePropagation();
         }
@@ -488,7 +504,8 @@
       }
       this.editedTiles = tileList;
       var tile = tileList.tiles[item.id];
-      this.$.tileEdited.show(tile);
+      this.$.tileEdited.show(tile, this.getHighlightContent.bind(this));
+      this.$.tileSelected.hide();
       this.selectedItems.length = 0;
       this.selectedItems.push(item);
       this.selectedElements.length = 0;
@@ -540,7 +557,7 @@
       }
       this.selectedItems.push(item);
       this.selectedElements.push( this.editedTiles.tiles[item.id] );
-      this.$.tileSelected.show(this.selectedElements);
+      this.$.tileSelected.show(this.selectedElements, this.getHighlightContent.bind(this));
     },
     treeHighlightRemoveAction: function(item) {
       if(item.detail) {  //is tree event
@@ -549,7 +566,7 @@
       var index = this.selectedItems.indexOf(item);
       this.selectedItems.splice(index, 1);
       this.selectedElements.splice(index, 1);
-      this.$.tileSelected.show(this.selectedElements);
+      this.$.tileSelected.show(this.selectedElements, this.getHighlightContent.bind(this));
     },
     treeChangedAction: function () {
         setTimeout((function () {
@@ -646,7 +663,9 @@
         }
     },
     closeClick: function () {
-        this.fire("juicy-tile-editor-close");
+        if (this.closeReady) {
+            this.fire("juicy-tile-editor-close");
+        }
     },
     modifiedChanged: function () {
     }

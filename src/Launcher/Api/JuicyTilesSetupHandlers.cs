@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Text;
 using Starcounter;
+using JuicyTiles;
 
-namespace JuicyTiles {
-    public static class JuicyTilesSetupHandlers {
-        public static void Setup() {
+namespace Launcher {
+    public class JuicyTilesSetupHandlers {
+        public void Register() {
             JuicyTilesSetup.CreateIndex();
 
             Handle.POST("/launcher/juicytilessetup?{?}", (Request request, string key) => {

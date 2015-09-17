@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using Polyjuice;
 using Starcounter;
+using Polyjuice;
 
-namespace LauncherNamespace {
+namespace Launcher {
 
     internal class MainHandlers {
         public void Register() {
