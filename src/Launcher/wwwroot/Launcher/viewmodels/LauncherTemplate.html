@@ -3,6 +3,10 @@
     <title>Launcher</title>
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
+    <script>
+        window.Polymer = window.Polymer || {};
+        window.Polymer.dom = "shadow";
+    </script>
     <link rel="import" href="/sys/polymer/polymer.html" />
 
     <!-- Import Starcounter specific components -->
