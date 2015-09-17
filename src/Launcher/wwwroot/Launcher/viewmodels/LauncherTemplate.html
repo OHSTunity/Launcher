@@ -110,7 +110,7 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
+                <juicy-tile-editor selection-mode="true" watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
                 <script>
                     document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
                         document.querySelector("template#root").set("model.editingMode$", false);
