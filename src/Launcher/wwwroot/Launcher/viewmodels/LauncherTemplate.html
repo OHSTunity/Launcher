@@ -21,7 +21,8 @@
 
     <!-- Import other elements used in this document -->
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/core-icon/core-icon.html" /> -->
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/core-icon-button/core-icon-button.html" /> -->
+    <link rel="import" href="/sys/iron-icons/iron-icons.html" />
+    <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/core-field/core-field.html" /> -->
 
@@ -63,10 +64,10 @@
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
             <!-- TODO: migrate getModel boolean trigger -->
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-                <core-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$"></core-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <core-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" class="modified" title="You have unsaved layout changes on this page!"></core-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
         </div>
 
@@ -101,14 +102,14 @@
         </div>
 
         <!-- TODO migrate this getModel -->
-        <launcher-hot-key keys="Ctrl+E" onkeypress="getModel(this).editingMode$ = !getModel(this).editingMode$"></launcher-hot-key>
-        <launcher-hot-key keys="Esc" onkeypress="getModel(this).editingMode$ = false"></launcher-hot-key>
+        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
+        <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
                 <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
                 <script>
                     document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
-                        getModel(e.target).editingMode$ = false;
+                        document.querySelector("template#root").set("model.editingMode$", false);
                     });
                 </script>
             </div>
@@ -117,9 +118,15 @@
         <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
     </template>
     <script>
-        document.currentScript.previousElementSibling.concat = function () {
-            return Array.prototype.join.call(arguments, "");
-        };
+        (function init(template) {
+            template.concat = function () {
+                return Array.prototype.join.call(arguments, "");
+            };
+
+            template.toggleEditor = function () {
+                template.set("model.editingMode$", !template.model.editingMode$);
+            };
+        })(document.currentScript.previousElementSibling);
     </script>
 
     <puppet-client ref="root"></puppet-client>
