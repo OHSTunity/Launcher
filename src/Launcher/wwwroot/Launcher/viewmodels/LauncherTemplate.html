@@ -15,6 +15,7 @@
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
+    <link rel="import" href="/Launcher/elements/tu-logo-with-spinner/tu-logo-with-spinner.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <link rel="import" href="/sys/console-log/console-log.html" />
@@ -44,7 +45,19 @@
         </template>
 
         <div class="launcher-toolbar launcher-topbar">
-            <a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
+            <div style="margin-left: 0px;min-width: 195px;max-width: 195px;">
+                <tu-logo-with-spinner></tu-logo-with-spinner>
+            </div>
+            <div class="toolbar-padding"></div>
+            <span class="toolbar-divider"></span>
+            <div id="launcher-menu">
+               <ul>
+                 <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
+               </ul>
+            </div>
+            <div flex=""></div>
+            <span class="toolbar-divider"></span>
+            <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
                 <a href="javascript:" onclick="getModel(this).searchBar.submit$++" class="icon">
                     <i class="glyphicon glyphicon-search"></i>
@@ -55,6 +68,8 @@
                     <starcounter-include class="preview" partial="{{searchBar.preview}}"></starcounter-include>
                 </div>
             </core-field>
+            <span class="toolbar-divider"></span>
+
             <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
 
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
@@ -66,13 +81,7 @@
             </template>
         </div>
 
-        <div id="launcher-menu">
-            <launcher-menu>
-                <ul>
-                    <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
-                </ul>
-            </launcher-menu>
-        </div>
+
 
         <div id="launcher-content">
             <div class="launchpad">
@@ -114,6 +123,7 @@
     <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
+        var puppet = document.getElementsByTagName("puppet-client")[0];
         // var slowResizeTimeout = null;
         // var fastResizeTimeout = null;
         // var mutationObserver;

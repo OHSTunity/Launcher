@@ -1,0 +1,220 @@
+<!--
+Takes an url attribute and try to morph the web clients url into that url on
+change
+-->
+
+<polymer-element name="tu-logo-with-spinner">
+
+
+    <template>
+        <style type="text/css">
+            .visiblespinner
+            {
+
+                display: block !important;
+            }
+
+            #spinner {
+                display: none;
+                position: absolute;
+                top: -3px;
+                left: 207px;
+                transform: scale(0.5,0.5);
+            }
+
+
+            #logo
+            {
+                width:130px;
+                height:28px;
+                background: url(/Launcher/elements/tu-logo-with-spinner/piller_logo_fff.png);
+                background-size: cover;
+                cursor: pointer;
+                margin-bottom:6px;
+                transition: background 400ms ease;
+            }
+            #logo:hover, #logo.hover
+            {
+               
+                background: url(/Launcher/elements/tu-logo-with-spinner/piller_logo_fff_c.png);
+                background-size: cover;
+                transition: background 200ms ease;
+            }
+
+
+
+            @-webkit-keyframes timer {
+              0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+              }
+
+              100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+              }
+            }
+
+            @-moz-keyframes timer {
+              0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+              }
+
+              100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+              }
+            }
+
+            @-o-keyframes timer {
+              0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+              }
+
+              100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+              }
+            }
+
+            @keyframes timer {
+              0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+              }
+
+              100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+              }
+            }
+
+            .timer {
+              font-family: sans-serif;
+              font-weight: 100;
+            }
+
+            .timer:not(:required) {
+              border: 6px solid #ffffff;
+              -webkit-border-radius: 24px;
+              -moz-border-radius: 24px;
+              -ms-border-radius: 24px;
+              -o-border-radius: 24px;
+              border-radius: 24px;
+              -webkit-box-sizing: border-box;
+              -moz-box-sizing: border-box;
+              box-sizing: border-box;
+              display: inline-block;
+              overflow: hidden;
+              position: relative;
+              text-indent: -9999px;
+              width: 48px;
+              height: 48px;
+            }
+            .timer:not(:required)::before {
+              -webkit-animation: timer 1250ms infinite linear;
+              -moz-animation: timer 1250ms infinite linear;
+              -ms-animation: timer 1250ms infinite linear;
+              -o-animation: timer 1250ms infinite linear;
+              animation: timer 1250ms infinite linear;
+              -webkit-transform-origin: 3px 3px;
+              -moz-transform-origin: 3px 3px;
+              -ms-transform-origin: 3px 3px;
+              -o-transform-origin: 3px 3px;
+              transform-origin: 3px 3px;
+              background: #ffffff;
+              -webkit-border-radius: 3px;
+              -moz-border-radius: 3px;
+              -ms-border-radius: 3px;
+              -o-border-radius: 3px;
+              border-radius: 3px;
+              content: '';
+              display: block;
+              position: absolute;
+              width: 6px;
+              height: 19.2px;
+              left: 15px;
+              top: 15px;
+            }
+            .timer:not(:required)::after {
+              -webkit-animation: timer 15000ms infinite linear;
+              -moz-animation: timer 15000ms infinite linear;
+              -ms-animation: timer 15000ms infinite linear;
+              -o-animation: timer 15000ms infinite linear;
+              animation: timer 15000ms infinite linear;
+              -webkit-transform-origin: 3px 3px;
+              -moz-transform-origin: 3px 3px;
+              -ms-transform-origin: 3px 3px;
+              -o-transform-origin: 3px 3px;
+              transform-origin: 3px 3px;
+              background: #ffffff;
+              -webkit-border-radius: 3px;
+              -moz-border-radius: 3px;
+              -ms-border-radius: 3px;
+              -o-border-radius: 3px;
+              border-radius: 3px;
+              content: '';
+              display: block;
+              position: absolute;
+              width: 6px;
+              height: 16px;
+              left: 15px;
+              top: 15px;
+            }
+
+        </style>
+            <div id="logo" onclick="puppet.morphUrl('/')"></div>
+            
+            <div class="timer" id="spinner">
+                Loading...
+            </div>
+    </template>
+    <script type="text/javascript">
+        Polymer('tu-logo-with-spinner', {
+            command : "",
+            cache:"",
+            attached: function () {
+                puppet.addEventListener('patchsent', this.patchSent.bind(this), false);
+                puppet.addEventListener('patchreceived', this.patchReceived.bind(this), false);
+            },
+            detached: function() {
+                puppet.removeEventListener('patchsent', this.patchSent);
+                puppet.removeEventListener('patchreceived', this.patchReceived);
+            },
+            patchSent: function() {
+               // this.$.spinner.classList.add("visiblespinner"); 
+                this.$.logo.classList.add("hover");
+            },
+            patchReceived: function() {
+               // this.$.spinner.classList.remove("visiblespinner"); 
+                this.$.logo.classList.remove("hover");
+            },
+        });
+    </script>
+</polymer-element>

@@ -7,8 +7,8 @@
 }
 
 #launcher-menu {
-    flex: 0 1 auto;
-    color: #8a98b0;
+    flex: 1 0 auto;
+    color: #4c444b;
 }
 
 #launcher-content {
@@ -17,7 +17,7 @@
 
 .workspace > juicy-tile-grid {
     /*flex: 1 1 auto;*/
-    padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+    padding: 0px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
 }
 
 #homeIcon {
@@ -72,13 +72,14 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 #launcher-menu {
-    background-color: #333c4e;
+    background-color: #4c444b;
     color: #8a98b0;
 }
 
 #launcher-menu ul {
     margin: 0px;
-    padding: 9px;
+    padding: 0px;
+    display: flex;
     list-style-type: none; /* Remove bullets */
 }
 
@@ -88,15 +89,14 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 #launcher-menu ul li {
-    border-bottom: 1px solid #3d4860;
     padding-right: 8px;
     padding-left: 4px;
 }
 
 #launcher-menu a {
     display: block;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 0px;
+    padding-bottom: 0px;
     padding-left: 2px;
     padding-right: 2px;
 }
@@ -119,10 +119,10 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 
 /* Toolbar custom theme */
 .launcher-toolbar {
-    background-color: #333c4e;
+    background-color: #4c444b;
     color: #8a98b0;
     font-size: 28px;
-    padding: 10px;
+    height: 40px;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -moz-flex !important;
@@ -184,7 +184,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 .launcher-toolbar core-field {
-    width: 100%;
+    margin-right:10px;
 }
 
 .launcher-toolbar core-field:active {
