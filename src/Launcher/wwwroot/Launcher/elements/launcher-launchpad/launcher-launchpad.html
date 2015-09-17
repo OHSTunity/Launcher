@@ -16,8 +16,8 @@
   <template id="tilesGrid">
     <juicy-tiles-setup-sync
         name="/launcher/launchpad"
-        storedValue="{{json.juicyTilesSetup}}"
-        apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
+        storedValue="{{json.layout}}"
+        apiUrl="/sc/layout"></juicy-tiles-setup-sync>
     <juicy-tile-grid
         id="launchpadGrid"
         class="launchpad-grid"
@@ -26,7 +26,7 @@
             'width': 68
           }"
         gutter="20"
-        setup="[[ json.juicyTilesSetup | clonedSetup ]]"
+        setup="[[ json.layout | clonedSetup ]]"
         refreshonmutation
         refreshonresize>
     </juicy-tile-grid>

@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Web;
 using Starcounter.Advanced.XSON;
-using PolyjuiceNamespace;
 
 namespace Launcher {
 
@@ -20,7 +19,7 @@ namespace Launcher {
     [LauncherPage_json.searchBar]
     partial class SearchBar : Json {
         void Handle(Input.query action) {
-            string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(action.Value);
+            string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(action.Value);
 
             this.previewVisible = true;
             this.preview = Self.GET<SearchBarPreviewPage>(uri, () => {

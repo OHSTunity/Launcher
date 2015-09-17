@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Starcounter;
 using Starcounter.Internal;
-using PolyjuiceNamespace;
-using JuicyTiles;
+using Starcounter.Extensions;
 
 namespace Launcher {
 
@@ -19,9 +18,8 @@ namespace Launcher {
         /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
         /// </summary>
         public static void Init() {
-            JuicyTilesSetupHandlers handlers = new JuicyTilesSetupHandlers();
 
-            handlers.Register();
+            Layout.Register();
 
             Handle.AddFilterToMiddleware((Request req) => {
 
@@ -58,35 +56,35 @@ namespace Launcher {
 
                     launcher.Session = new Session(SessionOptions.PatchVersioning);
 
-                    launcher.launchpad.icons = Self.GET<Json>("/polyjuice/app-icon", () => {
+                    launcher.launchpad.icons = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-icon", () => {
                         var p = new Page();
                         return p;
                     });
 
-                    launcher.launchpad.names = Self.GET<Json>("/polyjuice/app-name", () => {
+                    launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
                         var p = new Page();
                         return p;
                     });
-                    var setup = JuicyTilesSetup.GetSetup("/launcher/launchpad");
+                    var setup = Layout.GetSetup("/launcher/launchpad");
 
                     if (setup == null)
                     {
-                        launcher.launchpad.juicyTilesSetup = null;
+                        launcher.launchpad.layout = null;
                     }
                     else
                     {
                         dynamic setupJson = new Json(setup.Value);
-                        launcher.launchpad.juicyTilesSetup = setupJson;
+                        launcher.launchpad.layout = setupJson;
                     }
 
-                    launcher.menu = Self.GET<Json>("/polyjuice/menu", () => {
+                    launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
                         var p = new Page() {
                             Html = "/Launcher/viewmodels/LauncherMenu.html"
                         };
                         return p;
                     });
 
-                    launcher.user = Self.GET("/polyjuice/user", () => {
+                    launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
                         var p = new Page();
                         return p;
                     });
@@ -103,7 +101,7 @@ namespace Launcher {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                launcher.results = Self.GET<LauncherResultsPage>("/polyjuice/dashboard", () => {
+                launcher.results = Self.GET<LauncherResultsPage>(UriMapping.MappingUriPrefix + "/dashboard", () => {
                     var p = new LauncherResultsPage();
 
                     return p;
@@ -115,7 +113,7 @@ namespace Launcher {
             Handle.GET("/launcher/search?query={?}", (string query) => {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                string uri = "/polyjuice/search?query=" + HttpUtility.UrlEncode(query);
+                string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
 
                 launcher.results = Self.GET<LauncherResultsPage>(uri, () => {
                     var p = new LauncherResultsPage();
@@ -126,9 +124,10 @@ namespace Launcher {
 
                 return launcher;
             });
+
             // + dummy responses from launcher itself
             // Merges HTML partials according to provided URLs.
-            Handle.GET(StarcounterConstants.PolyjuiceHtmlMergerPrefix + "{?}", (String s) => {
+            Handle.GET(StarcounterConstants.HtmlMergerPrefix + "{?}", (String s) => {
 
                 StringBuilder sb = new StringBuilder();
 
@@ -150,7 +149,7 @@ namespace Launcher {
                 return sb.ToString();
             }, new HandlerOptions() {
                 ProxyDelegateTrigger = true,
-                AllowNonPolyjuiceHandler = true,
+                SkipHandlersPolicy = true,
                 ReplaceExistingHandler = true
             });
         }
@@ -158,7 +157,7 @@ namespace Launcher {
         static Response WrapInLauncher(Request req, String appName) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-            // Call proxed request
+            // Call proxied request
             Response resp = Self.CallUsingExternalRequest(req, () => {
                 // check if there is already workspaces array item for given appname
                 Json foundWorkspace = null;
@@ -173,11 +172,11 @@ namespace Launcher {
                 if (foundWorkspace == null) {
                     var p = new LauncherWrapperPage();
                     // move serializer magic to here:
-                    // set partial ID, find juicy tiles, build HTML path, set appname, etc.
+                    // set partial ID, find layouts, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
                     p.appName = appName;
                     // p.partialId = mainApp.Html;
-                    // p.juicyTilesSetup = Self.GET("/launcher/juicytilessetup?" + p.partialId);
+                    // p.layout = Self.GET("/sc/layout?" + p.partialId);
                     // p.listOfAppsRunning = appnames;
 
                     // and add it to the array
