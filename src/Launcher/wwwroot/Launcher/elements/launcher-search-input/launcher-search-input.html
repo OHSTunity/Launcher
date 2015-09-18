@@ -1,9 +1,14 @@
 ﻿<link rel="import" href="/sys/polymer/polymer.html" />
 
 <dom-module id="launcher-search-input">
-    <template>
-        <input placeholder="{{placeholder}}" value="{{value::change}}" on-keypress="onKeyPress" on-blur="onBlur" />
-    </template>
+    <style>
+        :host {
+            display: inline;
+            height: 0px;
+            width: 0px;
+        }
+    </style>
+    <template><input placeholder="{{placeholder}}" value="{{value::change}}" on-keypress="onKeyPress" on-blur="onBlur" /></template>
     <script>
         Polymer({
             is: "launcher-search-input",
@@ -27,9 +32,6 @@
             },
             colors: [],
             ready: function () {
-            },
-            valueChanged: function () {
-                this.fire("juicy-color-picker-value-changed");
             },
             onKeyPress: function (e) {
                 if (e.which == 13) {

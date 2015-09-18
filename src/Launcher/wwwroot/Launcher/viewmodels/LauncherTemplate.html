@@ -24,12 +24,9 @@
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/core-icon/core-icon.html" /> -->
     <link rel="import" href="/sys/iron-icons/iron-icons.html" />
     <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/core-field/core-field.html" /> -->
-
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
@@ -51,7 +48,7 @@
 
         <div class="launcher-toolbar launcher-topbar">
             <a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
-            <core-field class="launcher-theme">
+            <div class="launcher-theme">
                 <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" class="icon">
                     <i class="glyphicon glyphicon-search"></i>
                 </a>
@@ -62,10 +59,9 @@
                         <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
                     </div>
                 </template>
-            </core-field>
+            </div>
             <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
 
-            <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
             <!-- TODO: migrate getModel boolean trigger -->
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
                 <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
