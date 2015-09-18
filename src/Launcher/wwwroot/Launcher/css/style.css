@@ -245,38 +245,6 @@ core-field.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explo
     font-size:30px;
 }
 
-launchpad-tile a {
-    text-align:center;
-    min-width:80px;
-    display:block;
-    text-align:center;
-}
-
-launchpad-tile launchpad-icon {
-    padding: 8px;
-    border-radius: 8px;
-    display: block;
-    min-height: 64px;
-}
-
-launchpad-tile:hover launchpad-icon {
-    box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
-}
-
-launchpad-tile > a,
-launchpad-tile:hover a {
-    display: block;
-    color: black;
-    text-decoration: none;
-}
-
-launchpad-tile h5 {
-    text-align: center;
-    margin: 2px;
-    height: 14px;
-    font-size:13px;
-}
-
 .css-grid-error {
     display: block;
     position: fixed;

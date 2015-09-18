@@ -85,7 +85,8 @@
 
         <div id="launcher-content">
             <div class="launchpad">
-                <launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>
+                <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
+                <launcher-launchpad apps="{{model.launchpad.names}}"></launcher-launchpad>
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
