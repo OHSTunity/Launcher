@@ -38,7 +38,7 @@
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" />
 
     <!-- Style sheets -->
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/bootstrap.html" /> -->
+    <link rel="import" href="/sys/bootstrap.html" />
     <link rel="stylesheet" href="/Launcher/css/style.css" />
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
@@ -89,7 +89,7 @@
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
-            <starcounter-include class="workspace launcher" partial="{{results}}"></starcounter-include>
+            <!-- <starcounter-include class="workspace launcher" partial="{{results}}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
