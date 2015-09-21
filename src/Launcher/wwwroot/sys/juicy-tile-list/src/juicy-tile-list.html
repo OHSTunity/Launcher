@@ -1,9 +1,9 @@
 <!--
-`juicy-tile-list element` - masonry-like Polymer Element for sortable tiles that packs efficiently without changing HTML structure (changes CSS only).
+`juicy-tile-list element` - masonry-like Custom Element for sortable tiles that packs efficiently without changing HTML structure (changes CSS only).
 
 @element juicy-tile-list
 @demo https://Juicy.github.io/juicy-tile-list/
-version: 0.3.2
+version: 1.0.0
 -->
 
 <script src="rectangle.js"></script>
@@ -117,7 +117,6 @@ version: 0.3.2
         function defaultSetup(tiles, setupItems, allItems, defaultTileSetup) {
             for (var elNo = 0, eLen = tiles.length; elNo < eLen; elNo++) {
                 var tile = tiles[elNo];
-
                 if (!allItems[tile.id]) {
                     var itemSetup = JSON.parse(JSON.stringify(defaultTileSetup));
                     if (setupItems.length == 0) {
@@ -354,13 +353,10 @@ version: 0.3.2
                         doRefresh = true;
                     }
                 });
-
                 if (doRefresh) {
                     //DRY, performance
-                    that.allItems = null;
-                    Package.call(that, that.setup);
                     that.createItemsList();
-                    that.refresh(true);
+                    that.refresh();
                 }
             });
             // bind this to #refresh for listeners
@@ -595,13 +591,6 @@ version: 0.3.2
             if (hard) {
                 this.tiles = this.updateWrappers(this.elements, this);
             }
-
-            if (!this.setup) {
-                this.setup = {
-                    items: []
-                };
-            }
-
             // TODO: support LTR
             if (this.setup.direction != "vertical") {
                 this.setup.width = this.setup.width || innerWidth(this);
