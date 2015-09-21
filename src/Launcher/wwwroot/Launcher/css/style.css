@@ -67,9 +67,12 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #8a98b0;
 }
 
+/*
+// Looks like a redundant piece of styles.
 #filters core-field label {
     margin-right: 10px;
 }
+*/
 
 #launcher-menu {
     background-color: #333c4e;
@@ -122,7 +125,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #333c4e;
     color: #8a98b0;
     font-size: 28px;
-    padding: 10px;
+    padding: 2px 10px;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -moz-flex !important;
@@ -166,38 +169,38 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     width:360px;
 }
 
-.launcher-toolbar core-icon-button {
+.launcher-toolbar paper-icon-button {
     color: white;
     padding: 8px;
     margin: 0;
 }
 
-.launcher-toolbar core-icon-button.modified,
-.launcher-toolbar core-icon-button.modified:hover,
-.launcher-toolbar core-icon-button.modified:hover /deep/ path {
+.launcher-toolbar paper-icon-button.modified,
+.launcher-toolbar paper-icon-button.modified:hover,
+.launcher-toolbar paper-icon-button.modified:hover /deep/ path {
     color: red;
     fill: red;
 }
 
-.launcher-toolbar core-icon-button.launcher-theme:hover {
+.launcher-toolbar paper-icon-button.launcher-theme:hover {
     background-color: #6794AC;
 }
 
-.launcher-toolbar core-field {
+.launcher-toolbar div.launcher-theme {
     width: 100%;
 }
 
-.launcher-toolbar core-field:active {
+.launcher-toolbar div.launcher-theme:active {
     border-color: rgb(0, 136, 204);
 }
 
-.launcher-toolbar core-field:focus,
-.launcher-toolbar core-field:hover,
-.launcher-toolbar core-field:has(:focus) {
+.launcher-toolbar div.launcher-theme:focus,
+.launcher-toolbar div.launcher-theme:hover,
+.launcher-toolbar div.launcher-theme:has(:focus) {
     background-color: #fff;
 }
 
-.launcher-toolbar > core-icon-button:hover::shadow core-icon {
+.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
     color: white;
     transition: -webkit-transform 1s;
     transition: transform 1s;
@@ -205,33 +208,34 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     transform: rotate(360deg);
 }
 
-core-field.launcher-theme input,
-core-field.launcher-theme /deep/ input {
+div.launcher-theme input,
+div.launcher-theme /deep/ input {
     color: white;
     background: #7B8AA6;
     padding: 4px;
     border: 1px solid #3d4860;
     border-radius: 4px;
+    font-size: 14px;
 }
 
 /* Change plaveholder text color */
-core-field.launcher-theme input::-webkit-input-placeholder,
-core-field.launcher-theme /deep/ input::-webkit-input-placeholder { /* WebKit browsers */
+div.launcher-theme input::-webkit-input-placeholder,
+div.launcher-theme /deep/ input::-webkit-input-placeholder { /* WebKit browsers */
     color: white;
 }
 
-core-field.launcher-theme input:-moz-placeholder,
-core-field.launcher-theme /deep/ input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+div.launcher-theme input:-moz-placeholder,
+div.launcher-theme /deep/ input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
     color: white;
 }
 
-core-field.launcher-theme input::-moz-placeholder,
-core-field.launcher-theme /deep/ input::-moz-placeholder { /* Mozilla Firefox 19+ */
+div.launcher-theme input::-moz-placeholder,
+div.launcher-theme /deep/ input::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: white;
 }
 
-core-field.launcher-theme input:-ms-input-placeholder,
-core-field.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+ */
+div.launcher-theme input:-ms-input-placeholder,
+div.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+ */
     color: white;
 }
 
@@ -242,38 +246,6 @@ core-field.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explo
 .launchpad > h1 {
     margin: 0 0 0.6em 0;
     font-size:30px;
-}
-
-launchpad-tile a {
-    text-align:center;
-    min-width:80px;
-    display:block;
-    text-align:center;
-}
-
-launchpad-tile launchpad-icon {
-    padding: 8px;
-    border-radius: 8px;
-    display: block;
-    min-height: 64px;
-}
-
-launchpad-tile:hover launchpad-icon {
-    box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
-}
-
-launchpad-tile > a,
-launchpad-tile:hover a {
-    display: block;
-    color: black;
-    text-decoration: none;
-}
-
-launchpad-tile h5 {
-    text-align: center;
-    margin: 2px;
-    height: 14px;
-    font-size:13px;
 }
 
 .css-grid-error {
@@ -317,4 +289,9 @@ launchpad-tile h5 {
         display: none;
         display: -moz-grid;
     }
+}
+
+launcher-search-input {
+    font-size: 10px;
+    vertical-align: middle;
 }

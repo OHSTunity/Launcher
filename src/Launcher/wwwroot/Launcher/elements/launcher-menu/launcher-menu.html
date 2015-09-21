@@ -1,15 +1,16 @@
 <link rel="import" href="/sys/polymer/polymer.html">
 
-<polymer-element name="launcher-menu">
-    <template id="launcher-menu">
+<dom-module id="launcher-menu">
+    <template>
         <style></style>
         <content id="content"></content>
     </template>
     <script>
         (function () {
-            Polymer("launcher-menu", {
+            Polymer({
+                is: "launcher-menu",
                 busy: false,
-                domReady: function () {
+                ready: function () {
                     this.$.content.addEventListener("DOMNodeInserted", this.sortItems.bind(this));
                 },
                 sortItems: function () {
@@ -46,4 +47,4 @@
             });
         })();
     </script>
-</polymer-element>
+</dom-module>
