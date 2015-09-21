@@ -100,9 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="wwwroot\Launcher\css\style.css" />
+    <Content Include="wwwroot\Launcher\elements\launcher-launchpad\launcher-launchpad.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-search-input\launcher-search-input.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-hot-key\launcher-hot-key.html" />
-    <Content Include="wwwroot\Launcher\elements\launcher-launchpad\launcher-launchpad.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-layout\launcher-main.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-menu\launcher-menu.html" />
     <Content Include="wwwroot\Launcher\viewmodels\LauncherMenu.html" />
