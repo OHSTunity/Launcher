@@ -1,241 +1,109 @@
-<link rel="import" href="/sys/polymer/polymer.html">
+﻿<link rel="import" href="/sys/polymer/polymer.html">
+<link rel="import" href="/sys/imported-template/imported-template.html">
 
-<template id="launchpad-tile">
-  <launchpad-tile>
-    <a href="/{{appName}}">
-      <launchpad-icon>
-        <!-- icon goes here -->
-      </launchpad-icon>
-      <h5 title="{{name.description}}">{{name.name}}</h5>
-    </a>
-  </launchpad-tile>
+<dom-module id="launcher-launchpad">
+    <template>
+        <style>
+            .launchpad-tile a {
+                text-align: center;
+                min-width: 80px;
+                display: block;
+                text-align: center;
+            }
 
-</template>
+            .launchpad-tile .launchpad-icon {
+                padding: 8px;
+                border-radius: 8px;
+                display: block;
+                min-height: 64px;
+                font-size: 0px;
+            }
 
-<polymer-element name="launcher-launchpad" attributes="json">
-  <template id="tilesGrid">
-    <juicy-tiles-setup-sync
-        name="/launcher/launchpad"
-        storedValue="{{json.layout}}"
-        apiUrl="/sc/layout"></juicy-tiles-setup-sync>
-    <juicy-tile-grid
-        id="launchpadGrid"
-        class="launchpad-grid"
-        defaultTileSetup="{
-            'height': 82,
-            'width': 68
-          }"
-        gutter="20"
-        setup="[[ json.layout | clonedSetup ]]"
-        refreshonmutation
-        refreshonresize>
-    </juicy-tile-grid>
-  </template>
-<script>
-  (function () {
-    var currentDocument = (document._currentScript || document.currentScript).ownerDocument;
-    var tileTempl = currentDocument.getElementById("launchpad-tile");
-    var tilesGrid = currentDocument.getElementById("tilesGrid");
-    // var LauncherLaunchpadPrototype = Object.create( (HTMLTemplateElement || HTMLElement ).prototype);
+            .launchpad-tile:hover .launchpad-icon {
+                box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
+            }
 
-    var LauncherLaunchpadPrototype = {};
-    LauncherLaunchpadPrototype.parseDeclaration = function(elementElement){
-      this.lightFromTemplate(this.fetchTemplate(elementElement));
-    };
-    LauncherLaunchpadPrototype.clonedSetup = function (json) {
-      switch(typeof json){
-        case "object":
-          return JSON.parse(JSON.stringify(json));
-        case "string":
-          return json && JSON.parse(json) ;
-      }
-    };
+            .launchpad-tile > a,
+            .launchpad-tile:hover a {
+                display: block;
+                color: black;
+                text-decoration: none;
+            }
 
+            .launchpad-tile h5 {
+                text-align: center;
+                margin: 2px;
+                height: 14px;
+                font-size: 13px;
+                font-family: inherit;
+                font-weight: normal;
+                line-height: 1.1;
+            }
+        </style>
+        <juicy-tiles-setup-sync api-url="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
+        <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80 }' gutter="10" refreshonmutation>
+            <template is="dom-repeat" items="{{appsArray}}">
+                <div class="launchpad-tile">
+                    <a href="{{getHref(item.name)}}">
+                        <div class="launchpad-icon">
+                            <template is="imported-template" content$="{{item.html}}"></template>
+                        </div>
+                        <h5 title="{{item.description}}">{{item.name}}</h5>
+                    </a>
+                </div>
+            </template>
+        </juicy-tile-grid>
+    </template>
+    <script>
+        Polymer({
+            is: "launcher-launchpad",
+            properties: {
+                apps: {
+                    type: Object,
+                    value: null,
+                    observer: "appsChanged"
+                },
+                appsArray: {
+                    type: Array,
+                    value: []
+                }
+            },
+            appsChanged: function (newVal, oldVal) {
+                var array = [];
 
-    /**
-     * Merge two SC merged responses into one.
-     * @param  {[type]} json [description]
-     * @return {[type]}      [description]
-     */
-    LauncherLaunchpadPrototype.parseJson = function parseJson(json){
-      var map = {};
-      var iconlessNames = [];
+                for (var i in newVal) {
+                    if (!Object.prototype.hasOwnProperty.call(newVal, i)) {
+                        return;
+                    }
 
-      for (var appName in json.icons) {
-        if( json.icons.hasOwnProperty( appName ) ) {
-          map[appName] = {
-            appName: appName,
-            icon: json.icons[appName]
-            //, name: null
-          };
-        }
-      }
-      for ( appName in json.names) {
-        if( json.names.hasOwnProperty( appName ) ) {
-          if(map[appName]){
-            map[appName].name = json.names[appName];
-          } else{
-            map[appName] = {
-              appName: appName,
-              name: json.names[appName]
-              //, icon: null
-            };
-            iconlessNames.push(appName);
-          }
-        }
-      }
-      this.mapPerAppName = map;
-      this.iconlessNames = iconlessNames;
-    };
+                    var app = newVal[i];
 
-    /**
-     * Import partial via HTML Import.
-     * @return {HTMLLinkElement}      HTML Import element
-     */
-    function loadIconsTemplate( href, callback ) {
-      var link = document.createElement('link');
-      link.rel = "import";
-      link.href = href;
-      link.onload =  callback;
-      // guessed workaround for Polyjuice/Launcher#82, Polymer/polymer#554
-      setTimeout( function appendAsync(){
-          document.head.appendChild(link);
-      });
-      return this;
-    }
-
-    /**
-     * Insert template into DOM.
-     * @param {launcher-launchpad}
-     * @returns {HTMLTemaplteElement} inserted template (launchpad.subTemplate)
-     */
-    function insertTemplate(launchpad){
-      launchpad.subTemplate.bindingDelegate = new PolymerExpressions(); //use PolymerExpressions. This allows <template if="{{val == 1}}">, etc
-
-      launchpad.$.launchpadGrid.appendChild(launchpad.subTemplate);
-      // this.subTemplate.model = this.model;
-      // this.subTemplate.model = this.json.icons;
-      // Wait for any polymer-elements in icons templates.
-      Polymer.whenReady(function attachModelWhenPolymerReady(){
-        launchpad.subTemplate.model = launchpad.mapPerAppName;
-      });
-      return launchpad.subTemplate;
-    }
-
-    /**
-     * Empty template content.
-     * @requires HTMLTemplateElement#clear (https://github.com/Polymer/TemplateBinding/blob/51df59c16e0922dec041cfe604016aac00918d5d/src/TemplateBinding.js#L595)
-     * TODO: profile this (tomalec)
-     * @extends HTMLTemplateElement.prototype.clear
-     * @return  see HTMLTemplateElement.prototype.clear
-     */
-    LauncherLaunchpadPrototype.clear = function(){
-      // return false;
-      return this.subTemplate
-            && ( !this.subTemplate.clear || this.subTemplate.clear() || true)
-            && this.subTemplate.parentNode.removeChild(this.subTemplate);
-      // IDEA: clear also content? (tomalec)
-      //      && HTMLTemplateElement.prototype.clear.call(this);
-    };
-
-
-    // or more importantly, or once Server-side could handle merging
-    // iconsHtml changed
-    LauncherLaunchpadPrototype.jsonChanged = function (oldVal, newVal) {
-      this.parseJson(newVal);
-      if (newVal.icons && newVal.icons.Html) {
-        var launchpad = this;
-        loadIconsTemplate(
-          "/launcher/launchpad" + newVal.icons.Html,
-          function processImportedDocument(){
-            launchpad.clear();
-
-            createAndInsertMergedTemplate(
-              launchpad,
-              this.import.querySelectorAll("launchpad-tile")
-            );
-
-          }
-        );
-      } else if (newVal) {
-          //This row suppose to help debugging of a strange polymer exception.
-          console.warn("A wrong value has been assigned to launch-pad.json", newVal, this);
-          createAndInsertMergedTemplate(this);
-      } else {
-          createAndInsertMergedTemplate(this);
-      }
-    };
-
-    function createAndInsertMergedTemplate(launchpad, tiles){
-        var template = document.createElement("template");
-        template.setAttribute("bind","");
-
-        if( tiles ){
-            tiles = Array.prototype.slice.call(tiles, 0);
-            tiles.sort(function (a, b) {
-                var aName = a.getAttribute("appname").trim();
-                var bName = b.getAttribute("appname").trim();
-
-                aName = launchpad.mapPerAppName[aName].name;
-                bName = launchpad.mapPerAppName[bName].name;
-
-                var at = typeof aName.sortNumber == "undefined" ? aName.name : aName.sortNumber;
-                var bt = typeof bName.sortNumber == "undefined" ? bName.name : bName.sortNumber;
-
-                at = at.toString();
-                bt = bt.toString();
-
-                if (at < bt) {
-                    return -1;
-                } else if (at > bt) {
-                    return 1;
+                    if (app.name) {
+                        array.push(app);
+                    }
                 }
 
-                return 0;
-            });
+                array.sort(function (a, b) {
+                    var at = typeof a.sortNumber == "undefined" ? a.name : a.sortNumber;
+                    var bt = typeof b.sortNumber == "undefined" ? b.name : b.sortNumber;
 
-          // wrap each tile in template and add to aggregated one
-          for( var nodeNo=0; nodeNo < tiles.length; nodeNo++){
-            var tile = tiles[nodeNo];
-            var appName = tile.getAttribute("appname");
-            // get exact template for icon (as some imports/scripts could be there)
-            var appIconTempl = tile.querySelector("template");
-            // change binding to match launchpad's own json structure.
-            appIconTempl.setAttribute("bind","{{icon}}");
-            // clone our tile template
-            var newTile = document.importNode(tileTempl.content, true);
-            // distribute icon into tile
-            appIconTempl && newTile.querySelector("launchpad-icon").appendChild(appIconTempl);
-            // wrap tile into binding namespace
-            var tileAppNamespace = document.createElement("template");
-            tileAppNamespace.setAttribute("bind","{{"+appName +"}}");
-            tileAppNamespace.content.appendChild(newTile);
-            // put bound tile into template of aggregated tiles
-            template.content.appendChild(tileAppNamespace);
-          }
+                    at = at.toString();
+                    bt = bt.toString();
 
-        }
-        // add tiles for iconless apps
-        for( var nodeNo=0; nodeNo < launchpad.iconlessNames.length; nodeNo++){
-          var appName = launchpad.iconlessNames[nodeNo];
-          var newTile = document.importNode(tileTempl.content, true);
-          // wrap tile into binding namespace
-          var tileAppNamespace = document.createElement("template");
-          tileAppNamespace.setAttribute("bind","{{"+appName +"}}");
-          tileAppNamespace.content.appendChild(newTile);
-          // put bound tile into template of aggregated tiles
-          template.content.appendChild(tileAppNamespace);
-        }
-        // stamp template into main document
-        launchpad.subTemplate = template;
-        insertTemplate(launchpad);
+                    if (at < bt) {
+                        return -1;
+                    } else if (at > bt) {
+                        return 1;
+                    }
 
-    }
+                    return 0;
+                });
 
-    Polymer(LauncherLaunchpadPrototype);
-
-
-
-  })();
-</script>
-</polymer-element>
+                this.set("appsArray", array);
+            },
+            getHref: function (name) {
+                return "/" + name.toLowerCase();
+            }
+        });
+    </script>
+</dom-module>

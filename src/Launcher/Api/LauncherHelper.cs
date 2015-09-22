@@ -140,7 +140,7 @@ namespace Launcher {
                         continue;
 
                     Response resp = Self.GET(a[1]);
-                    sb.Append("<imported-template-scope scope=\"{{" + a[0] + "}}\">");
+                    sb.Append("<imported-template-scope scope=\"" + a[0] + "\">");
                     sb.Append("<template><juicy-tile-group name=\"" + a[0] + "\"></juicy-tile-group></template>");
                     sb.Append(resp.Body);
                     sb.Append("</imported-template-scope>");
