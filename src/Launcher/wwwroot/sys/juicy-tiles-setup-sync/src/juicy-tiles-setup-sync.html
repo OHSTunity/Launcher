@@ -69,11 +69,9 @@
              * Resets the current value.
              */
             clear: function () {
-                if (this.storedValue === null) {
-                    this.storedValueChanged(null, null);
-                } else {
-                    this.set("storedValue", null);
-                }
+                this.set("storedValue", null);
+                this.tileList.setup = null;
+                this.tileList.setupChanged(null, null, null, true);
             },
             isModified: function () {
                 return JSON.stringify(this.storedValue) != JSON.stringify(this.tileList.setup);
