@@ -43,3 +43,7 @@ Make sure the following flags are set:
 
  - Experimental JavaScript - **enabled**
  - Experimental Web Platform features - **enabled**
+
+ **Note:** the application has been migrated to Polymer 1.x.
+- Latest Polymer 0.5 commit: https://github.com/Polyjuice/Launcher/commit/78f17c9a89419f1d19997da118cae249577b61b6
+- Latest Polymer 0.5 release: https://github.com/Polyjuice/Launcher/releases/tag/2.0.8
