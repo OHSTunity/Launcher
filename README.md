@@ -1,6 +1,8 @@
 :construction: Current dev version of Launcher (`master` branch) requires Starcounter 2.1+ and the [SysUpgrade](https://github.com/polyjuice/sysupgrade) app running. 
 Last version that runs on Starcounter 2.0.3343.3 is [Launcher 2.0.8 (7f092e6)](https://github.com/Polyjuice/Launcher/tree/7f092e6981f4133d5048a8666b488269b4aa8023)
 
+---
+
 Launcher
 ========
 
