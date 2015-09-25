@@ -44,7 +44,7 @@
         <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80 }' gutter="10" refreshonmutation>
             <template is="dom-repeat" items="{{appsArray}}">
                 <div class="launchpad-tile">
-                    <a href="{{getHref(item.name)}}">
+                    <a href="{{getHref(item.url, item.name)}}">
                         <div class="launchpad-icon">
                             <template is="imported-template" content$="{{item.html}}"></template>
                         </div>
@@ -101,8 +101,12 @@
 
                 this.set("appsArray", array);
             },
-            getHref: function (name) {
-                return "/" + name.toLowerCase();
+            getHref: function (url, name) {
+                if (!url) {
+                    url = "/" + name.toLowerCase();
+                }
+
+                return url;
             }
         });
     </script>
