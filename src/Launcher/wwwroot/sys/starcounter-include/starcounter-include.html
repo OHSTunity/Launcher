@@ -1,9 +1,10 @@
 <!--
-`launcher-root-partial` - Custom Element (w/ Polymer's TempalteBinding)
+`launcher-include` - Launcher's `starcounter-include` -
+Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
-It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
+It's just <template is="imported-template"> wrapped within <juicy-tile-grid> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.0.7
+version: 0.0.8
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -21,6 +22,8 @@ version: 0.0.7
         api-url="/sc/layout"></juicy-tiles-setup-sync>
     <juicy-tile-grid
         defaultTileSetup='{
+            "height": 1,
+            "heightDynamic": true,
             "precalculateHeight": true,
             "width": "100%",
             "widthFlexible": true
@@ -66,7 +69,6 @@ version: 0.0.7
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
-          console.log("partial set", newValue);
           partial = newValue;
           starcounterInclude.partialChanged(partial);
         },
@@ -86,7 +88,8 @@ version: 0.0.7
     };
     /**
      * Attach model.
-     * @see Polyjuice/starcounter-include#attachedCallback It's just a copy
+     * @see Polyjuice/starcounter-include#attachedCallback
+     * It's almost the same, but in here w append full structure of elements
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
       partialAttributeToProperty(this);
@@ -130,7 +133,6 @@ version: 0.0.7
             this.grid.setup = JSON.parse(JSON.stringify(this.partial.layout));
           }
           this.partial.Html && this.template.setAttribute("content", this.partial.Html);
-          // debugger
           this.template.model = this.partial;
         }
       }
