@@ -34,8 +34,9 @@
             },
             onKeyPress: function (e) {
                 if (e.which == 13) {
-                    this.set("submitAction", this.submitAction + 1);
-                    this.set("closeAction", this.closeAction + 1);
+                    setTimeout(function () {
+                        this.set("submitAction", this.submitAction + 1);
+                    }.bind(this), 100);
                 }
             },
             onBlur: function (e) {
