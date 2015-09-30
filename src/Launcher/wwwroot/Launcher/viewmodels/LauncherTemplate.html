@@ -52,7 +52,7 @@
                 <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" class="icon">
                     <i class="glyphicon glyphicon-search"></i>
                 </a>
-                <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" closeaction="{{model.searchBar.close$}}" submitaction="{{model.searchBar.submit$}}"></launcher-search-input>
+                <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">
@@ -100,6 +100,12 @@
                 <template is="dom-if" if="{{item.AppName}}">
                     <juicy-display-route match-path$="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
                     <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
+                </template>
+                <template is="dom-if" if="{{!item.AppName}}">
+                    <div style="padding: 15px; font-weight:bold; color:red;">
+                        <div>A workspace without AppName</div>
+                        <div>{{item.Html}}</div>
+                    </div>
                 </template>
             </template>
         </div>

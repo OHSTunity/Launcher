@@ -163,6 +163,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     left: 88px;
     top: 55px;
     box-sizing:border-box;
+    font-size: 14px;
 }
 
 .launcher-toolbar starcounter-include.preview {
