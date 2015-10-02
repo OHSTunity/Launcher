@@ -31,7 +31,7 @@
             heightFlexible: { type: Boolean, value: null },
             heightDynamic: { type: Boolean, value: null },
             gutter: { type: Number, value: 0, observer: "gutterChanged" },
-            tightGroup: { type: Boolean, value: null },
+            tightGroup: { type: Boolean, value: null, observer: "tightGroupChanged" },
             rightToLeft: { type: Boolean, value: null },
             bottomUp: { type: Boolean, value: null },
             oversize: { type: Number, value: 0 },
@@ -76,7 +76,6 @@
 
             var model = this.editedTiles;
             var newContainer = model.createNewContainer(null, current.container, setup, true);
-            var dimensions = null;
 
             if (!isEmpty) {
                 // performant heavy // may cause lots of repaints
@@ -96,10 +95,12 @@
             }
 
             newContainer.height = 1;
-            newContainer.heightDynamic = true;
+            newContainer.heightDynamic = false;
 
             this.refresh(true);
             this.fire('juicy-tile-editor-form-tree-changed');
+
+            setTimeout(this.heightCalculate.bind(this));
         },
         newInlineGroupFromSelection: function () {
             this.newGroupFromSelection();
@@ -528,6 +529,11 @@
             }.bind(this));
 
             this.calculateActualSize();
+        },
+        tightGroupChanged: function () {
+            if (this.selectedItems && this.selectedItems.length) {
+                this.fire('juicy-tile-editor-form-tree-changed');
+            }
         },
         popoverExpand: function (ev, index, target) {
             var index = this.style.zIndex || 0;
