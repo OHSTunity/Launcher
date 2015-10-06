@@ -232,11 +232,11 @@
     attachTileLists: function (){
       // var lists = document.getElementsByTagName('juicy-tile-list').array();
       var lists = Array.prototype.slice.call (
-          document.querySelectorAll('juicy-tile-list, juicy-tile-grid')
+          document.querySelectorAll('juicy-tile-list, juicy-tile-grid, html /deep/ juicy-tile-list, html /deep/ juicy-tile-grid')
       );
       if( this.parentRoot != document ){
         lists.concat(
-          this.parentRoot.querySelectorAll('juicy-tile-list, juicy-tile-grid')
+          this.parentRoot.querySelectorAll('juicy-tile-list, juicy-tile-grid, html /deep/ juicy-tile-list, html /deep/ juicy-tile-grid')
           );
       }
       this.tileLists = lists;
