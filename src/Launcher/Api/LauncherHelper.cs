@@ -148,7 +148,6 @@ namespace Launcher {
 
                 return sb.ToString();
             }, new HandlerOptions() {
-                ProxyDelegateTrigger = true,
                 SkipHandlersPolicy = true,
                 ReplaceExistingHandler = true
             });
