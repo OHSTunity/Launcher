@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Text;
 using Starcounter;
-using Polyjuice;
 
 namespace Launcher {
 
     internal class MainHandlers {
         public void Register() {
             // Merges HTML partials according to provided URLs.
-            Handle.GET("/launcher/launchpad/polyjuice/htmlmerger?{?}", (string s) => {
+            Handle.GET("/launcher/launchpad/sc/htmlmerger?{?}", (string s) => {
                 StringBuilder sb = new StringBuilder();
                 string[] allPartialInfos = s.Split(new char[] { '&' });
 

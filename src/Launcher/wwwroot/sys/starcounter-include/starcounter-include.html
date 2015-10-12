@@ -1,9 +1,10 @@
 <!--
-`launcher-root-partial` - Custom Element (w/ Polymer's TempalteBinding)
+`launcher-include` - Launcher's `starcounter-include` -
+Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
-It's just <template is="imported-template"> wrapped within <juicy-tiles> and layout editor.
-Uses juicy-tiles setup given from DB as juicyTilesSetup.
-version: 0.0.7
+It's just <template is="imported-template"> wrapped within <juicy-tile-grid> and layout editor.
+Uses juicy-tiles setup given from DB as layout.
+version: 0.0.8
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -17,25 +18,19 @@ version: 0.0.7
 <!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
 <template id="partial-template">
-  <template bind>
-    <!-- FIXME: one-way binding here is temporary workaround for servers not accepting JSON-Patch (tomalec) -->
     <juicy-tiles-setup-sync
-        name="{{PartialId}}"
-        storedValue="[[juicyTilesSetup]]"
-        apiUrl="/launcher/juicytilessetup"></juicy-tiles-setup-sync>
+        api-url="/sc/layout"></juicy-tiles-setup-sync>
     <juicy-tile-grid
-        name="{{PartialId}}"
-        setup="[[ juicyTilesSetup | clonedSetup  ]]"
-        defaultTileSetup="{
-            'precalculateHeight': true,
-            'width': '100%',
-            'widthFlexible': true
-        }"
+        defaultTileSetup='{
+            "height": 1,
+            "heightDynamic": true,
+            "precalculateHeight": true,
+            "width": "100%",
+            "widthFlexible": true
+        }'
         refreshonmutation>
-      <template is="imported-template" content="{{Html}}"></template>
+      <template is="imported-template"></template>
     </juicy-tile-grid>
-   <!-- unfortunately [[ obj ]] does not work deep (for nested properties) so we need clonedSetup-->
-  </template>
 </template>
 <script>
   (function () {
@@ -43,13 +38,6 @@ version: 0.0.7
 
     var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
 
-    function inDocumentFragment(element){
-      var parent = element.parentNode;
-      while( parent && !(parent instanceof DocumentFragment) ){
-        parent = parent.parentNode;
-      }
-      return parent instanceof DocumentFragment;
-    }
 
     var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
 
@@ -59,8 +47,8 @@ version: 0.0.7
     /**
      * @see Polyjuice/starcounter-include - partialAttributeToProperty It's just a copy
      */
-    function partialAttributeToProperty(element){
-      var attrVal = element.getAttribute("partial");
+    function partialAttributeToProperty(element, attrVal){
+      attrVal = attrVal || element.getAttribute("partial");
       // no value, or Polymer binding
       if(!attrVal || attrVal.match(/\{\{.*\}\}|\[\[.*\]\]/)){
         return;
@@ -72,16 +60,15 @@ version: 0.0.7
      */
     LauncherPartialPrototype.createdCallback = function LPartialCreated(){
       // ugly https://code.google.com/p/chromium/issues/detail?id=430578 workaround
-      if( inDocumentFragment( this ) ){
-        return ;
-      }
+      // if( inDocumentFragment( this ) ){
+      //   return ;
+      // }
       var partial = undefined;
       var starcounterInclude = this;
       // define a setter for partial attribute,
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
-          //d console.log("partial set");
           partial = newValue;
           starcounterInclude.partialChanged(partial);
         },
@@ -94,39 +81,22 @@ version: 0.0.7
       sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
 
       var clone = document.importNode( templ.content, true);
-      var innerTempl = clone.querySelector("template");
-      innerTempl.bindingDelegate = new PolymerExpressions();
-      innerTempl.bindingDelegate.clonedSetup = {
-        toDOM: function (json, letter) {
-          // debugger
-          if(typeof json == "object"){
-            return JSON.parse(JSON.stringify(json));
-          } else{
-            return json;
-          }
-        },
-        toModel: function (json, letter) {
-          // debugger
-          if(typeof json == "object"){
-            return JSON.parse(JSON.stringify(json));
-          } else{
-            return json;
-          }
-        }
-      };
-      // rewriteTempalteAttributes( this, innerTempl );
-      this.innerTempl = innerTempl;
-      this.appendChild( clone );
+      this.clone = clone;
+      this.sync = clone.children[0];// .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
+      this.grid = clone.children[1];// .getElementsByTagName("JUICY-TILE-GRID");
+      this.template = this.grid.firstElementChild;// .getElementsByTagName("TEMPLATE");
     };
     /**
      * Attach model.
-     * @see Polyjuice/starcounter-include#attachedCallback It's just a copy
+     * @see Polyjuice/starcounter-include#attachedCallback
+     * It's almost the same, but in here w append full structure of elements
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
       partialAttributeToProperty(this);
       this.isAttached = true;
       //d console.log("starcounter-partial attached");
       this.partialChanged();
+      this.appendChild( this.clone );
     };
     /**
      * @see Polyjuice/starcounter-include#detachedCallback It's just a copy
@@ -140,8 +110,10 @@ version: 0.0.7
      * @see Polyjuice/starcounter-include#attributeChangedCallback It's just a copy
      */
     LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal){
-      partialAttributeToProperty(this);
-      //d console.log("starcounter-partial attr changed");
+      if(name === "partial"){
+        partialAttributeToProperty(this, newVal);
+        //d console.log("starcounter-partial attr changed");
+      }
     };
     /**
      * Updates inner `imported-template` with partial data given (if applicable)
@@ -154,42 +126,15 @@ version: 0.0.7
         !html && console.warn("partial.Html for", this, "is missing.");
         !this.partial.PartialId && console.warn("partial.PartialId for", this, "is missing.");
         if(this.isAttached && html){
-          this.innerTempl.model = this.partial;
-        }
-      }
-    };
-    /**
-     * Support for Polymers object to attribute binding
-     * @see Polyjuice/starcounter-include#bind It's just a copy
-     * @param  {String} name       [description]
-     * @param  {Object} observable [description]
-     * @param  {Boolean} oneTime   [description]
-     * @return {Object}            observer
-     */
-    LauncherPartialPrototype.bind = function(name, observable, oneTime) {
-      if (name === 'partial') {
-        // observable callback
-        var self = this;
-        function updateValue(value) {
-          //d console.log(name, "updated");
-          self[name] = value;
-        }
-        // resolve initial value
-        var value = observable.open(updateValue);
-        updateValue(value);
-        // register and return observable
-        var observer = {
-          close: function() {
-            observable.close();
+          this.sync.setAttribute("name", this.partial.PartialId);
+          this.sync.storedValue = this.partial.layout;
+          this.grid.setAttribute("name", this.partial.PartialId);
+          if(this.partial.layout){
+            this.grid.setup = JSON.parse(JSON.stringify(this.partial.layout));
           }
-        };
-        this[name+"Observer"] = observer;
-        return observer;
-      }
-      else {
-         return HTMLElement.prototype.bind.call(
-          this, name, observable, oneTime
-        );
+          this.partial.Html && this.template.setAttribute("content", this.partial.Html);
+          this.template.model = this.partial;
+        }
       }
     };
 

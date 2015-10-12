@@ -32,7 +32,7 @@
     "launchpad": {
         "icons": { },
         "names": { },
-		"juicyTilesSetup": {}
+		"layout": {}
     },
     "dashboard": { },
     "appFilter": [
