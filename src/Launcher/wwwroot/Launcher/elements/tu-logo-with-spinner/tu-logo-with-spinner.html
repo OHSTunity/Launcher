@@ -1,13 +1,5 @@
-<!--
-Takes an url attribute and try to morph the web clients url into that url on
-change
--->
-
-<polymer-element name="tu-logo-with-spinner">
-
-
-    <template>
-        <style type="text/css">
+<dom-module id="tu-logo-with-spinner">
+  <style type="text/css">
             .visiblespinner
             {
 
@@ -189,32 +181,42 @@ change
             }
 
         </style>
+  <template>
             <div id="logo" onclick="puppet.morphUrl('/')"></div>
             
             <div class="timer" id="spinner">
                 Loading...
             </div>
     </template>
-    <script type="text/javascript">
-        Polymer('tu-logo-with-spinner', {
-            command : "",
-            cache:"",
-            attached: function () {
-                puppet.addEventListener('patchsent', this.patchSent.bind(this), false);
-                puppet.addEventListener('patchreceived', this.patchReceived.bind(this), false);
-            },
-            detached: function() {
-                puppet.removeEventListener('patchsent', this.patchSent);
-                puppet.removeEventListener('patchreceived', this.patchReceived);
-            },
-            patchSent: function() {
-               // this.$.spinner.classList.add("visiblespinner"); 
-                this.$.logo.classList.add("hover");
-            },
-            patchReceived: function() {
-               // this.$.spinner.classList.remove("visiblespinner"); 
-                this.$.logo.classList.remove("hover");
-            },
-        });
-    </script>
-</polymer-element>
+  <script type="text/javascript">
+      Polymer({
+          is: 'tu-logo-with-spinner',
+          properties: {
+              cache: {
+                  type: String,
+                  value: ''
+              },
+              command: {
+                  type: String,
+                  value: ''
+              }
+          },
+          attached: function () {
+              puppet.addEventListener('patchsent', this.patchSent.bind(this), false);
+              puppet.addEventListener('patchreceived', this.patchReceived.bind(this), false);
+          },
+          detached: function () {
+              puppet.removeEventListener('patchsent', this.patchSent);
+              puppet.removeEventListener('patchreceived', this.patchReceived);
+          },
+          patchSent: function () {
+              // this.$.spinner.classList.add("visiblespinner"); 
+              Polymer.dom(this.$.logo).classList.add('hover');
+          },
+          patchReceived: function () {
+              // this.$.spinner.classList.remove("visiblespinner"); 
+              Polymer.dom(this.$.logo).classList.remove('hover');
+          }
+      });
+  </script>
+</dom-module>
