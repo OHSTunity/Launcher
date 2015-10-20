@@ -61,9 +61,12 @@ describe('Launcher App', function () {
             .expect(function (res) {
                 var json = JSON.parse(res.text.replace(/,,/gi, ","));
                 var patch = json[json.length - 1];
-                var reg = new RegExp("^/workspaces/0", "gi");
 
-                assert(reg.test(patch.path), "Application name should be case insensitive!");
+                //The last patch should add/replace the first workspace, and not create a new one
+                var reg = new RegExp("^/workspaces/0", "gi");
+                var value = reg.test(patch.path);
+
+                assert(value, "Application name should be case insensitive!");
             })
             .end(function (err, res) {
                 if (err) {
@@ -90,8 +93,11 @@ describe('Launcher App', function () {
                 }
             }
 
-            test("/signin/signin/username/password", referer, function () {
-                test("/signIn/signin/username/password", referer, function () {
+            //This will createa a workspace for SignIn application
+            test("/signin/signinuser", referer, function () {
+
+                //This should use same workspace in spite of /signIn/ part of url is in different case
+                test("/signIn/signinuser", referer, function () {
                     done();
                 });
             });
