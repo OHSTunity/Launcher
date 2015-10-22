@@ -1,134 +1,95 @@
-<!-- 
+<!--
     Polymer Element to handle `<juicy-tile-list>` (or `-grid`) setup changes (staging, reverting, saving to storage).
+    version: 1.0.0
 -->
-
 <!-- Import Polymer -->
 <!-- <link rel="import" href="../../polymer/polymer.html"> -->
+<link rel="import" href="../../iron-localstorage/iron-localstorage.html">
 
 <!-- Define your custom element -->
-<polymer-element name="juicy-tiles-setup-sync" attributes="storedValue history currentValue autoSave name apiUrl">
-    <template><style>:host{display: none;}</style></template>
+<dom-module id="juicy-tiles-setup-sync">
+    <template>
+        <style>
+            :host {
+                display: none;
+            }
+        </style>
+        <iron-localstorage name="{{name}}" value="{{storedValue}}" auto-save-disabled="true" id="storage"></iron-localstorage>
+    </template>
     <script>
-        Polymer('juicy-tiles-setup-sync', {
-            storedValue: null,
-            tileList: null,
-            apiUrl: "/juicytilessetup",
-            //history: [],
-    
-            /**
-             * Current data.
-             *
-             * @attribute currentValue
-             * @type object
-             * @default null
-             */
-            // gimme Vanilla setters
-            // currentValue: null,
-            // {
-            //     set: function( value ){
-            //         console.info("currentValue set", arguments);
-            //         this.tileList.setup = value;
-            //     },
-            //     get: function(){
-            //         console.info("currentValue get");
-            //         return this.tileList.setup;
-            //     }
-            // },
-            
-            /**
-             * If true, auto save is enabled.
-             *
-             * @attribute autoSave
-             * @type boolean
-             * @default false
-             */
-            // autoSave: false,
-            
-            attached: function() {
-              // wait for bindings are all setup
-              globme = this;
-              this.tileList = this.nextElementSibling;
-              // this.currentValue = this.tileList.setup;
-              this.tileList.sync = this;
+        Polymer({
+            is: "juicy-tiles-setup-sync",
+            properties: {
+                storedValue: { type: Object, value: null, observer: "storedValueChanged" },
+                autoSave: { type: Boolean },
+                name: { type: String },
+                apiUrl: { type: String, value: "/layout" },
+                tileList: { type: Object, value: null },
+                useLocalstorage: { type: Boolean, value: false }
             },
-            detached: function(){
-              delete this.tileList.sync;
-              this.tileList = null;  
-              // this.currentValue = null;
+            ready: function () {
+                var a = this.storedValue;
             },
-    
-    
-            // load: function( revisionNumber ) {
-            // },
-    
-            /** 
-             * Saves the current value.
-             *
-             * @method save
-             */
-            save: function() {
-                this.storedValue = JSON.parse( JSON.stringify( this.tileList.setup ) );
+            attached: function () {
+                this.set("tileList", this.nextElementSibling);
+                this.tileList.sync = this;
+            },
+            detached: function () {
+                delete this.tileList.sync;
+                this.set("tileList", null);
+            },
+            save: function () {
+                this.set("storedValue", JSON.parse(JSON.stringify(this.tileList.setup)));
+
+                if (this.useLocalstorage) {
+                    this.$.storage.save();
+                    return;
+                }
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
-                req.open("POST", this.apiUrl + "?"+this.name, true);
+                req.open("POST", this.apiUrl + "?" + this.name, true);
                 req.onreadystatechange = function () {
-                  if (req.readyState == 4){
-                    if (!(req.status >= 200 && req.status <= 299)) {
-                      console.error("Failed to save juicy-tile-list configuration");
-                      return;
+                    if (req.readyState == 4) {
+                        if (!(req.status >= 200 && req.status <= 299)) {
+                            console.error("Failed to save juicy-tile-list configuration");
+                            return;
+                        }
+                        console.info("juicy-tile-list configuration saved");
                     }
-                    console.info("juicy-tile-list configuration saved");
-                  }
-                };
-                return req.send( JSON.stringify(this.storedValue) );
+                    this.fire("juicy-tiles-setup-sync-saved");
+                }.bind(this);
+                return req.send(JSON.stringify(this.storedValue));
             },
-            revert: function(){
-                // this.currentValue = JSON.parse(JSON.stringify( this.storedValue ));
-                this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify( this.storedValue ));
+            revert: function () {
+                this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify(this.storedValue));
+                this.tileList.setupChanged(this.tileList.setup, this.tileList.setup);
             },
-            /** 
+            /**
              * Resets the current value.
              */
             clear: function () {
-                if (this.storedValue === null) {
-                    this.storedValueChanged(null, null);
-                } else {
-                    this.storedValue = null;
+                this.set("storedValue", null);
+                this.tileList.setup = null;
+                this.tileList.setupChanged(null, null, null, true);
+            },
+            isModified: function () {
+                return JSON.stringify(this.storedValue) != JSON.stringify(this.tileList.setup);
+            },
+            storedValueChanged: function (newVal, oldVal) {
+                if (!this.tileList || !newVal) {
+                    return;
                 }
 
-                //Due to https://github.com/Juicy/juicy-tile-editor/issues/48 the Clear button should not automatically save changes.
-                // FIXME: temporary workaround for servers not accepting JSON-Patch
-                /*var req = new XMLHttpRequest();
-                req.open("DELETE", this.apiUrl + "?"+this.name, true);
-                req.onreadystatechange = function () {
-                  if (req.readyState == 4){
-                    if (!(req.status >= 200 && req.status <= 299)) {
-                      console.error("Failed to delete juicy-tile-list configuration");
-                      return;
-                    }
-                    console.info("juicy-tile-list configuration deleted");
-                  }
-                };
-                return req.send();*/
-            },
-            isModified: function(){
-                // return JSON.stringify( this.storedValue ) != JSON.stringify( this.currentValue );
-                return JSON.stringify( this.storedValue ) != JSON.stringify( this.tileList.setup );
-            },
+                var newJson = JSON.stringify(newVal);
 
-            storedValueChanged: function(oldVal, newVal){
-              if(this.tileList){
-                var newJson = JSON.stringify( newVal );
-                // if( JSON.stringify( this.currentValue ) != newJson ){
-                if( JSON.stringify( this.tileList.setup ) != newJson ){
-                    // this.currentValue = JSON.parse( newJson );
-                    this.tileList.setup = JSON.parse( newJson );
+                if (JSON.stringify(this.tileList.setup) != newJson) {
+                    this.tileList.setup = JSON.parse(newJson);
+                    this.tileList.setupChanged(this.tileList.setup, this.tileList.setup);
                 }
-                console.log("storedValueChanged", oldVal, newVal);
-              }
+
+                console.log("storedValueChanged", newVal, oldVal);
             }
         });
     </script>
-
-</polymer-element>
+</dom-module>

@@ -3,6 +3,10 @@
     <title>Launcher</title>
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
+    <script>
+        window.Polymer = window.Polymer || {};
+        window.Polymer.dom = "shadow";
+    </script>
     <link rel="import" href="/sys/polymer/polymer.html" />
 
     <!-- Import Starcounter specific components -->
@@ -18,16 +22,15 @@
     <link rel="import" href="/Launcher/elements/tu-logo-with-spinner/tu-logo-with-spinner.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
-    <link rel="import" href="/sys/console-log/console-log.html" />
+    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
-    <link rel="import" href="/sys/core-icon/core-icon.html" />
-    <link rel="import" href="/sys/core-icon-button/core-icon-button.html" />
-    <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" />
-    <link rel="import" href="/sys/core-field/core-field.html" />
-
+    <link rel="import" href="/sys/iron-icons/iron-icons.html" />
+    <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
+    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
+    <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
     <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" />
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" />
@@ -41,8 +44,8 @@
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 </head>
 <body is="launcher-main">
-    <template id="root" bind>
-        <template if="{{editingMode$}}">
+    <template id="root" is="dom-bind">
+        <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
         </template>
 
@@ -54,122 +57,113 @@
             <span class="toolbar-divider"></span>
             <div id="launcher-menu">
                <ul>
-                 <template is="imported-template" content="{{ menu.Html }}" bind="{{ menu }}"></template>
+                  <template is="imported-template" content$="{{model.menu.Html}}" model="{{model.menu}}"></template>
                </ul>
             </div>
             <div flex=""></div>
             <span class="toolbar-divider"></span>
             <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
-                <a href="javascript:" onclick="getModel(this).searchBar.submit$++" class="icon">
+                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" class="icon">
                     <i class="glyphicon glyphicon-search"></i>
                 </a>
-                <launcher-search-input placeholder="Search" value="{{searchBar.query$}}" closeaction="{{searchBar.close$}}" submitaction="{{searchBar.submit$}}"></launcher-search-input>
-                <link is="juicy-redirect" history url="{{searchBar.searchEngineResultPageUrl$}}" />
-                <div class="preview" hidden?="{{!searchBar.previewVisible}}">
-                    <starcounter-include class="preview" partial="{{searchBar.preview}}"></starcounter-include>
-                </div>
+                <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
+                <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
+                <template is="dom-if" if="{{model.searchBar.previewVisible}}">
+                    <div class="preview">
+                        <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
+                    </div>
+                </template>
             </core-field>
             <span class="toolbar-divider"></span>
 
-            <template is="imported-template" content="{{ user.Html }}" bind="{{user}}"></template>
+            <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
 
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
-            <template if="{{!layoutModified$}}">
-                <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$"></core-icon-button>
+            <template is="dom-if" restamp if="{{!model.layoutModified$}}">
+                <paper-icon-button id="Paper-icon-button1" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
             </template>
-            <template if="{{layoutModified$}}">
-                <core-icon-button id="settings" active="{{editingMode$}}" icon="settings" onclick="getModel(this).editingMode$ = !getModel(this).editingMode$" class="modified" title="You have unsaved layout changes on this page!"></core-icon-button>
+            <template is="dom-if" restamp if="{{model.layoutModified$}}">
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
         </div>
-
 
 
         <div id="launcher-content">
             <div class="launchpad">
-                <launcher-launchpad json="{{launchpad}}"></launcher-launchpad>
+                <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
+                <launcher-launchpad apps="{{model.launchpad.names}}"></launcher-launchpad>
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
-            <!-- <starcounter-include -->
-            <!-- class="workspace launcher" partial="{{ results }}"></starcounter-include> -->
+            <!-- <starcounter-include class="workspace launcher" partial="{{results}}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
             <!-- Dashboard/results -->
-            <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{results}}"></starcounter-include>
+            <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{model.results}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
 
             <!-- Workspaces -->
-            <template repeat="{{ workspaces }}">
+            <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
-                <juicy-display-route match-path="^\/{{AppName}}" display-selector=".workspace.{{AppName}}"></juicy-display-route>
-                <starcounter-include class="workspace {{AppName}}" partial="{{}}"></starcounter-include>
+                <template is="dom-if" if="{{item.AppName}}">
+                    <juicy-display-route match-path$="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
+                    <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
+                </template>
+                <template is="dom-if" if="{{!item.AppName}}">
+                    <div style="padding: 15px; font-weight:bold; color:red;">
+                        <div>A workspace without AppName</div>
+                        <div>{{item.Html}}</div>
+                    </div>
+                </template>
             </template>
         </div>
 
-        <launcher-hot-key keys="Ctrl+E" onkeypress="getModel(this).editingMode$ = !getModel(this).editingMode$"></launcher-hot-key>
-        <launcher-hot-key keys="Esc" onkeypress="getModel(this).editingMode$ = false"></launcher-hot-key>
-        <template if="{{editingMode$}}">
+        <!-- TODO migrate this getModel -->
+        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
+        <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
+        <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selectionmode watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{layoutModified$}}"></juicy-tile-editor>
+                <juicy-tile-editor selection-mode="true" watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
                 <script>
                     document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
-                        getModel(e.target).editingMode$ = false;
+                        document.querySelector("template#root").set("model.editingMode$", false);
                     });
                 </script>
             </div>
         </template>
+
+        <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
     </template>
+    <script>
+        (function init(template) {
+            template.concat = function () {
+                return Array.prototype.join.call(arguments, "");
+            };
+
+            template.toggleEditor = function () {
+                template.set("model.editingMode$", !template.model.editingMode$);
+            };
+        })(document.currentScript.previousElementSibling);
+    </script>
 
     <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
-        // var slowResizeTimeout = null;
-        // var fastResizeTimeout = null;
-        // var mutationObserver;
-
-        // function slowResize() {
-        //     clearTimeout(slowResizeTimeout);
-        //     slowResizeTimeout = setTimeout(function () {
-        //         window.dispatchEvent(new Event("resize"));
-        //     }, 500);
-        // }
-
-        // function fastResize() {
-        //     clearTimeout(fastResizeTimeout);
-        //     fastResizeTimeout = setTimeout(function () {
-        //         window.dispatchEvent(new Event("resize"));
-        //     }, 50);
-        // }
-
-        // window.addEventListener("polymer-ready", function (e) {
-        //     if ("MutationObserver" in window) {
-        //         if (!mutationObserver) {
-        //             mutationObserver = new MutationObserver(function (mutations) {
-        //                 slowResize();
-        //                 fastResize();
-        //             });
-        //             mutationObserver.observe(document.body, {
-        //                 childList: true,
-        //                 subtree: true
-        //             });
-        //         }
-        //     };
-
-        //     slowResize();
-        // });
     </script>
+
     <div class="css-grid-error-back"></div>
     <div class="css-grid-error">
         <h4>This app requires support for CSS Grid Layout in your web browser</h4>
-        <p>To enable it in Google Chrome:</p>
+        <p>It is a new CSS feature that is currently implemented in Google Chrome and Opera.</p>
+        <p>To enable it in Google Chrome/Opera:</p>
         <ol>
             <li>Go to "chrome://flags"</li>
             <li>Search for "Enable experimental Web Platform features" option</li>
             <li>Press "Enable" link</li>
-            <li>Restart Chrome</li>
+            <li>Restart Chrome/Opera</li>
         </ol>
         <p>
             We are working on extending support to all modern web browsers.

@@ -11,32 +11,44 @@
             margin: 0px 15px 15px 0px;
             float: left;
         }
+
+        fieldset {
+            clear: both;
+        }
     </style>
-    <script>
-        window.addEventListener('polymer-ready', function (e) {
-            var color = document.querySelector("#color");
-            var background = document.querySelector("#background");
-            var h1 = document.querySelector("h1");
-
-            color.addEventListener("juicy-color-picker-value-changed", function () {
-                h1.style.color = this.value;
-            });
-
-            background.addEventListener("juicy-color-picker-value-changed", function () {
-                h1.style.backgroundColor = this.value;
-            });
-        });
-    </script>
 </head>
 <body>
-    <h1>Select a color foor me</h1>
+    <h1 style="background-color: #ECF0F1;">Select a color foor me</h1>
     <div>
         Text color:
         <juicy-color-picker id="color" pallete="crayons"></juicy-color-picker>
     </div>
     <div>
         Background:
-        <juicy-color-picker id="background" pallete="flat"></juicy-color-picker>
+        <juicy-color-picker id="background" pallete="flat" value="#ECF0F1"></juicy-color-picker>
     </div>
+    <fieldset>
+        <legend>Pallete</legend>
+        <button type="button" value="crayons" onclick="changePallete(this);">crayons</button>
+        <button type="button" value="flat" onclick="changePallete(this);">flat</button>
+    </fieldset>
+    <script>
+        var color = document.querySelector("#color");
+        var background = document.querySelector("#background");
+        var h1 = document.querySelector("h1");
+
+        color.addEventListener("change", function () {
+            h1.style.color = this.value;
+        });
+
+        background.addEventListener("change", function () {
+            h1.style.backgroundColor = this.value;
+        });
+
+        function changePallete(target) {
+            background.setAttribute("pallete", target.value);
+            color.setAttribute("pallete", target.value);
+        }
+    </script>
 </body>
 </html>
