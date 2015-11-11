@@ -30,7 +30,6 @@
     "user": { },
     "menu": { },
     "launchpad": {
-        "icons": { },
         "names": { },
 		"layout": {}
     },

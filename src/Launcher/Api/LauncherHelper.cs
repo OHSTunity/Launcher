@@ -58,11 +58,6 @@ namespace Launcher {
 
                     launcher.Session = new Session(SessionOptions.PatchVersioning);
 
-                    launcher.launchpad.icons = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-icon", () => {
-                        var p = new Page();
-                        return p;
-                    });
-
                     launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
                         var p = new Page();
                         return p;
