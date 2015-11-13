@@ -8,6 +8,7 @@ using System.Web;
 using Starcounter;
 using Starcounter.Internal;
 using Starcounter.Extensions;
+using System.Reflection;
 
 namespace Launcher {
 
@@ -170,6 +171,15 @@ namespace Launcher {
                 // if not create new LauncherPage for this appname
                 if (foundWorkspace == null) {
                     var p = new LauncherWrapperPage();
+
+                    // Some additional special magic here. Since the workspace we create here might be for another
+                    // app than Launcher, we need to set the internal appNameForLayout of this wrapper to the name
+                    // of the correct app, otherwise it will always be set to 'Launcher' and the
+                    // incorrect (or no) layout will be used. 
+                    // Of course this will not be needed when we move all the layout handling here.
+                    if (StarcounterEnvironment.AppName != appName && appNameForLayoutField != null)
+                        appNameForLayoutField.SetValue(p, appName);
+
                     // move serializer magic to here:
                     // set partial ID, find layouts, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
@@ -187,5 +197,7 @@ namespace Launcher {
 
             return launcher;
         }
+
+        private static FieldInfo appNameForLayoutField = typeof(Json).GetField("_appNameForLayout", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }
