@@ -35,8 +35,12 @@
     <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" />
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" />
 
+    <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+
     <!-- Style sheets -->
-    <link rel="import" href="/sys/bootstrap.html" />
+    <!--<link rel="import" href="/sys/bootstrap.html" />-->
     <link rel="stylesheet" href="/Launcher/css/style.css" />
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
@@ -48,7 +52,7 @@
         </template>
 
         <div class="launcher-toolbar launcher-topbar">
-            <div style="margin-left: 0px;min-width: 195px;max-width: 195px;">
+            <div style="margin-left: 10px;min-width: 195px;max-width: 195px;">
                 <tu-logo-with-spinner></tu-logo-with-spinner>
             </div>
             <div class="toolbar-padding"></div>
@@ -62,10 +66,9 @@
             <span class="toolbar-divider"></span>
             <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
-                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" class="icon">
-                    <i class="glyphicon glyphicon-search"></i>
-                </a>
-                <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
+                
+                <launcher-search-input placeholder="Search here..." value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
+                <span style="padding-bottom: 5px;"><i class="fa fa-search" style="font-size:0.80em;color:rbga(255,255,255,.5)"></i></span>
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">
@@ -78,12 +81,14 @@
             <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
 
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
+            <!--
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
                 <paper-icon-button id="Paper-icon-button1" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
                 <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
+            -->
         </div>
 
 
