@@ -119,6 +119,13 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     text-decoration: none;
 }
 
+#launcher-menu a span {
+    display: none;
+}
+#launcher-menu a i.glyphicon {
+    display: none;
+}
+
 .launcher-dashboard-icon {
     height: 1.15em;
     width: 1.15em;
