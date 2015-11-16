@@ -66,7 +66,11 @@ namespace Launcher {
 
                     if (setup == null)
                     {
-                        launcher.launchpad.layout = null;
+                        // launcher.launchpad.layout = null
+                        // workaround for https://github.com/Starcounter/Starcounter/issues/3072
+                        // set default value 
+                        // consider moving to HTML, or pre-populatind default layouts
+                        launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
                     }
                     else
                     {

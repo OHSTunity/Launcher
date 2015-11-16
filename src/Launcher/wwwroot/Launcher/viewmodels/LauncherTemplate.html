@@ -81,8 +81,11 @@
 
         <div id="launcher-content">
             <div class="launchpad">
+                <template is="dom-if" if="{{model.launchpad}}">
+                    <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+                </template>
                 <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
-                <launcher-launchpad apps="{{model.launchpad.names}}"></launcher-launchpad>
+
             </div>
             <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
 
@@ -115,7 +118,7 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selection-mode="true" watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
+                <juicy-tile-editor selection-mode="true" tile-lists-selector="juicy-tile-list, juicy-tile-grid, launcher-launchpad::shadow > juicy-tile-grid" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
                 <script>
                     document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
                         document.querySelector("template#root").set("model.editingMode$", false);

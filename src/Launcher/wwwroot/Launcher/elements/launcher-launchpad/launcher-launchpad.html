@@ -4,6 +4,10 @@
 <dom-module id="launcher-launchpad">
     <template>
         <style>
+            :host{
+                display: block;
+                min-height: 1em;
+            }
             .launchpad-tile a {
                 text-align: center;
                 min-width: 80px;
@@ -48,8 +52,10 @@
                 line-height: 1.1;
             }
         </style>
-        <juicy-tiles-setup-sync api-url="/sc/layout"></juicy-tiles-setup-sync>
-        <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80 }' gutter="10" refreshonmutation setup='{"width": 1000, "items": []}'>
+        <juicy-tiles-setup-sync api-url="/sc/layout" name="/Launcher/launchpad" storedValue="{{layout}}"></juicy-tiles-setup-sync>
+        <!-- <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad"> -->
+        <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='[[cloneJSON(layout)]]'>
+        <!-- <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='{"width": 1000, "items": []}'> -->
             <template is="dom-repeat" items="{{appsArray}}">
                 <div class="launchpad-tile">
                     <a href="{{item.url}}">
@@ -75,7 +81,22 @@
                     type: Array,
                     value: []
                 }
+                // ,
+                // layout: {
+                //   type: Object,
+                //   observer: "layoutChanged"
+                // }
             },
+            cloneJSON: function(obj){
+              // workaround for https://github.com/Starcounter/Starcounter/issues/3072
+              if(obj && obj["null"] !== "workaround"){
+                console.log(obj, "cloned")
+                return JSON.parse(JSON.stringify(obj));
+              }
+            },
+            // layoutChanged: function(newVal){
+            //   newVal && this.shadowRoot.getElementByTagName('juicy-tile-grid').setup = JSON.parse(JSON.stringify(newVal));
+            // },
             appsChanged: function (newVal, oldVal) {
                 var array = [];
 
