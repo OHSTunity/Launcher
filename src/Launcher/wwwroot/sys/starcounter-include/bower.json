@@ -24,10 +24,10 @@
     "tests"
   ],
   "dependencies": {
-    "imported-template": "Polymer_1",
-    "juicy-tile-list": "vanilla",
-    "juicy-tile-grid": "vanilla",
-    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#polymer1"
+    "imported-template": "Juicy/imported-template#gh-pages",
+    "juicy-tile-list": "Juicy/juicy-tile-list#gh-pages",
+    "juicy-tile-grid": "Juicy/juicy-tile-grid#gh-pages",
+    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#~3.1.3",

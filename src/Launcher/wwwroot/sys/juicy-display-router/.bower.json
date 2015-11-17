@@ -1,0 +1,19 @@
+{
+  "name": "juicy-display-router",
+  "main": [
+    "juicy-display-router.html"
+  ],
+  "keywords": [
+    "web-components"
+  ],
+  "homepage": "https://github.com/Juicy/juicy-display-router",
+  "_release": "b162c89964",
+  "_resolution": {
+    "type": "branch",
+    "branch": "gh-pages",
+    "commit": "b162c8996416b39a67ff6cc5c8981881a86c2c01"
+  },
+  "_source": "git://github.com/Juicy/juicy-display-router.git",
+  "_target": "gh-pages",
+  "_originalSource": "Juicy/juicy-display-router"
+}
