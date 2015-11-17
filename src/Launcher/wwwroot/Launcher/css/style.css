@@ -80,6 +80,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 #launcher-menu {
     background-color: #4c444b;
     color: #8a98b0;
+    line-height: normal;
 }
 
 #launcher-menu ul {
@@ -118,6 +119,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     color: inherit;
     text-decoration: none;
 }
+
 
 #launcher-menu a span {
     display: none;

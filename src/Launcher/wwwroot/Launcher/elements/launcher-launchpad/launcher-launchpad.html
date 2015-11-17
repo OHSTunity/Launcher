@@ -14,9 +14,17 @@
             .launchpad-tile .launchpad-icon {
                 padding: 8px;
                 border-radius: 8px;
-                display: block;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-width: 64px;
                 min-height: 64px;
-                font-size: 0px;
+            }
+
+            .launchpad-tile .launchpad-icon img,
+            .launchpad-tile .launchpad-icon svg {
+                width: 64px;
+                height: 64px;
             }
 
             .launchpad-tile:hover .launchpad-icon {
@@ -41,7 +49,7 @@
             }
         </style>
         <juicy-tiles-setup-sync api-url="/sc/layout"></juicy-tiles-setup-sync>
-        <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80 }' gutter="10" refreshonmutation>
+        <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80 }' gutter="10" refreshonmutation setup='{"width": 1000, "items": []}'>
             <template is="dom-repeat" items="{{appsArray}}">
                 <div class="launchpad-tile">
                     <a href="{{item.url}}">
@@ -80,7 +88,7 @@
 
                     if (app.name) {
                         var a = JSON.parse(JSON.stringify(app));
-                        
+
                         a.url = a.url || a.name.toLowerCase();
                         array.push(a);
                     }

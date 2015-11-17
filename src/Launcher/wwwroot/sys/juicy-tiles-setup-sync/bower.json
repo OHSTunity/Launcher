@@ -18,7 +18,8 @@
         "index.html"
     ],
     "dependencies": {
-        "polymer": "Polymer/polymer#~0.4.0"
+        "polymer": "Polymer/polymer",
+        "iron-localstorage": "PolymerElements/iron-localstorage"
     },
     "authors": [
         "Tomek Wytrebowicz <tomalecpub@gmail.com>"
