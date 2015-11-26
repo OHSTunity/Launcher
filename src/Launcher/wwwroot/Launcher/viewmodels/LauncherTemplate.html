@@ -49,7 +49,7 @@
         <div class="launcher-toolbar launcher-topbar">
             <a href="/launcher"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
             <div class="launcher-theme">
-                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" class="icon">
+                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" id="launcher-search-icon">
                     <i class="glyphicon glyphicon-search"></i>
                 </a>
                 <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
@@ -64,10 +64,10 @@
 
             <!-- TODO: migrate getModel boolean trigger -->
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
 
             <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
