@@ -23,17 +23,13 @@
         "previewVisible": false,
         "close$": 0
     },
-    "results": { 
-        "Html": "/Launcher/viewmodels/ResultPage.html",
-        "PartialId": "/Launcher/viewmodels/ResultPage.html"
-    },
+    "currentPage": {},
     "user": { },
     "menu": { },
     "launchpad": {
         "names": { },
 		"layout": {}
     },
-    "dashboard": { },
     "appFilter": [
         {
             "appName": "",

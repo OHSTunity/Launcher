@@ -98,9 +98,24 @@ namespace Launcher {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                launcher.results = Self.GET<LauncherResultsPage>(UriMapping.MappingUriPrefix + "/dashboard", () => {
-                    var p = new LauncherResultsPage();
+                launcher.currentPage = Self.GET(UriMapping.MappingUriPrefix + "/dashboard", () => {
+                    var p = new Page();
 
+                    return p;
+                });
+
+                return launcher;
+            });
+
+            Handle.GET("/launcher/settings", () => {
+
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+
+                launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
+                    var p = new SettingsPage() {
+                        Html = "/Launcher/viewmodels/SettingsPage.html"
+
+                    };
                     return p;
                 });
 
@@ -112,8 +127,10 @@ namespace Launcher {
 
                 string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
 
-                launcher.results = Self.GET<LauncherResultsPage>(uri, () => {
-                    var p = new LauncherResultsPage();
+                launcher.currentPage = Self.GET<ResultPage>(uri, () => {
+                    var p = new ResultPage() {
+                        Html = "/Launcher/viewmodels/ResultPage.html"
+                    };
                     return p;
                 });
 

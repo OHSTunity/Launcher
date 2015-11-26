@@ -33,7 +33,7 @@ describe('Launcher App', function () {
         .expect('Content-Type', /json/)
         .expect(200, done);
     });
-    it('Json respond should contain Launcher.results"', function (done) {
+    it('Json respond should contain Launcher.currentPage"', function (done) {
         request(app)
         .get('/launcher')
         .set('Accept', 'application/json')
@@ -41,7 +41,7 @@ describe('Launcher App', function () {
         .expect(200)
         .expect(function (res) {
             var json = JSON.parse(res.text);
-            assert(json.results);
+            assert(json.currentPage);
         })
         .end(function (err, res) {
             if (err) return done(err);
