@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           patterns: [
             {
               match: /<Dependency name="Starcounter">.*(?=<\/Dependency>)/,
-              replacement: '<Dependency name="Starcounter">' + grunt.option('value')
+              replacement: '<Dependency name="Starcounter">~' + grunt.option('value')
             }
           ]
         },
