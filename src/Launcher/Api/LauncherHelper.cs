@@ -47,53 +47,53 @@ namespace Launcher {
             });
 
             Handle.GET("/launcher", (Request req) => {
-
+                var session = Session.Current;
                 LauncherPage launcher;
 
-                if (Session.Current == null) {
-
-                    launcher = new LauncherPage() {
-                        Html = "/Launcher/viewmodels/LauncherTemplate.html"
-                    };
-
-                    launcher.Session = new Session(SessionOptions.PatchVersioning);
-
-                    launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
-                        var p = new Page();
-                        return p;
-                    });
-                    var setup = Layout.GetSetup("/launcher/launchpad");
-
-                    if (setup == null)
-                    {
-                        launcher.launchpad.layout = null;
-                    }
-                    else
-                    {
-                        dynamic setupJson = new Json(setup.Value);
-                        launcher.launchpad.layout = setupJson;
-                    }
-
-                    launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
-                        var p = new Page() {
-                            Html = "/Launcher/viewmodels/LauncherMenu.html"
-                        };
-                        return p;
-                    });
-
-                    launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
-                        var p = new Page();
-                        return p;
-                    });
-
-                    launcher.uri = req.Uri;
-                    return launcher;
-
-                } else {
+                if (session != null && session.Data != null) {
                     launcher = (LauncherPage)Session.Current.Data;
                     launcher.uri = req.Uri;
                     return launcher;
                 }
+
+                if (session == null) {
+                    session = new Session(SessionOptions.PatchVersioning);
+                }
+
+                launcher = new LauncherPage() {
+                    Html = "/Launcher/viewmodels/LauncherTemplate.html"
+                };
+
+                launcher.Session = session;
+
+                launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
+                    var p = new Page();
+                    return p;
+                });
+                var setup = Layout.GetSetup("/launcher/launchpad");
+
+                if (setup == null) {
+                    launcher.launchpad.layout = null;
+                }
+                else {
+                    dynamic setupJson = new Json(setup.Value);
+                    launcher.launchpad.layout = setupJson;
+                }
+
+                launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
+                    var p = new Page() {
+                        Html = "/Launcher/viewmodels/LauncherMenu.html"
+                    };
+                    return p;
+                });
+
+                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
+                    var p = new Page();
+                    return p;
+                });
+
+                launcher.uri = req.Uri;
+                return launcher;
             });
 
             Handle.GET("/launcher/dashboard", (Request req) => {
