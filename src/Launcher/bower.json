@@ -18,7 +18,6 @@
     "juicy-tile-grid": "~1.0.1",
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
     "juicy-redirect": "Juicy/juicy-redirect#~0.1.0",
-    "juicy-display-router": "Juicy/juicy-display-router#gh-pages",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "starcounter-include": "StarcounterSamples/launcher-include#gh-pages",
     "dom-bind-notifier": "*",

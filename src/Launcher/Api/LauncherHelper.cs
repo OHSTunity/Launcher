@@ -46,7 +46,7 @@ namespace Launcher {
                 return WrapInLauncher(req, appName);
             });
 
-            Handle.GET("/launcher", () => {
+            Handle.GET("/launcher", (Request req) => {
 
                 LauncherPage launcher;
 
@@ -86,15 +86,17 @@ namespace Launcher {
                         return p;
                     });
 
+                    launcher.uri = req.Uri;
                     return launcher;
 
                 } else {
-
-                    return (LauncherPage)Session.Current.Data;
+                    launcher = (LauncherPage)Session.Current.Data;
+                    launcher.uri = req.Uri;
+                    return launcher;
                 }
             });
 
-            Handle.GET("/launcher/dashboard", () => {
+            Handle.GET("/launcher/dashboard", (Request req) => {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
@@ -104,10 +106,11 @@ namespace Launcher {
                     return p;
                 });
 
+                launcher.uri = req.Uri;
                 return launcher;
             });
 
-            Handle.GET("/launcher/settings", () => {
+            Handle.GET("/launcher/settings", (Request req) => {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
@@ -119,10 +122,11 @@ namespace Launcher {
                     return p;
                 });
 
+                launcher.uri = req.Uri;
                 return launcher;
             });
 
-            Handle.GET("/launcher/search?query={?}", (string query) => {
+            Handle.GET("/launcher/search?query={?}", (Request req, string query) => {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                 string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
@@ -134,6 +138,7 @@ namespace Launcher {
                     return p;
                 });
 
+                launcher.uri = req.Uri;
                 launcher.searchBar.query = query;
 
                 return launcher;
@@ -169,7 +174,7 @@ namespace Launcher {
 
         static Response WrapInLauncher(Request req, String appName) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-
+            launcher.uri = req.Uri;
             // Call proxied request
             Response resp = Self.CallUsingExternalRequest(req, () => {
                 // check if there is already workspaces array item for given appname
@@ -188,11 +193,11 @@ namespace Launcher {
                     // Some additional special magic here. Since the workspace we create here might be for another
                     // app than Launcher, we need to set the internal appNameForLayout of this wrapper to the name
                     // of the correct app, otherwise it will always be set to 'Launcher' and the
-                    // incorrect (or no) layout will be used. 
+                    // incorrect (or no) layout will be used.
                     // Of course this will not be needed when we move all the layout handling here.
                     if (StarcounterEnvironment.AppName != appName && appNameForLayoutField != null)
                         appNameForLayoutField.SetValue(p, appName);
-                    
+
                     // move serializer magic to here:
                     // set partial ID, find layouts, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
