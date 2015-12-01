@@ -1,8 +1,3 @@
-Requires Starcounter 2.1+
-
----
-
-
 Launcher
 ========
 
@@ -34,21 +29,8 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 
 ### Browsers
 
-#### Chrome Stable & Dev Channel
+#### Chrome & Opera
 
 Make sure the following flags are set (chrome://flags/):
 
- - Experimental JavaScript - **disabled**
- - Experimental Web Platform features - **disabled**
- - HTML Imports - **disabled** (note: this flag was merged into *Experimental Web Platform features* in recent versions of Chrome)
-
-#### Chrome Canary
-
-Make sure the following flags are set:
-
- - Experimental JavaScript - **enabled**
- - Experimental Web Platform features - **enabled**
-
- **Note:** the application has been migrated to Polymer 1.x.
-- Latest Polymer 0.5 commit: https://github.com/Polyjuice/Launcher/commit/78f17c9a89419f1d19997da118cae249577b61b6
-- Latest Polymer 0.5 release: https://github.com/Polyjuice/Launcher/releases/tag/2.0.8
+ - Experimental Web Platform features - **enabled** (needed for CSS Grid Layout)
