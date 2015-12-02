@@ -1,7 +1,18 @@
 Launcher
 ========
+A launcher is an app that gives a common UI feeling to multiple apps running simultaneously.
 
-Wrap all apps in a UI frame with a common launchpad, menu and a search bar.
+What it does specifically:
+
+- create a new session
+- initialize a Puppet connnection
+- load a global stylesheet
+- provide features to switch between apps
+- includes [starcounter-debug-aid](https://github.com/StarcounterSamples/starcounter-debug-aid) for debugging.
+ 
+This repository contains the code for the default launcher provided by Starcounter. Not impressed? Please fork it and create one that show us how it should be done!
+
+To read more about launchers in general, please see the [Launcher](http://starcounter.io/guides/web/launcher) page over on **starcounter.io**.
 
 ### How to run
 
