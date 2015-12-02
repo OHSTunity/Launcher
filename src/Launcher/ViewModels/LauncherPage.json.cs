@@ -45,8 +45,4 @@ namespace Launcher {
     partial class SearchBarPreviewPage : Page { 
 
     }
-
-    [LauncherPage_json.results]
-    public partial class LauncherResultsPage : Page {
-    }
 }

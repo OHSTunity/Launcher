@@ -16,12 +16,25 @@ module.exports = function(grunt) {
       }
     },
     replace: {
-      dist: {
+      date: {
         options: {
           patterns: [
             {
               match: /<VersionDate>.*(?=<\/VersionDate>)/,
               replacement: '<VersionDate>'+grunt.template.today('isoDateTime')+"Z"
+            }
+          ]
+        },
+        files: [
+          {src: ['src/Launcher/package/package.config'], dest: './'}
+        ]
+      },
+      scversion: {
+        options: {
+          patterns: [
+            {
+              match: /<Dependency name="Starcounter">.*(?=<\/Dependency>)/,
+              replacement: '<Dependency name="Starcounter">~' + grunt.option('value')
             }
           ]
         },
@@ -50,9 +63,24 @@ module.exports = function(grunt) {
         )
       }
     },
-    commands:{
+    shell:{
+      scversion: {
+        command: 'star --version',
+        options:{
+          callback: function(err, stdout, stderr, cb){
+            var version = stdout.replace('Version=','');
+            // grunt.config.set('scversion', version);
+            grunt.util.spawn({
+              grunt: true,
+              args: ['replace:scversion', '--value='+version]
+            }, function(err, res, code) {
+              cb();
+            });
+          }
+        }
+      },
       package: {
-          cmd  : 'package.bat'
+          command: 'package.bat'
       }
     }
   });
@@ -60,13 +88,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-bump');
-  grunt.loadNpmTasks('grunt-commands');
+  grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask(
      'package',
      "Generate Polyjuice AppStore package with bumped version",
      function(versionType, incOrCommitOnly) {
-        grunt.task.run("replace", "bump" + (versionType ? ":"+versionType : ""), "commands:package");
+        grunt.task.run("replace:date", "shell:scversion", "bump" + (versionType ? ":"+versionType : ""), "shell:package");
 
     }
   );

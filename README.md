@@ -1,12 +1,18 @@
-Requires Starcounter 2.1+
-
----
-
-
 Launcher
 ========
+A launcher is an app that gives a common UI feeling to multiple apps running simultaneously.
 
-Wrap all apps in a UI frame with a common launchpad, menu and a search bar.
+What it does specifically:
+
+- create a new session
+- initialize a Puppet connnection
+- load a global stylesheet
+- provide features to switch between apps
+- includes [starcounter-debug-aid](https://github.com/StarcounterSamples/starcounter-debug-aid) for debugging.
+ 
+This repository contains the code for the default launcher provided by Starcounter. Not impressed? Please fork it and create one that show us how it should be done!
+
+To read more about launchers in general, please see the [Launcher](http://starcounter.io/guides/web/launcher) page over on **starcounter.io**.
 
 ### How to run
 
@@ -34,21 +40,8 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 
 ### Browsers
 
-#### Chrome Stable & Dev Channel
+#### Chrome & Opera
 
 Make sure the following flags are set (chrome://flags/):
 
- - Experimental JavaScript - **disabled**
- - Experimental Web Platform features - **disabled**
- - HTML Imports - **disabled** (note: this flag was merged into *Experimental Web Platform features* in recent versions of Chrome)
-
-#### Chrome Canary
-
-Make sure the following flags are set:
-
- - Experimental JavaScript - **enabled**
- - Experimental Web Platform features - **enabled**
-
- **Note:** the application has been migrated to Polymer 1.x.
-- Latest Polymer 0.5 commit: https://github.com/Polyjuice/Launcher/commit/78f17c9a89419f1d19997da118cae249577b61b6
-- Latest Polymer 0.5 release: https://github.com/Polyjuice/Launcher/releases/tag/2.0.8
+ - Experimental Web Platform features - **enabled** (needed for CSS Grid Layout)

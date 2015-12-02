@@ -19,6 +19,7 @@
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
+    <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
@@ -31,7 +32,6 @@
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
-    <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" />
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" />
 
     <!-- Style sheets -->
@@ -49,7 +49,7 @@
         <div class="launcher-toolbar launcher-topbar">
             <a href="/launcher"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
             <div class="launcher-theme">
-                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" class="icon">
+                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" id="launcher-search-icon">
                     <i class="glyphicon glyphicon-search"></i>
                 </a>
                 <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
@@ -64,11 +64,13 @@
 
             <!-- TODO: migrate getModel boolean trigger -->
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
+
+            <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
         </div>
 
         <div id="launcher-menu">
@@ -84,21 +86,21 @@
                 <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
                 <launcher-launchpad apps="{{model.launchpad.names}}"></launcher-launchpad>
             </div>
-            <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
+            <launcher-display-route match-path="^\/$|\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
 
-            <!-- <starcounter-include class="workspace launcher" partial="{{results}}"></starcounter-include> -->
+            <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
-            <!-- Dashboard/results -->
-            <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{model.results}}"></starcounter-include>
+            <!-- Dashboard/search results/settings -->
+            <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
+            <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
             <!-- Workspaces -->
             <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
                 <template is="dom-if" if="{{item.AppName}}">
-                    <juicy-display-route match-path$="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
+                    <launcher-display-route match-path$="{{concat('^\/', item.AppName)}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
                     <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
                 </template>
                 <template is="dom-if" if="{{!item.AppName}}">
