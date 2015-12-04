@@ -80,15 +80,15 @@ namespace Launcher {
                     launcher.launchpad.layout = setupJson;
                 }
 
+                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
+                    var p = new Page();
+                    return p;
+                });
+
                 launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
                     var p = new Page() {
                         Html = "/Launcher/viewmodels/LauncherMenu.html"
                     };
-                    return p;
-                });
-
-                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
-                    var p = new Page();
                     return p;
                 });
 
