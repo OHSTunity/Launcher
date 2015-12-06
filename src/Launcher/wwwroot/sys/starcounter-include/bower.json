@@ -25,8 +25,7 @@
   ],
   "dependencies": {
     "imported-template": "Juicy/imported-template#gh-pages",
-    "juicy-tile-list": "Juicy/juicy-tile-list#gh-pages",
-    "juicy-tile-grid": "Juicy/juicy-tile-grid#gh-pages",
+    "juicy-tile-grid": ">=1.1.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages"
   },
   "devDependencies": {

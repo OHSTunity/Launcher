@@ -1,6 +1,7 @@
 {
   "directory" : "wwwroot/sys",
   "ignoredDependencies": [
+      "webcomponentsjs",
       "PuppetJs",
       "imported-template",
       "puppet-redirect",
@@ -9,7 +10,6 @@
       "starcounter-debug-aid",
       "puppet-client",
       "bootswatch",
-      "starcounter-include",
       "polymer",
           "paper-ripple",
           "paper-styles",
