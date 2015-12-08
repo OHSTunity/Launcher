@@ -129,7 +129,10 @@
         <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
     </template>
     <script>
-        (function init(template) {
+        (function () {
+            var script = document._currentScript || document.currentScript;
+            var template = script.previousElementSibling;
+
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
             };
@@ -137,10 +140,18 @@
             template.toggleEditor = function () {
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
-        })(document.currentScript.previousElementSibling);
+
+            template.addEventListener("dom-change", function () {
+                var puppet = document.querySelector("puppet-client");
+
+                puppet.addEventListener("patchsent", function () {
+                    puppet.setAttribute("session-timeout", template.model.ServerSession.TimeoutMinutes);
+                });
+            });
+        })();
     </script>
 
-    <puppet-client ref="root"></puppet-client>
+    <puppet-client ref="root" session-timeout="20"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <div class="css-grid-error-back"></div>
     <div class="css-grid-error">

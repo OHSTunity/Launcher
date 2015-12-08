@@ -45,4 +45,8 @@ namespace Launcher {
     partial class SearchBarPreviewPage : Page { 
 
     }
+
+    [LauncherPage_json.ServerSession]
+    partial class LauncherServerSession : Json, IBound<Session> {
+    }
 }
