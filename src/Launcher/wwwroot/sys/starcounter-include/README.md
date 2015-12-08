@@ -1,8 +1,8 @@
 Launcher's &lt;starcounter-include&gt;
 ==============
 
-This is Launcher's version of [`<starcounter-include>`](https://github.com/Polyjuice/starcounter-include).
-Launcher overwrites it with is a custom element that not only let's you load HTML partials into your Starcounter page with full control over loaded `<script>`s and `<link rel="import">`s, but also allows you to gently manage output from many apps mixed by Polyjuice mappings.
+This is Launcher's version of [`<starcounter-include>`](https://github.com/Starcounter/starcounter-include).
+Launcher overwrites it with is a custom element that not only let's you load HTML partials into your Starcounter page with full control over loaded `<script>`s and `<link rel="import">`s, but also allows you to gently manage output from many apps mixed by Starcounter mappings.
 
 ## Demo/Examples
 :construction:
@@ -10,31 +10,31 @@ Launcher overwrites it with is a custom element that not only let's you load HTM
 
 ## Related custom elements
 
- - [`<starcounter-include>`](https://github.com/Polyjuice/starcounter-include) - includes Starcounter Partial,
+ - [`<starcounter-include>`](https://github.com/Starcounter/starcounter-include) - includes Starcounter Partial,
  - [`<imported-template>`](https://github.com/Juicy/imported-template) - includes HTML Template,
  - [`<juicy-tile-grid>`](https://github.com/Juicy/juicy-tile-grid),
  - [`<juicy-tile-list>`](https://github.com/Juicy/juicy-tile-list),
  - [`<juicy-tile-editor>`](https://github.com/Juicy/juicy-tile-editor),
  - [`<juicy-tiles-setup-sync>`](https://github.com/Juicy/juicy-tiles-setup-sync)
 
-## Related wiki articles: 
+## Related wiki articles:
 
- - https://github.com/Polyjuice/Launcher/wiki/Partials
- - https://github.com/Polyjuice/Launcher/wiki/Layout-setup
- - https://github.com/Polyjuice/Launcher/wiki/include-template-in-Polyjuice
+ - https://github.com/StarcounterSamples/Launcher/wiki/Partials
+ - https://github.com/StarcounterSamples/Launcher/wiki/Layout-setup
+ - https://github.com/StarcounterSamples/Launcher/wiki/include-template-in-Polyjuice
 
 
 ## Install
 
-[Launcher](https://github.com/Polyjuice/Launcher) has it already pre-installed, under `/sys/starcounter-include/starcounter-include.html` (overwrites Starcounter's one), but if you want to use it separately as well.
+[Launcher](https://github.com/StarcounterSamples/Launcher) has it already pre-installed, under `/sys/starcounter-include/starcounter-include.html` (overwrites Starcounter's one), but if you want to use it separately as well.
 
 Install the component using [Bower](http://bower.io/):
 
 ```sh
-$ bower install Polyjuice/launcher-include --save
+$ bower install StarcounterSamples/launcher-include --save
 ```
 
-Or [download as ZIP](https://github.com/Polyjuice/launcher-include/archive/master.zip).
+Or [download as ZIP](https://github.com/StarcounterSamples/launcher-include/archive/master.zip).
 
 ## Usage
 
@@ -67,7 +67,7 @@ Or [download as ZIP](https://github.com/Polyjuice/launcher-include/archive/maste
 ## Test suite
 
  - local browser `./tests/index.html`
- - [online](http://polyjuice.github.io/starcounter-include/tests)
+ - [online](http://starcounter.github.io/starcounter-include/tests)
 
 ## Contributing
 
@@ -79,4 +79,4 @@ Or [download as ZIP](https://github.com/Polyjuice/launcher-include/archive/maste
 
 ## History
 
-For detailed changelog, check [Releases](https://github.com/Polyjuice/launcher-include/releases).
+For detailed changelog, check [Releases](https://github.com/StarcounterSamples/launcher-include/releases).

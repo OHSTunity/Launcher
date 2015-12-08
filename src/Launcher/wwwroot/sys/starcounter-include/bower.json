@@ -3,7 +3,7 @@
   "authors": [
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
-  "homepage": "https://github.com/Polyjuice/launcher-include",
+  "homepage": "https://github.com/StarcounterSamples/launcher-include",
   "description": "Custom Element to include HTML partials/templates from Starcounter, enhanced witch Launcher layout features.",
   "main": "starcounter-include.html",
   "keywords": [
