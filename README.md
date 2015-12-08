@@ -16,7 +16,7 @@ To read more about launchers in general, please see the [Launcher](http://starco
 
 ### How to run
 
-1. Check out Polyjuice/Launcher repo from GitHub
+1. Check out StarcounterSamples/Launcher repo from GitHub
 2. Open `Launcher.proj` in Visual Studio
 3. Build the solution
 4. Run it by launching `run.bat` in Windows, or executing `cmd //c "run.bat"` in Git Bash, or using Debug in Visual Studio
