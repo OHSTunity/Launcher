@@ -60,38 +60,42 @@ namespace Launcher {
                     session = new Session(SessionOptions.PatchVersioning);
                 }
 
-                launcher = new LauncherPage() {
-                    Html = "/Launcher/viewmodels/LauncherTemplate.html"
-                };
+                    launcher = new LauncherPage() {
+                        Html = "/Launcher/viewmodels/LauncherTemplate.html"
+                    };
 
                 launcher.Session = session;
                 launcher.ServerSession.Data = session;
 
-                launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
-                    var p = new Page();
-                    return p;
-                });
-                var setup = Layout.GetSetup("/launcher/launchpad");
+                    launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
+                        var p = new Page();
+                        return p;
+                    });
+                    var setup = Layout.GetSetup("/launcher/launchpad");
 
                 if (setup == null) {
-                    launcher.launchpad.layout = null;
-                }
+                        // launcher.launchpad.layout = null
+                        // workaround for https://github.com/Starcounter/Starcounter/issues/3072
+                        // set default value 
+                        // consider moving to HTML, or pre-populatind default layouts
+                        launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
+                    }
                 else {
-                    dynamic setupJson = new Json(setup.Value);
-                    launcher.launchpad.layout = setupJson;
-                }
+                        dynamic setupJson = new Json(setup.Value);
+                        launcher.launchpad.layout = setupJson;
+                    }
 
                 launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
                     var p = new Page();
                     return p;
                 });
 
-                launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
-                    var p = new Page() {
-                        Html = "/Launcher/viewmodels/LauncherMenu.html"
-                    };
-                    return p;
-                });
+                    launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
+                        var p = new Page() {
+                            Html = "/Launcher/viewmodels/LauncherMenu.html"
+                        };
+                        return p;
+                    });
 
                 launcher.uri = req.Uri;
                 return launcher;
@@ -102,13 +106,13 @@ namespace Launcher {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                 launcher.currentPage = Self.GET(UriMapping.MappingUriPrefix + "/dashboard", () => {
-                    var p = new Page();
+                        var p = new Page();
 
-                    return p;
-                });
+                        return p;
+                    });
 
                 launcher.uri = req.Uri;
-                return launcher;
+                    return launcher;
             });
 
             Handle.GET("/launcher/settings", (Request req) => {
@@ -194,11 +198,11 @@ namespace Launcher {
                     // Some additional special magic here. Since the workspace we create here might be for another
                     // app than Launcher, we need to set the internal appNameForLayout of this wrapper to the name
                     // of the correct app, otherwise it will always be set to 'Launcher' and the
-                    // incorrect (or no) layout will be used.
+                    // incorrect (or no) layout will be used. 
                     // Of course this will not be needed when we move all the layout handling here.
                     if (StarcounterEnvironment.AppName != appName && appNameForLayoutField != null)
                         appNameForLayoutField.SetValue(p, appName);
-
+                    
                     // move serializer magic to here:
                     // set partial ID, find layouts, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
