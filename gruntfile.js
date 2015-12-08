@@ -92,7 +92,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask(
      'package',
-     "Generate Polyjuice AppStore package with bumped version",
+     "Generate Starcounter AppStore package with bumped version",
      function(versionType, incOrCommitOnly) {
         grunt.task.run("replace:date", "shell:scversion", "bump" + (versionType ? ":"+versionType : ""), "shell:package");
 
