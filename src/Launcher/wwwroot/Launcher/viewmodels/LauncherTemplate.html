@@ -8,6 +8,7 @@
         window.Polymer.dom = "shadow";
     </script>
     <link rel="import" href="/sys/polymer/polymer.html" />
+    <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
 
     <!-- Import Starcounter specific components -->
     <link rel="import" href="/sys/starcounter.html" />
@@ -129,6 +130,16 @@
             </div>
         </template>
 
+        <paper-dialog opened="{{model.ConnectionError}}" modal="true">
+            <h4>Connection error</h4>
+            <p>You have been disconnected from server. Please reload page.</p>
+            <div class="buttons">
+                <button class="btn btn-sm btn-default" dialog-dismiss>Close</button>
+                <span>&nbsp;</span>
+                <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
+            </div>
+        </paper-dialog>
+
         <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
     </template>
     <script>
@@ -149,6 +160,12 @@
 
                 puppet.addEventListener("patchsent", function () {
                     puppet.setAttribute("session-timeout", template.model.ServerSession.TimeoutMinutes);
+                });
+
+                puppet.addEventListener("connectionerror", function (e) {
+                    e.detail.handled = true;
+                    //alert("??");
+                    template.set("model.ConnectionError", true);
                 });
             });
         })();
