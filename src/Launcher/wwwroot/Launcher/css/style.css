@@ -274,7 +274,7 @@ div.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+
 }
 
 .css-grid-error {
-    display: block;
+    display: none;
     position: fixed;
     left: 50%;
     top: 50%;
@@ -306,15 +306,16 @@ div.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+
     top: 0;
     left: 0;
     z-index: 100;
+    display: none;
 }
 
-@supports ((display: grid)) {
+/*@supports ((display: grid)) {
     .css-grid-error, 
     .css-grid-error-back {
         display: none;
         display: -moz-grid;
     }
-}
+}*/
 
 launcher-search-input {
     font-size: 10px;

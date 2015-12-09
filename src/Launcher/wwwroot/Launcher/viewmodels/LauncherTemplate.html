@@ -171,4 +171,24 @@
             We are working on extending support to all modern web browsers.
         </p>
     </div>
+    <script>
+        (function () {
+            var div = document.createElement("div");
+
+            div.style.display = "grid";
+
+            if (div.style.display == "grid") {
+                return;
+            }
+
+            div.style.display = "-ms-grid";
+
+            if (div.style.display == "-ms-grid") {
+                return;
+            }
+
+            document.querySelector(".css-grid-error-back").style.display = "block";
+            document.querySelector(".css-grid-error").style.display = "block";
+        })();
+    </script>
 </body>
