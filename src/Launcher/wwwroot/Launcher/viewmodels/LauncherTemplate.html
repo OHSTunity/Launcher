@@ -164,14 +164,13 @@
 
                 puppet.addEventListener("connectionerror", function (e) {
                     e.detail.handled = true;
-                    //alert("??");
                     template.set("model.ConnectionError", true);
                 });
             });
         })();
     </script>
 
-    <puppet-client ref="root" session-timeout="20"></puppet-client>
+    <puppet-client ref="root"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <div class="css-grid-error-back"></div>
     <div class="css-grid-error">
