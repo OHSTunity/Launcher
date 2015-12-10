@@ -1,8 +1,5 @@
 {
     "Html": "",
-    "ServerSession": {
-        "TimeoutMinutes": 0
-    },
     "homeThumbnail": { },
     "homeUrl": "",
     "editingMode$": false,

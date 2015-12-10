@@ -158,10 +158,6 @@
             template.addEventListener("dom-change", function () {
                 var puppet = document.querySelector("puppet-client");
 
-                puppet.addEventListener("patchsent", function () {
-                    puppet.setAttribute("session-timeout", template.model.ServerSession.TimeoutMinutes);
-                });
-
                 puppet.addEventListener("connectionerror", function (e) {
                     e.detail.handled = true;
                     template.set("model.ConnectionError", true);

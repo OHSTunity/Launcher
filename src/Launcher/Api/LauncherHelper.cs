@@ -65,7 +65,6 @@ namespace Launcher {
                 };
 
                 launcher.Session = session;
-                launcher.ServerSession.Data = session;
 
                 launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
                     var p = new Page();
