@@ -133,14 +133,16 @@
             font-size: 11px;
             line-height: normal;
             vertical-align: middle;
+            cursor: default;
         }
 
         input[type=text].item-name:focus {
             outline: none;
         }
 
-        input[type=text].item-name.active {
+        input[type=text].item-name:not([readonly]).active {
             border-color: white;
+            cursor: text;
         }
 
         i.jte-icon ~ .item-name {
@@ -232,7 +234,9 @@
     <ul id="container" class="juicy-tile-tree branch"></ul>
 </template>
 <script>
-    (function (scriptDocument) {
+    (function () {
+        var script = document._currentScript || document.currentScript;
+        var scriptDocument = script.ownerDocument;
         var JuicyTileTreePrototype = Object.create(HTMLElement.prototype);
         var proto = JuicyTileTreePrototype;
 
@@ -317,7 +321,7 @@
             }
 
             html.push('<juicy-toggle-icon-button class="visibility" icon-off="jte-icon-eye" icon-on="jte-icon-eye-off" value="', item.uid, '"></juicy-toggle-icon-button>');
-            html.push('<juicy-draggable position="static" dropselector="html /deep/ ul.branch li .drop-item"');
+            html.push('<juicy-draggable data-uid="', item.uid, '" position="static" dropselector="html /deep/ ul.branch li .drop-item"');
 
             if (this.activeUid == item.uid) {
                 html.push(' disabled="true"');
@@ -463,15 +467,24 @@
 
         proto.setIsExpanded = function (e) {
             var target = e.currentTarget;
-            var collapsed = target.checked;
 
-            while (target && target.tagName != "LI") {
-                target = target.parentNode;
-            }
+            setTimeout(function () {
+                var collapsed = target.checked;
 
-            target.classList.toggle("expanded", !collapsed);
-            target.classList.toggle("collapsed", collapsed);
-            this.expanded[target.dataset["uid"]] = !collapsed;
+                while (target && target.tagName != "LI") {
+                    target = target.parentNode;
+                }
+
+                if (collapsed) {
+                    target.classList.add("expanded");
+                    target.classList.remove("collapsed", collapsed);
+                } else {
+                    target.classList.remove("expanded");
+                    target.classList.add("collapsed", collapsed);
+                }
+
+                this.expanded[target.dataset["uid"]] = !collapsed;
+            }.bind(this));
         };
 
         proto.tapAction = function (e, index) {
@@ -502,13 +515,17 @@
             for (var i = 0; i < txts.length; i++) {
                 var container = txts[i];
                 var uid = container.dataset["uid"];
-                var is = this.highlighted[uid];
+                var is = !!this.highlighted[uid];
 
                 while (!container.classList.contains("element-label")) {
                     container = container.parentNode;
                 }
 
-                container.classList.toggle("highlight", is);
+                if (is) {
+                    container.classList.add("highlight");
+                } else {
+                    container.classList.remove("highlight");
+                }
             }
         };
 
@@ -516,26 +533,38 @@
             var target = e.currentTarget;
             var uid = target.dataset["uid"];
             var label = this.querySelector(".element-label[data-uid='" + uid + "']");
+            var draggable = this.querySelector("juicy-draggable[data-uid='" + uid + "']");
 
             this.activeUid = uid;
-            label.classList.toggle("active", true);
-            target.classList.toggle("active", true);
+            label.classList.add("active");
+            target.classList.add("active");
             target.removeAttribute("readonly");
             target.focus();
             target.selectionStart = 0;
             target.selectionEnd = target.value.length;
+
+            if (draggable) {
+                draggable.setAttribute("disabled", "disabled");
+            }
         };
 
         proto.nameBlurAction = function (e) {
             var target = e.currentTarget;
             var uid = target.dataset["uid"];
             var label = this.querySelector(".element-label[data-uid='" + uid + "']");
+            var draggable = this.querySelector("juicy-draggable[data-uid='" + uid + "']");
 
-            label.classList.toggle("active", false);
-            target.classList.toggle("active", false);
+            label.classList.remove("active");
+            target.classList.remove("active");
             target.setAttribute("readonly", "readonly");
-            target.selectionStart = 0;
-            target.selectionEnd = 0;
+
+            if (target.selectionStart) {
+                target.selectionStart = 0;
+            }
+
+            if (target.selectionEnd) {
+                target.selectionEnd = 0;
+            }
 
             if (this.activeUid) {
                 var event = new CustomEvent("juicy-tile-tree-item-name-changed");
@@ -544,6 +573,12 @@
                 event.value = e.currentTarget.value;
                 this.activeUid = null;
                 this.dispatchEvent(event);
+            }
+
+            label.focus();
+
+            if (draggable) {
+                draggable.removeAttribute("disabled");
             }
         };
 
@@ -584,8 +619,8 @@
                 var li = this.querySelector("li[data-uid='" + id + "']");
                 var expander = this.querySelector("li[data-uid='" + id + "'] juicy-toggle-icon-button.expand");
 
-                li.classList.toggle("collapsed", false);
-                li.classList.toggle("expanded", true);
+                li.classList.remove("collapsed");
+                li.classList.add("expanded");
 
                 if (expander) {
                     expander.setAttribute("checked", true)
@@ -599,7 +634,7 @@
                     var element = this.querySelector("div.element-label[data-uid='" + i + "']");
 
                     if (element) {
-                        element.classList.toggle("highlight", false);
+                        element.classList.remove("highlight");
                     }
                 }
 
@@ -610,7 +645,7 @@
 
             if (element) {
                 this.highlighted[uid] = true;
-                element.classList.toggle("highlight", true);
+                element.classList.add("highlight");
             }
         };
 
@@ -619,12 +654,12 @@
 
             if (element) {
                 this.highlighted[uid] = false;
-                element.classList.toggle("highlight", false);
+                element.classList.remove("highlight");
             }
         };
 
         window.JuicyTileTree = document.registerElement("juicy-tile-tree", {
             prototype: JuicyTileTreePrototype
         });
-    })(document.currentScript.ownerDocument);
+    })();
 </script>
