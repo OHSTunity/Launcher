@@ -1,6 +1,10 @@
 <!doctype html>
 <head>
     <title>Launcher</title>
+    <!-- Object.observe & Array.observe shims for IE and FF -->
+    <script src="/sys/object.observe/dist/object-observe.js"></script>
+    <script src="/sys/array.observe/array-observe.js"></script>
+
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <script>
@@ -42,7 +46,7 @@
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 </head>
 <body is="launcher-main">
-    <template id="root" is="dom-bind">
+    <template id="root-launcher-dom-bind" is="dom-bind">
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
         </template>
@@ -121,12 +125,11 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selection-mode="true" tile-lists-selector="juicy-tile-list, juicy-tile-grid, launcher-launchpad::shadow > juicy-tile-grid" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
-                <script>
-                    document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
-                        document.querySelector("template#root").set("model.editingMode$", false);
-                    });
-                </script>
+                <juicy-tile-editor selection-mode="true" 
+                                   tile-lists-selector="juicy-tile-list, juicy-tile-grid, launcher-launchpad::shadow > juicy-tile-grid" 
+                                   class="max-height" 
+                                   modified="{{model.layoutModified$}}"
+                                   on-juicy-tile-editor-close="closeEditor"></juicy-tile-editor>
             </div>
         </template>
 
@@ -140,12 +143,16 @@
             </div>
         </paper-dialog>
 
-        <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
+        <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
     </template>
     <script>
         (function () {
             var script = document._currentScript || document.currentScript;
             var template = script.previousElementSibling;
+
+            template.closeEditor = function () {
+                template.set("model.editingMode$", false);
+            };
 
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
@@ -166,7 +173,7 @@
         })();
     </script>
 
-    <puppet-client ref="root"></puppet-client>
+    <puppet-client ref="root-launcher-dom-bind"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <div class="css-grid-error-back"></div>
     <div class="css-grid-error">
