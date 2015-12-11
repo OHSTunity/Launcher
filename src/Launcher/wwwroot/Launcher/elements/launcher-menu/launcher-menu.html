@@ -13,6 +13,7 @@
                 ready: function () {
                     this.$.content.addEventListener("DOMNodeInserted", this.sortItems.bind(this));
                 },
+                
                 sortItems: function () {
                     if (this.busy) {
                         return;
