@@ -1,6 +1,6 @@
 <!doctype html>
 <head>
-    <title>Launcher</title>
+    <title>Tunity</title>
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <script>
@@ -52,7 +52,7 @@
         </template>
 
         <div class="launcher-toolbar launcher-topbar">
-            <div style="margin-left: 10px;min-width: 195px;max-width: 195px;">
+            <div style="margin-left: 10px;min-width: 129px;max-width: 195px;">
                 <tu-logo-with-spinner></tu-logo-with-spinner>
             </div>
             <div class="toolbar-padding"></div>
@@ -64,11 +64,12 @@
             </div>
             <div flex=""></div>
             <span class="toolbar-divider"></span>
+            <i class="ts_icon ts_icon_trello"></i>
             <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
                 
                 <launcher-search-input placeholder="Search here..." value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
-                <span style="padding-bottom: 5px;"><i class="fa fa-search" style="font-size:0.80em;color:rbga(255,255,255,.5)"></i></span>
+                <span style="padding-bottom: 5px;"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">

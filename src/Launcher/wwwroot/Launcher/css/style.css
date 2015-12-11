@@ -10,6 +10,7 @@
 #launcher-menu {
     flex: 1 0 auto;
     color: #4c444b;
+    height:100%;
 }
 
 #launcher-content {
@@ -78,35 +79,55 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 */
 
 #launcher-menu {
-    background-color: #4c444b;
-    color: #8a98b0;
+    
+    color: white;
+    padding-left: 6px;
 }
 
 #launcher-menu ul {
     margin: 0px;
     padding: 0px;
     display: flex;
+    height:100%;
     list-style-type: none; /* Remove bullets */
 }
 
 #launcher-menu ul li {
-    transition: all 0.5s ease;
+    /*padding-top: 2px;*/
+    transition: all 0.2s ease;
+  
 }
 #launcher-menu ul li:hover {
     
-    text-shadow: 1px 2px 3px rgba(0,0,0,.8);
     color: white;
+    background-color: rgba(255,255,255,.1);
+   
+}
+#launcher-menu ul li:active {
+    
+    background-color: rgba(0,0,0,.1);
+   
+}
+#launcher-menu ul li.selected {
+    
+    color: white;
+    background-color: rgba(0,0,0,.25);
+   
 }
 
 #launcher-menu ul li {
     padding-right: 8px;
-    padding-left: 4px;
+    padding-left: 8px;
+    font-size: 16px;
 }
 
 #launcher-menu a {
     display: block;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    /*
+    padding-top: 4px;
+    padding-bottom: 4px;
+    */
+    line-height: 47px;
     padding-left: 2px;
     padding-right: 2px;
 }
@@ -119,6 +140,15 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     text-decoration: none;
 }
 
+
+#launcher-menu ul a span
+{
+    font-weight:normal;
+    padding-left:4px;
+}
+
+
+
 .launcher-dashboard-icon {
     height: 1.15em;
     width: 1.15em;
@@ -129,10 +159,10 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 
 /* Toolbar custom theme */
 .launcher-toolbar {
-    background-color: #4c444b;
-    color: #8a98b0;
+    background-color: #43525d; 
+    color: white;
     font-size: 28px;
-    height: 40px;
+    height: 47px;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -moz-flex !important;
@@ -315,5 +345,11 @@ launcher-search-input /deep/ input {
     padding-left:10px;
     font-size: 14px;
 }
+launcher-search-input /deep/ input::-webkit-input-placeholder {
+    color:rgba(255,255,255,.5);
+}
+
+
+
 
 
