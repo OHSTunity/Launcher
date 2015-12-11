@@ -32,7 +32,7 @@
     },
     "appFilter": [
         {
-            "appName": "",
+            "AppName": "",
             "on$": true,
             "text": "",
             "thumbnail": { }

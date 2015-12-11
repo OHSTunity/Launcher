@@ -183,7 +183,7 @@ namespace Launcher {
                 // check if there is already workspaces array item for given appname
                 Json foundWorkspace = null;
                 for (var i = 0; i < launcher.workspaces.Count; i++) {
-                    if ((launcher.workspaces[i] as LauncherWrapperPage).appName.ToLower() == appName.ToLower()) {
+                    if ((launcher.workspaces[i] as LauncherWrapperPage).AppName.ToLower() == appName.ToLower()) {
                         foundWorkspace = launcher.workspaces[i];
                         break;
                     }
@@ -204,7 +204,7 @@ namespace Launcher {
                     // move serializer magic to here:
                     // set partial ID, find layouts, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
-                    p.appName = appName;
+                    p.AppName = appName;
                     // p.partialId = mainApp.Html;
                     // p.layout = Self.GET("/sc/layout?" + p.partialId);
                     // p.listOfAppsRunning = appnames;
