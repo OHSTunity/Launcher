@@ -23,7 +23,7 @@ namespace Launcher {
 
             Layout.Register();
 
-            Handle.AddFilterToMiddleware((Request req) => {
+            Handle.AddRequestFilter((Request req) => {
 
                 String uri = req.Uri;
 
