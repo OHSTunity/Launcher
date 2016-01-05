@@ -1,0 +1,67 @@
+<!--
+`launcher-include` - Launcher's `starcounter-include` -
+Custom Element (w/ Polymer's TempalteBinding)
+with predefined template content, which should be used to include partials.
+It's just <template is="imported-template"> wrapped within <juicy-tile-grid> and layout editor.
+Uses juicy-tiles setup given from DB as layout.
+version: 0.1.1
+
+@FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
+@FIXME (tomalec): DRY with default starcounter-include
+-->
+<link href="/sys/polymer/polymer.html" rel="import">
+<link rel="import" href="../imported-template/imported-template.html">
+<link rel="import" href="../juicy-tile-grid/juicy-tile-grid.html">
+<link rel="import" href="../juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
+
+<dom-module id="starcounter-include">
+	<template strip-whitespace>
+		<style>
+			:host {
+				display:block;
+			}
+		</style>
+		<juicy-tiles-setup-sync name$="{{partial.PartialId}}"
+			api-url="/sc/layout"></juicy-tiles-setup-sync>
+		<juicy-tile-grid id="grid" name$="{{partial.PartialId}}"
+			defaultTileSetup='{
+				"height": 1,
+				"heightDynamic": true,
+				"precalculateHeight": true,
+				"width": "100%",
+				"widthFlexible": true
+			}'
+			refreshonmutation>
+		  <template is="imported-template" content$="{{partial.Html}}" model="{{partial}}"></template>
+		</juicy-tile-grid>
+	</template>
+
+	<script type="text/javascript">(function() {
+	  Polymer({
+	    is: 'starcounter-include',
+	    _isAttached: false,
+	    properties: {
+	      partial: {
+	        type: Object,
+	      },
+	    },
+		observers: [
+			'_test(partial.*)',
+			'_layoutChanged(partial.layout)'
+		],
+		_test: function(ev) {
+		//	console.log(ev);
+		},
+		_layoutChanged: function(layout)
+		{
+			if (layout)
+				this.$.grid.setup = JSON.parse(JSON.stringify(layout));
+		},
+	    attached: function() {
+	    },
+	    detached: function() {
+	    },
+	  });
+	}());
+	</script>
+	</dom-module>

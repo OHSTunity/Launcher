@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           patterns: [
             {
               match: /<Dependency name="Starcounter">.*(?=<\/Dependency>)/,
-              replacement: '<Dependency name="Starcounter">' + grunt.option('value')
+              replacement: '<Dependency name="Starcounter">~' + grunt.option('value')
             }
           ]
         },
@@ -92,7 +92,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask(
      'package',
-     "Generate Polyjuice AppStore package with bumped version",
+     "Generate Starcounter AppStore package with bumped version",
      function(versionType, incOrCommitOnly) {
         grunt.task.run("replace:date", "shell:scversion", "bump" + (versionType ? ":"+versionType : ""), "shell:package");
 

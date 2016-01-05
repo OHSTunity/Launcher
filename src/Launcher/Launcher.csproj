@@ -93,6 +93,12 @@
     <Compile Include="ViewModels\LauncherWrapperPage.json.cs">
       <DependentUpon>LauncherWrapperPage.json</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ResultPage.json.cs">
+      <DependentUpon>ResultPage.json</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\SettingsPage.json.cs">
+      <DependentUpon>SettingsPage.json</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="wwwroot\Launcher\css\style.css" />
@@ -105,8 +111,13 @@
     <Content Include="wwwroot\Launcher\viewmodels\LauncherTemplate.html" />
     <Content Include="wwwroot\Launcher\viewmodels\ResultPage.html" />
     <Content Include="wwwroot\Launcher\viewmodels\SearchPreviewPage.html" />
+    <Content Include="wwwroot\Launcher\viewmodels\SettingsPage.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <TypedJSON Include="ViewModels\SettingsPage.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
@@ -131,6 +142,11 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="ViewModels\LauncherWrapperPage.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="ViewModels\ResultPage.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

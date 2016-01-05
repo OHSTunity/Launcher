@@ -1,6 +1,11 @@
 <!doctype html>
 <head>
     <title>Tunity</title>
+
+    <!-- Object.observe & Array.observe shims for IE and FF -->
+    <script src="/sys/object.observe/dist/object-observe.js"></script>
+    <script src="/sys/array.observe/array-observe.js"></script>
+
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <script>
@@ -8,6 +13,7 @@
         window.Polymer.dom = "shadow";
     </script>
     <link rel="import" href="/sys/polymer/polymer.html" />
+    <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
 
     <!-- Import Starcounter specific components -->
     <link rel="import" href="/sys/starcounter.html" />
@@ -20,6 +26,8 @@
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
     <link rel="import" href="/Launcher/elements/tu-logo-with-spinner/tu-logo-with-spinner.html" />
+    <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
+	<link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
 
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
@@ -30,9 +38,9 @@
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
+	  <!--<link rel="import" href="/sys/dom-imported/dom-imported.html" />-->
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
     <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
-    <link rel="import" href="/sys/juicy-display-router/juicy-display-router.html" />
     <link rel="import" href="/sys/juicy-redirect/src/juicy-redirect.html" />
 
     <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
@@ -46,7 +54,7 @@
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 </head>
 <body is="launcher-main">
-    <template id="root" is="dom-bind">
+    <template id="root-launcher-dom-bind" is="dom-bind">
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
         </template>
@@ -67,9 +75,10 @@
             <i class="ts_icon ts_icon_trello"></i>
             <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
-                
+
                 <launcher-search-input placeholder="Search here..." value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
                 <span style="padding-bottom: 5px;"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
+
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">
@@ -84,35 +93,44 @@
             <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
             <!--
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
+<<<<<<< HEAD
                 <paper-icon-button id="Paper-icon-button1" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor"></paper-icon-button>
+=======
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
+>>>>>>> StarcounterSamples/master
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" icon="settings" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
+                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
+<<<<<<< HEAD
             -->
+            <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
         </div>
 
 
         <div id="launcher-content">
             <div class="launchpad">
+                <template is="dom-if" if="{{model.launchpad}}">
+                    <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+                </template>
                 <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
-                <launcher-launchpad apps="{{model.launchpad.names}}"></launcher-launchpad>
+
             </div>
-            <juicy-display-route match-path="^\/$|\/launcher/?$" display-selector=".launchpad"></juicy-display-route>
-
-            <!-- <starcounter-include class="workspace launcher" partial="{{results}}"></starcounter-include> -->
+        <!--    <launcher-display-route match-path="^\/$|\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
+-->
+            <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
-            <!-- Dashboard/results -->
-            <starcounter-include class="workspace launcher" name="/Launcher/results" partial="{{model.results}}"></starcounter-include>
+            <!-- Dashboard/search results/settings -->
+            <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <juicy-display-route match-path="^\/launcher\/" display-selector=".workspace.launcher"></juicy-display-route>
+            <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
             <!-- Workspaces -->
             <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
                 <template is="dom-if" if="{{item.AppName}}">
-                    <juicy-display-route match-path$="{{concat('^\/', item.AppName)}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></juicy-display-route>
+                    <launcher-display-route match-path$="{{concat('^\/', item.AppName)}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
                     <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
                 </template>
                 <template is="dom-if" if="{{!item.AppName}}">
@@ -129,19 +147,35 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selection-mode="true" watchedtagnames="['JUICY-TILE-LIST', 'JUICY-TILE-GRID']" class="max-height" modified="{{model.layoutModified$}}"></juicy-tile-editor>
-                <script>
-                    document.querySelector("juicy-tile-editor").addEventListener("juicy-tile-editor-close", function (e) {
-                        document.querySelector("template#root").set("model.editingMode$", false);
-                    });
-                </script>
+                <juicy-tile-editor selection-mode="true"
+                                   tile-lists-selector="juicy-tile-list, juicy-tile-grid, launcher-launchpad::shadow > juicy-tile-grid"
+                                   class="max-height"
+                                   modified="{{model.layoutModified$}}"
+                                   on-juicy-tile-editor-close="closeEditor"></juicy-tile-editor>
             </div>
         </template>
 
-        <dom-bind-notifier path="model" observed-object="{{model}}" deep></dom-bind-notifier>
+        <paper-dialog opened="{{model.ConnectionError}}" modal="true">
+            <h4>Connection error</h4>
+            <p>You have been disconnected from server. Please reload page.</p>
+            <div class="buttons">
+                <button class="btn btn-sm btn-default" dialog-dismiss>Close</button>
+                <span>&nbsp;</span>
+                <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
+            </div>
+        </paper-dialog>
+
+        <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
     </template>
     <script>
-        (function init(template) {
+        (function () {
+            var script = document._currentScript || document.currentScript;
+            var template = script.previousElementSibling;
+
+            template.closeEditor = function () {
+                template.set("model.editingMode$", false);
+            };
+
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
             };
@@ -149,10 +183,24 @@
             template.toggleEditor = function () {
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
-        })(document.currentScript.previousElementSibling);
+            /*
+			template.addEventListener("model-changed", function (e) {
+				console.log(e);
+			});*/
+
+            template.addEventListener("dom-change", function () {
+                var puppet = document.querySelector("puppet-client");
+
+                puppet.addEventListener("connectionerror", function (e) {
+                    e.detail.handled = true;
+                    template.set("model.ConnectionError", true);
+                });
+            });
+        })();
     </script>
 
-    <puppet-client ref="root"></puppet-client>
+    <puppet-client ref="root-launcher-dom-bind"></puppet-client>
+	  <!--<puppet-bind-notifier path="model" ref="root-launcher-dom-bind"></puppet-bind-notifier>-->
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
@@ -173,4 +221,24 @@
             We are working on extending support to all modern web browsers.
         </p>
     </div>
+    <script>
+        (function () {
+            var div = document.createElement("div");
+
+            div.style.display = "grid";
+
+            if (div.style.display == "grid") {
+                return;
+            }
+
+            div.style.display = "-ms-grid";
+
+            if (div.style.display == "-ms-grid") {
+                return;
+            }
+
+            document.querySelector(".css-grid-error-back").style.display = "block";
+            document.querySelector(".css-grid-error").style.display = "block";
+        })();
+    </script>
 </body>

@@ -7,6 +7,26 @@
             height: 0px;
             width: 0px;
         }
+		input {
+			border:0;
+			height: 35px;
+			outline: none;
+			background: transparent;
+			outline: none;
+			color: #FFF;
+			font-weight: 200;
+			padding-left:10px;
+			font-size: 14px;
+		}
+		input::-webkit-input-placeholder {
+		    color:rgba(255,255,255,.5);
+		}
+		input::-moz-placeholder {
+			color:rgba(255,255,255,.5);
+		}
+		input:-ms-input-placeholder {
+			color:rgba(255,255,255,.5);
+		}
     </style>
     <template><input placeholder="{{placeholder}}" value="{{value::change}}" on-keypress="onKeyPress" on-blur="onBlur" /></template>
     <script>

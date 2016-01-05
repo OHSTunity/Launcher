@@ -3,7 +3,7 @@
 
 @element juicy-tile-list
 @demo https://Juicy.github.io/juicy-tile-list/
-version: 1.0.0
+version: 1.1.1
 -->
 
 <script src="rectangle.js"></script>
@@ -190,8 +190,8 @@ version: 1.0.0
             //TODO: decide how to handle setup when something was removed/added in the middle
             // to shift or not to shift indexes?
             //when something added/ removed clear all first
-            if (element.$.container.children.length) {
-                element.$.container.innerHTML = "";
+            if (element.shadowContainer.children.length) {
+                element.shadowContainer.innerHTML = "";
             }
             // console.log("updateWrappers", tileDecorator);
             var tiles = [], frag, tile, child, id,
@@ -231,8 +231,8 @@ version: 1.0.0
                 // tiles.push(child);
                 //}
             }
-            element.$.container.appendChild(wrappers);
-            tiles["root"] = element.$.container;
+            element.shadowContainer.appendChild(wrappers);
+            tiles["root"] = element.shadowContainer;
             return tiles;
         }
 
@@ -322,6 +322,7 @@ version: 1.0.0
         // tiles in ShadowDOM
         proto.tiles = null;
         // unfortunately due to https://www.w3.org/Bugs/Public/show_bug.cgi?id=18429
+        // https://github.com/w3c/webcomponents/issues/60
         // we cannot do it nicely, and we need to workaround it
         // with classes, ids, and this.$.id
         //tiles: null,
@@ -347,6 +348,10 @@ version: 1.0.0
             // create an observer instance
             var that = this;
             this.observer = new MutationObserver(function (mutations) {
+                // do nothing if it's not yet attached
+                if(!that.isReady){
+                  return;
+                }
                 var doRefresh = false;
                 mutations.forEach(function (mutation) {
                     // console.log("observation", mutation.type, arguments, mutations);
@@ -386,33 +391,13 @@ version: 1.0.0
             );
         };
 
-        proto.parseDeclaration = function (elementElement) {
-            var template = this.fetchTemplate(elementElement);
-            // make a shadow root
-            var root = this.createShadowRoot();
-            // stamp template
-            var dom = document.importNode(template.content, true);
-            this.$ = {
-                // workaround for lack of getElementById in IE polyfilled templates
-                container: dom.getElementById && dom.getElementById("container") || dom.querySelector("#container")
-            };
-            // append to shadow dom
-            root.appendChild(dom);
-            // perform post-construction initialization tasks on shadow root
-            //this.shadowRootReady(root, template);
-            // return the created shadow root
-            this.shadowRoots[elementElement.name] = root;
-        };
-
         proto.attachedCallback = function gridAttached() {
             var root = this.createShadowRoot();
             var template = tileListTemplate;
             var clone = document.importNode(template.content, true);
 
             root.appendChild(clone);
-            this.$ = {
-                container: root.querySelector("#container")
-            };
+            this.shadowContainer = root.querySelector("#container");
 
             this.attributeChangedCallback("refreshonresize", false, this.getBooleanAttribute("refreshonresize", false));
             this.attributeChangedCallback("refreshonmutation", false, this.getBooleanAttribute("refreshonmutation", false));
@@ -424,7 +409,7 @@ version: 1.0.0
             // console.profile("attached");
             // console.time('attached');
             // pass setup if contains something (not `{}`-used for Polymer type detection)
-            // IDEA: consider merging with createItemsList, and re-flow setup, to fix Polyjuice glitches (tomalec)
+            // IDEA: consider merging with createItemsList, and re-flow setup, to fix Starcounter merged partials glitches (tomalec)
             Package.call(this, this.setup && this.setup.items !== undefined ? this.setup : undefined);
             if (this.gutter != undefined) {
                 this.setup.gutter = parseInt(this.gutter, 10);
@@ -459,6 +444,7 @@ version: 1.0.0
 
         proto.detachedCallback = function () {
             this.observer.disconnect();
+            this.isReady = false;
         };
 
         proto.addResizeListeners = function () {
@@ -507,7 +493,7 @@ version: 1.0.0
         Deletes fake containers from DOM
         */
         proto.cleanupDOM = function () {
-            var containerBackgrounds = this.$.container.querySelectorAll('.containerBackground');
+            var containerBackgrounds = this.shadowContainer.querySelectorAll('.containerBackground');
 
             for (var i = 0, ilen = containerBackgrounds.length; i < ilen; i++) {
                 containerBackgrounds[i].parentNode.removeChild(containerBackgrounds[i]);
@@ -542,9 +528,9 @@ version: 1.0.0
                             tile.className = 'containerBackground';
                             tiles[itemSetup.id] = tile;
                             tile.id = itemSetup.id;
-                            this.$.container.appendChild(tile);
+                            this.shadowContainer.appendChild(tile);
                         } else if (!tile.parentElement) {
-                            this.$.container.appendChild(tile);
+                            this.shadowContainer.appendChild(tile);
                         }
 
                         (itemSetup.content != undefined) && (tile.innerHTML = itemSetup.content);
@@ -781,8 +767,8 @@ version: 1.0.0
         */
         proto.renderer = function renderAbsolute(node, tiles, offsetX, offsetY) {
             // debugger
-            this.$.container.style.width = node.width + "px";
-            this.$.container.style.height = node.height + "px";
+            this.shadowContainer.style.width = node.width + "px";
+            this.shadowContainer.style.height = node.height + "px";
             positionAbsolute(node, tiles, offsetX, offsetY);
         };
 

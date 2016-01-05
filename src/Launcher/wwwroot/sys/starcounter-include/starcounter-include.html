@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-grid> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.0.9
+version: 0.1.1
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -13,7 +13,7 @@ version: 0.0.9
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
 
 <link rel="import" href="../imported-template/imported-template.html">
-<link rel="import" href="../juicy-tile-grid/src/juicy-tile-grid.html">
+<link rel="import" href="../juicy-tile-grid/juicy-tile-grid.html">
 <link rel="import" href="../juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
 <!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
@@ -45,7 +45,7 @@ version: 0.0.9
     LauncherPartialPrototype.isAttached = false;
 
     /**
-     * @see Polyjuice/starcounter-include - partialAttributeToProperty It's just a copy
+     * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
      */
     function partialAttributeToProperty(element, attrVal){
       attrVal = attrVal || element.getAttribute("partial");
@@ -88,7 +88,7 @@ version: 0.0.9
     };
     /**
      * Attach model.
-     * @see Polyjuice/starcounter-include#attachedCallback
+     * @see Starcounter/starcounter-include#attachedCallback
      * It's almost the same, but in here w append full structure of elements
      */
     LauncherPartialPrototype.attachedCallback = function LPartialAttached(){
@@ -99,7 +99,7 @@ version: 0.0.9
       this.appendChild( this.clone );
     };
     /**
-     * @see Polyjuice/starcounter-include#detachedCallback It's just a copy
+     * @see Starcounter/starcounter-include#detachedCallback It's just a copy
      * @return {[type]} [description]
      */
     LauncherPartialPrototype.detachedCallback = function(){
@@ -107,9 +107,10 @@ version: 0.0.9
       //d console.log("starcounter-partial detached");
     };
     /**
-     * @see Polyjuice/starcounter-include#attributeChangedCallback It's just a copy
+     * @see Starcounter/starcounter-include#attributeChangedCallback It's just a copy
      */
     LauncherPartialPrototype.attributeChangedCallback = function(name, oldVal, newVal){
+		//console.log('asfaf');
       if(name === "partial"){
         partialAttributeToProperty(this, newVal);
         //d console.log("starcounter-partial attr changed");
@@ -117,10 +118,11 @@ version: 0.0.9
     };
     /**
      * Updates inner `imported-template` with partial data given (if applicable)
-     * @see Polyjuice/starcounter-include#partialChanged it's alsmost a copy
+     * @see Starcounter/starcounter-include#partialChanged it's alsmost a copy
      * @param  {Object} newVal new partial value
      */
     LauncherPartialPrototype.partialChanged = function(newVal){
+		//console.log('partial changed');
       if(this.partial){
         var html = this.partial.Html;
         !html && console.warn("partial.Html for", this, "is missing.");

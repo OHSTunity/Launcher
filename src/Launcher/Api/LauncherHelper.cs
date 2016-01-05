@@ -46,77 +46,102 @@ namespace Launcher {
                 return WrapInLauncher(req, appName);
             });
 
-            Handle.GET("/launcher", () => {
-
+            Handle.GET("/launcher", (Request req) => {
+                var session = Session.Current;
                 LauncherPage launcher;
 
-                if (Session.Current == null) {
-
-                    launcher = new LauncherPage() {
-                        Html = "/Launcher/viewmodels/LauncherTemplate.html"
-                    };
-
-                    launcher.Session = new Session(SessionOptions.PatchVersioning);
-
-                    launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
-                        var p = new Page();
-                        return p;
-                    });
-                    var setup = Layout.GetSetup("/launcher/launchpad");
-
-                    if (setup == null)
-                    {
-                        launcher.launchpad.layout = null;
-                    }
-                    else
-                    {
-                        dynamic setupJson = new Json(setup.Value);
-                        launcher.launchpad.layout = setupJson;
-                    }
-
-                    launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
-                        var p = new Page() {
-                            Html = "/Launcher/viewmodels/LauncherMenu.html"
-                        };
-                        return p;
-                    });
-
-                    launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
-                        var p = new Page();
-                        return p;
-                    });
-
+                if (session != null && session.Data != null) {
+                    launcher = (LauncherPage)Session.Current.Data;
+                    launcher.uri = req.Uri;
                     return launcher;
-
-                } else {
-
-                    return (LauncherPage)Session.Current.Data;
                 }
+
+                if (session == null) {
+                    session = new Session(SessionOptions.PatchVersioning);
+                }
+
+                launcher = new LauncherPage() {
+                    Html = "/Launcher/viewmodels/LauncherTemplate.html"
+                };
+
+                launcher.Session = session;
+
+                launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
+                    var p = new Page();
+                    return p;
+                });
+                var setup = Layout.GetSetup("/launcher/launchpad");
+
+                if (setup == null) {
+                    // launcher.launchpad.layout = null
+                    // workaround for https://github.com/Starcounter/Starcounter/issues/3072
+                    // set default value 
+                    // consider moving to HTML, or pre-populatind default layouts
+                    launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
+                } else {
+                    dynamic setupJson = new Json(setup.Value);
+                    launcher.launchpad.layout = setupJson;
+                }
+
+                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
+                    var p = new Page();
+                    return p;
+                });
+
+                launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
+                    var p = new Page() {
+                        Html = "/Launcher/viewmodels/LauncherMenu.html"
+                    };
+                    return p;
+                });
+
+                launcher.uri = req.Uri;
+                return launcher;
             });
 
-            Handle.GET("/launcher/dashboard", () => {
+            Handle.GET("/launcher/dashboard", (Request req) => {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                launcher.results = Self.GET<LauncherResultsPage>(UriMapping.MappingUriPrefix + "/dashboard", () => {
-                    var p = new LauncherResultsPage();
+                launcher.currentPage = Self.GET(UriMapping.MappingUriPrefix + "/dashboard", () => {
+                    var p = new Page();
 
                     return p;
                 });
 
+                launcher.uri = req.Uri;
                 return launcher;
             });
 
-            Handle.GET("/launcher/search?query={?}", (string query) => {
+            Handle.GET("/launcher/settings", (Request req) => {
+
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+
+                launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
+                    var p = new SettingsPage() {
+                        Html = "/Launcher/viewmodels/SettingsPage.html"
+
+                    };
+                    return p;
+                });
+
+                launcher.uri = req.Uri;
+                return launcher;
+            });
+
+            Handle.GET("/launcher/search?query={?}", (Request req, string query) => {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                 string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
 
-                launcher.results = Self.GET<LauncherResultsPage>(uri, () => {
-                    var p = new LauncherResultsPage();
+                launcher.currentPage = Self.GET<ResultPage>(uri, () => {
+                    var p = new ResultPage() {
+                        Html = "/Launcher/viewmodels/ResultPage.html"
+                    };
                     return p;
                 });
 
+                launcher.uri = req.Uri;
                 launcher.searchBar.query = query;
 
                 return launcher;
@@ -152,13 +177,13 @@ namespace Launcher {
 
         static Response WrapInLauncher(Request req, String appName) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-
+            launcher.uri = req.Uri;
             // Call proxied request
             Response resp = Self.CallUsingExternalRequest(req, () => {
                 // check if there is already workspaces array item for given appname
                 Json foundWorkspace = null;
                 for (var i = 0; i < launcher.workspaces.Count; i++) {
-                    if ((launcher.workspaces[i] as LauncherWrapperPage).appName.ToLower() == appName.ToLower()) {
+                    if ((launcher.workspaces[i] as LauncherWrapperPage).AppName.ToLower() == appName.ToLower()) {
                         foundWorkspace = launcher.workspaces[i];
                         break;
                     }
@@ -179,7 +204,7 @@ namespace Launcher {
                     // move serializer magic to here:
                     // set partial ID, find layouts, build HTML path, set appname, etc.
                     // p.appName = mainApp.AppName;
-                    p.appName = appName;
+                    p.AppName = appName;
                     // p.partialId = mainApp.Html;
                     // p.layout = Self.GET("/sc/layout?" + p.partialId);
                     // p.listOfAppsRunning = appnames;

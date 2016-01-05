@@ -27,10 +27,10 @@
 #homeIcon {
     width: 19px;
     height: 19px;
-    margin: 0px 8px 2px 8px;
     color:white;
     display:inline-block;
     font-size:18px;
+    margin-left: 4px;
 }
 
 #launcher-main {
@@ -79,11 +79,8 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 */
 
 #launcher-menu {
-
-    
     color: white;
     padding-left: 6px;
-
 }
 
 #launcher-menu ul {
@@ -97,24 +94,24 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 #launcher-menu ul li {
     /*padding-top: 2px;*/
     transition: all 0.2s ease;
-  
+
 }
 #launcher-menu ul li:hover {
-    
+
     color: white;
     background-color: rgba(255,255,255,.1);
-   
+
 }
 #launcher-menu ul li:active {
-    
+
     background-color: rgba(0,0,0,.1);
-   
+
 }
 #launcher-menu ul li.selected {
-    
+
     color: white;
     background-color: rgba(0,0,0,.25);
-   
+
 }
 
 #launcher-menu ul li {
@@ -143,7 +140,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 
-<<<<<<< HEAD
 #launcher-menu a span {
     display: none;
 }
@@ -151,16 +147,12 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     display: none;
 }
 
-=======
 #launcher-menu ul a span
 {
     font-weight:normal;
     padding-left:4px;
 }
 
-
-
->>>>>>> redesign
 .launcher-dashboard-icon {
     height: 1.15em;
     width: 1.15em;
@@ -171,10 +163,12 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 
 /* Toolbar custom theme */
 .launcher-toolbar {
-    background-color: #43525d; 
+    background-color: #43525d;
     color: white;
     font-size: 28px;
     height: 47px;
+    line-height: normal; /*reset bootstrap line-height*/
+    padding: 0 0 0 10px;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -moz-flex !important;
@@ -192,11 +186,11 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 .launcher-toolbar .glyphicon {
     color:white;
     font-size:18px;
-    margin:0px 11px;
 }
 
-.launcher-toolbar a.icon {
-    height: 18px;
+.launcher-toolbar > * ,
+.launcher-toolbar #launcher-search-icon {
+    margin-right: 11px;
 }
 
 .launcher-toolbar div.preview {
@@ -219,10 +213,19 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     width:360px;
 }
 
-.launcher-toolbar paper-icon-button {
-    color: white;
-    padding: 8px;
-    margin: 0;
+.launcher-toolbar img {
+    vertical-align: baseline; /*reset bootstrap*/
+}
+
+.launcher-toolbar #launcher-settings-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.launcher-toolbar paper-icon-button,
+.launcher-toolbar so-signin {
+    padding: 0;
+    font-size: 0; /*otherwise plays bad with flexbox*/
 }
 
 .launcher-toolbar paper-icon-button.modified,
@@ -299,7 +302,7 @@ div.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+
 }
 
 .css-grid-error {
-    display: block;
+    display: none;
     position: fixed;
     left: 50%;
     top: 50%;
@@ -331,37 +334,18 @@ div.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+
     top: 0;
     left: 0;
     z-index: 100;
+    display: none;
 }
 
-@supports ((display: grid)) {
-    .css-grid-error, 
+/*@supports ((display: grid)) {
+    .css-grid-error,
     .css-grid-error-back {
         display: none;
         display: -moz-grid;
     }
-}
+}*/
 
 launcher-search-input {
     font-size: 12px;
     vertical-align: middle;
 }
-
-launcher-search-input /deep/ input {
-    border:0;
-    height: 35px;
-    outline: none;
-    background: transparent;
-    outline: none;
-    color: #FFF;
-    font-weight: 200;
-    padding-left:10px;
-    font-size: 14px;
-}
-launcher-search-input /deep/ input::-webkit-input-placeholder {
-    color:rgba(255,255,255,.5);
-}
-
-
-
-
-
