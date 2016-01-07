@@ -140,7 +140,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 
-#launcher-menu a span {
+#launcher-menu-old a span {
     display: none;
 }
 #launcher-menu a i.glyphicon {
