@@ -108,7 +108,7 @@
             <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
                 <template is="dom-if" if="{{item.AppName}}">
-                    <launcher-display-route match-path$="{{concat('^\/', item.AppName)}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
+                    <launcher-display-route match-path$="{{concat('^\/', item.AppName, '([/].*)?$')}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
                     <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
                 </template>
                 <template is="dom-if" if="{{!item.AppName}}">
