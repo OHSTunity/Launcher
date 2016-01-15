@@ -77,7 +77,7 @@
             <core-field class="launcher-theme">
 
                 <launcher-search-input placeholder="Search here..." value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
-                <span style="padding-bottom: 5px;"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
+                <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
 
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">

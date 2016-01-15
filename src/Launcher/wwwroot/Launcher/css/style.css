@@ -152,6 +152,29 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-weight:normal;
     padding-left:4px;
 }
+.launcher-toolbar launcher-search-input /deep/ input
+    {
+        max-width:100px;
+        padding-left: 0px; 
+    }
+
+@media only screen and (max-width: 960px) {
+    #launcher-menu ul a span {
+        display:none;
+    }
+    .launcher-toolbar so-signin /deep/ .full-name
+    {
+        display: none;
+    }
+    .launcher-toolbar #search-icon
+    {
+        display: none; 
+    }
+
+
+}
+
+
 
 .launcher-dashboard-icon {
     height: 1.15em;
