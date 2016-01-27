@@ -8,9 +8,12 @@
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
+    <script src="https://cdn.ravenjs.com/2.1.0/raven.min.js"></script>
+
     <script>
         window.Polymer = window.Polymer || {};
         window.Polymer.dom = "shadow";
+        Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
     </script>
     <link rel="import" href="/sys/polymer/polymer.html" />
     <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
