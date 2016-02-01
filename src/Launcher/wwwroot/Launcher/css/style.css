@@ -18,10 +18,19 @@
     left: 0px;
     flex: 1;
 }
+.workspace-no
+{
+    background: red;
+    display: flex;
+    flex-direction:row;
+}
 
 .workspace > juicy-tile-grid {
     /*flex: 1 1 auto;*/
-    padding: 0px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+    padding: 10px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+
+
+
 }
 
 #homeIcon {
@@ -191,7 +200,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-size: 28px;
     height: 47px;
     line-height: normal; /*reset bootstrap line-height*/
-    padding: 0 0 0 10px;
+    padding: 0 10px 0 10px;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -moz-flex !important;
@@ -211,10 +220,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-size:18px;
 }
 
-.launcher-toolbar > * ,
-.launcher-toolbar #launcher-search-icon {
-    margin-right: 11px;
-}
+
 
 .launcher-toolbar div.preview {
     position: absolute;
