@@ -1,0 +1,741 @@
+<!--
+`juicy-tile-table` is a Custom Element with <table> renderer that mimics CSS Grid Layout of [`juicy-tile-grid`](Juicy/juicy-tile-grid).
+
+@element juicy-tile-table
+@demo https://Juicy.github.io/juicy-tile-table/
+version: 0.0.1
+-->
+<!-- Import juicy-tile-list -->
+<link rel="import" href="../juicy-tile-list/src/juicy-tile-list.html">
+
+<!-- Workaround for IE that does not support <td>s in template (outside of tr),
+    we will create td manually later -->
+<template id="juicy-tile">
+    <div class="juicy-tile"><content></content></div>
+</template>
+<!-- <template id="juicy-tile">
+    <td><div class="juicy-tile"><content></content></div></td>
+</template> -->
+
+<template id="juicy-tile-table">
+    <style>
+        :host {
+            display: block;
+        }
+        /*table , for Shimmed, better use class:*/
+        .juicy-tile-table{
+            table-layout: fixed;
+            border-spacing: 0;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        /*
+        Done inline
+        .juicy-tile-table.vertical{
+            width: auto;
+        }*/
+        /** We are overspeficying selectors, to be less problematic with
+            bleeding ShadowCSS in shimmed browsers */
+        /*td{*/
+        .juicy-shadow-row > td{
+            /* do not grow with content*/
+            /*overflow: hidden;*/
+            margin: 0;
+            padding: 0;
+
+            /* position within grid area*/
+            vertical-align: top;
+
+        }
+
+        .juicy-tile,
+        .containerBackground,
+        .juicy-tight-group > .containerBackground,
+        .juicy-tight-group > .juicy-tile {
+            /*display: inline-block;*/
+            position: static;
+            /*height: 100%;
+            width: 100%;*/
+            overflow: auto;
+        }
+
+        .juicy-tile{
+            height: 100%;
+            width: 100%;
+        }
+
+        /*.juicy-tight-group {
+            display: table;
+        }*/
+
+
+        /** for precalculate */
+        :host(.disabled) {
+            position: relative;
+            z-index: 0;
+        }
+
+        :host(.disabled) .juicy-tile {
+            position: absolute;
+            display: inline-block;
+        }
+
+        .containerBackground{
+            z-index: -1;
+        }
+        .containerBackground.juicy-tight-group{
+            z-index: initial;
+        }
+    </style>
+    <content select="script" class="not-a-tile"></content>
+    <content select="style" class="not-a-tile"></content>
+    <!-- <content></content> -->
+</template>
+
+<script>
+    (function (scriptDocument) {
+        var template = scriptDocument.querySelector("#juicy-tile-table");
+        if (window.ShadowDOMPolyfill) {
+            WebComponents.ShadowCSS.shimStyling(template.content, 'juicy-tile-table');
+        }
+        var tileDecorator = scriptDocument.getElementById("juicy-tile").content;
+        var JuicyTileGridPrototype = Object.create(JuicyTileList.prototype);
+        var proto = JuicyTileGridPrototype;
+
+
+        /**
+         * Flage used to force updating ShadowDOM wrappers on regular .setup change
+         * @private
+         * @type {Boolean}
+         */
+        proto._isShadomDOMOutdated = true;
+
+        /**
+         * attachedCallback wrapper to workaround Chromium Bugs
+         * https://code.google.com/p/chromium/issues/detail?id=581176
+         * @see #_attachedCallback
+         */
+        proto.attachedCallback = function gridAttached() {
+            this.attributeChangedCallback("refreshonattached", this.refreshOnAttached);
+
+            // tomalec: Ugly workaround for https://code.google.com/p/chromium/issues/detail?id=581176
+            // to wait for element to get attached, and Chromium HTML imports release metrics
+            // to measure elements inner dimention if not provided in setup
+            // XXX: causes FOUC
+            if (this.refreshOnAttached &&
+                    navigator.userAgent.toLowerCase().indexOf('chrome') > -1 && // is chrome
+                    (!this.setup ||
+                        (!this.setup.width || this.setup.direction == "vertical" && !this.setup.height)
+                    )
+                ) {
+                var list = this;
+                setTimeout(function(){
+                    list._attachedCallback();
+                });
+            } else {
+                this._attachedCallback();
+            }
+            // ---
+        };
+        /**
+         * The real meat of attachedCallback
+         */
+        proto._attachedCallback = function deferredGridAttached() {
+            // move those two to created also for -grid and -list
+            var root = this.createShadowRoot();
+            var clone = document.importNode(template.content, true);
+
+            // IE/polyfill support
+            //
+            root.appendChild(clone);
+            this.shadowContainer = root;
+            // this.shadowContainer = root;
+            // this.shadowContainer.style = root.host.style;
+
+            // IDEA: consider merging with createItemsList, and re-flow setup, to fix Starcounter merged partials glitches (tomalec)
+            Package.call(this, this.setup && this.setup.items !== undefined ? this.setup : undefined);
+
+            if (this.gutter != undefined) {
+                this.setup.gutter = parseInt(this.gutter, 10);
+            }
+
+            this.createItemsList();
+
+            // Setup initials
+            // attributeChangedCallback for refresh* checks the value itselfes
+            this.attributeChangedCallback("refreshonresize", this.refreshonresize);
+            this.attributeChangedCallback("refreshonmutation", this.refreshonmutation);
+            this.attributeChangedCallback("refreshonattached", this.refreshOnAttached);
+            this.attributeChangedCallback("defaulttilesetup", this.defaulttilesetup, this.getAttribute("defaulttilesetup"));
+
+
+            if (this.refreshOnAttached){
+                this.refresh();
+            }
+            this.isReady = true;
+        };
+
+        proto.orig_updateWrappers = proto.updateWrappers;
+        /**
+        * Updates ShadowDOM wrappers for tiles.
+        * Workaround lack of imperative content distribution API.
+        * Builds `#tiles` map, and nested grids tree.
+        * @param  {Array of child elements to cover} elementsArray [description]
+        * @return {Array<HTMLElement>}               array and map of tiles in ShadowDOM
+        */
+        proto.updateWrappers = function (elementsArray, element) {
+            // debugger
+            //TODO: improve performance
+            //TODO: decide how to handle setup when something was removed/added in the middle
+            // to shift or not to shift indexes?
+            //when something added/ removed clear all first
+            // if (element.shadowContainer.children.length) {
+            //     element.shadowContainer.innerHTML = "";
+            // }
+            //TODO(tomalec): Clean it after refactoring to slots (latest W3C spec)
+            var table = element.shadowRoot.querySelector('table');
+            table && table.parentNode.removeChild(table);
+
+            var tiles = [], tile, child, id,
+            //scoping magic
+            scopePrefix = "", scopedIndex = 0;
+
+            /**
+            * Builds tree of nested CSS Grid containers
+            * @param  {DocumentFragment} parentFragment where to append
+            * @param  {Array<SetupItem>} items          array of setup items
+            */
+            function buildGridsTree(items) {
+                var item;
+                for (var itemNo = 0, len = items.length; itemNo < len; itemNo++) {
+                    item = items[itemNo];
+                    if (!item.items) {
+                        createTileWrapper(item.id, tiles);
+                        // add also key based
+                    } else if (item.tightGroup) {
+                        stampShadowContainer(item.id, 'containerBackground juicy-tight-group')
+                        buildGridsTree(item.items);
+                    } else {
+                        // -table does not support DOM nodes for loose groups
+                        // stampShadowContainer(item.id, 'containerBackground juicy-group');
+                        buildGridsTree(item.items);
+                    }
+                }
+            }
+
+
+            /**
+            * Creates an instance of `tileDecorator` with given _id_,
+            * adds tile into `tiles` map.
+            * @param  {String} id       tile id
+            * @param {Object} tiles map of tiles to update
+            */
+            function createTileWrapper(id, tiles) {
+                var frag = document.importNode(tileDecorator, true);
+                // Workaround for IE that does not support <td>s in template (outside of tr)
+                var tile = document.createElement('td');
+                tile.appendChild(frag.children[0]);
+                tile.id = id;
+                tile.firstChild.firstChild.setAttribute("select", "[juicytile='" + id + "']");
+                // add to key based map
+                tiles[id] = tile;
+            }
+
+            /**
+            * Creates an instance of juicy-tile-table container with given _id_,
+            * adds tile into `tiles` map.
+            * @param  {String} id       container/tile id
+            * @param  {String} [className] is container tight group/nested css grid?classname for the container
+            */
+            function stampShadowContainer(id, className) {
+                var tightTile = document.createElement('td');
+                tightTile.className = className;
+                // add to key based map
+                tiles[id] = tightTile;
+                tightTile.id = id;
+                return tightTile;
+            }
+            // build tree from setup
+            buildGridsTree(this.setup.items);
+
+            // set distribution attributes, and wrapp child elements w/o setup
+            var regularTileIndex = -1;
+            for (var i = 0, len = elementsArray.length; i < len; i++) {
+                child = elementsArray[i];
+                //scoping magic
+                //
+                if (child.tagName === "JUICY-TILE-GROUP") {
+                    scopePrefix = child.getAttribute("name") || "";
+                    scopePrefix += "/";
+                    scopedIndex = 0;
+                    continue;
+                }
+                id = scopePrefix + scopedIndex;
+                scopedIndex++;
+                regularTileIndex++;
+                //id = i;
+
+                tile = tiles[id];
+                // if tile was not yet distributed to a tight group
+                if (!tile) {
+                    createTileWrapper(id, tiles);
+                    tile = tiles[id];
+                }
+                // make it work with good old indexes as well
+                tiles[regularTileIndex] = tile;
+                //if (elem.setAttribute) {
+                // attach a selectable key to each light-dom node
+                child.setAttribute('juicytile', id);
+                //}
+            }
+            tiles["root"] = element; // real HTML element, not DocumentFragment at // .shadowContainer;
+            this._isShadomDOMOutdated = undefined;
+            return tiles;
+        };
+
+        proto.renderer = (function () {// scope for helper functions, to return grid renderer
+            /**
+            * Check whether all/any/none items have given property set
+            * @param  {Array<Object>}  items list of items to check
+            * @return {Number}       1 all, 0 any, -1 none
+            */
+            function countProperty(items, propertyName) {
+                var len = items.length,
+                    itemNo = 0,
+                    counter = 0;
+                for (; itemNo < len; itemNo++) {
+                    items[itemNo][propertyName] && counter++;
+                }
+                return counter;
+            }
+
+            /**
+            * Subtracts given _size_ from all elements in _gutters_ array,
+            * removes negative ones
+            * @param  {Array<Number>} gutters array of gutters
+            * @param  {Number} size    size to subtract
+            */
+            function reduceOpenedGutters(gutters, size) {
+                var gutterNo = gutters.length;
+                while (gutterNo--) {
+                    gutters[gutterNo] -= size;
+                    if (gutters[gutterNo] < 0) {
+                        gutters.splice(gutterNo, 1);
+                    }
+                }
+            }
+
+            /**
+            * Mark set given _propertyName_ to given _lineNo_ for all items from _items_
+            * @param  {String} propertyName name of property to set
+            * @param  {Array<Object>} starts       list of items to set
+            * @param  {Number} lineNo       value to set
+            */
+            function markGridItems(starts, propertyName, lineNo) {
+                var itemNo = starts.length;
+                while (itemNo--) {
+                    starts[itemNo][propertyName] = lineNo;
+                }
+            }
+
+            /**
+            * Subtracts one array from another, mark subtracted elements as .{propertyName} = {lineNo}
+            * @param  {Array<Object>} from the array from which given elements should be subtracted
+            * @param  {Array<Object>} what array of objects to be subtracted. IMPORTANT: we assume that the exist in `from`
+            * @param {String} propertyName property name to set to _lineNo_
+            * @param {Number} lineNo line number to set to the property
+            * @return {Array<Object>}      changed array
+            */
+            function arraySubtractAndMark(from, what, propertyName, lineNo) {
+                var whatLeft = what.length,
+                    endingItem;
+                while (whatLeft--) {
+                    endingItem = what[whatLeft];
+                    endingItem[propertyName] = lineNo;
+                    from.splice(from.indexOf(endingItem), 1);
+                }
+                return from;
+            }
+
+            /**
+            * Add new line at given position if there is none,
+            * otherwise just update starts, ends, gutters arrays.
+            * @param {Array} array of lines
+            * @param {Number} position line position
+            * @param {Object} [starts] item that starts at this line
+            * @param {Object} [ends] item that ends at this line
+            * @param {Boolean} [gutter] do we have a gutter after this line?
+            * @returns line number for line at given position
+            */
+            function drawGridLine(array, position, starts, ends, gutter) {
+                var len = array.length, line;
+                // while(len-- && array[len] > position){
+                while (len-- && array[len].position > position) {
+                }
+                // if(len>-1 && array[len] == position){
+                if (len > -1 && array[len].position == position) {
+                    line = array[len];
+                } else {
+                    // array.splice( len+1, 0, position );
+                    line = {
+                        position: position,
+                        starts: [],
+                        ends: [],
+                        gutter: []
+
+                    };
+                    len++;
+                    array.splice(len, 0, line);
+                }
+                starts && line.starts.push(starts);
+                ends && line.ends.push(ends);
+                // for <table> we need to start gutter cells as well ?
+                gutter && line.gutter.push(gutter);
+                return len;
+            }
+
+            /**
+            * Apply styles given by _packedItems_ to _tiles_.
+            * @param  {Object<HTMLElement>} tiles   map (by id) of tiles
+            * @param  {Object} packedGroup configuration
+            * @param  {Boolean} [hideAll]     should all items be hidden (parent element has .hidden = true)
+            * @param  {HTLMElement} container
+            */
+            function applyStyles(tiles, packedGroup, hideAll) {
+                var itemNo = packedGroup.items.length;
+                var packedItem, element, elementStyle;
+
+                var table = document.createElement('table');
+                table.classList.add('juicy-tile-table');
+                if(packedGroup.direction === "vertical"){
+                    table.style.width = 'auto';
+                    table.style.minHeight = packedGroup.height + 'px';
+                } else {
+                    table.style.minWidth = packedGroup.width + 'px';
+                }
+
+                if (packedGroup.tightGroup && !hideAll) {
+                    /// probs for root
+
+                    // IDEA tomalec: Consider merging those 3 lines into single funciton for better performance
+                    setGridTracks("row", packedGroup.rowAxes, "heightFlexible", "heightDynamic", packedGroup.height);
+                    setGridTracks("column", packedGroup.columnAxes, "widthFlexible", "widthDynamic", packedGroup.width);
+                    var tableGrid = getFullTableGrid( packedGroup.rowAxes, packedGroup.columnAxes);
+
+                    var shadowRow, row, column, shadowTile, tileItem;
+
+                    // last columnAxes is the end line of the last row
+                    for(var columnNo = 1; columnNo <  packedGroup.columnAxes.length; columnNo++){
+                        col = document.createElement('col');
+                        column = packedGroup.columnAxes[columnNo];
+                        // force inline style
+                        // .style does not work with ShadowDOM distribution for some reason
+                        // IDEA tomalec: create Chromium issue about isolated problem
+
+                        col.setAttribute('style',
+                            ( column.size ? 'width:'+column.size+';' : '' ) +
+                            ( column.minSize ? 'min-width:'+ column.minSize +';' : '' ) +
+                            // 'max-width:'+ column.maxSize +';');
+                            ( column.maxSize ? 'max-width:'+ column.maxSize +';' : '' )
+                        );
+                        table.appendChild(col);
+                    }
+                    // last rowAxes is the end line of the last row
+                    for(var rowNo = 0; rowNo <  tableGrid.length; rowNo++){
+                        row = tableGrid[rowNo];
+                        shadowRow = document.createElement('tr');
+                        shadowRow.style.height = packedGroup.rowAxes[rowNo+1].size;
+                        shadowRow.style.minHeight = packedGroup.rowAxes[rowNo+1].minSize;
+                        shadowRow.style.maxHeight = packedGroup.rowAxes[rowNo+1].maxSize;
+                        shadowRow.classList.add('juicy-shadow-row'); // just for debugging
+
+                        for(var colNo = 0; colNo < packedGroup.columnAxes.length ; colNo++){
+                            tileItem = row[colNo];
+                            if(tileItem === null){// gutter
+                                shadowRow.appendChild(document.createElement('td'));
+                            } else if(tileItem !== undefined){ // not a span but tile
+
+                                // TODO create SD?
+                                shadowTile = tiles[tileItem.id];
+                                // loose groups does not have tiles, and we do not render a thing for them
+                                if(shadowTile){
+                                    shadowTile.setAttribute('colspan', tileItem.columnEnd - tileItem.columnStart);
+                                    shadowTile.setAttribute('rowspan', tileItem.rowEnd - tileItem.rowStart);
+
+
+                                    var hidden = hideAll || tileItem.hidden;
+
+                                    if (tileItem.items) {// virtual container
+                                        shadowTile.appendChild(
+                                            applyStyles(tiles, tileItem, hidden)
+                                        );
+                                    }
+
+                                    var elementStyle = shadowTile.firstChild.style;
+                                    elementStyle.width = tileItem.widthFlexible || tileItem.widthDynamic ? "100%" : tileItem.width + "px";
+                                    // elementStyle.height = ( tileItem.height /*+ 2 * oversize*/ ) + "px";
+                                    elementStyle.height = tileItem.heightFlexible? '100%' : tileItem.heightDynamic ? 'min-content' : tileItem.height + "px";
+
+                                    if (hidden) {
+                                        elementStyle.display = "none";
+                                    } else {
+                                        var oversize = tileItem.oversize || 0;
+
+                                        if (tileItem.background !== undefined) {
+                                            elementStyle.backgroundColor = tileItem.background || "transparent";
+                                        }
+                                        elementStyle.outline = tileItem.outline || "";
+
+                                        if (oversize) {
+                                            elementStyle.padding = oversize + "px";
+                                            elementStyle.margin = "-" + oversize + "px";
+                                        }
+                                    }
+
+                                    shadowRow.appendChild(shadowTile);
+
+                                }
+                            }
+                        }
+
+                        table.appendChild(shadowRow);
+                    }
+                }
+
+                return table;
+            }
+
+            /**
+            * Prepare grid track setup, update grid position, for items at given _gridLines_
+            * @param {String} trackType        type of track (`"column"||"row"`)
+            * @param {Array<Object>} gridLines        array of gridlines, see `drawGridLine`
+            * @param {String} flexPropertyName property name that indicates flexible size of axis in question
+            * @param {String} dynamicPropertyName property name that indicates dynamic size of axis in question
+            */
+            function setGridTracks(trackType, gridLines, flexPropertyName, dynamicPropertyName, containerSize) {
+                var linesAmount = gridLines.length,
+                    currentLine = gridLines[0],
+                    previousLine = currentLine,
+                    trackSize,
+                    str = "",
+                    openedTiles,
+                    openedGutters = [];
+
+                // lineNo == 1, currentLine = gridLines[0]
+                markGridItems(currentLine.starts, trackType + "Start", 1);
+                openedTiles = currentLine.starts.slice();
+                // In CSS Grid lines, and tracks are counted from 1
+                if(linesAmount == 1){
+                    markGridItems(currentLine.ends, trackType + "End", 1);
+                }
+                var col;
+
+                for (var lineNo = 2; lineNo <= linesAmount; lineNo++) {
+                    currentLine = gridLines[lineNo - 1];
+                    trackSize = currentLine.position - previousLine.position;
+                    // Workaround for dynamic col.style changes in ShadowDOM
+                    reduceOpenedGutters(openedGutters, trackSize);
+
+                    if (lineNo == linesAmount && openedTiles.length == 0) {
+                        // Last line, if empty, should be flexible
+                        // str += trackSize + "fr ";
+                        currentLine.size = (100 * trackSize/containerSize) + "%";
+                        break;
+                    } else if (openedGutters.length) {
+                        // Gutters should be fixed size
+                        currentLine.size = trackSize + "px";
+                    } else {
+                        //does not contain any gutter
+                        switch (countProperty(openedTiles, flexPropertyName)) {
+                            case 0: // all are non-flex
+                                // there is dynamic
+                                if (countProperty(openedTiles, dynamicPropertyName)) {
+                                    // str += "minmax( min-content, max-content ) "
+                                    // TODO: check just width auto
+                                    currentLine.minSize = 'min-content';
+                                    currentLine.maxSize = 'max-content';
+                                } else {
+                                    // all are non-dynamic (fixed)
+                                    currentLine.size = trackSize + "px ";
+                                }
+                                break;
+                            case openedTiles.length: // all intersected are flexible
+                                // and it contains them
+                                if (currentLine.ends.length === openedTiles.length && previousLine.starts.length === openedTiles.length) {
+                                    // str += "minmax( min-content, " + trackSize + "fr ) ";
+                                    // str = "minmax( min-content, " + (100 * trackSize/containerSize) + "%)";
+                                    currentLine.minSize = 'min-content';
+                                    currentLine.size = (100 * trackSize/containerSize) + '%';
+                                } else {
+                                    // XXX(tomalec): min-content does not make an effect for spanning items! so we will force min size to fixed size
+                                    // str += "minmax( " + trackSize + "px, " + trackSize + "fr ) ";
+                                    // min-size in px is somehow secured by containers min-size
+                                    currentLine.size = (100 * trackSize/containerSize) + '%';
+                                }
+                                break;
+                            default: //mix
+                                // str += "minmax( " + trackSize + "px, " + trackSize + "fr ) ";
+                                // min-size in px is somehow secured by containers min-size
+                                currentLine.size = (100 * trackSize/containerSize) + '%';
+                                break;
+                        }
+                    }
+
+                    // currentLine.ends.length && arraySubtractAndMark(openedTiles, currentLine.ends, trackType + "End", lineNo);
+                    currentLine.ends.length && arraySubtractAndMark(openedTiles, currentLine.ends, trackType + 'End', lineNo);
+                    if (currentLine.starts.length) {
+                        markGridItems(currentLine.starts, trackType + "Start", lineNo);
+                        openedTiles = openedTiles.concat(currentLine.starts);
+                    }
+                    if (currentLine.gutter.length) {
+                        openedGutters = openedGutters.concat(currentLine.gutter);
+                    }
+                    previousLine = currentLine;
+                }
+
+                // now we need to resolve fr
+                // https://www.w3.org/TR/css-grid-1/#algo-find-fr-size
+                // or mimic https://www.w3.org/TR/css-grid-1/#algo-overview otherwise
+                // calc will not help, as it is not supported for table
+                // https://github.com/Juicy/juicy-tile-table/issues/1
+                return;
+            }
+
+            return function grid(packedTree, tiles, offsetX, offsetY) {
+                // root group is always a tight group
+                // (have independent grid lines from its parent)
+                packedTree.tightGroup = true;
+
+                function drawGridLinesFromTree(node, offsetX, offsetY, columnAxes, rowAxes) {
+                    if (node.tightGroup) {
+                        // just position, as Object Number, with dynamic property
+                        //{position: px, dynamic: boolean}
+                        columnAxes = node.columnAxes = [];
+                        rowAxes = node.rowAxes = [];
+                        //reposition cildnodes to 0,0
+                        offsetX = offsetY = 0;
+
+                    }
+                    var ilen = node.items.length,
+                        item, x, y;
+                    while (ilen--) {
+                        var item = node.items[ilen];
+                        if (item.hidden) {
+                            continue;
+                        }
+                        x = node.rightToLeft ? node.width - item.width - item.x : item.x
+                        x += offsetX;
+                        y = node.bottomUp ? node.height - item.height - item.y : item.y
+                        y += offsetY;
+                        drawGridLine(columnAxes, x, item);
+                        drawGridLine(columnAxes, x + item.width, undefined, item, node.gutter);
+
+                        drawGridLine(rowAxes, y, item);
+                        drawGridLine(rowAxes, y + item.height, undefined, item, node.gutter);
+
+                        if (item.items) {
+                            drawGridLinesFromTree(item, x, y, columnAxes, rowAxes);
+                        }
+                    }
+                    // IDEA (tomalec): consider making it on-demand, so grid may auto-center/auto grow if last track is empty
+                    // draw lines for end (right bottom) of our container
+                    drawGridLine(columnAxes, offsetX + node.width);
+                    drawGridLine(rowAxes, offsetY + node.height);
+                }
+                drawGridLinesFromTree(packedTree, 0, 0, packedTree.columnAxes, packedTree.rowAxes);
+
+                packedTree.id = "root";
+                if(packedTree.direction === "vertical"){
+                    this.style.width = 'auto';
+                    this.style.minHeight = packedTree.height + 'px';
+                } else {
+                    this.style.minWidth = packedTree.width + 'px';
+                }
+                this.shadowRoot.insertBefore(
+                    applyStyles(tiles, packedTree, undefined, this.shadowContainer),
+                    this.shadowRoot.firstChild
+                );
+                // if (packedTree.direction === "vertical") {
+                //     this.shadowContainer.style.height = "100%";
+                // }
+            };
+            /**
+             * Create a nxm array with table cells
+             * undefined - spanned cell
+             * null - gutter
+             * Object - tile that starts here
+             * XXX: we heavily rely on assumption that tiles do not overlap each other at any grid node
+             * @param  {Array} rowAxes grid axes as in #drawGridLines
+             * @param  {Array} columnAxes column axes as in #drawGridLines
+             * @return {Array}         rows x cols table
+             */
+            function getFullTableGrid(rowAxes, columnAxes){
+                function notALooseGroup(e){
+                    return !e.items || e.tightGroup;
+                }
+                function byX(a, b){
+                    return b.x - a.x;
+                }
+                var grid = [];
+                var rowNo, rowsLen = rowAxes.length, howManyTilesLeft, firstToStart,
+                    tilesWoLooseGroups,
+                    columnNo, columnsLen = columnAxes.length;
+                var gridRow, spans = Array(columnsLen-1), spanning = 0, horizontalSpan, verticalSpan;
+
+                for ( rowNo=0; rowNo < rowsLen - 1; rowNo++){
+                    gridRow = [];
+                    grid.push(gridRow);
+                    // filter out loos groups, as we cannot represent them as HTML nodes in a <table>
+                    tilesWoLooseGroups = rowAxes[rowNo].starts
+                                            .sort(byX)
+                                            .filter(notALooseGroup);
+                    howManyTilesLeft = tilesWoLooseGroups.length;
+                    // XXX: we assume descending order of gridlines in starts
+                    firstToStart = tilesWoLooseGroups[--howManyTilesLeft];
+                    for ( columnNo=1; columnNo < columnsLen; columnNo++){
+                        if(spans[columnNo]>0){
+                            spans[columnNo]--;
+                            gridRow.push(undefined);
+                        } else if(firstToStart && firstToStart.columnStart === columnNo && firstToStart.rowStart === rowNo+1){
+                            gridRow.push(firstToStart);
+                            // 0-based span as a distance between axes
+                            horizontalSpan = firstToStart.columnEnd - firstToStart.columnStart - 1;
+                            verticalSpan = firstToStart.rowEnd - firstToStart.rowStart - 1;
+                            spans[columnNo] = verticalSpan;
+                            for(spanning = 0; spanning < horizontalSpan; spanning++){
+                                columnNo++;
+                                spans[columnNo] = verticalSpan;
+                                gridRow.push(undefined);
+                            }
+                            firstToStart = tilesWoLooseGroups[--howManyTilesLeft];
+                        } else {
+                            // gutter
+                            gridRow.push(null);
+                        }
+
+                    }
+                }
+                return grid;
+
+            }
+        }());
+
+        /** Use package packItems method to ommit/disable pre-calculate magic */
+        proto.packItems = Package.prototype.packItems;
+
+        var juicyTileListRefresh = proto.refresh;
+        /**
+         * Overwrite -list.refresh to always do hard refresh when attached
+         * @return whatever -list.refresh returns
+         */
+        proto.refresh = function tableRefresh(){
+            return juicyTileListRefresh.call(this, this.isReady);
+        };
+
+
+
+        window.JuicyTileGrid = document.registerElement("juicy-tile-table", {
+            prototype: JuicyTileGridPrototype
+        });
+    }((document._currentScript || document.currentScript).ownerDocument));
+</script>

@@ -25,8 +25,8 @@
   ],
   "dependencies": {
     "imported-template": "Juicy/imported-template#gh-pages",
-    "juicy-tile-grid": ">=1.1.0",
-    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages"
+    "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
+    "juicy-tile-table": "*"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#~3.1.3",
