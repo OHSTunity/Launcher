@@ -97,12 +97,12 @@
         return list.tiles[setup.id];
     }
 
-    function getNestedList(tileId, selectors) {
+    function getNestedList(list, tileId, selectors) {
         var selector = selectors.map(function (s) {
-            return "[juicytile='" + tileId + "'] > " + s;
+            return "[juicytile='" + tileId + "'] " + s;
         }).join(", ");
 
-        return document.querySelector(selector);
+        return list.querySelector(selector);
     }
 
     function getSetupItem(setup, id) {
@@ -358,7 +358,7 @@
             selectedScope: { type: Object, value: null, observer: "selectedScopeChanged" },
             selectedScopeItems: { type: Array, value: [] },
             breadcrumb: { type: Array, value: [] },
-            hasChanges: { type: Boolean, value: false },
+            hasChanges: { type: Boolean, value: false, notify: true },
             showMore: { type: Boolean, value: false },
             showTree: { type: Boolean, value: true },
             background: { type: String, observer: "backgroundChanged" },
@@ -547,7 +547,7 @@
                 return true;
             }
 
-            return !!getNestedList(item.id, this.listSelectors);
+            return !!getNestedList(this.selectedList, item.id, this.listSelectors);
         },
         getIsGroupSelection: function (tiles) {
             for (var i = 0; i < tiles.length; i++) {
@@ -857,12 +857,14 @@
             }.bind(this));
 
             this.refreshAndSelectTile(group.id);
+            this.touch();
         },
         packEmptyGroup: function (e) {
             var setup = this.getFirstSelectedSetup();
             var group = createSetupGroup(this.selectedList, setup);
 
             this.refreshAndSelectTile(group.id);
+            this.touch();
         },
         packSeparatorGroup: function (e) {
             var setup = this.getFirstSelectedSetup();
@@ -873,6 +875,7 @@
             group.itemName = "Separator";
 
             this.refreshAndSelectTile(group.id);
+            this.touch();
         },
         unpackGroup: function (e) {
             var tiles = this.selectedTiles.slice();
@@ -890,6 +893,7 @@
 
             this.refreshSelectedList();
             this.refreshSelectedScopeItems();
+            this.touch();
         },
         selectTreeItem: function (e) {
             var setup = e.currentTarget.item;
@@ -992,9 +996,9 @@
             }
 
             this.set("selectedList", null);
-            this.set("selectedList", list);
             this.set("selectedScope", null);
             this.set("breadcrumb", []);
+            this.set("selectedList", list);
             this.refreshSelectedScopeItems();
 
             if (this.selectedTiles.length) {
@@ -1020,7 +1024,7 @@
 
                 this.set("selectedScope", tile);
             } else {
-                var list = getNestedList(setup.id, this.listSelectors);
+                var list = getNestedList(this.selectedList, setup.id, this.listSelectors);
 
                 if (!list) {
                     throw "Cannot scope in to this tile!";
@@ -1050,7 +1054,9 @@
             this.splice("breadcrumb", index, cut);
         },
         toggleSelectedTile: function (multiple, tile) {
-            if (!tile) {
+            if (!tile && this.breadcrumb.length) {
+                this.scopeOut();
+            } else if (!tile) {
                 this.resetSelection();
                 return;
             }
