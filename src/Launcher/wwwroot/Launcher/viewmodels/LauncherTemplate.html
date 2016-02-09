@@ -127,8 +127,6 @@
             <div id="elementSettings" class="launcher-topbar">
                 <juicy-tile-simple-editor default-selected-list-selectors='[".visible juicy-tile-table"]'
                                    class="max-height"
-                                   modified="{{model.layoutModified$}}"
-                                   on-juicy-tile-editor-close="closeEditor"></juicy-tile-editor>
                                    has-changes="{{model.layoutModified$}}"
                                    on-close-click="closeEditor"></juicy-tile-simple-editor>
             </div>
