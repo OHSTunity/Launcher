@@ -747,7 +747,7 @@
             var hidden = this.getCommonSetupValue("hidden");
 
             if (hidden === null) {
-                this.set("visible", null);
+                this.set("visible", true);
             } else {
                 this.set("visible", !hidden);
             }
@@ -859,6 +859,7 @@
 
             this.touch();
             this.set("mediaScreen", e.currentTarget.item);
+            this.set("width", this.mediaScreen.width);
             this.selectedList.setup.width = this.mediaScreen.width;
         },
         selectWidth: function (e) {

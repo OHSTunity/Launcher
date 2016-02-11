@@ -26,11 +26,11 @@
     "juicy-tile-grid": ">=1.1.0",
     "juicy-tile-table": "tomalec/juicy-tile-table#gh-pages"
   },
-  "_release": "89c0aa3be8",
+  "_release": "f2bdd7f66b",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "89c0aa3be8efcc32ded4a6bde99c9108ab74d515"
+    "commit": "f2bdd7f66b23e9a08bab7fd16d376273341aa958"
   },
   "_source": "git://github.com/juicy/juicy-tile-editor.git",
   "_target": "gh-pages",
