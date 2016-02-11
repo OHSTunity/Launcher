@@ -130,10 +130,10 @@ namespace Launcher {
             });
 
             Handle.GET("/launcher/search?query={?}", (Request req, string query) => {
-                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+             //   LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
-
+               // string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
+                /*
                 launcher.currentPage = Self.GET<ResultPage>(uri, () => {
                     var p = new ResultPage() {
                         Html = "/Launcher/viewmodels/ResultPage.html"
@@ -142,9 +142,9 @@ namespace Launcher {
                 });
 
                 launcher.uri = req.Uri;
-                launcher.searchBar.query = query;
+                launcher.searchBar.query = query;*/
 
-                return launcher;
+                return null;
             });
 
             // + dummy responses from launcher itself

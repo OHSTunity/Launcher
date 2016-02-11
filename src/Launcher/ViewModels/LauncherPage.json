@@ -13,13 +13,10 @@
                 "text": "",
                 "matchScore": 0.5,
                 "url": "",
-                "thumbnail": { }
+                "thumbnail": {},
             }
         ],
-        "preview": {
-            "Html": "/Launcher/viewmodels/SearchPreviewPage.html",
-            "PartialId": "/Launcher/viewmodels/SearchPreviewPage.html"
-        },
+        "previewResult": { },
         "previewVisible": false,
         "close$": 0
     },
