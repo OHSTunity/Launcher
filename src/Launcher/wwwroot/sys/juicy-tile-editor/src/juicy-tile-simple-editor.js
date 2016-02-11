@@ -243,9 +243,20 @@
         return "Empty image";
     }
 
-    function getSetupName(list, setup) {
-        var value = getFullSetupName(list, setup);
-        var maxLen = 15;
+    function getListSetupName(element, listSelectors) {
+        var selector = listSelectors.join(", ");
+        var list = element.querySelector(selector);
+
+        if (list) {
+            return getFullSetupName(list, list.setup, listSelectors);
+        }
+
+        return null;
+    }
+
+    function getSetupName(list, setup, listSelectors) {
+        var value = getFullSetupName(list, setup, listSelectors);
+        var maxLen = 18;
 
         if (value && value.length > maxLen) {
             var index = value.indexOf(" ", maxLen);
@@ -255,10 +266,12 @@
             }
         }
 
+        value = value.replace(/[&]$/gi, "").trim();
+
         return value;
     }
 
-    function getFullSetupName(list, setup) {
+    function getFullSetupName(list, setup, listSelectors) {
         if (setup.itemName) {
             return setup.itemName;
         }
@@ -271,14 +284,26 @@
             var names = [];
 
             for (var i = 0; i < setup.items.length; i++) {
-                names.push(getFullSetupName(list, setup.items[i]));
+                names.push(getFullSetupName(list, setup.items[i], listSelectors));
             }
 
-            return names.join(" & ");
+            names = names.join(" & ");
+
+            if (setup.container) {
+                return "Group: " + names;
+            } else {
+                return "Partial: " + names;
+            }
         }
 
         var tile = list.querySelector("[juicytile='" + setup.id + "']");
-        var value = getLabelSetupName(tile);
+        var value = getListSetupName(tile, listSelectors);
+
+        if (value) {
+            return value;
+        }
+
+        value = getLabelSetupName(tile);
 
         if (value) {
             return value;
@@ -304,8 +329,16 @@
     }
 
     function createSetupGroup(list, selectedSetup) {
-        var container = selectedSetup ? selectedSetup.container : list.setup;
-        var priority = selectedSetup ? selectedSetup.priority : 1;
+        var container = list.setup;
+        var priority = 1;
+
+        if (selectedSetup) {
+            container = selectedSetup.container;
+            priority = selectedSetup.priority - Number.EPSILON;
+        } else if (list.setup.items.length) {
+            list.setup.items[0].priority = 1 - Number.EPSILON;
+        }
+
         var setup = {
             priority: priority,
             gutter: 0,
@@ -345,9 +378,9 @@
             widthItem: { type: Object, value: null, notify: true },
             widthRanges: {
                 type: Array,
-                value: [{ name: "1", value: "8.33%" }, { name: "2", value: "16.66%" }, { name: "3", value: "25%" }, { name: "4", value: "33.33%" }, { name: "5", value: "41.66%" },
-                        { name: "6", value: "50%" }, { name: "7", value: "58.33%" }, { name: "8", value: "66.66%" }, { name: "9", value: "75%" }, { name: "10", value: "83.33%" },
-                        { name: "11", value: "91.66%" }, { name: "12", value: "100%" }]
+                value: [{ name: "1", value: 100 / 12 + "%" }, { name: "2", value: 200 / 12 + "%" }, { name: "3", value: 300 / 12 + "%" }, { name: "4", value: 400 / 12 + "%" },
+                        { name: "5", value: 500 / 12 + "%" }, { name: "6", value: 600 / 12 + "%" }, { name: "7", value: 700 / 12 + "%" }, { name: "8", value: 800 / 12 + "%" },
+                        { name: "9", value: 900 / 12 + "%" }, { name: "10", value: 1000 / 12 + "%" }, { name: "11", value: 1100 / 12 + "%" }, { name: "12", value: 1200 / 12 + "%" }]
             },
             visible: { type: Boolean, value: null, notify: true },
             listSelectors: { type: Array, value: ["juicy-tile-list", "juicy-tile-grid", "juicy-tile-table"] },
@@ -403,7 +436,7 @@
 
                 var tile = getTile(e, this.selectedList, this.selectedScope);
 
-                this.toggleSelectedTile(e.ctrlKey, tile);
+                this.toggleSelectedTile(e.ctrlKey || e.metaKey, tile);
             }.bind(this);
 
             this.onListDoubleClick = function (e) {
@@ -561,33 +594,56 @@
 
             return tiles.length > 0;
         },
+        getIsGutterSelection: function (tiles) {
+            if (!tiles.length) {
+                return true;
+            }
+
+            return this.getIsGroupSelection(tiles);
+        },
         getSetupName: function (setup) {
-            return getSetupName(this.selectedList, setup);
+            return getSetupName(this.selectedList, setup, this.listSelectors);
         },
         getCrumbName: function (item) {
             if (item.scope) {
                 var id = getTileId(item.scope);
                 var setup = getSetupItem(item.list.setup, id);
 
-                return getSetupName(item.list, setup);
+                return getSetupName(item.list, setup, this.listSelectors);
             } else {
-                return this.getSetupName(item.list.setup);
+                return this.getSetupName(item.list.setup, this.listSelectors);
+            }
+        },
+        getSelectedScopeName: function (list, scope) {
+            if (scope) {
+                return getSetupName(list, getSetupItem(list.setup, getTileId(scope)), this.listSelectors);
+            } else {
+                return getSetupName(list, list.setup, this.listSelectors);
             }
         },
         getCommonSetupValue: function (name) {
             var value = null;
 
-            for (var i = 0; i < this.selectedTiles.length; i++) {
-                var tile = this.selectedTiles[i];
-                var id = tile.id;
-                var setup = getSetupItem(this.selectedList.setup, id);
-                var v = setup[name];
+            if (this.selectedTiles.length) {
+                for (var i = 0; i < this.selectedTiles.length; i++) {
+                    var tile = this.selectedTiles[i];
+                    var id = tile.id;
+                    var setup = getSetupItem(this.selectedList.setup, id);
+                    var v = setup[name];
 
-                if (i > 0 && value !== v) {
-                    return notAvailable;
+                    if (i > 0 && value !== v) {
+                        return notAvailable;
+                    }
+
+                    value = v;
                 }
+            } else if (this.selectedScope) {
+                var id = getTileId(this.selectedScope);
+                var setup = getSetupItem(this.selectedList.setup, id);
 
-                value = v;
+                value = setup[name];
+            } else {
+                value = this.selectedList.setup[name];
             }
 
             if (value === undefined) {
@@ -601,6 +657,8 @@
                 return "Width:"
             }
 
+            width = width.toString();
+
             var s = [width];
 
             if (width.indexOf("%") > 0) {
@@ -608,6 +666,12 @@
                     s.push(" of parent");
                 } else {
                     s.push(" of ", list.setup.width, "px");
+                }
+            } else {
+                if (widthFlexible) {
+                    s.push(" / ", list.setup.width, " of parent");
+                } else {
+                    s.push(" pixels");
                 }
             }
 
@@ -618,16 +682,27 @@
             return s.join("");
         },
         setCommonSetupValue: function (name, value) {
-            if (!this.selectedTiles.length || value === notAvailable || this.isReadingSetup) {
+            if (value === notAvailable || this.isReadingSetup) {
                 return;
             }
 
-            this.selectedTiles.forEach(function (tile) {
-                var id = tile.id;
+
+
+            if (this.selectedTiles.length) {
+                this.selectedTiles.forEach(function (tile) {
+                    var id = tile.id;
+                    var setup = getSetupItem(this.selectedList.setup, id);
+
+                    setup[name] = value;
+                }.bind(this));
+            } else if (this.selectedScope) {
+                var id = getTileId(this.selectedScope);
                 var setup = getSetupItem(this.selectedList.setup, id);
 
                 setup[name] = value;
-            }.bind(this));
+            } else if (this.selectedList) {
+                this.selectedList.setup[name] = value;
+            }
 
             this.touch();
             this.refreshSelectedList();
@@ -899,7 +974,14 @@
             var setup = e.currentTarget.item;
             var tile = this.selectedList.tiles[setup.id];
 
-            this.toggleSelectedTile(e.ctrlKey, tile);
+            this.toggleSelectedTile(e.ctrlKey || e.metaKey, tile);
+        },
+        scopeInTreeItem: function (e) {
+            var setup = e.currentTarget.item;
+
+            if (this.getIsScopable(setup)) {
+                this.scopeIn(setup);
+            }
         },
         showTreeItem: function (e) {
             var setup = e.currentTarget.item;
@@ -1008,7 +1090,7 @@
             this.readSelectedSetup();
         },
         scopeIn: function (setup) {
-            var name = this.selectedList.setup.itemName;
+            var name = getSetupItem(this.selectedList, this.selectedList);
 
             if (this.selectedScope) {
                 var id = getTileId(this.selectedScope);
@@ -1017,6 +1099,7 @@
                 name = s.itemName;
             }
 
+            this.set("selectedTiles", []);
             this.push("breadcrumb", { list: this.selectedList, scope: this.selectedScope, name: name });
 
             if (setup.items && setup.items.length) {
@@ -1033,6 +1116,8 @@
                 this.set("selectedScope", null);
                 this.set("selectedList", list);
             }
+
+            this.readSelectedSetup();
         },
         scopeOut: function () {
             if (!this.breadcrumb.length) {
@@ -1052,8 +1137,11 @@
             this.set("selectedList", crumb.list);
             this.set("selectedScope", crumb.scope);
             this.splice("breadcrumb", index, cut);
+            this.readSelectedSetup();
         },
         toggleSelectedTile: function (multiple, tile) {
+            clearSelection();
+
             if (!tile && this.breadcrumb.length) {
                 this.scopeOut();
             } else if (!tile) {
@@ -1075,6 +1163,10 @@
             }
         },
         refreshSelectedList: function () {
+            if (!this.selectedList) {
+                return;
+            }
+
             this.selectedList.refresh(true);
             this.refreshSelectedTiles();
         },
@@ -1181,6 +1273,7 @@
             this.attachEventListeners();
             this.readSelectedMediaScreen(newVal, oldVal);
             this.refreshSelectedScopeItems();
+            this.readPrimitiveSetupValues();
             this.refreshHighlightSelectedScope();
         },
         selectedScopeChanged: function (newVal, oldVal) {
