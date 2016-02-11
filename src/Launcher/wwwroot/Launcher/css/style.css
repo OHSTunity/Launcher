@@ -18,10 +18,19 @@
     left: 0px;
     flex: 1;
 }
+.workspace-no
+{
+    background: red;
+    display: flex;
+    flex-direction:row;
+}
 
 .workspace > juicy-tile-grid {
     /*flex: 1 1 auto;*/
-    padding: 0px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+    padding: 10px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+
+
+
 }
 
 #homeIcon {
@@ -140,7 +149,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 
-#launcher-menu a span {
+#launcher-menu-old a span {
     display: none;
 }
 #launcher-menu a i.glyphicon {
@@ -152,6 +161,29 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-weight:normal;
     padding-left:4px;
 }
+.launcher-toolbar launcher-search-input /deep/ input
+    {
+        max-width:100px;
+        padding-left: 0px; 
+    }
+
+@media only screen and (max-width: 960px) {
+    #launcher-menu ul a span {
+        display:none;
+    }
+    .launcher-toolbar so-signin /deep/ .full-name
+    {
+        display: none;
+    }
+    .launcher-toolbar #search-icon
+    {
+        display: none; 
+    }
+
+
+}
+
+
 
 .launcher-dashboard-icon {
     height: 1.15em;
@@ -168,7 +200,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-size: 28px;
     height: 47px;
     line-height: normal; /*reset bootstrap line-height*/
-    padding: 0 0 0 10px;
+    padding: 0 10px 0 10px;
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: -moz-flex !important;
@@ -188,10 +220,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-size:18px;
 }
 
-.launcher-toolbar > * ,
-.launcher-toolbar #launcher-search-icon {
-    margin-right: 11px;
-}
+
 
 .launcher-toolbar div.preview {
     position: absolute;
