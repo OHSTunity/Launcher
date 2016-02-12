@@ -79,7 +79,7 @@
                 <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">
-                        <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
+                        <lancher-search-result data="{{model.searchBar.preview}}"></launcher-search-result>
                     </div>
                 </template>
             </core-field>
@@ -130,12 +130,12 @@
                     <launcher-display-route match-path$="{{concat('^\/', item.AppName)}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
                     <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
                 </template>
-                <template is="dom-if" if="{{!item.AppName}}">
+                <!--<template is="dom-if" if="{{!item.AppName}}">
                     <div style="padding: 15px; font-weight:bold; color:red;">
                         <div>A workspace without AppName</div>
                         <div>{{item.Html}}</div>
                     </div>
-                </template>
+                </template>-->
             </template>
         </div>
 

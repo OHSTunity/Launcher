@@ -1,0 +1,156 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html" />
+
+<dom-module id="launcher-search-result">
+    <style>
+        :host {
+            display: inline;
+            height: 0px;
+            width: 0px;
+        }
+		input {
+			border:0;
+			height: 35px;
+			outline: none;
+			background: transparent;
+			outline: none;
+			color: #FFF;
+			font-weight: 200;
+			padding-left:10px;
+			font-size: 14px;
+		}
+		input::-webkit-input-placeholder {
+		    color:rgba(255,255,255,.5);
+		}
+		input::-moz-placeholder {
+			color:rgba(255,255,255,.5);
+		}
+		input:-ms-input-placeholder {
+			color:rgba(255,255,255,.5);
+		}
+    </style>
+    <template>
+      <input placeholder="{{placeholder}}" value="{{value::change}}" on-keypress="onKeyPress" on-blur="onBlur" />
+    </template>
+    <script>
+        Polymer({
+            is: 'launcher-search-result',
+            properties: {
+                data: {
+                    notify: true,
+                    observer: 'dataChanged'
+                },
+            },
+  		      observers: [
+  			      'resultChanged(data.Result)'
+  		      ],
+            ready: function () {
+                this.data = this.data || {};
+            },
+            resultChanged: function () {
+      			  if (data.Types)
+            },
+            suggestionTapped: function (event, detail, sender) {
+  			         var data = event.model;
+                if (data && data.item.Action) {
+                    this.set('data.Action$', data.item.Action);
+                }
+                this.resetSearch();
+            },
+            resetSearch: function () {
+                this.set('data.SearchString$', '');
+                this.$.overlay.close();
+            },
+            suggestionHovered: function (event, detail, sender) {
+                this.setActive(event.model.item);
+            },
+            setActive: function (item) {
+                if (this.active) {
+                    this.set('active._active', false);
+                }
+                this.active = item;
+                if (item) {
+                    item._active = true;
+                }
+            },
+            activateLast: function () {
+                var count = this.data.Result.length;
+                if (count > 0)
+                    this.setActive(this.data.Result[count - 1]);
+            },
+            activateFirst: function () {
+                var count = this.data.Result.length;
+                if (count > 0)
+                    this.setActive(this.data.Result[0]);
+            },
+            activateNext: function () {
+                if (this.active) {
+                    for (var i = 0; i < this.data.Result.length; i++) {
+                        if (this.data.Result[i] == this.active) {
+                            if (this.data.Result.length > i + 1) {
+                                this.setActive(this.data.Result[i + 1]);
+                            } else
+                                this.activateFirst();
+                            return;
+                        }
+                    }
+                }
+                this.activateFirst();
+            },
+            activatePrevious: function () {
+                if (this.active) {
+                    for (var i = 0; i < this.data.Result.length; i++) {
+                        if (this.data.Result[i] == this.active) {
+                            if (i > 0) {
+                                this.setActive(this.data.Result[i - 1]);
+                            } else
+                                this.activateLast();
+                            return;
+                        }
+                    }
+                }
+                this.activateLast();
+            },
+            keydownHandler: function (event, detail, sender) {
+                switch (event.keyCode) {
+                    case 38:
+                        // up arrow
+                        this.activatePrevious();
+                        break;
+                    case 40:
+                        // down arrow
+                        this.activateNext();
+                        break;
+                    case 13:
+                        // enter
+                        if (this.active && this.active.Action) {
+                            this.set('data.Action$', this.active.Action);
+                            this.resetSearch();
+                        }
+                        break;
+                }
+                ;
+            },
+            dataChanged: function () {
+            },
+            //debugger;
+            focus: function () {
+                this.$.input.focus();
+            },
+            _computeClass: function (active) {
+                return active ? 'active' : '';
+            }
+            _getTypes = function(data) {
+              var items = [];
+              for (var name in data)
+              {
+                if (data.hasOwnProperty(name) && data[name].hasOwnProperty("Types")) {
+                   for (var i = 0; i < data[name].Types.length; i++) {
+                     items.push(data[name].Items[i]);
+                   }
+                }
+              }
+              return items;
+            };
+        });
+    </script>
+</dom-module>
