@@ -8,13 +8,7 @@
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
-    <script src="https://cdn.ravenjs.com/2.1.0/raven.min.js"></script>
 
-    <script>
-        window.Polymer = window.Polymer || {};
-        window.Polymer.dom = "shadow";
-        Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
-    </script>
     <link rel="import" href="/sys/polymer/polymer.html" />
     <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
 
@@ -113,13 +107,13 @@
 
         <div id="launcher-content">
             <div class="launchpad">
+
                 <template is="dom-if" if="{{model.launchpad}}">
                     <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
                 </template>
-                <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
 
             </div>
-            <launcher-display-route match-path="^\/$|\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
+            <launcher-display-route match-path="^\/$|\/launcher/?|\/launcher/dashboard$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
 
             <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
