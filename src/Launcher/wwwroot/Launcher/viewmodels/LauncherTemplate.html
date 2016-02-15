@@ -36,7 +36,7 @@
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
-    <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-editor.html" />
+    <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-simple-editor.html" />
     <link rel="import" href="/sys/juicy-redirect/juicy-redirect.html" />
 
     <!-- Style sheets -->
@@ -125,11 +125,10 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-editor selection-mode="true"
-                                   tile-lists-selector="juicy-tile-list, juicy-tile-grid, launcher-launchpad::shadow > juicy-tile-grid"
+                <juicy-tile-simple-editor default-selected-list-selectors='[".visible juicy-tile-table"]'
                                    class="max-height"
-                                   modified="{{model.layoutModified$}}"
-                                   on-juicy-tile-editor-close="closeEditor"></juicy-tile-editor>
+                                   has-changes="{{model.layoutModified$}}"
+                                   on-close-click="closeEditor"></juicy-tile-simple-editor>
             </div>
         </template>
 

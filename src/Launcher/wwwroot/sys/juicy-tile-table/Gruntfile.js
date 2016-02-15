@@ -7,7 +7,7 @@ module.exports = function(grunt) {
                     livereload: true
                 },
                 files: [
-                    'juicy-tile-grid.html',
+                    'juicy-tile-table.html',
                     '*.html',
                     'examples/**/*.html',
                     'test/*.*',
@@ -27,10 +27,10 @@ module.exports = function(grunt) {
         },
         bump: {
           options: {
-            files: ['package.json', 'bower.json', 'juicy-tile-grid.html'],
+            files: ['package.json', 'bower.json', 'juicy-tile-table.html'],
             commit: true,
             commitMessage: '%VERSION%',
-            commitFiles: ['package.json', 'bower.json', 'juicy-tile-grid.html'],
+            commitFiles: ['package.json', 'bower.json', 'juicy-tile-table.html'],
             createTag: true,
             tagName: '%VERSION%',
             tagMessage: 'Version %VERSION%',
