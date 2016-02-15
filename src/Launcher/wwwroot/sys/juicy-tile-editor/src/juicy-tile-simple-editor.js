@@ -605,6 +605,12 @@
 
             return this.getIsGroupSelection(tiles);
         },
+        getIsVisible: function (visible) {
+            return visible === true;
+        },
+        getIsHidden: function (visible) {
+            return visible === false;
+        },
         getSetupName: function (setup) {
             return getSetupName(this.selectedList, setup, this.listSelectors);
         },
@@ -750,8 +756,8 @@
         readVisible: function () {
             var hidden = this.getCommonSetupValue("hidden");
 
-            if (hidden === null) {
-                this.set("visible", true);
+            if (hidden === null || hidden === notAvailable) {
+                this.set("visible", null);
             } else {
                 this.set("visible", !hidden);
             }
@@ -1037,6 +1043,31 @@
         },
         heightMinus: function (e) {
             this.dimensionMinus("height");
+        },
+        calculateDimension: function (e) {
+            var dimension = e.currentTarget.dataset["dimension"];
+
+            this.selectedTiles.forEach(function (tile) {
+                var id = getTileId(tile);
+                var setup = getSetupItem(this.selectedList.setup, id);
+                var element = this.selectedList.querySelector("[juicytile='" + id + "']");
+
+                if (!element) {
+                    element = this.selectedList.tiles[id];
+                }
+
+                var rec = element.getBoundingClientRect();
+
+                if (dimension == "width") {
+                    setup.width = rec.width;
+                    setup.widthFlexible = false;
+                } else if (dimension == "height") {
+                    setup.height = rec.height;
+                    setup.heightDynamic = false;
+                }
+            }.bind(this));
+
+            this.refreshSelectedList();
         },
         selectDirection: function (e) {
             var target = e.currentTarget;

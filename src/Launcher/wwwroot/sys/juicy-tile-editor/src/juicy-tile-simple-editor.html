@@ -5,15 +5,16 @@
 <link rel="import" href="../../juicy-color-picker/src/juicy-color-picker.html" />
 <link rel="import" href="./juicy-border-picker.html" />
 <link rel="import" href="./juicy-tile-simple-editor-style.html" />
+<link rel="import" href="./juicy-tile-simple-size.html" />
 
 <dom-module id="juicy-tile-simple-editor">
     <template>
         <style include="juicy-tile-simple-editor-style"></style>
         <div class="editor-tabs">
-            <button on-click="closeEditor">Close</button>
+            <button on-click="closeEditor" class="btn-close" title="Close editor"></button>
             <button class$="{{getTabButtonCss('normal', showMore)}}" on-click="toggleMore">Normal</button>
             <button class$="{{getTabButtonCss('expert', showMore)}}" on-click="toggleMore">Expert</button>
-            <button on-click="toggleTree">Sidebar</button>
+            <button on-click="toggleTree" class="btn-tree">List</button>
         </div>
         <template is="dom-if" if="{{!showMore}}">
             <div class="editor-simple-form">
@@ -44,11 +45,16 @@
                     <button type="button" class="btn btn-down" on-click="moveDown" disabled$="{{!selectedTiles.length}}" title="Move selected tiles down"></button>
                 </div>
                 <div class="editor-form-section visible-section">
-                    <template is="dom-if" if="{{!visible}}">
+                    <template is="dom-if" if="{{getIsHidden(visible)}}">
                         <button type="button" class="btn btn-hidden" on-click="selectVisible" data-value="1" disabled$="{{!selectedTiles.length}}" title="Show selected tiles"></button>
                     </template>
-                    <template is="dom-if" if="{{visible}}">
+                    <template is="dom-if" if="{{getIsVisible(visible)}}">
                         <button type="button" class="btn btn-visible" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                    </template>
+                    <template is="dom-if" if="{{!getIsVisible(visible)}}">
+                        <template is="dom-if" if="{{!getIsHidden(visible)}}">
+                            <button type="button" class="btn btn-undefined" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                        </template>
                     </template>
                 </div>
                 <div class="editor-form-section align-section">
@@ -124,11 +130,16 @@
                         </button>
                     </div>
                     <div class="visible-section">
-                        <template is="dom-if" if="{{!visible}}">
+                        <template is="dom-if" if="{{getIsHidden(visible)}}">
                             <button type="button" class="btn btn-hidden" on-click="selectVisible" data-value="1" disabled$="{{!selectedTiles.length}}" title="Show selected tiles"></button>
                         </template>
-                        <template is="dom-if" if="{{visible}}">
+                        <template is="dom-if" if="{{getIsVisible(visible)}}">
                             <button type="button" class="btn btn-visible" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                        </template>
+                        <template is="dom-if" if="{{!getIsVisible(visible)}}">
+                            <template is="dom-if" if="{{!getIsHidden(visible)}}">
+                                <button type="button" class="btn btn-undefined" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                            </template>
                         </template>
                     </div>
                 </div>
@@ -136,33 +147,18 @@
                     <div class="dimension-section">
                         <label class="section-title">Width</label>
                         <div class="control-group">
-                            <input type="text" value="{{width::change}}" disabled$="{{!selectedTiles.length}}" />
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="widthPlus">+</button>
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="widthMinus">-</button>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{widthFlexible::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with parent</span>
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{widthDynamic::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with content</span>
-                            </label>
+                            <juicy-tile-simple-size value="{{width}}" flexible="{{widthFlexible}}" disabled$="{{!selectedTiles.length}}" on-calculate="calculateDimension" data-dimension="width"></juicy-tile-simple-size>
                         </div>
                     </div>
                     <div class="dimension-section">
-                        <label class="section-title">Height</label>
+                        <template is="dom-if" if="{{!heightDynamic}}">
+                            <label class="section-title">Height</label>
+                        </template>
+                        <template is="dom-if" if="{{heightDynamic}}">
+                            <label class="section-title section-title-two">Min<br />Height</label>
+                        </template>
                         <div class="control-group">
-                            <input type="text" value="{{height::change}}" disabled$="{{!selectedTiles.length}}" />
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="heightPlus">+</button>
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="heightMinus">-</button>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{heightFlexible::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with parent</span>
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{heightDynamic::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with content</span>
-                            </label>
+                            <juicy-tile-simple-size value="{{height}}" dynamic="{{heightDynamic}}" show-dynamic="true" disabled$="{{!selectedTiles.length}}" on-calculate="calculateDimension" data-dimension="height"></juicy-tile-simple-size>
                         </div>
                     </div>
                 </div>
@@ -279,6 +275,10 @@
                         </template>
                     </div>
                 </template>
+            </div>
+        </template>
+        <template is="dom-if" if="{{!showTree}}">
+            <div class="editor-tree-chevron" on-click="toggleTree">
             </div>
         </template>
 
