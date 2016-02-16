@@ -196,40 +196,4 @@
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
     </script>
-
-    <div class="css-grid-error-back"></div>
-    <div class="css-grid-error">
-        <h4>This app requires support for CSS Grid Layout in your web browser</h4>
-        <p>It is a new CSS feature that is currently implemented in Google Chrome and Opera.</p>
-        <p>To enable it in Google Chrome/Opera:</p>
-        <ol>
-            <li>Go to "chrome://flags"</li>
-            <li>Search for "Enable experimental Web Platform features" option</li>
-            <li>Press "Enable" link</li>
-            <li>Restart Chrome/Opera</li>
-        </ol>
-        <p>
-            We are working on extending support to all modern web browsers.
-        </p>
-    </div>
-    <script>
-        (function () {
-            var div = document.createElement("div");
-
-            div.style.display = "grid";
-
-            if (div.style.display == "grid") {
-                return;
-            }
-
-            div.style.display = "-ms-grid";
-
-            if (div.style.display == "-ms-grid") {
-                return;
-            }
-
-            document.querySelector(".css-grid-error-back").style.display = "block";
-            document.querySelector(".css-grid-error").style.display = "block";
-        })();
-    </script>
 </body>
