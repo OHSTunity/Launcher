@@ -14,13 +14,13 @@
                 display: none;
             }
         </style>
-        <iron-localstorage name="{{name}}" value="{{storedValue}}" auto-save-disabled="true" id="storage"></iron-localstorage>
+        <iron-localstorage name="{{name}}" value="{{storedValue}}" auto-save-disabled="true" id="storage" on-iron-localstorage-load-empty="initValue"></iron-localstorage>
     </template>
     <script>
         Polymer({
             is: "juicy-tiles-setup-sync",
             properties: {
-                storedValue: { type: Object, value: null, observer: "storedValueChanged" },
+                storedValue: { type: Object, value: null, observer: "storedValueChanged", notify: true },
                 autoSave: { type: Boolean },
                 name: { type: String },
                 apiUrl: { type: String, value: "/juicytilessetup" },
@@ -28,7 +28,7 @@
                 useLocalstorage: { type: Boolean, value: false }
             },
             ready: function () {
-                var a = this.storedValue;
+                this.originalValue = this.storedValue;
             },
             attached: function () {
                 this.set("tileList", this.nextElementSibling);
@@ -63,7 +63,6 @@
             },
             revert: function () {
                 this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify(this.storedValue));
-                this.tileList.setupChanged(this.tileList.setup, this.tileList.setup);
             },
             /**
              * Resets the current value.
@@ -71,10 +70,12 @@
             clear: function () {
                 this.set("storedValue", null);
                 this.tileList.setup = null;
-                this.tileList.setupChanged(null, null, null, true);
             },
             isModified: function () {
                 return JSON.stringify(this.storedValue) != JSON.stringify(this.tileList.setup);
+            },
+            initValue: function () {
+                this.set("storedValue", this.originalValue);
             },
             storedValueChanged: function (newVal, oldVal) {
                 if (!this.tileList || !newVal) {
@@ -85,10 +86,9 @@
 
                 if (JSON.stringify(this.tileList.setup) != newJson) {
                     this.tileList.setup = JSON.parse(newJson);
-                    this.tileList.setupChanged(this.tileList.setup, this.tileList.setup);
                 }
 
-                console.log("storedValueChanged", newVal, oldVal);
+                //console.log("storedValueChanged", newVal, oldVal);
             }
         });
     </script>

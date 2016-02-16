@@ -2,7 +2,7 @@
 `launcher-include` - Launcher's `starcounter-include` -
 Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
-It's just <template is="imported-template"> wrapped within <juicy-tile-grid> and layout editor.
+It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
 version: 0.1.1
 
@@ -13,24 +13,23 @@ version: 0.1.1
 <!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
 
 <link rel="import" href="../imported-template/imported-template.html">
-<link rel="import" href="../juicy-tile-grid/juicy-tile-grid.html">
+<link rel="import" href="../juicy-tile-table/juicy-tile-table.html">
 <link rel="import" href="../juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
 <!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
 <template id="partial-template">
     <juicy-tiles-setup-sync
         api-url="/sc/layout"></juicy-tiles-setup-sync>
-    <juicy-tile-grid
+    <juicy-tile-table
         defaultTileSetup='{
             "height": 1,
             "heightDynamic": true,
-            "precalculateHeight": true,
             "width": "100%",
             "widthFlexible": true
         }'
         refreshonmutation>
       <template is="imported-template"></template>
-    </juicy-tile-grid>
+    </juicy-tile-table>
 </template>
 <script>
   (function () {
@@ -83,7 +82,7 @@ version: 0.1.1
       var clone = document.importNode( templ.content, true);
       this.clone = clone;
       this.sync = clone.children[0];// .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
-      this.grid = clone.children[1];// .getElementsByTagName("JUICY-TILE-GRID");
+      this.grid = clone.children[1];// .getElementsByTagName("juicy-tile-table");
       this.template = this.grid.firstElementChild;// .getElementsByTagName("TEMPLATE");
     };
     /**

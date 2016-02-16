@@ -3,7 +3,9 @@
 
 @element juicy-tile-list
 @demo https://Juicy.github.io/juicy-tile-list/
-version: 1.1.1
+version: 1.2.0
+
+@TODO: (tomalec) Create setup listener, to work better with Polymer tempalte binding, editor, and inline changes
 -->
 
 <script src="rectangle.js"></script>
@@ -43,6 +45,8 @@ version: 1.1.1
         }
     </style>
     <div id="container" class="animate"></div>
+    <content select="style"></content>
+    <content select="script"></content>
 </template>
 
 <script>
@@ -120,7 +124,7 @@ version: 1.1.1
                 var tile = tiles[elNo];
 
                 if (!allItems[tile.id]) {
-                    var itemSetup = JSON.parse(JSON.stringify(defaultTileSetup));
+                    var itemSetup = tile.defaultSetup ||  JSON.parse(JSON.stringify(defaultTileSetup));
                     if (setupItems.length == 0) {
                         itemSetup.priority = 0.5;
                     }
@@ -195,6 +199,7 @@ version: 1.1.1
             }
             // console.log("updateWrappers", tileDecorator);
             var tiles = [], frag, tile, child, id,
+              perItemSetup,
               //scoping magic
               scopePrefix = "", scopedIndex = 0;
             var wrappers = document.createDocumentFragment();
@@ -217,6 +222,10 @@ version: 1.1.1
                 frag = document.importNode(tileDecorator, true);
                 //tile = frag.firstChild;
                 tile = frag.children[0];
+                // parse declarative per-item setup
+                if(child.hasAttribute('juicy-style')){
+                    tile.defaultSetup = this.parseRules(child.getAttribute("juicy-style"));
+                }
                 tile.id = id;
                 tile.firstChild.setAttribute("select", "[juicytile='" + id + "']");
                 wrappers.appendChild(frag);
@@ -233,6 +242,7 @@ version: 1.1.1
             }
             element.shadowContainer.appendChild(wrappers);
             tiles["root"] = element.shadowContainer;
+            this._isShadomDOMOutdated = undefined;
             return tiles;
         }
 
@@ -341,8 +351,36 @@ version: 1.1.1
 
         proto.defaultTileSetup = defaultTileSetup;
 
+        /**
+         * Flage used to force updating ShadowDOM wrappers on regular .setup change
+         * @private
+         * @type {Boolean}
+         */
+        proto._isShadomDOMOutdated = true;
+
         proto.createdCallback = function () {
-            this.setup = {}; // Polymer's type detection.
+            var setup;
+            Object.defineProperty(this, 'setup', {
+                get: function (){
+                    return setup;
+                },
+                set: function (newVal) {
+                    var oldVal;
+                    if(newVal === setup){
+                        // do nothing as nothing have changed
+                        return;
+                    } else {
+                        oldVal = setup;
+                        setup = newVal;
+                        this._setupChanged(oldVal, newVal);
+                    }
+                }
+            });
+            // read if we already got something
+            this.attributeChangedCallback("setup", undefined, this.getAttribute("setup"));
+            this.attributeChangedCallback("defaulttilesetup", undefined, this.getAttribute("defaulttilesetup"));
+
+            // Polymer 0.5 legacy? this.setup = {}; // Polymer's type detection.
             // Define mutation observer to observe changes
             // TODO: Make it cleaner
             // create an observer instance
@@ -399,12 +437,6 @@ version: 1.1.1
             root.appendChild(clone);
             this.shadowContainer = root.querySelector("#container");
 
-            this.attributeChangedCallback("refreshonresize", false, this.getBooleanAttribute("refreshonresize", false));
-            this.attributeChangedCallback("refreshonmutation", false, this.getBooleanAttribute("refreshonmutation", false));
-            this.attributeChangedCallback("refreshonattached", true, this.getBooleanAttribute("refreshonattached", true));
-            this.attributeChangedCallback("defaulttilesetup", null, this.getAttribute("defaulttilesetup"));
-            this.attributeChangedCallback("setup", null, this.getAttribute("setup"));
-
             // console.log("domReady");
             // console.profile("attached");
             // console.time('attached');
@@ -416,28 +448,19 @@ version: 1.1.1
             }
 
             this.createItemsList();
+            // Setup initials
+            // attributeChangedCallback for refresh* checks the value itselfes
+            this.attributeChangedCallback("refreshonresize", this.refreshOnResize);
+            this.attributeChangedCallback("refreshonmutation", this.refreshOnMutation);
+            this.attributeChangedCallback("refreshonattached", this.refreshOnAttached);
 
-            if (this.refreshOnResize) {
-                this.addResizeListeners();
-            }
-
-            if (this.refreshOnAttached) {
-                setTimeout(function () {
-                    this.refresh();
-                }.bind(this));
-            }
-
-            if (this.refreshOnMutation) {
-                this.observer.observe(this, { childList: true });
-            }
 
             // console.timeEnd("attached");
             // console.profileEnd("attached");
-            // This is ugly hack not to run attrChanged observers until domReady and our element is fully set up.(tomalec)
-            // TODO: check if it can be sync after we made template native
-            //setTimeout(function () {
-                //this.isReady = true;
-            //}.bind(this));
+            if (this.refreshOnAttached){
+                // This is ugly hack to wait for most probably asynchronous content distribution (tomalec)
+                setTimeout(this.refresh);
+            }
 
             this.isReady = true;
         };
@@ -584,12 +607,6 @@ version: 1.1.1
                 this.tiles = this.updateWrappers(this.elements, this);
             }
 
-            if (!this.setup) {
-                this.setup = {
-                    items: []
-                };
-            }
-
             // TODO: support LTR
             if (this.setup.direction != "vertical") {
                 this.setup.width = this.setup.width || innerWidth(this);
@@ -611,19 +628,21 @@ version: 1.1.1
         * Perform action when setup get changed
         * @param {Object} [oldVal] old value
         * @param {Object} [newVal] new value
-        * @param {Object} [changes] changes
-        * @param {Boolean} [hard=false] Set to true if ShadowDOM structure is also changed
         */
-        proto.setupChanged = function (oldVal, newVal, changes, hard) {
-            if (!this.isReady) {
+        proto._setupChanged = function (oldVal, newVal) {
+            // if we are not in DOM yet, no more action is needed
+            // if old value is null it means Package() finished it's job by chanign null to default value
+            // so we have nothing more to add
+            //   please note that attached callback which changes isReady to true also runs Package()
+            //   Therfore, setup will never be `null` for attached element
+            if (!this.isReady || oldVal === null){
                 return;
             }
-
             this.cleanupDOM();
             // console.log("setup changed")
             Package.call(this, this.setup);
             defaultSetup(this.tiles, this.setup.items, this.allItems, this.defaultTileSetup);
-            this.refresh(hard);
+            this.refresh(this._isShadomDOMOutdated);
         };
 
         proto.getBooleanAttribute = function (name, defaultValue) {
@@ -674,10 +693,8 @@ version: 1.1.1
                         } catch (ex) {
                             console.warn("Invalid JSON provided for setup\r\n", ex, newVal);
                         }
-                    }
-
-                    if (oldVal != newVal) {
-                        this.setupChanged(oldVal, newVal);
+                    } else {
+                        this.setup = newVal;
                     }
                     break;
                 case "defaulttilesetup":
@@ -802,6 +819,49 @@ version: 1.1.1
             } else {
                 return HTMLElement.prototype.bind.call(this, name, observable, oneTime);
             }
+        };
+        /*
+          parses given string containing css directives
+          and returns a map ruleName: ruleValue
+          @param {String} rules, css directive string example
+              \n\ncolor:white;\n    font-size:18px;\n
+          Modified ver
+        */
+        proto.parseRules = function(rules) {
+          var map = {};
+          rules = rules.split(';');
+
+          //proccess rules
+          for (var i = 0; i < rules.length; i++) {
+            var declaration = rules[i];
+
+            //determine if declaration is a valid css declaration, ie `property S* ':' S* value;``
+            declaration = declaration.trim();
+            if (declaration.indexOf(':') !== -1) {
+              //declaration contains :
+              declaration = declaration.split(':');
+              var cssProperty = declaration[0].trim();
+              var cssValue = declaration.slice(1).join(':').trim();
+
+              // TODO (tomalec): parse some values according to
+              // https://drafts.csswg.org/css2/syndata.html#tokenization
+              // but optimze to avoid regexps as much as possible
+              if(cssValue === '0'){
+                  cssValue = 0;
+              }
+
+              // silently ignore unknown values https://drafts.csswg.org/css2/syndata.html#unsupported-values
+              //   if (cssProperty.length < 1 || cssValue.length < 1) {
+              //     continue; //there is no css directive or value
+              //   }
+              //save rule
+              map[cssProperty] = cssValue;
+          } else if(declaration !== ''){
+               console.warn("juicy-style for ", this," contains defective declaration: ", declaration);
+            }
+          }
+
+          return map;
         };
 
         window.JuicyTileList = document.registerElement("juicy-tile-list", {

@@ -13,6 +13,7 @@ Launcher overwrites it with is a custom element that not only let's you load HTM
  - [`<starcounter-include>`](https://github.com/Starcounter/starcounter-include) - includes Starcounter Partial,
  - [`<imported-template>`](https://github.com/Juicy/imported-template) - includes HTML Template,
  - [`<juicy-tile-grid>`](https://github.com/Juicy/juicy-tile-grid),
+   - x-browser fallback [`<juicy-tile-table>`](https://github.com/Juicy/juicy-tile-table),
  - [`<juicy-tile-list>`](https://github.com/Juicy/juicy-tile-list),
  - [`<juicy-tile-editor>`](https://github.com/Juicy/juicy-tile-editor),
  - [`<juicy-tiles-setup-sync>`](https://github.com/Juicy/juicy-tiles-setup-sync)

@@ -1,36 +1,37 @@
-# &lt;juicy-tile-grid&gt;
+# &lt;juicy-tile-table&gt;
 
-> Masonry-like Custom Element for sortable tiles that packs efficiently without changing HTML structure (changes CSS only), and adapts it to CSS Grid Layout.
+> Masonry-like Custom Element for sortable tiles that packs efficiently without changing HTML structure (changes CSS and ShadowDOM only), and adapts it to `<table>` that mimic CSS Grid Layout.
 > So you will get (bin-packed) gap-less layout, with responsive, and adaptive features, handled natively by browser.
 > Extended renderer for [`juicy-tile-list`](https://github.com/Juicy/juicy-tile-list).
+> Flag-less fallback for  [`juicy-tile-grid`](https://github.com/Juicy/juicy-tile-grid).
 
 ## Features
 
 [`juicy-tile-list` features](https://github.com/Juicy/juicy-tile-list#features), plus
- - CSS Grid Layout,
+ - `<table>` that mimics CSS Grid Layout,
  - adapting to dynamic changes of the element, parent container, and tile's content, without need to repack.
 
 ## Demo
 
-[Check it live!](http://Juicy.github.io/juicy-tile-grid)
+[Check it live!](http://Juicy.github.io/juicy-tile-table)
 
 ### Rationale
-
-`<juicy-tile-grid>` is layer on top of [`<juicy-tile-list>`](https://github.com/Juicy/juicy-tile-list) that renders packed items using [CSS Grid Layout](http://www.w3.org/TR/2014/WD-css-grid-1-20140513/), so it leverages native way to handle tiles' overflow, and gives more structured CSS which can be styled according to design needs.
+As CSS Grid Layout is not yet widely supported across major browsers, without a need to set custom flags, and we would like to use all the features of [`<juicy-tile-grid>`](https://github.com/Juicy/juicy-tile-grid) on production, we have fallback to widely supported, good old `<table>`.
+This custom element is layer on top of [`<juicy-tile-list>`](https://github.com/Juicy/juicy-tile-list) that renders packed items using specifically created `<table>`, so it leverages native way to handle tiles' overflow and container re-sizes, and should work in any browser.
 
 ## Install
 
 Install the component using [Bower](http://bower.io/):
 
 ```sh
-$ bower install juicy-tile-grid --save
+$ bower install juicy-tile-table --save
 ```
 
-Or [download as ZIP](https://github.com/Juicy/juicy-tile-grid/archive/gh-pages.zip).
+Or [download as ZIP](https://github.com/Juicy/juicy-tile-table/archive/gh-pages.zip).
 
 ## Usage
 
-1. Import Web Components' polyfill:
+1. Import Web Components' polyfill, if needed:
 
     ```html
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
@@ -39,17 +40,17 @@ Or [download as ZIP](https://github.com/Juicy/juicy-tile-grid/archive/gh-pages.z
 2. Import Custom Element:
 
     ```html
-    <link rel="import" href="bower_components/juicy-tile-grid/dist/juicy-tile-grid.html">
+    <link rel="import" href="bower_components/juicy-tile-table/juicy-tile-table.html">
     ```
 
 3. Start using it!
 
     ```html
-    <juicy-tile-grid></juicy-tile-grid>
+    <juicy-tile-table></juicy-tile-table>
     ```
-    
+
 ## Requirements
-This element is using [CSS Grid Layout](http://www.w3.org/TR/2014/WD-css-grid-1-20140513/), so if your environment does not support it, you may need to [enable it](http://igalia.github.io/css-grid-layout/enable.html) or use shim.
+This is custom element and it uses ShadowDOM, so if your environment does not support it, you may use [webcomponents/webcomponentsjs](https://github.com/webcomponents/webcomponentsjs) polyfill.
 
 ## Options
 
@@ -80,7 +81,7 @@ Attribute                       | Options   | Default | Description
 
 ## History
 
-For detailed changelog, check [Releases](https://github.com/Juicy/juicy-tile-grid/releases).
+For detailed changelog, check [Releases](https://github.com/Juicy/juicy-tile-table/releases).
 
 ## License
 

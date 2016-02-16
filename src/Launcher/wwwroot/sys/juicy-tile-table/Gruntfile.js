@@ -7,11 +7,11 @@ module.exports = function(grunt) {
                     livereload: true
                 },
                 files: [
-                    'juicy-tile-grid.html',
+                    'juicy-tile-table.html',
                     '*.html',
                     'examples/**/*.html',
-                    'tests/*.*',
-                    'tests/**/*.html'
+                    'test/*.*',
+                    'test/**/*.html'
                 ],
                 // tasks: ['jshint'],
             },
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         // Mocha
         mocha: {
           all: {
-            src: ['tests/index.html'],
+            src: ['test/index.html'],
           },
           options: {
             run: true
@@ -27,10 +27,10 @@ module.exports = function(grunt) {
         },
         bump: {
           options: {
-            files: ['package.json', 'bower.json', 'juicy-tile-grid.html'],
+            files: ['package.json', 'bower.json', 'juicy-tile-table.html'],
             commit: true,
             commitMessage: '%VERSION%',
-            commitFiles: ['package.json', 'bower.json', 'juicy-tile-grid.html'],
+            commitFiles: ['package.json', 'bower.json', 'juicy-tile-table.html'],
             createTag: true,
             tagName: '%VERSION%',
             tagMessage: 'Version %VERSION%',

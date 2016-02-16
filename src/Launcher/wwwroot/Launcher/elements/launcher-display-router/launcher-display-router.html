@@ -45,11 +45,13 @@
                 // console.log(show?'show':'hide', elem);
                 if (show) {
                     elem.style.display = "";
+                    elem.classList.add("visible");
                     elem.dispatchEvent(new CustomEvent("resize", {
                         bubbles: false
                     }));
                 } else {
                     elem.style.display = "none";
+                    elem.classList.remove("visible");
                 }
             } else {
                 throw new Error("launcher-display-router: display-selector cannot be empty");
