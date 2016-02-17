@@ -37,11 +37,3 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 2. Run `npm install` to install all dependencies
 2. Run `grunt package` to generate a packaged version, (you can use `:minor`, `:major`, etc. as [grunt-bump](https://github.com/vojtajina/grunt-bump) does)
 4. Publish `dist/<AppName>.zip` package to the App Store.
-
-### Browsers
-
-#### Chrome & Opera
-
-Make sure the following flags are set (chrome://flags/):
-
- - Experimental Web Platform features - **enabled** (needed for CSS Grid Layout)
