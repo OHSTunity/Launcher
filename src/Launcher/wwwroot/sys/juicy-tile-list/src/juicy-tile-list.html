@@ -3,7 +3,7 @@
 
 @element juicy-tile-list
 @demo https://Juicy.github.io/juicy-tile-list/
-version: 1.2.0
+version: 1.3.0
 
 @TODO: (tomalec) Create setup listener, to work better with Polymer tempalte binding, editor, and inline changes
 -->
@@ -54,6 +54,9 @@ version: 1.2.0
         var ownerDocument = (document._currentScript || document.currentScript).ownerDocument;
         var tileDecorator = ownerDocument.getElementById("juicy-tile").content;
         var tileListTemplate = ownerDocument.getElementById("juicy-tile-list");
+        if (window.ShadowDOMPolyfill) {
+            WebComponents.ShadowCSS.shimStyling(tileListTemplate.content, 'juicy-tile-list');
+        }
         /**
          * For a given element, returns the available width excluding margin, border and padding
          * @param {Element} elem
@@ -112,34 +115,6 @@ version: 1.2.0
                         });
         }
 
-        /**
-         * Modifies setup array with default settings for not mapped tiles
-         * @param {Array} tiles
-         * @param {Array} setupItems
-         * @param {Array} item
-         * @param {Object} defaultTileSetup
-         */
-        function defaultSetup(tiles, setupItems, allItems, defaultTileSetup) {
-            for (var elNo = 0, eLen = tiles.length; elNo < eLen; elNo++) {
-                var tile = tiles[elNo];
-
-                if (!allItems[tile.id]) {
-                    var itemSetup = tile.defaultSetup ||  JSON.parse(JSON.stringify(defaultTileSetup));
-                    if (setupItems.length == 0) {
-                        itemSetup.priority = 0.5;
-                    }
-                    else {
-                        itemSetup.priority = getMinimumPriority(setupItems) * (1 - 1 / eLen);
-                    }
-                    //scoping magic
-                    itemSetup.id = tile.id;
-                    // itemSetup.id = elNo;
-                    Object.defineProperty(itemSetup, "container", { value: allItems["root"], writable: true })
-                    setupItems.push(itemSetup);
-                    allItems[tile.id] = itemSetup;
-                }
-            }
-        }
 
         /**
          * Returns the minimum value of the priority property from the given array of objects
@@ -199,7 +174,6 @@ version: 1.2.0
             }
             // console.log("updateWrappers", tileDecorator);
             var tiles = [], frag, tile, child, id,
-              perItemSetup,
               //scoping magic
               scopePrefix = "", scopedIndex = 0;
             var wrappers = document.createDocumentFragment();
@@ -217,16 +191,11 @@ version: 1.2.0
                 scopedIndex++;
                 //id = i;
 
-
-
                 frag = document.importNode(tileDecorator, true);
                 //tile = frag.firstChild;
                 tile = frag.children[0];
-                // parse declarative per-item setup
-                if(child.hasAttribute('juicy-style')){
-                    tile.defaultSetup = this.parseRules(child.getAttribute("juicy-style"));
-                }
                 tile.id = id;
+                tile.element = child;
                 tile.firstChild.setAttribute("select", "[juicytile='" + id + "']");
                 wrappers.appendChild(frag);
 
@@ -359,7 +328,7 @@ version: 1.2.0
         proto._isShadomDOMOutdated = true;
 
         proto.createdCallback = function () {
-            var setup;
+            var setup = this.setup || null;
             Object.defineProperty(this, 'setup', {
                 get: function (){
                     return setup;
@@ -416,20 +385,89 @@ version: 1.2.0
         };
 
         proto.updateWrappers = updateWrappers;
+        /**
+         * Modifies setup array with default settings for not mapped tiles
+         * @param {Array} tiles
+         * @param {Array} setupItems
+         * @param {Array} item
+         * @param {Object} defaultTileSetup
+         */
+        proto._defaultSetup = function defaultSetup(tiles, setupItems, allItems, defaultTileSetup) {
+            var itemSetup;
+            for (var elNo = 0, eLen = tiles.length; elNo < eLen; elNo++) {
+                var tile = tiles[elNo];
+
+                if (!allItems[tile.id]) {
+                    // parse declarative per-item setup
+                    if(tile.element.hasAttribute('juicy-style')){
+                        itemSetup = this.parseRules(tile.element.getAttribute("juicy-style"));
+                    } else {
+                        itemSetup = tile.defaultSetup ||  JSON.parse(JSON.stringify(defaultTileSetup));
+                    }
+
+                    if (setupItems.length == 0) {
+                        itemSetup.priority = 0.5;
+                    }
+                    else {
+                        itemSetup.priority = getMinimumPriority(setupItems) * (1 - 1 / eLen);
+                    }
+                    //scoping magic
+                    itemSetup.id = tile.id;
+                    // itemSetup.id = elNo;
+                    Object.defineProperty(itemSetup, "container", { value: allItems["root"], writable: true })
+                    setupItems.push(itemSetup);
+                    allItems[tile.id] = itemSetup;
+                }
+            }
+        };
 
         proto.createItemsList = function () {
             // console.log("createItemsList");
             this.elements = filterNodes(this, this.childNodes);
             this.tiles = this.updateWrappers(this.elements, this);
-            defaultSetup(
+            this._defaultSetup(
               this.tiles,
               this.setup.items,
               this.allItems,
               this.defaultTileSetup
             );
         };
+        /**
+         * attachedCallback wrapper to workaround Chromium Bugs
+         * https://code.google.com/p/chromium/issues/detail?id=581176
+         * @see #_attachedCallback
+         */
+        proto.attachedCallback = function listAttached() {
+            this.attributeChangedCallback("refreshonattached", this.refreshOnAttached);
 
-        proto.attachedCallback = function gridAttached() {
+            // tomalec: Ugly workaround for https://code.google.com/p/chromium/issues/detail?id=581176
+            // to wait for element to get attached, and Chromium HTML imports release metrics
+            // to measure elements inner dimention if not provided in setup
+            // XXX: causes FOUC
+            // if (this.refreshOnAttached &&
+            //         navigator.userAgent.toLowerCase().indexOf('chrome') > -1 && // is chrome
+            //         (!this.setup ||
+            //             (!this.setup.width || this.setup.direction == "vertical" && !this.setup.height)
+            //         )
+            //     ) {
+            //     What is worse, we need it anyway for `precalculate*`
+            if (
+                this.refreshOnAttached &&
+                navigator.userAgent.toLowerCase().indexOf('chrome') > -1 // is chrome
+                ) {
+                var list = this;
+                setTimeout(function(){
+                    list._attachedCallback();
+                });
+            } else {
+                this._attachedCallback();
+            }
+            // ---
+        };
+        /**
+         * The real meat of attachedCallback
+         */
+        proto._attachedCallback = function deferredListAttached() {
             var root = this.createShadowRoot();
             var template = tileListTemplate;
             var clone = document.importNode(template.content, true);
@@ -458,11 +496,10 @@ version: 1.2.0
             // console.timeEnd("attached");
             // console.profileEnd("attached");
             if (this.refreshOnAttached){
-                // This is ugly hack to wait for most probably asynchronous content distribution (tomalec)
-                setTimeout(this.refresh);
+                this.refresh();
             }
-
             this.isReady = true;
+
         };
 
         proto.detachedCallback = function () {
@@ -552,7 +589,7 @@ version: 1.2.0
                             tiles[itemSetup.id] = tile;
                             tile.id = itemSetup.id;
                             this.shadowContainer.appendChild(tile);
-                        } else if (!tile.parentElement) {
+                        } else if (!tile.parentNode) {
                             this.shadowContainer.appendChild(tile);
                         }
 
@@ -601,8 +638,6 @@ version: 1.2.0
         * @param {Boolean} [hard=false] refresh also shadowDOM structure
         */
         proto.refresh = function (hard) {
-            // console.log("refresh");
-
             if (hard) {
                 this.tiles = this.updateWrappers(this.elements, this);
             }
@@ -641,7 +676,7 @@ version: 1.2.0
             this.cleanupDOM();
             // console.log("setup changed")
             Package.call(this, this.setup);
-            defaultSetup(this.tiles, this.setup.items, this.allItems, this.defaultTileSetup);
+            this._defaultSetup(this.tiles, this.setup.items, this.allItems, this.defaultTileSetup);
             this.refresh(this._isShadomDOMOutdated);
         };
 
@@ -689,10 +724,11 @@ version: 1.2.0
                         }
 
                         try {
-                            this.setup = JSON.parse(newVal);
+                            newVal = JSON.parse(newVal);
                         } catch (ex) {
                             console.warn("Invalid JSON provided for setup\r\n", ex, newVal);
                         }
+                        this.setup = newVal;
                     } else {
                         this.setup = newVal;
                     }
@@ -823,8 +859,9 @@ version: 1.2.0
         /*
           parses given string containing css directives
           and returns a map ruleName: ruleValue
-          @param {String} rules, css directive string example
-              \n\ncolor:white;\n    font-size:18px;\n
+          Parse `(width|height):NNpx` as `(width|height):NN`
+          @param {String} rules, css directive-like string example
+              \n\width:40%;\n    priority:0.5;\n
           Modified ver
         */
         proto.parseRules = function(rules) {
@@ -848,6 +885,11 @@ version: 1.2.0
               // but optimze to avoid regexps as much as possible
               if(cssValue === '0'){
                   cssValue = 0;
+              }
+              if(cssProperty === 'width' || cssProperty === 'height'){
+                  if(cssValue.indexOf('px')>-1){
+                      cssValue = parseFloat(cssValue);
+                  }
               }
 
               // silently ignore unknown values https://drafts.csswg.org/css2/syndata.html#unsupported-values

@@ -1,6 +1,6 @@
 /**
  * Package
- * version: 1.2.0
+ * version: 1.3.0
  */
 (function( scope, Packer ){
 "use strict";
@@ -106,8 +106,7 @@ Package.prototype.packItems = function packItems( setup ) {
       gutter = setup.gutter || 0;
 
   //pack rectangles, and calculate container size
-  packer.items = setup.items
-    .sort(this.sorter) // sort- if neded
+  packer.items = (this.sorter ? setup.items.sort(this.sorter) : setup.items) // sort- if neded
     .map(function(itemSetup){
       if(itemSetup.hidden){
         return itemSetup;
