@@ -3,7 +3,7 @@
 
 @element juicy-tile-table
 @demo https://Juicy.github.io/juicy-tile-table/
-version: 0.0.1
+version: 0.0.2
 -->
 <!-- Import juicy-tile-list -->
 <link rel="import" href="../juicy-tile-list/src/juicy-tile-list.html">
@@ -281,6 +281,8 @@ version: 0.0.1
                     createTileWrapper(id, tiles);
                     tile = tiles[id];
                 }
+                // Add reference to Light DOM element to make it easier for setup checking
+                tile.element = child;
                 // make it work with good old indexes as well
                 tiles[regularTileIndex] = tile;
                 //if (elem.setAttribute) {
@@ -439,7 +441,7 @@ version: 0.0.1
                             ( column.maxSize ? 'max-width:'+ column.maxSize +';' : '' )
                         );
                         table.appendChild(col);
-                    }
+                }
                     // last rowAxes is the end line of the last row
                     for(var rowNo = 0; rowNo <  tableGrid.length; rowNo++){
                         row = tableGrid[rowNo];
@@ -469,34 +471,34 @@ version: 0.0.1
                                         shadowTile.appendChild(
                                             applyStyles(tiles, tileItem, hidden)
                                         );
-                                    }
+                    }
 
                                     var elementStyle = shadowTile.firstChild.style;
                                     elementStyle.width = tileItem.widthFlexible || tileItem.widthDynamic ? "100%" : tileItem.width + "px";
                                     // elementStyle.height = ( tileItem.height /*+ 2 * oversize*/ ) + "px";
                                     elementStyle.height = tileItem.heightFlexible? '100%' : tileItem.heightDynamic ? 'min-content' : tileItem.height + "px";
 
-                                    if (hidden) {
-                                        elementStyle.display = "none";
-                                    } else {
+                    if (hidden) {
+                        elementStyle.display = "none";
+                    } else {
                                         var oversize = tileItem.oversize || 0;
 
                                         if (tileItem.background !== undefined) {
                                             elementStyle.backgroundColor = tileItem.background || "transparent";
-                                        }
+                        }
                                         elementStyle.outline = tileItem.outline || "";
 
-                                        if (oversize) {
-                                            elementStyle.padding = oversize + "px";
-                                            elementStyle.margin = "-" + oversize + "px";
-                                        }
-                                    }
+                        if (oversize) {
+                            elementStyle.padding = oversize + "px";
+                            elementStyle.margin = "-" + oversize + "px";
+                        }
+                    }
 
                                     shadowRow.appendChild(shadowTile);
 
-                                }
-                            }
-                        }
+                    }
+                }
+            }
 
                         table.appendChild(shadowRow);
                     }
@@ -732,7 +734,59 @@ version: 0.0.1
             return juicyTileListRefresh.call(this, this.isReady);
         };
 
+        /*
+          Parses given string containing css directives
+          and returns a map ruleName: ruleValue,
+          Parse `(width|height):NNpx` as `(width|height):NN`
+          and `(width|height):NN%` as `(width|height):NN%;(width|height)Flexible: true;`
+          @param {String} rules, css directive-like string example
+              \n\width:40%;\n    priority:0.5;\n
+          Modified ver
+        */
+        proto.parseRules = function(rules) {
+          var map = {};
+          rules = rules.split(';');
 
+          //proccess rules
+          for (var i = 0; i < rules.length; i++) {
+            var declaration = rules[i];
+
+            //determine if declaration is a valid css declaration, ie `property S* ':' S* value;``
+            declaration = declaration.trim();
+            if (declaration.indexOf(':') !== -1) {
+              //declaration contains :
+              declaration = declaration.split(':');
+              var cssProperty = declaration[0].trim();
+              var cssValue = declaration.slice(1).join(':').trim();
+
+              // TODO (tomalec): parse some values according to
+              // https://drafts.csswg.org/css2/syndata.html#tokenization
+              // but optimze to avoid regexps as much as possible
+              if(cssValue === '0'){
+                  cssValue = 0;
+              }
+              if(cssProperty === 'width' || cssProperty === 'height'){
+                  if(cssValue.indexOf('px')>-1){
+                      cssValue = parseFloat(cssValue);
+                      map[cssProperty+'Flexible'] = false;
+                  } else if(cssValue.indexOf('%')>-1){
+                      map[cssProperty+'Flexible'] = true;
+                  }
+              }
+
+              // silently ignore unknown values https://drafts.csswg.org/css2/syndata.html#unsupported-values
+              //   if (cssProperty.length < 1 || cssValue.length < 1) {
+              //     continue; //there is no css directive or value
+              //   }
+              //save rule
+              map[cssProperty] = cssValue;
+          } else if(declaration !== ''){
+               console.warn("juicy-style for ", this," contains defective declaration: ", declaration);
+            }
+          }
+
+          return map;
+        };
 
         window.JuicyTileGrid = document.registerElement("juicy-tile-table", {
             prototype: JuicyTileGridPrototype

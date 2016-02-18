@@ -1,6 +1,6 @@
 {
   "name": "juicy-tile-table",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "juicy-tile-table is a Custom Element with <table> renderer that mimics CSS Grid Layout of [`juicy-tile-grid`](Juicy/juicy-tile-grid).",
   "license": "MIT",
   "main": "juicy-tile-table.html",
@@ -18,7 +18,9 @@
     "bower_components",
     "examples",
     "preview.png",
-    "test"
+    "test",
+    "wct.conf.json",
+    "Gruntfile.js"
   ],
   "dependencies": {
     "juicy-tile-list": ">=0.3.0"
