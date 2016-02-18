@@ -1,6 +1,6 @@
 {
   "name": "launcher-include",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Custom Element to include HTML partials/templates from Starcounter, enhanced witch Launcher layout features.",
   "main": "starcounter-include.html",
   "directories": {
@@ -16,12 +16,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/StarcounterSamples/launcher-include.git"
+    "url": "git+https://github.com/StarcounterPrefabs/launcher-include.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/StarcounterSamples/launcher-include/issues"
+    "url": "https://github.com/StarcounterPrefabs/launcher-include/issues"
   },
-  "homepage": "https://github.com/StarcounterSamples/launcher-include#readme"
+  "homepage": "https://github.com/StarcounterPrefabs/launcher-include#readme"
 }
