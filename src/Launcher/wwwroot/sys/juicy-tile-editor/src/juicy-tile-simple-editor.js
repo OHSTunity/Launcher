@@ -395,7 +395,7 @@
             selectedScope: { type: Object, value: null, observer: "selectedScopeChanged" },
             selectedScopeItems: { type: Array, value: [] },
             breadcrumb: { type: Array, value: [] },
-            hasChanges: { type: Boolean, value: false, notify: true },
+            isModified: { type: Boolean, value: false, notify: true },
             showMore: { type: Boolean, value: false },
             showTree: { type: Boolean, value: true },
             background: { type: String, observer: "backgroundChanged" },
@@ -463,11 +463,11 @@
             }.bind(this);
 
             this.set("lists", lists);
-            this.isAttached = true;
-            this.isReadingSetup = false;
 
             setTimeout(function () {
                 this.resetSelection();
+                this.attachedCalled = true;
+                this.isReadingSetup = false;
             }.bind(this), 100);
         },
         detached: function () {
@@ -588,22 +588,14 @@
         },
         getIsGroupSelection: function (tiles) {
             for (var i = 0; i < tiles.length; i++) {
-                var id = getTileId(tiles[i]);
-                var setup = getSetupItem(this.selectedList.setup, id);
+                var setup = this.getSetupItem(tiles[i]);
 
-                if (!setup.items) {
+                if (!setup || !setup.items) {
                     return false;
                 }
             }
 
             return tiles.length > 0;
-        },
-        getIsGutterSelection: function (tiles) {
-            if (!tiles.length) {
-                return true;
-            }
-
-            return this.getIsGroupSelection(tiles);
         },
         getIsVisible: function (visible) {
             return visible === true;
@@ -693,12 +685,16 @@
 
             return s.join("");
         },
+        getSetupItem: function (tile) {
+            var id = getTileId(tile);
+            var setup = getSetupItem(this.selectedList.setup, id);
+
+            return setup;
+        },
         setCommonSetupValue: function (name, value) {
             if (value === notAvailable || this.isReadingSetup) {
                 return;
             }
-
-
 
             if (this.selectedTiles.length) {
                 this.selectedTiles.forEach(function (tile) {
@@ -708,9 +704,7 @@
                     setup[name] = value;
                 }.bind(this));
             } else if (this.selectedScope) {
-                var id = getTileId(this.selectedScope);
-                var setup = getSetupItem(this.selectedList.setup, id);
-
+                var setup = this.getSetupItem(this.selectedScope);
                 setup[name] = value;
             } else if (this.selectedList) {
                 this.selectedList.setup[name] = value;
@@ -762,33 +756,47 @@
                 this.set("visible", !hidden);
             }
         },
-        readPrimitiveSetupValues: function () {
-            var names = ["background", "oversize", "outline", "gutter", "direction", "content", "width", "height", "widthFlexible", "widthDynamic",
-                "heightFlexible", "heightDynamic", "tightGroup", "rightToLeft", "bottomUp"];
+        readGutter: function () {
+            var setup;
 
-            this.isReadingSetup = true;
+            if (this.selectedScope) {
+                setup = this.getSetupItem(this.selectedScope);
+            } else {
+                setup = this.selectedList.setup;
+            }
+
+            this.set("gutter", setup.gutter);
+        },
+        readPrimitiveSetupValues: function () {
+            var names = ["background", "oversize", "outline", "direction", "content", "width", "height", "widthFlexible", "widthDynamic",
+                "heightFlexible", "heightDynamic", "tightGroup", "rightToLeft", "bottomUp"];
 
             names.forEach(function (name) {
                 var value = this.getCommonSetupValue(name);
 
                 this.set(name, value);
             }.bind(this));
-
-            this.isReadingSetup = false;
         },
         readSelectedSetup: function () {
             if (!this.selectedList) {
                 return;
             }
 
+            this.isReadingSetup = true;
+
             this.readWidth();
             this.readVisible();
+            this.readGutter();
             this.readPrimitiveSetupValues();
+
+            this.isReadingSetup = false;
         },
         touch: function () {
-            if (this.isAttached && !this.isReadingSetup) {
-                this.set("hasChanges", true);
+            if (!this.attachedCalled || this.isReadingSetup) {
+                return;
             }
+
+            this.set("isModified", true);
         },
         dimensionPlus: function (name) {
             var value = 1;
@@ -857,8 +865,7 @@
             }
 
             var tile = this.selectedTiles[0];
-            var id = getTileId(tile);
-            var setup = getSetupItem(this.selectedList.setup, id);
+            var setup = this.getSetupItem(tile);
 
             return setup;
         },
@@ -869,8 +876,9 @@
 
             this.touch();
             this.set("mediaScreen", e.currentTarget.item);
-            this.set("width", this.mediaScreen.width);
             this.selectedList.setup.width = this.mediaScreen.width;
+            this.refreshSelectedList();
+            this.readWidth();
         },
         selectWidth: function (e) {
             this.touch();
@@ -938,8 +946,7 @@
             var group = createSetupGroup(this.selectedList, setup);
 
             this.selectedTiles.forEach(function (t) {
-                var id = getTileId(t);
-                var s = getSetupItem(this.selectedList.setup, id);
+                var s = this.getSetupItem(t);
 
                 this.selectedList.moveToContainer(s, group, true);
             }.bind(this));
@@ -970,8 +977,7 @@
 
             tiles.forEach(function (tile) {
                 var index = this.selectedTiles.indexOf(tile);
-                var id = getTileId(tile);
-                var setup = getSetupItem(this.selectedList.setup, id);
+                var setup = this.getSetupItem(tile);
 
                 if (setup.items) {
                     this.selectedList.deleteContainer(setup);
@@ -996,14 +1002,14 @@
                 this.scopeIn(setup);
             }
         },
-        showTreeItem: function (e) {
+        toggleTreeItem: function (e) {
             var setup = e.currentTarget.item;
             var index = this.selectedScopeItems.indexOf(setup);
 
-            setup.hidden = false;
+            setup.hidden = !setup.hidden;
 
             this.refreshSelectedList();
-            this.notifyPath("selectedScopeItems." + index + ".hidden", false);
+            this.notifyPath("selectedScopeItems." + index + ".hidden", setup.hidden);
         },
         selectScopeItem: function (e) {
             this.scopeIn(e.currentTarget.item);
@@ -1067,6 +1073,7 @@
                 }
             }.bind(this));
 
+            this.touch();
             this.refreshSelectedList();
         },
         selectDirection: function (e) {
@@ -1132,8 +1139,7 @@
             var name = getSetupItem(this.selectedList, this.selectedList);
 
             if (this.selectedScope) {
-                var id = getTileId(this.selectedScope);
-                var s = getSetupItem(this.selectedList.setup, id);
+                var s = this.getSetupItem(this.selectedScope);
 
                 name = s.itemName;
             }
@@ -1215,8 +1221,7 @@
             var items;
 
             if (this.selectedScope) {
-                var id = getTileId(this.selectedScope);
-                var setup = getSetupItem(this.selectedList.setup, id);
+                var setup = this.getSetupItem(this.selectedScope);
 
                 items = setup.items.slice();
             } else if (this.selectedList) {
@@ -1264,11 +1269,14 @@
                 }
             });
 
-            this.set("hasChanges", false);
+            this.set("isModified", false);
         },
         resetSetup: function () {
+            var media = this.mediaScreenRanges[this.mediaScreenRanges.length - 1];
+
             this.lists.forEach(function (list) {
                 list.setup = list.defaultsetup ? JSON.parse(JSON.stringify(list.defaultsetup)) : null;
+                list.setup.width = media.width;
             });
 
             // Workaround to refresh parent list when child list changes it's dimensions.
@@ -1295,7 +1303,7 @@
                 list.refresh(true);
             });
 
-            this.set("hasChanges", false);
+            this.set("isModified", false);
             this.resetSelection();
         },
         selectedTilesChanged: function () {
@@ -1331,7 +1339,16 @@
             this.setCommonSetupValue("outline", newVal);
         },
         gutterChanged: function (newVal, oldVal) {
-            this.setCommonSetupValue("gutter", newVal);
+            var setup;
+
+            if (this.selectedScope) {
+                setup = this.getSetupItem(this.selectedScope);
+            } else {
+                setup = this.selectedList.setup;
+            }
+
+            setup.gutter = newVal / 1;
+            this.refreshSelectedList();
         },
         contentChanged: function (newVal, oldVal) {
             this.setCommonSetupValue("content", newVal);

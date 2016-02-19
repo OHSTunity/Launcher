@@ -16,10 +16,10 @@
             <button class$="{{getTabButtonCss('expert', showMore)}}" on-click="toggleMore">Expert</button>
             <button on-click="toggleTree" class="btn-tree">List</button>
         </div>
-        <template is="dom-if" if="{{!showMore}}">
+        <template is="dom-if" if="{{!showMore}}" restamp>
             <div class="editor-simple-form">
                 <div class="editor-form-section save-section">
-                    <button type="button" class="btn" on-click="saveSetup" disabled$="{{!hasChanges}}">Save</button>
+                    <button type="button" class="btn" on-click="saveSetup" disabled="{{!isModified}}">Save</button>
                     <button type="button" class="btn" on-click="resetSetup">Reset</button>
                 </div>
                 <div class="editor-form-section media-section">
@@ -71,11 +71,11 @@
             </div>
         </template>
 
-        <template is="dom-if" if="{{showMore}}">
+        <template is="dom-if" if="{{showMore}}" restamp>
             <div class="editor-expert-form">
                 <div class="editor-form-section save-section">
-                    <button type="button" class="btn" on-click="saveSetup" disabled$="{{!hasChanges}}">Save</button>
-                    <button type="button" class="btn" on-click="revertSetup" disabled$="{{!hasChanges}}">Discard</button>
+                    <button type="button" class="btn" on-click="saveSetup" disabled$="{{!isModified}}">Save</button>
+                    <button type="button" class="btn" on-click="revertSetup" disabled$="{{!isModified}}">Discard</button>
                     <button type="button" class="btn" on-click="resetSetup">Reset</button>
                 </div>
                 <div class="editor-form-section media-section">
@@ -89,9 +89,9 @@
                     <label>Gutter</label>
                     <div class="gutter-border"></div>
                     <div class="btn-group">
-                        <input type="text" value="{{gutter::change}}" disabled$="{{!getIsGutterSelection(selectedTiles, selectedTiles.length)}}" />
-                        <button class="btn-range" disabled$="{{!getIsGutterSelection(selectedTiles, selectedTiles.length)}}" on-click="gutterPlus">+</button>
-                        <button class="btn-range" disabled$="{{!getIsGutterSelection(selectedTiles, selectedTiles.length)}}" on-click="gutterMinus">-</button>
+                        <input type="text" value="{{gutter::change}}" disabled$="{{!selectedList}}" />
+                        <button class="btn-range" disabled$="{{!selectedList}}" on-click="gutterPlus">+</button>
+                        <button class="btn-range" disabled$="{{!selectedList}}" on-click="gutterMinus">-</button>
                     </div>
                     <div class="gutter-border"></div>
                 </div>
@@ -267,12 +267,15 @@
                 <template is="dom-repeat" items="{{selectedScopeItems}}">
                     <div class$="{{getTreeItemCss(selectedTiles.length, item)}}" on-click="selectTreeItem" item="{{item}}" on-dblclick="scopeInTreeItem">
                         <template is="dom-if" if="{{item.hidden}}">
-                            <a href="javascript:" class="hidden-icon" title="Show element" on-click="showTreeItem" item="{{item}}"></a>
+                            <a href="javascript:" class="hidden-icon" title="Show element" on-click="toggleTreeItem" item="{{item}}"></a>
+                        </template>
+                        <template is="dom-if" if="{{!item.hidden}}">
+                            <a href="javascript:" class="show-icon" title="Hide element" on-click="toggleTreeItem" item="{{item}}"></a>
+                        </template>
+                        <template is="dom-if" if="{{getIsScopable(item)}}">
+                            <a href="javascript:" class="scope-in" on-click="selectScopeItem" item="{{item}}" title="Scope in">...</a>
                         </template>
                         <span>{{getSetupName(item)}}</span>
-                        <template is="dom-if" if="{{getIsScopable(item)}}">
-                            <a href="javascript:" on-click="selectScopeItem" item="{{item}}">...</a>
-                        </template>
                     </div>
                 </template>
             </div>
