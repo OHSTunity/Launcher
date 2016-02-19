@@ -9,16 +9,19 @@
         (function () {
             Polymer({
                 is: "launcher-menu",
-                busy: false,
+                observer: null,
                 ready: function () {
-                    this.$.content.addEventListener("DOMNodeInserted", this.sortItems.bind(this));
+                    this.observer = new MutationObserver(this.sortItems.bind(this));
+                    this.observe();
+                },
+                observe: function () {
+                    this.observer.observe(this, {
+                        childList: true,
+                        subtree: true
+                    });
                 },
                 sortItems: function () {
-                    if (this.busy) {
-                        return;
-                    }
-
-                    this.busy = true;
+                    this.observer.disconnect();
 
                     var lis = this.querySelectorAll("html /deep/ li");
 
@@ -42,7 +45,7 @@
                         ul.appendChild(lis[i]);
                     }
 
-                    this.busy = false;
+                    this.observe();
                 }
             });
         })();
