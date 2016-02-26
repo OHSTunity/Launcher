@@ -27,8 +27,8 @@
 
                     lis = Array.prototype.slice.call(lis, 0);
                     lis.sort(function (a, b) {
-                        var at = a.dataset.sortNumber || a.innerText.trim();
-                        var bt = b.dataset.sortNumber || b.innerText.trim();
+                        var at = a.dataset.sortNumber || a.textContent.trim();
+                        var bt = b.dataset.sortNumber || b.textContent.trim();
 
                         if (at < bt) {
                             return -1;
