@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.2.0
+version: 0.2.1
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -68,8 +68,10 @@ version: 0.2.0
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
-          partial = newValue;
-          starcounterInclude.partialChanged(partial);
+          if (partial !== newValue) {
+            partial = newValue;
+            starcounterInclude.partialChanged(partial);
+          }
         },
         get: function(){
           return partial;
