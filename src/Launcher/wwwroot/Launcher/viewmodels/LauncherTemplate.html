@@ -8,11 +8,11 @@
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
-    <script>
+  <!--  <script>
       window.Polymer = window.Polymer || {};
       window.Polymer.dom = "shadow";
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
-    </script>
+    </script>-->
 
 
     <link rel="import" href="/sys/polymer/polymer.html" />
@@ -113,7 +113,7 @@
             <div class="launchpad">
 
                 <template is="dom-if" if="{{model.launchpad}}">
-                    <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+                    <launcher-launchpad class="visible" apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
                 </template>
 
             </div>
@@ -148,7 +148,7 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-simple-editor default-selected-list-selectors='[".visible juicy-tile-table"]'
+                <juicy-tile-simple-editor default-selected-list-selectors='[".visible juicy-tile-table", "html /deep/ juicy-tile-table"]'
                                    class="max-height"
                                    has-changes="{{model.layoutModified$}}"
                                    on-close-click="closeEditor"></juicy-tile-simple-editor>

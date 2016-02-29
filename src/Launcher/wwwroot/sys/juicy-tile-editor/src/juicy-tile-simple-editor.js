@@ -387,8 +387,8 @@
                         { name: "9", value: 900 / 12 + "%" }, { name: "10", value: 1000 / 12 + "%" }, { name: "11", value: 1100 / 12 + "%" }, { name: "12", value: 1200 / 12 + "%" }]
             },
             visible: { type: Boolean, value: null, notify: true },
-            listSelectors: { type: Array, value: ["juicy-tile-list", "juicy-tile-grid", "juicy-tile-table"] },
-            defaultSelectedListSelectors: { type: Array, value: ["juicy-tile-list", "juicy-tile-grid", "juicy-tile-table"] },
+            listSelectors: { type: Array, value: ["juicy-tile-list", "juicy-tile-grid", "juicy-tile-table", "html /deep/ juicy-tile-table"] },
+            defaultSelectedListSelectors: { type: Array, value: ["juicy-tile-list", "juicy-tile-grid", "juicy-tile-table", "html /deep/ juicy-tile-table"] },
             lists: { type: Array, value: [] },
             selectedTiles: { type: Array, value: [] },
             selectedList: { type: Object, value: null, observer: "selectedListChanged" },

@@ -54,7 +54,7 @@
         </style>
         <juicy-tiles-setup-sync api-url="/sc/layout" name="/Launcher/launchpad" storedValue="{{layout}}"></juicy-tiles-setup-sync>
         <!-- <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad"> -->
-        <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='[[cloneJSON(layout)]]'>
+        <juicy-tile-table defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='[[cloneJSON(layout)]]'>
         <!-- <juicy-tile-grid defaulttilesetup='{ "height": 82, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='{"width": 1000, "items": []}'> -->
             <template is="dom-repeat" items="{{appsArray}}">
                 <div class="launchpad-tile">
@@ -66,7 +66,7 @@
                     </a>
                 </div>
             </template>
-        </juicy-tile-grid>
+        </juicy-tile-table>
     </template>
     <script>
         Polymer({
