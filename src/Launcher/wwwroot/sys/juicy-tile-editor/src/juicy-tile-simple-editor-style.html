@@ -28,6 +28,8 @@
                 outline: none;
                 box-sizing: border-box;
                 -moz-box-sizing: border-box;
+                text-decoration: none;
+                box-shadow: none;
             }
 
             .btn:hover {
@@ -65,13 +67,32 @@
                 color: white;
             }
 
-            .editor-tabs button.btn-tab {
-                background-color: #596567;
-                height: 36px;
+            .editor-tabs button.btn-close {
+                background-image: url(images/close.svg);
+                background-position: center center;
+                background-repeat: no-repeat;
+                float: right;
+                width: 30px;
+                height: 25px;
+                opacity: 0.8;
+                margin: 2px 0px;
             }
 
-            .editor-tabs button.active {
+            .editor-tabs button.btn-close:hover {
+                opacity: 1;
+            }
+
+            .editor-tabs button.btn-tree {
+                margin-top: 10px;
+            }
+
+            .editor-tabs button.btn-tab {
+                height: 28px;
+            }
+
+            .editor-tabs button.btn-tab.active {
                 border-color: #596567;
+                background-color: #596567;
             }
 
             .editor-breadcrumb {
@@ -110,8 +131,23 @@
                 overflow: auto;
             }
 
+            .editor-tree-chevron {
+                position: fixed;
+                right: 20px;
+                top: 115px;
+                width: 60px;
+                height: 10px;
+                background-color: #3e494c;
+                border-radius: 0px 0px 10px 10px;
+                background-image: url(images/chevron-down.svg);
+                background-position: center 2px;
+                background-repeat: no-repeat;
+                background-size: 10px 5px;
+                cursor: pointer;
+            }
+
             .editor-tree div.editor-tree-item {
-                padding: 2px 10px;
+                padding: 2px 5px 2px 10px;
                 cursor: pointer;
             }
 
@@ -132,15 +168,29 @@
                 text-decoration: underline;
             }
 
+            .editor-tree a.scope-in,
+            .editor-tree a.show-icon,
             .editor-tree a.hidden-icon {
                 width: 18px;
                 height: 18px;
                 float: right;
-                background-image: url(images/eye.svg);
-                background-size: 14px 14px;
+                background-image: url(images/eye-cross.svg);
+                background-size: 15px 15px;
                 background-position: center center;
                 background-repeat: no-repeat;
                 margin-top: 1px;
+                background-color: #ebebe4;
+                border-radius: 2px;
+                text-align: center;
+                margin-left: 5px;
+            }
+
+            .editor-tree a.show-icon {
+                background-image: url(images/eye.svg);
+            }
+
+            .editor-tree a.scope-in {
+                background-image: none;
             }
 
             juicy-popover div.popup {
@@ -172,8 +222,12 @@
                 padding: 10px 0px;
             }
 
-            .editor-simple-form .save-section button {
+            .editor-simple-form .save-section button.btn {
                 margin-bottom: 10px;
+                height: 33px;
+                text-decoration: none;
+                text-transform: none;
+                line-height: normal;
             }
 
             .editor-simple-form .media-section {
@@ -192,6 +246,7 @@
                 vertical-align: middle;
                 padding-left: 0px;
                 padding-right: 0px;
+                box-shadow: none;
             }
 
             @media all and (-ms-high-contrast:none) {
@@ -292,6 +347,7 @@
                 border-top: 4px dotted #787b80;
                 border-bottom: 4px dotted #787b80;
                 height: 35px;
+                box-sizing: content-box;
             }
 
             .editor-simple-form .width-section .btn-group button.btn {
@@ -315,6 +371,7 @@
                 color: white;
                 margin: -4px 0px;
                 height: 43px;
+                box-shadow: none;
             }
 
             .editor-simple-form .width-section .btn-group button.btn:first-child {
@@ -394,6 +451,10 @@
             }
 
             .editor-simple-form .visible-section .btn.btn-hidden {
+                background-image: url(images/eye-cross.svg);
+            }
+
+            .editor-simple-form .visible-section .btn.btn-undefined {
                 background-image: url(images/eye.svg);
             }
 
@@ -565,6 +626,12 @@
 
             .editor-expert-form .gutter-section .btn-group {
                 padding: 3px 0px;
+                display: flex;
+                flex-direction: row;
+            }
+
+            .editor-expert-form .gutter-section .btn-group button {
+                margin-left: 4px;
             }
 
             .editor-expert-form .gutter-section .gutter-border {
@@ -580,13 +647,15 @@
                 }
             }
 
-            .editor-expert-form .gutter-section input {
+            .editor-expert-form .gutter-section input[type=text] {
                 border: 1px solid #b0b6b6;
                 padding: 2px 4px;
                 width: 35px;
                 height: 18px;
                 box-sizing: border-box;
                 -moz-box-sizing: border-box;
+                font-size: 13px;
+                box-shadow: none;
             }
 
             .editor-expert-form .width-section {
@@ -775,6 +844,10 @@
             }
 
             .editor-expert-form .visible-section .btn.btn-hidden {
+                background-image: url(images/eye-cross.svg);
+            }
+
+            .editor-expert-form .visible-section .btn.btn-undefined {
                 background-image: url(images/eye.svg);
             }
 
@@ -782,6 +855,7 @@
                 display: flex;
                 flex-direction: row;
                 margin-top: 5px;
+                height: 28px;
             }
 
             .editor-expert-form .dimension-section:first-child {
@@ -798,6 +872,12 @@
                 text-align: right;
             }
 
+            .editor-expert-form .dimension-section label.section-title-two {
+                line-height: 13px;
+                margin-top: 4px;
+                text-align: center;
+            }
+
             .editor-expert-form .dimension-section .control-group {
                 display: flex;
                 flex-direction: row;
@@ -805,64 +885,7 @@
                 border-radius: 4px;
                 background-color: #3e494c;
                 height: 24px;
-            }
-
-            .editor-expert-form .dimension-section input {
-                width: 40px;
-                margin-right: 3px;
-                border: none;
-                background-color: #3e494c;
-                color: white;
-                font-size: 12px;
-                padding-left: 5px;
-                flex: auto;
-            }
-
-            .editor-expert-form .dimension-section .btn-range {
-                height: 25px;
-                width: 25px;
-                background-color: #384041;
-                padding: 1px 3px;
-                border-radius: 2px;
-                margin: 0px 2px;
-                line-height: 21px;
-            }
-
-            .editor-expert-form .dimension-section .btn-range:hover {
-                background-color: #21b3cf;
-            }
-
-            .editor-expert-form .dimension-section label.checkbox {
-            }
-
-            .editor-expert-form .dimension-section label.checkbox input {
-                display: none;
-            }
-
-            .editor-expert-form .dimension-section label.checkbox span {
-                display: block;
-                background-color: #384041;
-                color: white;
-                font-size: 10px;
-                text-align: center;
-                line-height: 11px;
-                padding: 1px 3px 2px 3px;
-                border-radius: 2px;
-                margin: 0px 3px;
-                cursor: pointer;
-            }
-
-            .editor-expert-form .dimension-section label.checkbox input[checked] + span {
-                background-color: #21b3cf;
-            }
-
-            .editor-expert-form .dimension-section label.checkbox input:checked + span {
-                background-color: #21b3cf;
-            }
-
-            .editor-expert-form .dimension-section label.checkbox input[disabled] + span {
-                cursor: not-allowed;
-                color: #b0b6b6;
+                box-sizing: content-box;
             }
 
             .editor-expert-form .outline-section {
@@ -873,6 +896,7 @@
                 box-sizing: border-box;
                 -moz-box-sizing: border-box;
                 padding: 8px;
+                padding-top: 0px;
             }
 
             .editor-expert-form .outline-section button.btn {
@@ -887,10 +911,10 @@
             .editor-expert-form .fill-section {
                 background-color: white;
                 color: black;
-                width: 35px;
-                height: 25px;
+                width: 55px;
+                height: 55px;
                 margin: auto;
-                margin-top: 5px;
+                line-height: 55px;
             }
 
             .editor-expert-form .fill-section button.btn {
@@ -921,6 +945,9 @@
             .editor-expert-form .tight-direction-html-source-section label.checkbox {
                 text-align: center;
                 display: block;
+                margin: 0px;
+                margin-top: 0px;
+                margin-bottom: 0px;
             }
 
             .editor-expert-form .tight-direction-html-source-section button.btn,
@@ -938,6 +965,7 @@
                 width: 50px;
                 margin: 0px;
                 cursor: pointer;
+                text-transform: none;
             }
 
             .editor-expert-form .tight-direction-html-source-section button.btn[disabled],
@@ -1174,7 +1202,7 @@
                 }
 
                 .editor-expert-form .dimension-section:first-child {
-                    margin-top: 20.9px;
+                    margin-top: 25px;
                 }
 
                 .editor-expert-form .dimension-section label.section-title {
@@ -1184,54 +1212,38 @@
                     width: 42.75px;
                 }
 
+                .editor-expert-form .dimension-section label.section-title-two {
+                    font-size: 11px;
+                    line-height: 12px;
+                    margin-top: 3px;
+                    text-align: center;
+                }
+
                 .editor-expert-form .dimension-section .control-group {
                     display: flex;
                     flex-direction: row;
-                    padding: 3.8px 2.85px;
+                    padding: 3px 2.85px;
                     border-radius: 3.8px;
                     background-color: #3e494c;
-                    height: 22.8px;
-                }
-
-                .editor-expert-form .dimension-section input {
-                    width: 38px;
-                    margin-right: 2.85px;
-                    font-size: 11.4px;
-                    padding-left: 4.75px;
-                }
-
-                .editor-expert-form .dimension-section .btn-range {
-                    height: 23px;
-                    width: 23px;
-                    background-color: #384041;
-                    padding: 1px 2.85px;
-                    border-radius: 1.9px;
-                    margin: 0px 1.9px;
-                    line-height: 19.95px;
-                }
-
-                .editor-expert-form .dimension-section label.checkbox span {
-                    font-size: 9px;
-                    line-height: 10.45px;
-                    padding: 1px 3px 1.9px 3px;
-                    border-radius: 6px;
-                    margin: 0px 2.85px;
+                    height: 22px;
                 }
 
                 .editor-expert-form .outline-section {
                     width: 86.45px;
                     height: 86.45px;
                     padding: 7.6px;
+                    padding-top: 0px;
                 }
 
                 .editor-expert-form .outline-section button.btn {
                     font-size: 11.4px;
+                    line-height: 11px;
                 }
 
                 .editor-expert-form .fill-section {
-                    width: 33.25px;
-                    height: 23.75px;
-                    margin-top: 4.75px;
+                    width: 50px;
+                    height: 50px;
+                    line-height: 50px;
                 }
 
                 .editor-expert-form .tight-direction-html-source-section {

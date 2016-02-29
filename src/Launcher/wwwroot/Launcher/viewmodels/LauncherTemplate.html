@@ -1,4 +1,5 @@
 <!doctype html>
+<html>
 <head>
     <title>Tunity</title>
 
@@ -46,7 +47,6 @@
     <link rel="import" href="/sys/imported-template/imported-template.html" />
 	  <!--<link rel="import" href="/sys/dom-imported/dom-imported.html" />-->
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
-    <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-simple-editor.html" />
     <link rel="import" href="/sys/juicy-redirect/juicy-redirect.html" />
 
     <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
@@ -148,10 +148,7 @@
         <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
-                <juicy-tile-simple-editor default-selected-list-selectors='[".visible juicy-tile-table", "html /deep/ juicy-tile-table"]'
-                                   class="max-height"
-                                   has-changes="{{model.layoutModified$}}"
-                                   on-close-click="closeEditor"></juicy-tile-simple-editor>
+                <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
             </div>
         </template>
 
@@ -206,3 +203,4 @@
         var puppet = document.getElementsByTagName("puppet-client")[0];
     </script>
 </body>
+</html>

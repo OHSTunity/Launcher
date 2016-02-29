@@ -25,7 +25,6 @@
     flex-direction:row;
 }
 
-.workspace > juicy-tile-grid,
 .workspace > juicy-tile-table {
     /*flex: 1 1 auto;*/
     padding: 10px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/

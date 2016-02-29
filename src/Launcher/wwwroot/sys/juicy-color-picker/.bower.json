@@ -15,11 +15,11 @@
     "bower_components"
   ],
   "dependencies": {},
-  "_release": "c73575c7da",
+  "_release": "46082fa022",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "c73575c7da09087b4b68ed1677469bb927a56b7c"
+    "commit": "46082fa0221eea157374e1268b55a943af5ebd66"
   },
   "_source": "git://github.com/Juicy/juicy-color-picker.git",
   "_target": "gh-pages",

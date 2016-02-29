@@ -5,20 +5,21 @@
 <link rel="import" href="../../juicy-color-picker/src/juicy-color-picker.html" />
 <link rel="import" href="./juicy-border-picker.html" />
 <link rel="import" href="./juicy-tile-simple-editor-style.html" />
+<link rel="import" href="./juicy-tile-simple-size.html" />
 
 <dom-module id="juicy-tile-simple-editor">
     <template>
         <style include="juicy-tile-simple-editor-style"></style>
         <div class="editor-tabs">
-            <button on-click="closeEditor">Close</button>
+            <button on-click="closeEditor" class="btn-close" title="Close editor"></button>
             <button class$="{{getTabButtonCss('normal', showMore)}}" on-click="toggleMore">Normal</button>
             <button class$="{{getTabButtonCss('expert', showMore)}}" on-click="toggleMore">Expert</button>
-            <button on-click="toggleTree">Sidebar</button>
+            <button on-click="toggleTree" class="btn-tree">List</button>
         </div>
-        <template is="dom-if" if="{{!showMore}}">
+        <template is="dom-if" if="{{!showMore}}" restamp>
             <div class="editor-simple-form">
                 <div class="editor-form-section save-section">
-                    <button type="button" class="btn" on-click="saveSetup" disabled$="{{!hasChanges}}">Save</button>
+                    <button type="button" class="btn" on-click="saveSetup" disabled="{{!isModified}}">Save</button>
                     <button type="button" class="btn" on-click="resetSetup">Reset</button>
                 </div>
                 <div class="editor-form-section media-section">
@@ -44,11 +45,16 @@
                     <button type="button" class="btn btn-down" on-click="moveDown" disabled$="{{!selectedTiles.length}}" title="Move selected tiles down"></button>
                 </div>
                 <div class="editor-form-section visible-section">
-                    <template is="dom-if" if="{{!visible}}">
+                    <template is="dom-if" if="{{getIsHidden(visible)}}">
                         <button type="button" class="btn btn-hidden" on-click="selectVisible" data-value="1" disabled$="{{!selectedTiles.length}}" title="Show selected tiles"></button>
                     </template>
-                    <template is="dom-if" if="{{visible}}">
+                    <template is="dom-if" if="{{getIsVisible(visible)}}">
                         <button type="button" class="btn btn-visible" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                    </template>
+                    <template is="dom-if" if="{{!getIsVisible(visible)}}">
+                        <template is="dom-if" if="{{!getIsHidden(visible)}}">
+                            <button type="button" class="btn btn-undefined" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                        </template>
                     </template>
                 </div>
                 <div class="editor-form-section align-section">
@@ -65,11 +71,11 @@
             </div>
         </template>
 
-        <template is="dom-if" if="{{showMore}}">
+        <template is="dom-if" if="{{showMore}}" restamp>
             <div class="editor-expert-form">
                 <div class="editor-form-section save-section">
-                    <button type="button" class="btn" on-click="saveSetup" disabled$="{{!hasChanges}}">Save</button>
-                    <button type="button" class="btn" on-click="revertSetup" disabled$="{{!hasChanges}}">Discard</button>
+                    <button type="button" class="btn" on-click="saveSetup" disabled$="{{!isModified}}">Save</button>
+                    <button type="button" class="btn" on-click="revertSetup" disabled$="{{!isModified}}">Discard</button>
                     <button type="button" class="btn" on-click="resetSetup">Reset</button>
                 </div>
                 <div class="editor-form-section media-section">
@@ -83,9 +89,9 @@
                     <label>Gutter</label>
                     <div class="gutter-border"></div>
                     <div class="btn-group">
-                        <input type="text" value="{{gutter::change}}" disabled$="{{!getIsGutterSelection(selectedTiles, selectedTiles.length)}}" />
-                        <button class="btn-range" disabled$="{{!getIsGutterSelection(selectedTiles, selectedTiles.length)}}" on-click="gutterPlus">+</button>
-                        <button class="btn-range" disabled$="{{!getIsGutterSelection(selectedTiles, selectedTiles.length)}}" on-click="gutterMinus">-</button>
+                        <input type="text" value="{{gutter::change}}" disabled$="{{!selectedList}}" />
+                        <button class="btn-range" disabled$="{{!selectedList}}" on-click="gutterPlus">+</button>
+                        <button class="btn-range" disabled$="{{!selectedList}}" on-click="gutterMinus">-</button>
                     </div>
                     <div class="gutter-border"></div>
                 </div>
@@ -124,11 +130,16 @@
                         </button>
                     </div>
                     <div class="visible-section">
-                        <template is="dom-if" if="{{!visible}}">
+                        <template is="dom-if" if="{{getIsHidden(visible)}}">
                             <button type="button" class="btn btn-hidden" on-click="selectVisible" data-value="1" disabled$="{{!selectedTiles.length}}" title="Show selected tiles"></button>
                         </template>
-                        <template is="dom-if" if="{{visible}}">
+                        <template is="dom-if" if="{{getIsVisible(visible)}}">
                             <button type="button" class="btn btn-visible" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                        </template>
+                        <template is="dom-if" if="{{!getIsVisible(visible)}}">
+                            <template is="dom-if" if="{{!getIsHidden(visible)}}">
+                                <button type="button" class="btn btn-undefined" on-click="selectVisible" data-value="0" disabled$="{{!selectedTiles.length}}" title="Hide selected tiles"></button>
+                            </template>
                         </template>
                     </div>
                 </div>
@@ -136,33 +147,18 @@
                     <div class="dimension-section">
                         <label class="section-title">Width</label>
                         <div class="control-group">
-                            <input type="text" value="{{width::change}}" disabled$="{{!selectedTiles.length}}" />
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="widthPlus">+</button>
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="widthMinus">-</button>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{widthFlexible::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with parent</span>
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{widthDynamic::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with content</span>
-                            </label>
+                            <juicy-tile-simple-size value="{{width}}" flexible="{{widthFlexible}}" disabled$="{{!selectedTiles.length}}" on-calculate="calculateDimension" data-dimension="width"></juicy-tile-simple-size>
                         </div>
                     </div>
                     <div class="dimension-section">
-                        <label class="section-title">Height</label>
+                        <template is="dom-if" if="{{!heightDynamic}}">
+                            <label class="section-title">Height</label>
+                        </template>
+                        <template is="dom-if" if="{{heightDynamic}}">
+                            <label class="section-title section-title-two">Min<br />Height</label>
+                        </template>
                         <div class="control-group">
-                            <input type="text" value="{{height::change}}" disabled$="{{!selectedTiles.length}}" />
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="heightPlus">+</button>
-                            <button class="btn-range" disabled$="{{!selectedTiles.length}}" on-click="heightMinus">-</button>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{heightFlexible::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with parent</span>
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" checked="{{heightDynamic::change}}" disabled$="{{!selectedTiles.length}}" />
-                                <span>grow<br />with content</span>
-                            </label>
+                            <juicy-tile-simple-size value="{{height}}" dynamic="{{heightDynamic}}" show-dynamic="true" disabled$="{{!selectedTiles.length}}" on-calculate="calculateDimension" data-dimension="height"></juicy-tile-simple-size>
                         </div>
                     </div>
                 </div>
@@ -271,14 +267,21 @@
                 <template is="dom-repeat" items="{{selectedScopeItems}}">
                     <div class$="{{getTreeItemCss(selectedTiles.length, item)}}" on-click="selectTreeItem" item="{{item}}" on-dblclick="scopeInTreeItem">
                         <template is="dom-if" if="{{item.hidden}}">
-                            <a href="javascript:" class="hidden-icon" title="Show element" on-click="showTreeItem" item="{{item}}"></a>
+                            <a href="javascript:" class="hidden-icon" title="Show element" on-click="toggleTreeItem" item="{{item}}"></a>
+                        </template>
+                        <template is="dom-if" if="{{!item.hidden}}">
+                            <a href="javascript:" class="show-icon" title="Hide element" on-click="toggleTreeItem" item="{{item}}"></a>
+                        </template>
+                        <template is="dom-if" if="{{getIsScopable(item)}}">
+                            <a href="javascript:" class="scope-in" on-click="selectScopeItem" item="{{item}}" title="Scope in">...</a>
                         </template>
                         <span>{{getSetupName(item)}}</span>
-                        <template is="dom-if" if="{{getIsScopable(item)}}">
-                            <a href="javascript:" on-click="selectScopeItem" item="{{item}}">...</a>
-                        </template>
                     </div>
                 </template>
+            </div>
+        </template>
+        <template is="dom-if" if="{{!showTree}}">
+            <div class="editor-tree-chevron" on-click="toggleTree">
             </div>
         </template>
 

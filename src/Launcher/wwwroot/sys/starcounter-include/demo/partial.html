@@ -1,0 +1,10 @@
+<template>
+    <template is="dom-bind">
+        <div style="border: 2px solid blue">
+            <div>Number:
+                <span>{{model.Number$}}</span>
+            </div>
+            <button value="{{model.Number$::click}}" onmousedown="++this.value">Increment</button>
+        </div>
+    </template>
+</template>

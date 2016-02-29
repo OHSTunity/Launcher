@@ -109,6 +109,7 @@
     <Content Include="wwwroot\Launcher\elements\launcher-menu\launcher-menu.html" />
     <Content Include="wwwroot\Launcher\viewmodels\LauncherMenu.html" />
     <Content Include="wwwroot\Launcher\viewmodels\LauncherTemplate.html" />
+    <Content Include="wwwroot\Launcher\viewmodels\LayoutEditor.html" />
     <Content Include="wwwroot\Launcher\viewmodels\ResultPage.html" />
     <Content Include="wwwroot\Launcher\viewmodels\SearchPreviewPage.html" />
     <Content Include="wwwroot\Launcher\viewmodels\SettingsPage.html" />

@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.1.1
+version: 0.2.1
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -68,8 +68,10 @@ version: 0.1.1
       // so it could be change by VanillaJs without Polymer Template Binding
       Object.defineProperty(this,"partial",{
         set: function(newValue){
-          partial = newValue;
-          starcounterInclude.partialChanged(partial);
+          if (partial !== newValue) {
+            partial = newValue;
+            starcounterInclude.partialChanged(partial);
+          }
         },
         get: function(){
           return partial;
@@ -128,10 +130,15 @@ version: 0.1.1
         !this.partial.PartialId && console.warn("partial.PartialId for", this, "is missing.");
         if(this.isAttached && html){
           this.sync.setAttribute("name", this.partial.PartialId);
-          this.sync.storedValue = this.partial.layout;
+          //Up to Starcounter 2.1.1261, layout came as an object
+          //Starting from one of the following versions, layout will come as a string, for the reasons described in:
+          //https://github.com/Juicy/juicy-tile-editor/issues/127
+          //It can be changed again when this is fixed:
+          //https://github.com/Starcounter/Starcounter/issues/3074
+          this.sync.storedValue = typeof this.partial.layout == "string" ? JSON.parse(this.partial.layout) : this.partial.layout;
           this.grid.setAttribute("name", this.partial.PartialId);
           if(this.partial.layout){
-            this.grid.setup = JSON.parse(JSON.stringify(this.partial.layout));
+            this.grid.setup = typeof this.partial.layout == "string" ? JSON.parse(this.partial.layout) : JSON.parse(JSON.stringify(this.partial.layout));
           }
           this.partial.Html && this.template.setAttribute("content", this.partial.Html);
           this.template.model = this.partial;

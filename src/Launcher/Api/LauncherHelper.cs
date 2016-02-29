@@ -77,10 +77,11 @@ namespace Launcher {
                     // workaround for https://github.com/Starcounter/Starcounter/issues/3072
                     // set default value 
                     // consider moving to HTML, or pre-populatind default layouts
-                    launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
+                    //launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
+                    launcher.launchpad.layout = "{\"width\": \"1000\", \"items\":[]}";
                 } else {
-                    dynamic setupJson = new Json(setup.Value);
-                    launcher.launchpad.layout = setupJson;
+//                    dynamic setupJson = new Json(setup.Value);
+                    launcher.launchpad.layout = setup.Value; //setupJson;
                 }
 
                 launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {

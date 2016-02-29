@@ -1,3 +1,7 @@
+:neckbeard: This is not a sample app. For the sample app, see [Launcher](https://github.com/StarcounterPrefabs/Launcher).
+
+------
+
 Launcher's &lt;starcounter-include&gt;
 ==============
 
@@ -20,22 +24,22 @@ Launcher overwrites it with is a custom element that not only let's you load HTM
 
 ## Related wiki articles:
 
- - https://github.com/StarcounterSamples/Launcher/wiki/Partials
- - https://github.com/StarcounterSamples/Launcher/wiki/Layout-setup
- - https://github.com/StarcounterSamples/Launcher/wiki/include-template-in-Polyjuice
+ - https://github.com/StarcounterPrefabs/Launcher/wiki/Partials
+ - https://github.com/StarcounterPrefabs/Launcher/wiki/Layout-setup
+ - https://github.com/StarcounterPrefabs/Launcher/wiki/include-template-in-Polyjuice
 
 
 ## Install
 
-[Launcher](https://github.com/StarcounterSamples/Launcher) has it already pre-installed, under `/sys/starcounter-include/starcounter-include.html` (overwrites Starcounter's one), but if you want to use it separately as well.
+[Launcher](https://github.com/StarcounterPrefabs/Launcher) has it already pre-installed, under `/sys/starcounter-include/starcounter-include.html` (overwrites Starcounter's one), but if you want to use it separately as well.
 
 Install the component using [Bower](http://bower.io/):
 
 ```sh
-$ bower install StarcounterSamples/launcher-include --save
+$ bower install StarcounterPrefabs/launcher-include --save
 ```
 
-Or [download as ZIP](https://github.com/StarcounterSamples/launcher-include/archive/master.zip).
+Or [download as ZIP](https://github.com/StarcounterPrefabs/launcher-include/archive/master.zip).
 
 ## Usage
 
@@ -80,4 +84,4 @@ Or [download as ZIP](https://github.com/StarcounterSamples/launcher-include/arch
 
 ## History
 
-For detailed changelog, check [Releases](https://github.com/StarcounterSamples/launcher-include/releases).
+For detailed changelog, check [Releases](https://github.com/StarcounterPrefabs/launcher-include/releases).

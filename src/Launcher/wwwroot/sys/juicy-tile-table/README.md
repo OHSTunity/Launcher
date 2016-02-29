@@ -9,6 +9,7 @@
 
 [`juicy-tile-list` features](https://github.com/Juicy/juicy-tile-list#features), plus
  - `<table>` that mimics CSS Grid Layout,
+ - awesome mix of fresh Web Components with lovely table layout from 90s :heart:,
  - adapting to dynamic changes of the element, parent container, and tile's content, without need to repack.
 
 ## Demo
@@ -48,7 +49,7 @@ Or [download as ZIP](https://github.com/Juicy/juicy-tile-table/archive/gh-pages.
     ```html
     <juicy-tile-table></juicy-tile-table>
     ```
-
+    
 ## Requirements
 This is custom element and it uses ShadowDOM, so if your environment does not support it, you may use [webcomponents/webcomponentsjs](https://github.com/webcomponents/webcomponentsjs) polyfill.
 
