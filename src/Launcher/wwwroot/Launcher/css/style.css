@@ -161,7 +161,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     font-weight:normal;
     padding-left:4px;
 }
-.launcher-toolbar launcher-search-input /deep/ input
+.launcher-toolbar launcher-search-input input
     {
         max-width:100px;
         padding-left: 0px; 
@@ -171,7 +171,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     #launcher-menu ul a span {
         display:none;
     }
-    .launcher-toolbar so-signin /deep/ .full-name
+    .launcher-toolbar so-signin .full-name
     {
         display: none;
     }
@@ -259,7 +259,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 
 .launcher-toolbar paper-icon-button.modified,
 .launcher-toolbar paper-icon-button.modified:hover,
-.launcher-toolbar paper-icon-button.modified:hover /deep/ path {
+.launcher-toolbar paper-icon-button.modified:hover path {
     color: red;
     fill: red;
 }
@@ -291,7 +291,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 div.launcher-theme input,
-div.launcher-theme /deep/ input {
+div.launcher-theme input {
     color: white;
     background: #7B8AA6;
     padding: 4px;
@@ -302,22 +302,22 @@ div.launcher-theme /deep/ input {
 
 /* Change plaveholder text color */
 div.launcher-theme input::-webkit-input-placeholder,
-div.launcher-theme /deep/ input::-webkit-input-placeholder { /* WebKit browsers */
+div.launcher-theme input::-webkit-input-placeholder { /* WebKit browsers */
     color: white;
 }
 
 div.launcher-theme input:-moz-placeholder,
-div.launcher-theme /deep/ input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+div.launcher-theme input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
     color: white;
 }
 
 div.launcher-theme input::-moz-placeholder,
-div.launcher-theme /deep/ input::-moz-placeholder { /* Mozilla Firefox 19+ */
+div.launcher-theme input::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: white;
 }
 
 div.launcher-theme input:-ms-input-placeholder,
-div.launcher-theme /deep/ input:-ms-input-placeholder { /* Internet Explorer 10+ */
+div.launcher-theme input:-ms-input-placeholder { /* Internet Explorer 10+ */
     color: white;
 }
 

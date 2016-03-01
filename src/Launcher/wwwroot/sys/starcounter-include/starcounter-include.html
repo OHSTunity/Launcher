@@ -20,7 +20,7 @@ version: 0.2.1
 <template id="partial-template">
     <juicy-tiles-setup-sync
         api-url="/sc/layout"></juicy-tiles-setup-sync>
-    <juicy-tile-grid
+    <juicy-tile-table
         defaultTileSetup='{
             "height": 1,
             "heightDynamic": true,
@@ -29,7 +29,7 @@ version: 0.2.1
         }'
         refreshonmutation>
       <template is="imported-template"></template>
-    </juicy-tile-grid>
+    </juicy-tile-table>
 </template>
 <script>
   (function () {

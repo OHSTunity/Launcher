@@ -9,11 +9,11 @@
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
-  <!--  <script>
-      window.Polymer = window.Polymer || {};
-      window.Polymer.dom = "shadow";
+    <script>
+      //window.Polymer = window.Polymer || {};
+      //window.Polymer.dom = "shadow";
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
-    </script>-->
+    </script>
 
 
     <link rel="import" href="/sys/polymer/polymer.html" />
@@ -52,7 +52,7 @@
     <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <!--<link rel="stylesheet" type="text/css" href="/sys/font-awesome/css/font-awesome.css">-->
-
+    <link rel="import" type="css" href="/sys/font-awesome/css/font-awesome.css">
     <!-- Style sheets -->
     <!--<link rel="import" href="/sys/bootstrap.html" />-->
     <link rel="stylesheet" href="/Launcher/css/style.css" />
@@ -180,10 +180,10 @@
             template.toggleEditor = function () {
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
-            /*
-			template.addEventListener("model-changed", function (e) {
-				console.log(e);
-			});*/
+/*
+      			template.addEventListener("model-changed", function (e) {
+      				console.log(e);
+      			});*/
 
             template.addEventListener("dom-change", function () {
                 var puppet = document.querySelector("puppet-client");
