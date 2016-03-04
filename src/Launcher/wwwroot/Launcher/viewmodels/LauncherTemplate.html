@@ -107,11 +107,11 @@
             <!-- Workspaces -->
             <template is="dom-repeat" items="{{model.workspaces}}">
                 <!-- - workspace -->
-                <template is="dom-if" if="{{item.AppName}}">
-                    <launcher-display-route match-path$="{{concat('^\/', item.AppName, '([/].*)?$')}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
-                    <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
+                <template is="dom-if" if="{{item.Launcher.AppName}}">
+                    <launcher-display-route match-path$="{{concat('^\/', item.Launcher.AppName, '([/].*)?$')}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.Launcher.AppName)}}"></launcher-display-route>
+                    <starcounter-include class$="{{concat('workspace ', item.Launcher.AppName)}}" partial="{{item}}"></starcounter-include>
                 </template>
-                <template is="dom-if" if="{{!item.AppName}}">
+                <template is="dom-if" if="{{!item.Launcher.AppName}}">
                     <div style="padding: 15px; font-weight:bold; color:red;">
                         <div>A workspace without AppName</div>
                         <div>{{item.Html}}</div>

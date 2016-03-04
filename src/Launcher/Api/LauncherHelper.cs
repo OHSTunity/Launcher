@@ -172,11 +172,11 @@ namespace Launcher {
             launcher.uri = req.Uri;
 
             // Call proxied request
-            Response resp = Self.CallUsingExternalRequest(req, () => { return new LauncherWrapperPage(); });
-            var page = resp.Resource as LauncherWrapperPage;
+            Response resp = Self.CallUsingExternalRequest(req, () => { return new LayoutInfo(); });
+            var page = resp.Resource as LayoutInfo;
             bool createWorkspace = true;
             for (var i = 0; i < launcher.workspaces.Count; i++) {
-                if ((launcher.workspaces[i] as LauncherWrapperPage).AppName.ToLower() == page.AppName.ToLower()) {
+                if ((launcher.workspaces[i] as LayoutInfo).AppName.ToLower() == page.AppName.ToLower()) {
                     createWorkspace = false;
                     break;
                 }
@@ -205,11 +205,7 @@ namespace Launcher {
                 if (partialJson == publicViewModel)
                     return null;
 
-                if (partialJson is LauncherWrapperPage) {
-                    // Some special handling of empty page created from a substituehandler. 
-                    // Needed to be able to create or reuse a workspace for the correct app.
-                    ((LauncherWrapperPage)partialJson).AppName = callingAppName;
-                } else if (partialJson is LayoutInfo) {
+                if (partialJson is LayoutInfo) {
                     layoutInfo = (LayoutInfo)partialJson; // Reusing existing instance
                     layoutInfo.AppsResponded.Clear(); 
                 }

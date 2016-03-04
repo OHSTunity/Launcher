@@ -125,18 +125,22 @@ version: 0.2.1
       if(this.partial){
         var html = this.partial.Html;
         !html && console.warn("partial.Html for", this, "is missing.");
-        !this.partial.PartialId && console.warn("partial.PartialId for", this, "is missing.");
         if(this.isAttached && html){
-          this.sync.setAttribute("name", this.partial.PartialId);
-          //Up to Starcounter 2.1.1261, layout came as an object
-          //Starting from one of the following versions, layout will come as a string, for the reasons described in:
-          //https://github.com/Juicy/juicy-tile-editor/issues/127
-          //It can be changed again when this is fixed:
-          //https://github.com/Starcounter/Starcounter/issues/3074
-          this.sync.storedValue = typeof this.partial.layout == "string" ? JSON.parse(this.partial.layout) : this.partial.layout;
-          this.grid.setAttribute("name", this.partial.PartialId);
-          if(this.partial.layout){
-            this.grid.setup = typeof this.partial.layout == "string" ? JSON.parse(this.partial.layout) : JSON.parse(JSON.stringify(this.partial.layout));
+          if(this.partial.Launcher) {
+            if (!this.partial.Launcher.PartialId) {
+              console.warn("partial.Launcher.PartialId for", this, "is missing.");
+            }
+            else {
+              this.sync.setAttribute("name", this.partial.Launcher.PartialId);
+              //Layout is string. It can be changed to object when this is fixed:
+              //https://github.com/Starcounter/Starcounter/issues/3074
+              this.sync.storedValue = JSON.parse(this.partial.Launcher.Layout);
+              this.grid.setAttribute("name", this.partial.Launcher.PartialId);
+              this.grid.setup = JSON.parse(this.partial.Launcher.Layout);
+            }
+          }
+          else if (this.partial && !this.partial.Launcher) {
+              console.warn("partial.Launcher for", this, "is missing.");
           }
           this.partial.Html && this.template.setAttribute("content", this.partial.Html);
           this.template.model = this.partial;
