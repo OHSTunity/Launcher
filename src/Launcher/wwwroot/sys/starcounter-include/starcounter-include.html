@@ -132,11 +132,17 @@ version: 0.2.1
             }
             else {
               this.sync.setAttribute("name", this.partial.Launcher.PartialId);
+              this.grid.setAttribute("name", this.partial.Launcher.PartialId);
               //Layout is string. It can be changed to object when this is fixed:
               //https://github.com/Starcounter/Starcounter/issues/3074
-              this.sync.storedValue = JSON.parse(this.partial.Launcher.Layout);
-              this.grid.setAttribute("name", this.partial.Launcher.PartialId);
-              this.grid.setup = JSON.parse(this.partial.Launcher.Layout);
+              if (this.partial.Launcher.Layout) {
+                this.sync.storedValue = JSON.parse(this.partial.Launcher.Layout);
+                this.grid.setup = JSON.parse(this.partial.Launcher.Layout);
+              }
+              else {
+                this.sync.storedValue = null;
+                this.grid.setup = null;
+              }
             }
           }
           else if (this.partial && !this.partial.Launcher) {
