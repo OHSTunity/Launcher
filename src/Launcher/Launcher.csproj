@@ -93,6 +93,9 @@
     <Compile Include="ViewModels\LauncherWrapperPage.json.cs">
       <DependentUpon>LauncherWrapperPage.json</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\LayoutInfo.json.cs">
+      <DependentUpon>LayoutInfo.json</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\ResultPage.json.cs">
       <DependentUpon>ResultPage.json</DependentUpon>
     </Compile>
@@ -148,6 +151,11 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="ViewModels\ResultPage.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="ViewModels\LayoutInfo.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>
