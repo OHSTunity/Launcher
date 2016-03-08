@@ -21,7 +21,11 @@ namespace Launcher {
             {
                 string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(action.Value);
                 this.previewVisible = true;
-                this.previewResult = Self.GET<Json>(uri);
+                this.previewResult = Self.GET<Json>(uri, () =>
+                {
+                    var p = new Page();
+                    return p;
+                });
             }
 
             void Handle(Input.submit action)

@@ -31,6 +31,7 @@
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
+    <link rel="import" href="/Launcher/elements/launcher-search-result/launcher-search-result.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
     <link rel="import" href="/Launcher/elements/tu-logo-with-spinner/tu-logo-with-spinner.html" />
     <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
@@ -85,10 +86,10 @@
                 <launcher-search-input placeholder="Search here..." value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
                 <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
 
-                <link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
+                <!--<link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />-->
                 <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">
-                        <lancher-search-result data="{{model.searchBar.preview}}"></launcher-search-result>
+                        <launcher-search-result data="{{model.searchBar.previewResult}}"></launcher-search-result>
                     </div>
                 </template>
             </core-field>
@@ -180,9 +181,9 @@
             template.toggleEditor = function () {
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
-/*
-      			template.addEventListener("model-changed", function (e) {
-      				console.log(e);
+
+      		/*	template.addEventListener("model-changed", function (e) {
+      				console.log("lt", e);
       			});*/
 
             template.addEventListener("dom-change", function () {

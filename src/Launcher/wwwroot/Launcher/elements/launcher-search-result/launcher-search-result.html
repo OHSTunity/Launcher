@@ -3,33 +3,33 @@
 <dom-module id="launcher-search-result">
     <style>
         :host {
-            display: inline;
-            height: 0px;
-            width: 0px;
+            color: black;
         }
-		input {
-			border:0;
-			height: 35px;
-			outline: none;
-			background: transparent;
-			outline: none;
-			color: #FFF;
-			font-weight: 200;
-			padding-left:10px;
-			font-size: 14px;
-		}
-		input::-webkit-input-placeholder {
-		    color:rgba(255,255,255,.5);
-		}
-		input::-moz-placeholder {
-			color:rgba(255,255,255,.5);
-		}
-		input:-ms-input-placeholder {
-			color:rgba(255,255,255,.5);
-		}
+        .typeheader {
+          padding: 2px;
+          margin-bottom: 5px;
+          background-color: antiquewhite;
+          display: flex;
+        }
+        .item {
+          padding: 4px;
+          background-color: #eee;
+          padding: 3px;
+          background-color: #eee;
+          margin: 5px;
+        }
     </style>
     <template>
-      <input placeholder="{{placeholder}}" value="{{value::change}}" on-keypress="onKeyPress" on-blur="onBlur" />
+      <template is="dom-repeat" items="{{types}}" as="type">
+        <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>{{type.Count}}</span>)</div>
+        <div class="items">
+          <template is="dom-repeat" items="{{type.Items}}" as="item">
+            <div class="item" on-mouseover="suggestionHovered">
+              <template is="imported-template" model="{{item}}" content$="{{item.Html}}"></template>
+            </div>
+          </template>
+        </div>
+      </template>
     </template>
     <script>
         Polymer({
@@ -37,17 +37,34 @@
             properties: {
                 data: {
                     notify: true,
-                    observer: 'dataChanged'
                 },
+                types: {
+                  type: Array,
+                  value: [],
+                }
             },
   		      observers: [
-  			      'resultChanged(data.Result)'
+  			      'resultChanged(data.*)'
   		      ],
             ready: function () {
                 this.data = this.data || {};
             },
-            resultChanged: function () {
-      			  if (data.Types)
+            suggestionHovered: function (event, detail) {
+              removeClass(Polymer.dom(this).querySelector('div.active'), 'active');
+              addClass(event.currentTarget, 'active');
+            },
+            resultChanged: function (d) {
+              var types = [];
+              for (var name in this.data)
+              {
+                if (this.data.hasOwnProperty(name) && this.data[name].hasOwnProperty("Types")) {
+                  for (var i = 0; i < this.data[name].Types.length; i++) {
+                    types.push(this.data[name].Types[i]);
+                  }
+                }
+              }
+              this.set('types', types);
+              console.log(types);
             },
             suggestionTapped: function (event, detail, sender) {
   			         var data = event.model;
@@ -130,15 +147,14 @@
                 }
                 ;
             },
-            dataChanged: function () {
-            },
             //debugger;
             focus: function () {
                 this.$.input.focus();
             },
+            /*
             _computeClass: function (active) {
                 return active ? 'active' : '';
-            }
+            },
             _getTypes = function(data) {
               var items = [];
               for (var name in data)
@@ -150,7 +166,7 @@
                 }
               }
               return items;
-            };
+            }*/
         });
     </script>
 </dom-module>

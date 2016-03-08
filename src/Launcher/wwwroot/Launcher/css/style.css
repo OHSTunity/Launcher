@@ -164,7 +164,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 .launcher-toolbar launcher-search-input input
     {
         max-width:100px;
-        padding-left: 0px; 
+        padding-left: 0px;
     }
 
 @media only screen and (max-width: 960px) {
@@ -177,7 +177,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     }
     .launcher-toolbar #search-icon
     {
-        display: none; 
+        display: none;
     }
 
 
@@ -232,8 +232,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     box-shadow: 0px 0px 3px #C0C0C0;
     max-height:300px;
     overflow:auto;
-    left: 88px;
-    top: 55px;
+    top: 40px;
     box-sizing:border-box;
     font-size: 14px;
 }
