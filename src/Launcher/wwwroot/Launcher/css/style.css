@@ -222,20 +222,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 
 
 
-.launcher-toolbar div.preview {
-    position: absolute;
-    background-color: white;
-    width: 400px;
-    border: 1px solid #C0C0C0;
-    padding: 10px;
-    border-radius: 2px;
-    box-shadow: 0px 0px 3px #C0C0C0;
-    max-height:300px;
-    overflow:auto;
-    top: 40px;
-    box-sizing:border-box;
-    font-size: 14px;
-}
+
 
 .launcher-toolbar starcounter-include.preview {
     width:360px;

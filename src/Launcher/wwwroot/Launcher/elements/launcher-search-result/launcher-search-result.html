@@ -5,38 +5,22 @@
         :host {
             color: black;
         }
-        .typeheader {
-          padding: 2px;
-          margin-bottom: 5px;
-          background-color: antiquewhite;
-          display: flex;
-        }
-        .item {
-          padding: 4px;
-          background-color: #eee;
-          padding: 3px;
-          background-color: #eee;
-          margin: 5px;
-        }
+
     </style>
     <template>
-      <template is="dom-repeat" items="{{types}}" as="type">
-        <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>{{type.Count}}</span>)</div>
-        <div class="items">
-          <template is="dom-repeat" items="{{type.Items}}" as="item">
-            <div class="item" on-mouseover="suggestionHovered">
-              <template is="imported-template" model="{{item}}" content$="{{item.Html}}"></template>
-            </div>
-          </template>
-        </div>
-      </template>
+
     </template>
     <script>
         Polymer({
             is: 'launcher-search-result',
             properties: {
                 data: {
+                    type: Object,
                     notify: true,
+                },
+                keypress: {
+                   type: Number,
+                   notify: true
                 },
                 types: {
                   type: Array,
@@ -44,13 +28,14 @@
                 }
             },
   		      observers: [
-  			      'resultChanged(data.*)'
+  			      'resultChanged(data.*)',
+              'keyPressed(keypress)'
   		      ],
             ready: function () {
                 this.data = this.data || {};
             },
             suggestionHovered: function (event, detail) {
-              removeClass(Polymer.dom(this).querySelector('div.active'), 'active');
+              removeClass(Polymer.dom(this.$.result).querySelector('.item.active'), 'active');
               addClass(event.currentTarget, 'active');
             },
             resultChanged: function (d) {
@@ -64,71 +49,67 @@
                 }
               }
               this.set('types', types);
-              console.log(types);
             },
-            suggestionTapped: function (event, detail, sender) {
-  			         var data = event.model;
-                if (data && data.item.Action) {
-                    this.set('data.Action$', data.item.Action);
-                }
-                this.resetSearch();
-            },
-            resetSearch: function () {
-                this.set('data.SearchString$', '');
-                this.$.overlay.close();
-            },
-            suggestionHovered: function (event, detail, sender) {
-                this.setActive(event.model.item);
-            },
-            setActive: function (item) {
-                if (this.active) {
-                    this.set('active._active', false);
-                }
-                this.active = item;
-                if (item) {
-                    item._active = true;
-                }
-            },
-            activateLast: function () {
-                var count = this.data.Result.length;
-                if (count > 0)
-                    this.setActive(this.data.Result[count - 1]);
-            },
-            activateFirst: function () {
-                var count = this.data.Result.length;
-                if (count > 0)
-                    this.setActive(this.data.Result[0]);
+            itemTapped: function (event, detail, sender) {
+              var item = Polymer.dom(this.$.result).querySelector('.item.active');
+              if (item) {
+                this.activateItem(item);
+              }
             },
             activateNext: function () {
-                if (this.active) {
-                    for (var i = 0; i < this.data.Result.length; i++) {
-                        if (this.data.Result[i] == this.active) {
-                            if (this.data.Result.length > i + 1) {
-                                this.setActive(this.data.Result[i + 1]);
-                            } else
-                                this.activateFirst();
-                            return;
-                        }
+              var item = Polymer.dom(this.$.result).querySelector('.item.active');
+              if (item) {
+                var items = Polymer.dom(this.$.result).querySelectorAll('.item');
+                for (var i = 0; i < items.length; i++) {
+                  if (item == items[i]) {
+                    if (items.length > i+1)
+                    {
+                      removeClass(item, 'active');
+                      addClass(items[i+1], 'active');
                     }
+                    return;
+                  }
                 }
-                this.activateFirst();
+              }
+              else {
+                var item =  Polymer.dom(this.$.result).querySelector('.item');
+                if (item)
+                  addClass(item, 'active');
+              }
             },
             activatePrevious: function () {
-                if (this.active) {
-                    for (var i = 0; i < this.data.Result.length; i++) {
-                        if (this.data.Result[i] == this.active) {
-                            if (i > 0) {
-                                this.setActive(this.data.Result[i - 1]);
-                            } else
-                                this.activateLast();
-                            return;
-                        }
+              var item = Polymer.dom(this.$.result).querySelector('.item.active');
+              if (item) {
+                var items = Polymer.dom(this.$.result).querySelectorAll('.item');
+                for (var i = 0; i < items.length; i++) {
+                  if (item == items[i]) {
+                    if (i > 0)
+                    {
+                      removeClass(item, 'active');
+                      addClass(items[i-1], 'active');
                     }
+                    return;
+                  }
                 }
-                this.activateLast();
+              }
+              else {
+                var items =  Polymer.dom(this.$.result).querySelectorAll('.item');
+                if (items.length > 0)
+                  addClass(items[items.length-1], 'active');
+              }
             },
-            keydownHandler: function (event, detail, sender) {
-                switch (event.keyCode) {
+            getName:function(obj) {
+              for (var name in this.data)
+              {
+                if (this.data.hasOwnProperty(name) && (this.data[name] == obj))
+                  return name;
+              }
+              return "";
+            },
+            keyPressed: function (key) {
+                console.log(key);
+                switch (key)
+                {
                     case 38:
                         // up arrow
                         this.activatePrevious();
@@ -138,16 +119,27 @@
                         this.activateNext();
                         break;
                     case 13:
-                        // enter
-                        if (this.active && this.active.Action) {
-                            this.set('data.Action$', this.active.Action);
-                            this.resetSearch();
+                        var item = Polymer.dom(this.$.result).querySelector('.item.active');
+                        if (item) {
+                          this.activateItem(item);
                         }
                         break;
-                }
-                ;
+                };
+                this.keypress = 0;
             },
-            //debugger;
+            activateItem: function(item)
+            {
+              var data = item._templateInstance.__data__.item;
+              var number = data.Activate$;
+              var itemIndex = data.$parent.indexOf(data);
+              data = data.$parent.$parent;
+              var typeIndex = data.$parent.indexOf(data);
+              data = data.$parent.$parent;
+              var appname = this.getName(data);
+              var path = "data." + appname + ".Types.#" + typeIndex + ".Items.#" + itemIndex + ".Activate$";
+              this.set(path, number + 1);
+              console.log(path, number);
+            },
             focus: function () {
                 this.$.input.focus();
             },

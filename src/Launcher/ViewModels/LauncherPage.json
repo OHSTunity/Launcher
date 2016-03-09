@@ -6,16 +6,8 @@
     "layoutModified$": false,
     "searchBar": {
         "query$": "",
-        "submit$": "",
-        "searchEngineResultPageUrl$": "",
-        "feedback": [
-            {
-                "text": "",
-                "matchScore": 0.5,
-                "url": "",
-                "thumbnail": {},
-            }
-        ],
+		"options$":"",
+		"$options$": { bind:"OptionsCB" },
         "previewResult": { },
         "previewVisible": false,
         "close$": 0

@@ -30,6 +30,7 @@
     <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
+    <link rel="import" href="/Launcher/elements/launcher-search/launcher-search.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-result/launcher-search-result.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
@@ -82,16 +83,17 @@
             <i class="ts_icon ts_icon_trello"></i>
             <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
+              <launcher-search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
 
-                <launcher-search-input placeholder="Search here..." value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
+                <!--<launcher-search-input placeholder="Search here..." lastkey="{{model._lastkey}}" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
                 <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
 
                 <!--<link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />-->
-                <template is="dom-if" if="{{model.searchBar.previewVisible}}">
+              <!--  <template is="dom-if" if="{{model.searchBar.previewVisible}}">
                     <div class="preview">
-                        <launcher-search-result data="{{model.searchBar.previewResult}}"></launcher-search-result>
+                        <launcher-search-result keypress="{{model._lastkey}}" data="{{model.searchBar.previewResult}}"></launcher-search-result>
                     </div>
-                </template>
+                </template>-->
             </core-field>
             <span class="toolbar-divider"></span>
 

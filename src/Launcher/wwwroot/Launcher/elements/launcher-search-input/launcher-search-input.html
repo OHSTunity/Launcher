@@ -32,7 +32,7 @@
           color:rgba(255,255,255,.5);
         }
     </style>
-    <template><input placeholder="{{placeholder}}" value="{{value::input}}" on-keypress="onKeyPress" on-blur="onBlur" /></template>
+    <template><input placeholder="{{placeholder}}" value="{{value::input}}" on-keypress="onKeyPress" on-keydown='onKeyDown' on-blur="onBlur" /></template>
     <script>
         Polymer({
             is: "launcher-search-input",
@@ -51,10 +51,17 @@
                 },
                 placeholder: {
                     type: String
+                },
+                lastkey: {
+                  type: Number,
+                  notify: true,
                 }
             },
             colors: [],
             ready: function () {
+            },
+            onKeyDown: function (e) {
+              this.set('lastkey', e.keyCode);
             },
             onKeyPress: function (e) {
                 if (e.which == 13) {
@@ -64,9 +71,11 @@
                 }
             },
             onBlur: function (e) {
+              /*
                 setTimeout(function () {
                     this.set("closeAction", this.closeAction + 1);
                 }.bind(this), 100);
+                */
             }
         });
     </script>

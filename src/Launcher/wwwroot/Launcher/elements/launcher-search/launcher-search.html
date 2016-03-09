@@ -1,0 +1,300 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html" />
+<link rel="import" href="/tu-common/css/tu-fontawesome.html">
+
+<dom-module id="launcher-search">
+    <style include="tu-fontawesome"></style>
+    <style>
+        :host {
+            display: inline;
+            height: 0px;
+            width: 0px;
+        }
+
+        input {
+          border:0;
+          height: 35px;
+          outline: none;
+          background: transparent;
+          outline: none;
+          color: #FFF;
+          font-weight: 200;
+          padding-left:10px;
+          font-size: 14px;
+        }
+
+        input::-webkit-input-placeholder {
+          color:rgba(255,255,255,.5);
+        }
+
+        input::-moz-placeholder {
+          color:rgba(255,255,255,.5);
+        }
+
+        input:-ms-input-placeholder {
+          color:rgba(255,255,255,.5);
+        }
+
+        div.preview {
+            position: absolute;
+            background-color: white;
+            width: 400px;
+            border: 1px solid #C0C0C0;
+            padding: 10px;
+            border-radius: 2px;
+            box-shadow: 0px 0px 3px #C0C0C0;
+            max-height:300px;
+            overflow:auto;
+            top: 40px;
+            box-sizing:border-box;
+            font-size: 14px;
+            color: black;
+            display: none;
+        }
+
+        .preview.visible {
+          display: block;
+        }
+
+        .typeheader {
+          padding: 2px;
+          margin-bottom: 5px;
+          background-color: antiquewhite;
+          display: flex;
+        }
+        .item {
+          padding: 4px;
+          background-color: #eee;
+          padding: 3px;
+          background-color: #eee;
+          margin: 5px;
+          cursor:pointer;
+        }
+
+        .item.active {
+          background-color: yellow;
+        }
+        .no-result {
+          font-style: italic;
+          font-size: 12px;
+          width: 100%;
+          text-align: center;
+        }
+    </style>
+    <template>
+      <input placeholder="{{placeholder}}" value="{{data.query$::input}}" on-keydown='onKeyDown' on-keyup='onKeyUp' on-blur="onBlur" />
+      <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
+
+      <div id="preview" class="preview">
+        <div id='result'>
+          <template is="dom-repeat" items="{{types}}" as="type">
+            <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>{{type.Count}}</span>)</div>
+            <div class="items">
+              <template is="dom-repeat" items="{{type.Items}}" as="item">
+                <div class="item" on-mouseover='itemHovered' on-tap='itemTapped'>
+                  <template is="imported-template" model="{{item}}" content$="{{item.Html}}"></template>
+                </div>
+              </template>
+            </div>
+          </template>
+          <template is="dom-if" if="{{!types.length}}">
+            <span class="no-result">No result</span>
+          </template>
+        </div>
+      </div>
+    </template>
+    <script>
+        Polymer({
+            is: "launcher-search",
+            properties: {
+                data: {
+                    type: Object,
+                    notify: true
+                },
+                placeholder: {
+                    type: String
+                },
+                types: {
+                  type: Array,
+                  value: [],
+                }
+            },
+            observers: [
+              'optionsChanged(data.options)',
+              'resultChanged(data.previewResult.*)',
+              'previewVisibleChanged(data.previewVisible)'
+            ],
+            colors: [],
+            ready: function () {
+            },
+            optionsChanged: function(options) {
+            },
+            onBlur: function (e) {
+                setTimeout(function () {
+                    this.set("data.close$", this.data.close$ + 1);
+                }.bind(this), 100);
+            },
+            previewVisibleChanged: function(value) {
+              this.$.preview.classList.toggle('visible', value);
+              if (value) {
+                this.$.preview.style.maxHeight = (window.innerHeight-45) + 'px';
+              }
+            },
+            itemHovered: function (event, detail) {
+              removeClass(Polymer.dom(this.$.result).querySelector('.item.active'), 'active');
+              addClass(event.currentTarget, 'active');
+            },
+            resultChanged: function (d) {
+              var types = [];
+              for (var name in this.data.previewResult)
+              {
+                if (this.data.previewResult.hasOwnProperty(name) &&
+                    this.data.previewResult[name].hasOwnProperty("Types")) {
+                  for (var i = 0; i < this.data.previewResult[name].Types.length; i++) {
+                    types.push(this.data.previewResult[name].Types[i]);
+                  }
+                }
+              }
+              this.set('types', types);
+            },
+            itemTapped: function (event, detail, sender) {
+              var item = Polymer.dom(this.$.result).querySelector('.item.active');
+              if (item) {
+                this.activateItem(item);
+              }
+            },
+            assureScroll: function(item, direction) {
+              if (item) {
+                var parent = this.$.preview;
+                var top = parent.scrollTop;
+                var sh = parent.scrollHeight;
+                var h = parent.clientHeight;
+                var start = item.offsetTop;
+                var end = item.offsetTop + item.clientHeight;
+                if (sh <= h) {
+                  parent.scrollTop = 0;
+                  return;
+                }
+                else {
+                  if (direction == 0) {
+                    if ((end+30) > top+h)
+                    {
+                      parent.scrollTop = Math.min((end+30)-h, sh-h);
+                    }
+                  }
+                  else {
+                    if ((start-30) < top)
+                    {
+                      parent.scrollTop = Math.max(start-30,0);
+                    }
+                  }
+
+                }
+              }
+            },
+            activateNext: function () {
+              var item = Polymer.dom(this.$.result).querySelector('.item.active');
+              if (item) {
+                var items = Polymer.dom(this.$.result).querySelectorAll('.item');
+                for (var i = 0; i < items.length; i++) {
+                  if (item == items[i]) {
+                    if (items.length > i+1)
+                    {
+                      removeClass(item, 'active');
+                      addClass(items[i+1], 'active');
+                      this.assureScroll(items[i+1], 0);
+                    }
+                    return;
+                  }
+                }
+              }
+              else {
+                var item =  Polymer.dom(this.$.result).querySelector('.item');
+                if (item)
+                  addClass(item, 'active');
+                  this.assureScroll(item, 0);
+              }
+            },
+            activatePrevious: function () {
+              var item = Polymer.dom(this.$.result).querySelector('.item.active');
+              if (item) {
+                var items = Polymer.dom(this.$.result).querySelectorAll('.item');
+                for (var i = 0; i < items.length; i++) {
+                  if (item == items[i]) {
+                    if (i > 0)
+                    {
+                      removeClass(item, 'active');
+                      addClass(items[i-1], 'active');
+                      this.assureScroll(items[i-1], 1);
+                    }
+                    return;
+                  }
+                }
+              }
+              else {
+                var items =  Polymer.dom(this.$.result).querySelectorAll('.item');
+                if (items.length > 0)
+                  addClass(items[items.length-1], 'active');
+                  this.assureScroll(items[items.length-1], 1);
+              }
+            },
+            getName:function(obj) {
+              for (var name in this.data.previewResult)
+              {
+                if (this.data.previewResult.hasOwnProperty(name) && (this.data.previewResult[name] == obj))
+                  return name;
+              }
+              return "";
+            },
+            onKeyDown: function (event) {
+                switch (event.keyCode)
+                {
+                    case 38:
+                        // up arrow
+                        this.activatePrevious();
+                        event.preventDefault();
+                        break;
+                    case 40:
+                        // down arrow
+                        this.activateNext();
+                        event.preventDefault();
+                        break;
+                    case 13:
+                        var item = Polymer.dom(this.$.result).querySelector('.item.active');
+                        if (item) {
+                          this.activateItem(item);
+                        }
+                        break;
+                };
+            },
+            onKeyUp: function (event) {
+                switch (event.keyCode)
+                {
+                    case 38:
+                        event.stopImmediatePropagation();
+                        break;
+                    case 40:
+                        event.stopImmediatePropagation();
+                        break;
+                };
+            },
+            activateItem: function(item)
+            {
+              var data = item._templateInstance.__data__.item;
+              var number = data.Activate$;
+              var itemIndex = data.$parent.indexOf(data);
+              data = data.$parent.$parent;
+              var typeIndex = data.$parent.indexOf(data);
+              data = data.$parent.$parent;
+              var appname = this.getName(data);
+              var path = "data.previewResult." + appname + ".Types.#" + typeIndex + ".Items.#" + itemIndex + ".Activate$";
+              this.set(path, number + 1);
+              this.set('data.query$',  "");
+              this.set("data.close$", this.data.close$ + 1);
+              console.log(path, number);
+            },
+            focus: function () {
+                this.$.input.focus();
+            },
+        });
+    </script>
+</dom-module>

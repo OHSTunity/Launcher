@@ -19,6 +19,12 @@ namespace Launcher {
         {
             void Handle(Input.query action)
             {
+                if (String.IsNullOrEmpty(action.Value))
+                {
+                    this.previewVisible = false;
+                    this.previewResult = null;
+                    return;
+                }
                 string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(action.Value);
                 this.previewVisible = true;
                 this.previewResult = Self.GET<Json>(uri, () =>
@@ -26,20 +32,32 @@ namespace Launcher {
                     var p = new Page();
                     return p;
                 });
-            }
 
+            }
+            /*
             void Handle(Input.submit action)
             {
                 string uri = "/launcher/search?query=" + this.query;
                 Response resp = Self.GET(uri);
 
                 searchEngineResultPageUrl = uri;
-            }
+            }*/
 
             void Handle(Input.close action)
             {
-                this.previewResult = null;
+                //this.previewResult = null;
                 this.previewVisible = false;
+            }
+
+            public String OptionsCB
+            {
+                get
+                {
+                    return "";
+                }
+                set
+                {
+                }
             }
         }
     }
