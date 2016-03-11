@@ -35,11 +35,16 @@ module.exports = function(grunt) {
             {
               match: /<Dependency name="Starcounter">.*(?=<\/Dependency>)/,
               replacement: '<Dependency name="Starcounter">~' + grunt.option('value')
+          },
+            {
+              match: /This development version works with Starcounter version: .*/,
+              replacement: 'This development version works with Starcounter version: '+ grunt.option('value')
             }
           ]
         },
         files: [
-          {src: ['src/Launcher/package/package.config'], dest: './'}
+          {src: ['src/Launcher/package/package.config'], dest: './'},
+          {src: ['README.md'], dest: './'}
         ]
       }
     },
