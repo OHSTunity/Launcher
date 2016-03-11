@@ -40,4 +40,4 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 
 ### This development version works with Starcounter version: 2.1.1393
 
-For other version history see [RELEASES.md](./RELEASES.md)
+Past versions that work with Starcounter stable: [RELEASES.md](RELEASES.md)
