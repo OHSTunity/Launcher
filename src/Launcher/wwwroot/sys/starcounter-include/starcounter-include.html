@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.3.0
+version: 0.3.1
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -153,6 +153,21 @@ version: 0.3.0
                 this.template.setAttribute("content", html);
             }
             this.template.model = this.partial;
+        };
+
+
+        /**
+         * Forward Polymer notification downwards from `<template is="dom-bind">`
+         * to <template is="imported-template">
+         * @param  {String} path Polymer notification path
+         * @param  {Mixed} value New value
+         */
+        LauncherPartialPrototype._notifyPath = function(path, value) {
+            if (path.indexOf("partial.") == 0) {
+                if (this.template._notifyPath) {
+                    this.template._notifyPath(path.replace("partial.", "model."), value);
+                }
+            }
         };
 
         document.registerElement('starcounter-include', {
