@@ -38,6 +38,6 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 2. Run `grunt package` to generate a packaged version, (you can use `:minor`, `:major`, etc. as [grunt-bump](https://github.com/vojtajina/grunt-bump) does)
 4. Publish `dist/<AppName>.zip` package to the App Store.
 
-### This development version works with Starcounter version: 2.1.1393
+### This development version works with Starcounter version: 2.1.1407
 
 Past versions that work with Starcounter stable: [RELEASES.md](RELEASES.md)
