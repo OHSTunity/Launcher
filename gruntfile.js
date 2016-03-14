@@ -53,7 +53,7 @@ module.exports = function(grunt) {
         files: ['package.json', 'src/Launcher/package/package.config'],
         commit: true,
         commitMessage: '%VERSION%',
-        commitFiles: ['package.json', 'src/Launcher/package/package.config'],
+        commitFiles: ['package.json', 'src/Launcher/package/package.config', 'README.md'],
         createTag: true,
         tagName: '%VERSION%',
         tagMessage: 'Version %VERSION%',
