@@ -137,6 +137,11 @@
               this.$.preview.classList.toggle('visible', value);
               if (value) {
                 this.$.preview.style.maxHeight = (window.innerHeight-45) + 'px';
+                var rect = this.$.preview.getBoundingClientRect();
+                if ((rect.left + rect.width) > window.innerWidth)
+                {
+                  this.$.preview.style.left = (window.innerWidth-rect.width) + 'px';
+                }
               }
             },
             itemHovered: function (event, detail) {
