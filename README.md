@@ -14,6 +14,10 @@ This repository contains the code for the default launcher provided by Starcount
 
 To read more about launchers in general, please see the [Launcher](http://starcounter.io/guides/web/launcher) page over on **starcounter.io**.
 
+### This development version works with Starcounter version: 2.1.1407
+
+Past versions that work with Starcounter stable: [RELEASES.md](RELEASES.md)
+
 ### How to run
 
 1. Check out StarcounterSamples/Launcher repo from GitHub
@@ -37,7 +41,3 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 2. Run `npm install` to install all dependencies
 2. Run `grunt package` to generate a packaged version, (you can use `:minor`, `:major`, etc. as [grunt-bump](https://github.com/vojtajina/grunt-bump) does)
 4. Publish `dist/<AppName>.zip` package to the App Store.
-
-### This development version works with Starcounter version: 2.1.1407
-
-Past versions that work with Starcounter stable: [RELEASES.md](RELEASES.md)
