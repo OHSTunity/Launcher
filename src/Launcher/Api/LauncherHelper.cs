@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using Starcounter;
-using Starcounter.Internal;
-using Starcounter.Extensions;
+﻿using Starcounter;
 using Starcounter.Advanced.XSON;
-using System.Reflection;
-using Starcounter.Internal.XSON;
+using Starcounter.Internal;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web;
 
 namespace Launcher {
 
@@ -171,20 +165,26 @@ namespace Launcher {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
             launcher.uri = req.Uri;
 
-            // Call proxied request
-            Response resp = Self.CallUsingExternalRequest(req, () => { return new LayoutInfo(); });
-            var page = resp.Resource as LayoutInfo;
-            bool createWorkspace = true;
+            // First check if a workspace already exists for the app that registered the uri.
+            LayoutInfo workspace = null;
+            string appName = req.HandlerAppName;
             for (var i = 0; i < launcher.workspaces.Count; i++) {
-                if ((launcher.workspaces[i] as LayoutInfo).AppName.ToLower() == page.AppName.ToLower()) {
-                    createWorkspace = false;
+                var existingWs = (launcher.workspaces[i] as LayoutInfo);
+                if (existingWs == null) continue;
+                
+                if (existingWs.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase)) {
+                    workspace = existingWs;
                     break;
                 }
             }
 
-            if (createWorkspace)
-                launcher.workspaces.Add(page);
+            if (workspace == null) {
+                workspace = new LayoutInfo() { AppName = appName };
+                launcher.workspaces.Add(workspace);
+            }
 
+            // Call proxied request
+            Response resp = Self.CallUsingExternalRequest(req, () => { return workspace; });
             return launcher;
         }
 
@@ -195,9 +195,6 @@ namespace Launcher {
             string html = null;
             string partialUrl;
             var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
-
-            // TODO:
-            // https://github.com/Starcounter/Starcounter/issues/3118 needs to be solved.
             
             // First look for any responses already added. The same set of siblings can be merged
             // several times due to different URI's are on the same level in the viewmodel.
@@ -205,8 +202,8 @@ namespace Launcher {
                 if (partialJson == publicViewModel)
                     return null;
 
-                if (partialJson is LayoutInfo) {
-                    layoutInfo = (LayoutInfo)partialJson; // Reusing existing instance
+                if (partialJson is LayoutInfo && layoutInfo == null) {
+                    layoutInfo = (LayoutInfo)partialJson; // Reusing first existing instance
                     layoutInfo.AppsResponded.Clear(); 
                 }
             }
