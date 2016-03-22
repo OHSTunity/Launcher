@@ -22,11 +22,11 @@
     "test",
     "tests"
   ],
-  "_release": "8cf42ec838",
+  "_release": "ca79443402",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "8cf42ec838512b905015043a4910610114799edb"
+    "commit": "ca79443402d020486833226c8fc78a524da2edb2"
   },
   "_source": "git://github.com/Juicy/juicy-draggable.git",
   "_target": "gh-pages",
