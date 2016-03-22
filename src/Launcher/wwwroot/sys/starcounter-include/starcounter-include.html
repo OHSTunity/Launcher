@@ -86,24 +86,25 @@ version: 0.3.1
             // attach partial
             if(partial){
                 partial.Html && this.template.setAttribute('content', partial.Html);
-                var partialId = partial.PartialId;
-                if(partialId){
-                    this.sync.setAttribute("name", partialId);
-                    this.grid.setAttribute("name", partialId);
+                if(partial.Launcher) {
+                    var partialId = partial.Launcher.PartialId;
+                    if(partialId){
+                        this.sync.setAttribute("name", partialId);
+                        this.grid.setAttribute("name", partialId);
+                    }
+                    layout = partial.Launcher.Layout;
                 }
-                layout = partial.layout;
+                
             }
             this.template.model = partial;
-            //Up to Starcounter 2.1.1261, layout came as an object
-            //Starting from one of the following versions, layout will come as a string, for the reasons described in:
-            //https://github.com/Juicy/juicy-tile-editor/issues/127
-            //It can be changed again when this is fixed:
-            //https://github.com/Starcounter/Starcounter/issues/3074
-            var parsedLayout = typeof layout == "string" ? JSON.parse(layout) : layout;
-            this.sync.storedValue = parsedLayout;
-            // make clone to avoid direct binding
-            this.grid.setup = typeof layout == "string" ? JSON.parse(layout) : layout && JSON.parse(JSON.stringify(layout));
-
+            
+            if(layout) {
+                var parsedLayout = JSON.parse(layout);
+                this.sync.storedValue = parsedLayout;
+                // make clone to avoid direct binding
+                this.grid.setup = JSON.parse(layout);
+            }
+            
             // attach to light DOM
             this.appendChild(clone);
         };
@@ -123,30 +124,30 @@ version: 0.3.1
          */
         LauncherPartialPrototype.partialChanged = function(newVal) {
             var html, partialId, layout;
+            //only apply layout when there is layout information
             if (this.partial) {
                 html = this.partial.Html;
                 !html && console.warn("partial.Html for", this, "is missing.");
-                partialId = this.partial.PartialId;
-                !partialId && console.warn("partial.PartialId for", this, "is missing.");
-                layout = this.partial.layout;
             }
-            //Up to Starcounter 2.1.1261, layout came as an object
-            //Starting from one of the following versions, layout will come as a string, for the reasons described in:
-            //https://github.com/Juicy/juicy-tile-editor/issues/127
-            //It can be changed again when this is fixed:
-            //https://github.com/Starcounter/Starcounter/issues/3074
-            var parsedLayout = typeof layout == "string" ? JSON.parse(layout) : layout;
-            this.sync.storedValue = parsedLayout;
+            if (this.partial && this.partial.Launcher) {
+                partialId = this.partial.Launcher.PartialId;
+                !partialId && console.warn("partial.Launcher.PartialId for", this, "is missing.");
+                layout = this.partial.Launcher.Layout;
+                if (layout) {
+                    var parsedLayout = JSON.parse(layout);
+                    this.sync.storedValue = parsedLayout;
+                    // make clone to avoid direct binding
+                    this.grid.setup = JSON.parse(layout);
+                }
 
-            if(partialId === null || partialId === undefined){
-                this.sync.removeAttribute("name");
-                this.grid.removeAttribute("name");
-            } else {
-                this.sync.setAttribute("name", partialId);
-                this.grid.setAttribute("name", partialId);
+                if(partialId === null || partialId === undefined){
+                    this.sync.removeAttribute("name");
+                    this.grid.removeAttribute("name");
+                } else {
+                    this.sync.setAttribute("name", partialId);
+                    this.grid.setAttribute("name", partialId);
+                }
             }
-            // make clone to avoid direct binding
-            this.grid.setup = typeof layout == "string" ? JSON.parse(layout) : layout && JSON.parse(JSON.stringify(layout));
             if(html === null || html === undefined){
                 this.template.removeAttribute("content");
             } else {
