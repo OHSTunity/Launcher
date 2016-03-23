@@ -14,7 +14,7 @@ This repository contains the code for the default launcher provided by Starcount
 
 To read more about launchers in general, please see the [Launcher](http://starcounter.io/guides/web/launcher) page over on **starcounter.io**.
 
-### This development version works with Starcounter version: 2.1.1407
+### This development version works with Starcounter version: 2.1.1527
 
 Past versions that work with Starcounter stable: [RELEASES.md](RELEASES.md)
 
