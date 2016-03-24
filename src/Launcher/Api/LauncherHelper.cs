@@ -161,8 +161,15 @@ namespace Launcher {
             });
         }
 
+        static void MarkWorkspacesInactive(Arr<Json> workspaces) {
+            foreach (LayoutInfo layoutInfo in workspaces) {
+                layoutInfo.ActiveWorkspace = false;
+            }
+        }
+
         static Response WrapInLauncher(Request req) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+            MarkWorkspacesInactive(launcher.workspaces);
             launcher.uri = req.Uri;
 
             // First check if a workspace already exists for the app that registered the uri.
@@ -182,6 +189,7 @@ namespace Launcher {
                 workspace = new LayoutInfo() { AppName = appName };
                 launcher.workspaces.Add(workspace);
             }
+            workspace.ActiveWorkspace = true;
 
             // Call proxied request
             Response resp = Self.CallUsingExternalRequest(req, () => { return workspace; });
