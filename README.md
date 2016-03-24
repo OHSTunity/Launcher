@@ -26,7 +26,7 @@ Past versions that work with Starcounter stable: [RELEASES.md](RELEASES.md)
 4. Run it by launching `run.bat` in Windows, or executing `cmd //c "run.bat"` in Git Bash, or using Debug in Visual Studio
 5. Go to [http://localhost:8080/](http://localhost:8080/)
 
-This will bring you an empty Launcher (with Launchpad, Dashboard and Search field). You need to repeat the above steps to run the actual apps (available in [Polyjuice](https://github.com/Polyjuice) organisation). You can bulk multiple app projects into a single Visual Studio solution.
+This will bring you an empty Launcher (with Launchpad, Dashboard and Search field). You need to repeat the above steps to run the actual apps (available in [StarcounterSamples](https://github.com/StarcounterSamples) and [StarcounterPrefabs](https://github.com/StarcounterPrefabs) organisations). You can bulk multiple app projects into a single Visual Studio solution.
 
 ### How to test
 
