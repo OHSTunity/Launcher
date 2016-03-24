@@ -210,9 +210,15 @@ namespace Launcher {
                 if (partialJson == publicViewModel)
                     return null;
 
-                if (partialJson is LayoutInfo && layoutInfo == null) {
-                    layoutInfo = (LayoutInfo)partialJson; // Reusing first existing instance
-                    layoutInfo.AppsResponded.Clear(); 
+                if (partialJson is LayoutInfo) {
+                    if (layoutInfo == null) {
+                        layoutInfo = (LayoutInfo)partialJson; // Reusing first existing instance
+                        layoutInfo.AppsResponded.Clear();
+                    } else {
+                        // Workaround for merged siblings containing more than one sibling
+                        // from the same app.
+                        ((LayoutInfo)partialJson).ActiveWorkspace = layoutInfo.ActiveWorkspace;
+                    }
                 }
             }
 
