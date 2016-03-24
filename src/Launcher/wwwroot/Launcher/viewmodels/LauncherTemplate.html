@@ -104,15 +104,8 @@
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
-            <!-- Workspaces -- >
-            <h1>Wy: {{model.activeWorkspace}}</h1>
-                <template is="dom-if" if="{{model.enableWorkspaces}}" restamp>
-                    <h1>My: {{model.activeWorkspace}}</h1>
-                    <starcounter-include workspaces="{{model.workspaces}}" partial="{{getWorkspace(model.workspaces, model.activeWorkspace, model.uri)}}"></starcounter-include>
-                </template>
-            -->
             <template is="dom-repeat" items="{{model.workspaces}}" filter="filterActiveWorkspace" observe="Launcher.ActiveWorkspace">
-                <starcounter-include partial="{{item}}"></starcounter-include>
+                <starcounter-include partial="{{item}}" class="workspace" visible></starcounter-include>
             </template>
         </div>
 

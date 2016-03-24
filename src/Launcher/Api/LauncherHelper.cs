@@ -38,6 +38,7 @@ namespace Launcher {
                 if (session != null && session.Data != null) {
                     launcher = (LauncherPage)Session.Current.Data;
                     launcher.uri = req.Uri;
+                    MarkWorkspacesInactive(launcher.workspaces);
                     return launcher;
                 }
 
@@ -82,6 +83,7 @@ namespace Launcher {
                 });
 
                 launcher.uri = req.Uri;
+                MarkWorkspacesInactive(launcher.workspaces);
                 return launcher;
             });
 
@@ -169,7 +171,6 @@ namespace Launcher {
 
         static Response WrapInLauncher(Request req) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-            MarkWorkspacesInactive(launcher.workspaces);
             launcher.uri = req.Uri;
 
             // First check if a workspace already exists for the app that registered the uri.
