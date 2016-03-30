@@ -13,11 +13,11 @@
     "bower_components"
   ],
   "dependencies": {},
-  "_release": "e797f66a14",
+  "_release": "e308bb5102",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "e797f66a14debe324dfa69d782a892bf9110768b"
+    "commit": "e308bb5102e9953dea0bae8e0dfe3b2b8c8d0fce"
   },
   "_source": "git://github.com/Juicy/juicy-highlight.git",
   "_target": "gh-pages",

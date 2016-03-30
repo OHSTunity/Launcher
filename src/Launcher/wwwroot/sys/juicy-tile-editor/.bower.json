@@ -11,7 +11,8 @@
   "ignore": [
     "**/.*",
     "examples",
-    "bower_components"
+    "bower_components",
+    "test"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer",
@@ -24,16 +25,17 @@
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
     "juicy-tile-list": ">=1.1.0",
     "juicy-tile-grid": ">=1.1.0",
-    "juicy-tile-table": "tomalec/juicy-tile-table#gh-pages"
+    "juicy-tile-table": ">=0.0.5",
+    "web-component-tester": "^4.0.0",
+    "es6-promise": ">=3.2.1"
   },
-  "_release": "64e9803dff",
+  "_release": "a82d0d47ec",
   "_resolution": {
     "type": "branch",
-    "branch": "gh-pages",
-    "commit": "64e9803dff2eec292e463c17f3667c0502b2dae1"
+    "branch": "RebelsLounge/issues/14-predefined_forms",
+    "commit": "a82d0d47ec5967ed873365fdd05d2f8aa1363f23"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
-  "_target": "gh-pages",
-  "_originalSource": "Juicy/juicy-tile-editor",
-  "_direct": true
+  "_target": "RebelsLounge/issues/14-predefined_forms",
+  "_originalSource": "Juicy/juicy-tile-editor"
 }
