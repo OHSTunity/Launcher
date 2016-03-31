@@ -90,7 +90,6 @@
             cloneJSON: function(obj){
               // workaround for https://github.com/Starcounter/Starcounter/issues/3072
               if(obj && obj["null"] !== "workaround"){
-                console.log(obj, "cloned")
                 return JSON.parse(JSON.stringify(obj));
               }
             },

@@ -165,7 +165,8 @@ namespace Launcher {
                     Response resp = Self.GET(a[1]);
                     sb.Append("<imported-template-scope scope=\"" + a[0] + "\">");
                     sb.Append("<template><juicy-tile-group name=\"" + a[0] + "\"></juicy-tile-group></template>");
-                    sb.Append(resp.Body);
+                    if (resp != null)
+                        sb.Append(resp.Body);
                     sb.Append("</imported-template-scope>");
                 }
 
@@ -189,6 +190,7 @@ namespace Launcher {
                         break;
                     }
                 }
+
 
                 // if not create new LauncherPage for this appname
                 if (foundWorkspace == null) {
