@@ -3,10 +3,6 @@
 <head>
     <title>Tunity</title>
 
-    <!-- Object.observe & Array.observe shims for IE and FF -->
-    <script src="/sys/object.observe/dist/object-observe.js"></script>
-    <script src="/sys/array.observe/array-observe.js"></script>
-
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <script>
@@ -130,19 +126,8 @@
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
-            <!-- Workspaces -->
-            <template is="dom-repeat" items="{{model.workspaces}}">
-                <!-- - workspace -->
-                <template is="dom-if" if="{{item.AppName}}">
-                    <launcher-display-route match-path$="{{concat('^\/', item.AppName, '([/].*)?$')}}" uri="{{model.uri}}" display-selector$="{{concat('.workspace.', item.AppName)}}"></launcher-display-route>
-                    <starcounter-include class$="{{concat('workspace ', item.AppName)}}" partial="{{item}}"></starcounter-include>
-                </template>
-                <!--<template is="dom-if" if="{{!item.AppName}}">
-                    <div style="padding: 15px; font-weight:bold; color:red;">
-                        <div>A workspace without AppName</div>
-                        <div>{{item.Html}}</div>
-                    </div>
-                </template>-->
+            <template is="dom-repeat" items="{{model.workspaces}}" filter="filterActiveWorkspace" observe="Launcher.ActiveWorkspace">
+                <starcounter-include partial="{{item}}" class="workspace" visible></starcounter-include>
             </template>
         </div>
 
@@ -180,6 +165,10 @@
 
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
+            };
+
+            template.filterActiveWorkspace = function (workspace) {
+                return workspace.Launcher.ActiveWorkspace;
             };
 
             template.toggleEditor = function () {

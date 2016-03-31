@@ -59,14 +59,18 @@ describe('Launcher App', function () {
             .expect('Content-Type', "application/json-patch+json")
             .expect(200)
             .expect(function (res) {
-                var json = JSON.parse(res.text.replace(/,,/gi, ","));
-                var patch = json[json.length - 1];
+                var sequence = JSON.parse(res.text.replace(/,,/gi, ","));
+                var workspaceFound = false;
+                sequence.forEach(function(patch) {
+                    //The last patch should add/replace the first workspace, and not create a new one
+                    var reg = new RegExp("^/workspaces/0", "gi");
+                    var value = reg.test(patch.path);
+                    if (value) {
+                        workspaceFound = true;
+                    }
+                });
 
-                //The last patch should add/replace the first workspace, and not create a new one
-                var reg = new RegExp("^/workspaces/0", "gi");
-                var value = reg.test(patch.path);
-
-                assert(value, "Application name should be case insensitive!");
+                assert(workspaceFound, "Application name should be case insensitive!");
             })
             .end(function (err, res) {
                 if (err) {

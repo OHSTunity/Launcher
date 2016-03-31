@@ -1,5 +1,6 @@
 {
   "name": "juicy-tile-table",
+  "version": "0.0.6",
   "description": "juicy-tile-table is a Custom Element with <table> renderer that mimics CSS Grid Layout of [`juicy-tile-grid`](Juicy/juicy-tile-grid).",
   "license": "MIT",
   "main": "juicy-tile-table.html",
@@ -31,15 +32,14 @@
   "authors": [
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
-  "homepage": "https://github.com/juicy/juicy-tile-table",
-  "_release": "d70472c31e",
+  "homepage": "https://github.com/Juicy/juicy-tile-table",
+  "_release": "0.0.6",
   "_resolution": {
-    "type": "branch",
-    "branch": "gh-pages",
-    "commit": "d70472c31ec873f9bb2f25fa1f297148fbe9c81e"
+    "type": "version",
+    "tag": "0.0.6",
+    "commit": "6bcc367ce76bcb2e06e9dd8afca8411888740b94"
   },
-  "_source": "git://github.com/juicy/juicy-tile-table.git",
-  "_target": "gh-pages",
-  "_originalSource": "juicy/juicy-tile-table",
-  "_direct": true
+  "_source": "git://github.com/Juicy/juicy-tile-table.git",
+  "_target": ">=0.0.4",
+  "_originalSource": "juicy-tile-table"
 }

@@ -18,12 +18,15 @@
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
     "juicy-redirect": "Juicy/juicy-redirect#~0.4.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
-    "starcounter-include": "StarcounterSamples/launcher-include#~0.2.0",
+    "starcounter-include": "StarcounterSamples/launcher-include#>=0.4.0",
     "dom-bind-notifier": "*",
     "juicy-color-picker": "Juicy/juicy-color-picker#gh-pages",
     "iron-icons": "PolymerElements/iron-icons#~1.0.4",
     "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#~1.0.8",
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
     "juicy-tile-table": "*"
+  },
+  "resolutions": {
+    "juicy-highlight": "^1.1.0"
   }
 }

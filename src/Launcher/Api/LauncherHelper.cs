@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using Starcounter;
-using Starcounter.Internal;
-using Starcounter.Extensions;
+﻿using Starcounter;
 using Starcounter.Advanced.XSON;
-using System.Reflection;
+using Starcounter.Internal;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web;
 
 namespace Launcher {
 
@@ -20,30 +15,20 @@ namespace Launcher {
         /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
         /// </summary>
         public static void Init() {
-
+            Application application = Application.Current;
+            
             Layout.Register();
 
-            Handle.AddRequestFilter((Request req) => {
+            JsonResponseMerger.RegisterMergeCallback(OnJsonMerge);
 
-                String uri = req.Uri;
+            application.Use((Request req) => {
+                string uri = req.Uri;
 
                 // Checking if we should process this request.
                 if (("/" == uri) || (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) || (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase))) {
                     return null;
                 }
-
-                // Getting application name.
-                Int32 splitPoint = uri.Length;
-                for (Int32 i = 2; i < uri.Length; i++) {
-                    if (uri[i] == '/') {
-                        splitPoint = i;
-                        break;
-                    }
-                }
-
-                String appName = uri.Substring(1, splitPoint - 1);
-
-                return WrapInLauncher(req, appName);
+                return WrapInLauncher(req);
             });
 
             Handle.GET("/launcher", (Request req) => {
@@ -53,6 +38,7 @@ namespace Launcher {
                 if (session != null && session.Data != null) {
                     launcher = (LauncherPage)Session.Current.Data;
                     launcher.uri = req.Uri;
+                    MarkWorkspacesInactive(launcher.workspaces);
                     return launcher;
                 }
 
@@ -97,6 +83,7 @@ namespace Launcher {
                 });
 
                 launcher.uri = req.Uri;
+                MarkWorkspacesInactive(launcher.workspaces);
                 return launcher;
             });
 
@@ -177,51 +164,101 @@ namespace Launcher {
             });
         }
 
-        static Response WrapInLauncher(Request req, String appName) {
+        static void MarkWorkspacesInactive(Arr<Json> workspaces) {
+            foreach (LayoutInfo layoutInfo in workspaces) {
+                layoutInfo.ActiveWorkspace = false;
+            }
+        }
+
+        static Response WrapInLauncher(Request req) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
             launcher.uri = req.Uri;
+
+            // First check if a workspace already exists for the app that registered the uri.
+            LayoutInfo workspace = null;
+            string appName = req.HandlerAppName;
+            for (var i = 0; i < launcher.workspaces.Count; i++) {
+                var existingWs = (launcher.workspaces[i] as LayoutInfo);
+                if (existingWs == null) continue;
+                
+                if (existingWs.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase)) {
+                    workspace = existingWs;
+                    break;
+                }
+            }
+
+            if (workspace == null) {
+                workspace = new LayoutInfo() { AppName = appName };
+                launcher.workspaces.Add(workspace);
+            }
+            workspace.ActiveWorkspace = true;
+
             // Call proxied request
-            Response resp = Self.CallUsingExternalRequest(req, () => {
-                // check if there is already workspaces array item for given appname
-                Json foundWorkspace = null;
-                for (var i = 0; i < launcher.workspaces.Count; i++) {
-                    if ((launcher.workspaces[i] as LauncherWrapperPage).AppName.ToLower() == appName.ToLower()) {
-                        foundWorkspace = launcher.workspaces[i];
-                        break;
-                    }
-                }
-
-
-                // if not create new LauncherPage for this appname
-                if (foundWorkspace == null) {
-                    var p = new LauncherWrapperPage();
-
-                    // Some additional special magic here. Since the workspace we create here might be for another
-                    // app than Launcher, we need to set the internal appNameForLayout of this wrapper to the name
-                    // of the correct app, otherwise it will always be set to 'Launcher' and the
-                    // incorrect (or no) layout will be used. 
-                    // Of course this will not be needed when we move all the layout handling here.
-                    if (StarcounterEnvironment.AppName != appName && appNameForLayoutField != null)
-                        appNameForLayoutField.SetValue(p, appName);
-
-                    // move serializer magic to here:
-                    // set partial ID, find layouts, build HTML path, set appname, etc.
-                    // p.appName = mainApp.AppName;
-                    p.AppName = appName;
-                    // p.partialId = mainApp.Html;
-                    // p.layout = Self.GET("/sc/layout?" + p.partialId);
-                    // p.listOfAppsRunning = appnames;
-
-                    // and add it to the array
-                    launcher.workspaces.Add(p);
-                    foundWorkspace = p;
-                }
-                return foundWorkspace;
-            });
-
+            Response resp = Self.CallUsingExternalRequest(req, () => { return workspace; });
             return launcher;
         }
 
-        private static FieldInfo appNameForLayoutField = typeof(Json).GetField("_appNameForLayout", BindingFlags.NonPublic | BindingFlags.Instance);
+        static Json OnJsonMerge(Request request, string callingAppName, IEnumerable<Json> partialJsons) {
+            bool returnNewSibling = false;
+            LayoutInfo layoutInfo = null;
+            Layout layout;
+            string html = null;
+            string partialUrl;
+            var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
+            
+            // First look for any responses already added. The same set of siblings can be merged
+            // several times due to different URI's are on the same level in the viewmodel.
+            foreach (Json partialJson in partialJsons) {
+                if (partialJson == publicViewModel)
+                    return null;
+
+                if (partialJson is LayoutInfo) {
+                    if (layoutInfo == null) {
+                        layoutInfo = (LayoutInfo)partialJson; // Reusing first existing instance
+                        layoutInfo.AppsResponded.Clear();
+                    } else {
+                        // Workaround for merged siblings containing more than one sibling
+                        // from the same app.
+                        ((LayoutInfo)partialJson).ActiveWorkspace = layoutInfo.ActiveWorkspace;
+                    }
+                }
+            }
+
+            if (layoutInfo == null) {
+                returnNewSibling = true;
+                layoutInfo = new LayoutInfo();
+            }
+
+            foreach (Json partialJson in partialJsons) {
+                var appItem = layoutInfo.AppsResponded.Add();
+                appItem.StringValue = partialJson.GetAppName();
+
+                partialUrl = partialJson.GetHtmlPartialUrl();
+                if (!string.IsNullOrEmpty(partialUrl)) {
+                    if (html != null)
+                        html += "&";
+                    html += partialJson.GetAppName() + "=" + partialUrl;
+
+                    if (callingAppName.Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase)) {
+                        layoutInfo.PartialId = partialUrl;
+                    }
+                }
+            }
+            
+            layoutInfo.AppName = callingAppName;
+            layoutInfo.Path = request.Uri;
+            if (!string.IsNullOrEmpty(html))
+                layoutInfo.MergedHtml = StarcounterConstants.HtmlMergerPrefix + html;
+
+            layout = Db.SQL<Layout>("SELECT l FROM Starcounter.Layout l WHERE l.Key=?", layoutInfo.PartialId).First;
+            if (layout != null)
+                layoutInfo.Layout = layout.Value;
+
+            if (returnNewSibling)
+                return layoutInfo;
+
+            // We used an existing instance. We dont want to add it as a sibling again.
+            return null;
+        }
     }
 }

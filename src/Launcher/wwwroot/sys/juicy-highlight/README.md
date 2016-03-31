@@ -43,6 +43,13 @@ Attribute         | Type           | Default      | Description
 `strokeOffset`    | *Number*       | `1`          | Border offset (distance from the element) in px
 `fill`            | *Color*        | `none`       | Color to fill selected area. Accepts HEX `#FFFF00`, RGB `rgb(255,255,0)`, RGBA `rgba(255,255,0,0.5)`, and color name `yellow`.
 
+## Private properties
+
+Property      | Type  | Description
+---           | ---   | ---
+`overlayRect` | *SVG* | The overlay SVG element.
+`focusRect`   | *SVG* | The focus SVG element.
+
 ## Methods
 
 Name               | Param name | Type                                     | Description

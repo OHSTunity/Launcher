@@ -1,8 +1,7 @@
-<!-- juicy-highlight v1.0.0 | MIT License -->
+<!-- juicy-highlight v1.1.0 | MIT License -->
 <script>
     (function (global) {
         var JuicyHighlightPrototype = Object.create(HTMLElement.prototype);
-        var svg;
 
         JuicyHighlightPrototype.createdCallback = function () {
             this.overlay = false;
@@ -197,14 +196,14 @@
 
             this.generateContent(getContent);
 
-            if (!svg) {
-                svg = createMask("#555555", 0.75);
+            if (!this.overlayRect) {
+                this.overlayRect = createMask("#555555", 0.75);
             }
             if (!this.focusRect) {
                 this.focusRect = createFocusRect(this.strokeWidth, this.strokeColor, this.fill);
             }
-            if (this.overlay && !svg.parentNode) {
-                document.body.appendChild(svg);
+            if (this.overlay && !this.overlayRect.parentNode) {
+                document.body.appendChild(this.overlayRect);
             }
             if (this.focusRect && !this.focusRect.parentNode) {
                 document.body.appendChild(this.focusRect);
@@ -222,8 +221,8 @@
         JuicyHighlightPrototype.hide = function () {
             this.removeContent();
 
-            if (this.overlay && svg.parentNode) {
-                document.body.removeChild(svg);
+            if (this.overlayRect && this.overlayRect.parentNode) {
+                document.body.removeChild(this.overlayRect);
             }
             if (this.focusRect && this.focusRect.parentNode) {
                 document.body.removeChild(this.focusRect);
@@ -233,7 +232,7 @@
         };
 
         JuicyHighlightPrototype.drawMask = function () {
-            drawMask(this, svg, this.focusRect, this.overlay);
+            drawMask(this, this.overlayRect, this.focusRect, this.overlay);
         };
 
         JuicyHighlightPrototype.positionContent = function () {

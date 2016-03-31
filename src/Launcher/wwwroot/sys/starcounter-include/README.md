@@ -2,7 +2,7 @@
 
 ------
 
-Launcher's &lt;starcounter-include&gt;
+Launcher's &lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/StarcounterPrefabs/launcher-include.svg?branch=master)](https://travis-ci.org/StarcounterPrefabs/launcher-include)
 ==============
 
 This is Launcher's version of [`<starcounter-include>`](https://github.com/Starcounter/starcounter-include).

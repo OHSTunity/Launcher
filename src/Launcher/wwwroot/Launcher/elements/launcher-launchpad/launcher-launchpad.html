@@ -79,18 +79,18 @@
                 },
                 appsArray: {
                     type: Array,
-                    value: []
+                    value: function(){return [];}
+                },
+                layout: {
+                  type: Object,
+                  value: null
                 }
-                // ,
-                // layout: {
-                //   type: Object,
-                //   observer: "layoutChanged"
-                // }
             },
             cloneJSON: function(obj){
-              // workaround for https://github.com/Starcounter/Starcounter/issues/3072
-              if(obj && obj["null"] !== "workaround"){
+              if(obj && typeof obj === 'object'){
                 return JSON.parse(JSON.stringify(obj));
+              } else {
+                return JSON.parse(obj);
               }
             },
             // layoutChanged: function(newVal){
