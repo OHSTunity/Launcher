@@ -1,5 +1,6 @@
 {
   "name": "juicy-highlight",
+  "version": "1.1.0",
   "description": "Custom Element that highlights a DOM element on screen using a SVG overlay and/or border",
   "homepage": "https://github.com/Juicy/juicy-highlight",
   "license": "MIT",
@@ -13,13 +14,14 @@
     "bower_components"
   ],
   "dependencies": {},
-  "_release": "e797f66a14",
+  "_release": "1.1.0",
   "_resolution": {
-    "type": "branch",
-    "branch": "gh-pages",
-    "commit": "e797f66a14debe324dfa69d782a892bf9110768b"
+    "type": "version",
+    "tag": "1.1.0",
+    "commit": "e308bb5102e9953dea0bae8e0dfe3b2b8c8d0fce"
   },
   "_source": "git://github.com/Juicy/juicy-highlight.git",
-  "_target": "gh-pages",
-  "_originalSource": "Juicy/juicy-highlight"
+  "_target": "^1.1.0",
+  "_originalSource": "Juicy/juicy-highlight",
+  "_direct": true
 }

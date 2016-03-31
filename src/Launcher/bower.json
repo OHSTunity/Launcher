@@ -25,5 +25,8 @@
     "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#~1.0.8",
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
     "juicy-tile-table": "*"
+  },
+  "resolutions": {
+    "juicy-highlight": "^1.1.0"
   }
 }
