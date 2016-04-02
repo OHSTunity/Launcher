@@ -15,17 +15,17 @@
     $ bower install Juicy/juicy-tile-editor --save
     ```
 
-2. Import Web Components' polyfill:
+
+2. Import Web Components' polyfill, if needed:
 
     ```html
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/platform.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/polymer/0.3.4/polymer.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     ```
 
 3. Import Custom Element:
 
     ```html
-    <link rel="import" href="bower_components/juicy-tile-list/src/juicy-tile-list.html">
+    <link rel="import" href="bower_components/juicy-tile-table/juicy-tile-table.html">
     <link rel="import" href="bower_components/juicy-tile-editor/src/juicy-tile-editor.html">
     ```
 
@@ -33,7 +33,7 @@
 
     ```html
     <juicy-tile-editor selectionMode></juicy-tile-editor>
-    <juicy-tile-list></juicy-tile-list>
+    <juicy-tile-table></juicy-tile-table>
     ```
 
 ## Options
@@ -57,6 +57,14 @@ Event                     | Description
 3. Commit your changes: `git commit -m 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
+
+## Development
+
+In order to develop it locally we suggest to use [polyserve](https://npmjs.com/polyserve) tool to handle bower paths gently.
+
+1. Install [bower](http://bower.io/) & [polyserve](https://npmjs.com/polyserve): `$ npm install -g bower polyserve`
+2. Install local dependencies: `$ bower install`
+3. Start development server `$ polyserve` and open `http://localhost:8080/components/juicy-element/`.
 
 ## License
 

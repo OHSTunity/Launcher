@@ -15,6 +15,7 @@
   "dependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#~0.7.12",
     "polymer": "Polymer/polymer#~1.1.3",
+    "juicy-tile-table": "Juicy/juicy-tile-table#gh-pages",
     "juicy-tile-editor": "Juicy/juicy-tile-editor#gh-pages",
     "juicy-redirect": "Juicy/juicy-redirect#~0.4.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
