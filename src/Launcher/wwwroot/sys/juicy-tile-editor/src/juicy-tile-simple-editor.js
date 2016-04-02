@@ -202,6 +202,10 @@
      * @return  {Array}                       Returns list of juicy-tile-list items found inside the tile.
      */
     function getNestedLists(list, tileId, selectors) {
+        if (!list) {
+            return [];
+        }
+
         var selector = selectors.map(function (s) {
             return "[juicytile='" + tileId + "'] " + s;
         }).join(", ");
@@ -465,6 +469,11 @@
         }
 
         var tile = list.querySelector("[juicytile='" + setup.id + "']");
+
+        if (!tile) {
+            return "Removed element";
+        }
+
         var value = getListSetupName(tile, listSelectors);
 
         if (value) {
