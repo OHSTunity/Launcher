@@ -146,10 +146,12 @@ juicytilelist.setup = {
 }
 ```
 The importance of setups, looks as follows:
+
 1. `juicy-tile-list`'s `setup` attribute/property,
 2. `juicy-tile-list`'s child `juicy-style` attribute,
 3. `juicy-tile-list`'s `defaultTileSetup` attribute,
 3. `juicy-tile-list`'s build in default tile setup.
+
 Meaning, that a setup higher on the list overwrites previous values
 
 ## Tile ids
@@ -207,6 +209,17 @@ juicytilelist.setup = {
 
 - [`<juicy-tile-editor>`](Juicy/juicy-tile-editor) - GUI for editing tiles JSON setup
 - [`<juicy-tile-grid>`](Juicy/juicy-tile-grid) - Tiles rendered with CSS Grid Layout
+
+## Development
+Naturally stary with `npm install` and `bower install`.
+
+#### Minify
+To minify  code you can use `grunt minify`
+
+#### Release
+
+To minify, bump versions and release it, use `grunt release`
+
 
 ## Contributing
 
