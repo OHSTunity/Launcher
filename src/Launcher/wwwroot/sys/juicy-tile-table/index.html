@@ -146,6 +146,11 @@
         <script type="text/javascript">
             var setup = document.querySelector('juicy-tile-table').setup;
             console.log('for this demo purposes juicy-tile-table setup is exposed under `setup` variable', setup);
+            function addMore(element){
+                var p = document.createElement('p');
+                p.innerText = 'more content';
+                element.parentElement.appendChild(p);
+            }
         </script>
 
         <section>
