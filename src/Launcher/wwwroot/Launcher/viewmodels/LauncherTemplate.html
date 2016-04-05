@@ -102,7 +102,6 @@
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
             <template is="dom-repeat" items="{{model.workspaces}}">
-                <span style="color: red">Launcher has created <span>{{displayed(item)}}</span> workspaces so far</span>
                 <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
             </template>
         </div>
@@ -139,12 +138,6 @@
 
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
-            };
-
-            var counter = 0;
-            template.displayed = function (item) {
-                counter++;
-                return counter;
             };
 
             template.toggleEditor = function () {
