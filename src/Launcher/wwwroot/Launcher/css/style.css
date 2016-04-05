@@ -15,6 +15,14 @@
     padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
 }
 
+starcounter-include.workspace {
+    display: none;
+}
+
+starcounter-include.workspace[visible] {
+    display: block;
+}
+
 #homeIcon {
     width: 19px;
     height: 19px;

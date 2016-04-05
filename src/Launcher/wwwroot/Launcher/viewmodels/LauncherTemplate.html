@@ -100,8 +100,8 @@
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
-            <template is="dom-repeat" items="{{model.workspaces}}" filter="filterActiveWorkspace" observe="Launcher.ActiveWorkspace">
-                <starcounter-include partial="{{item}}" class="workspace" visible></starcounter-include>
+            <template is="dom-repeat" items="{{model.workspaces}}">
+                <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
             </template>
         </div>
 
@@ -137,10 +137,6 @@
 
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
-            };
-
-            template.filterActiveWorkspace = function (workspace) {
-                return workspace.Launcher.ActiveWorkspace;
             };
 
             template.toggleEditor = function () {
