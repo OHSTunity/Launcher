@@ -27,7 +27,7 @@
             }
             #logo:hover, #logo.hover
             {
-               
+
                 background: url(/Launcher/elements/tu-logo-with-spinner/piller_logo_fff_c.png);
                 background-size: cover;
                 transition: background 200ms ease;
@@ -182,7 +182,7 @@
 
         </style>
   <template>
-            <div id="logo" onclick="puppet.puppet.morphUrl('/launcher/dashboard')"></div>
+            <div id="logo" onclick="puppet.puppet.morphUrl('/')"></div>
             <div class="timer" id="spinner">
                 Loading...
             </div>
@@ -209,11 +209,11 @@
               puppet.removeEventListener('patchreceived', this.patchReceived);
           },
           patchSent: function () {
-              // this.$.spinner.classList.add("visiblespinner"); 
+              // this.$.spinner.classList.add("visiblespinner");
               Polymer.dom(this.$.logo).classList.add('hover');
           },
           patchReceived: function () {
-              // this.$.spinner.classList.remove("visiblespinner"); 
+              // this.$.spinner.classList.remove("visiblespinner");
               Polymer.dom(this.$.logo).classList.remove('hover');
           }
       });
