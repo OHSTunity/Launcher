@@ -1,0 +1,37 @@
+﻿<template>
+    <style>
+        .LauncherAcceptanceHelperOne-scrollable {
+            overflow: scroll;
+            width: 120px;
+            height: 120px;
+        }
+
+        .LauncherAcceptanceHelperOne-scrollable__interior {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            font-size: 14px;
+            color: green;
+        }
+
+            .LauncherAcceptanceHelperOne-scrollable__interior :first-child {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 60px;
+            }
+
+            .LauncherAcceptanceHelperOne-scrollable__interior :last-child {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+            }
+    </style>
+    <h1>This is Launcher Acceptance Helper One</h1>
+    <div class="LauncherAcceptanceHelperOne-scrollable">
+        <div class="LauncherAcceptanceHelperOne-scrollable__interior">
+            <span>TOP LEFT</span>
+            <span>BOTTOM RIGHT</span>
+        </div>
+    </div>
+</template>

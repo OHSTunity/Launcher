@@ -38,7 +38,6 @@
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
-    <link rel="import" href="/sys/iron-icons/iron-icons.html" />
     <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
@@ -116,7 +115,7 @@
                 </template>
 
             </div>
-            <launcher-display-route match-path="^\/$|\/launcher/?|\/launcher/dashboard$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
+            <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
 
             <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
@@ -126,8 +125,8 @@
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
-            <template is="dom-repeat" items="{{model.workspaces}}" filter="filterActiveWorkspace" observe="Launcher.ActiveWorkspace">
-                <starcounter-include partial="{{item}}" class="workspace" visible></starcounter-include>
+            <template is="dom-repeat" items="{{model.workspaces}}">
+                <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
             </template>
         </div>
 
@@ -165,10 +164,6 @@
 
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
-            };
-
-            template.filterActiveWorkspace = function (workspace) {
-                return workspace.Launcher.ActiveWorkspace;
             };
 
             template.toggleEditor = function () {

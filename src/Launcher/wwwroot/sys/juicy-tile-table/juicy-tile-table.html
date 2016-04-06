@@ -3,7 +3,7 @@
 
 @element juicy-tile-table
 @demo https://Juicy.github.io/juicy-tile-table/
-version: 0.0.6
+version: 0.0.7
 -->
 <!-- Import juicy-tile-list -->
 <link rel="import" href="../juicy-tile-list/src/juicy-tile-list.html">
@@ -56,7 +56,7 @@ version: 0.0.6
             position: static;
             /*height: 100%;
             width: 100%;*/
-            overflow: auto;
+            float: left; /* block margin collapsing */
         }
 
         .juicy-tile {
@@ -777,16 +777,19 @@ version: 0.0.6
                     // TODO (tomalec): parse some values according to
                     // https://drafts.csswg.org/css2/syndata.html#tokenization
                     // but optimze to avoid regexps as much as possible
-                    if (cssValue === '0') {
-                        cssValue = 0;
-                    }
                     if (cssProperty === 'width' || cssProperty === 'height') {
                         if (cssValue.indexOf('px') > -1) {
                             cssValue = parseFloat(cssValue);
                             map[cssProperty + 'Flexible'] = false;
                         } else if (cssValue.indexOf('%') > -1) {
                             map[cssProperty + 'Flexible'] = true;
+                        } else {
+                            cssValue = parseFloat(cssValue);
                         }
+                    } else if(cssValue === 'true'){
+                        cssValue = true;
+                    } else if(cssValue === 'false'){
+                        cssValue = false;
                     }
 
                     // silently ignore unknown values https://drafts.csswg.org/css2/syndata.html#unsupported-values

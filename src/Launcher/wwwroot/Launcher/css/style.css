@@ -33,10 +33,18 @@
 
 }
 
+starcounter-include.workspace {
+    display: none;
+}
+
+starcounter-include.workspace[visible] {
+    display: block;
+}
+
 #homeIcon {
     width: 19px;
     height: 19px;
-    color:white;
+    color: white;
     display:inline-block;
     font-size:18px;
     margin-left: 4px;
@@ -268,7 +276,8 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #fff;
 }
 
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
+.launcher-toolbar > paper-icon-button:hover::shadow iron-icon,
+#launcher-settings-icon:hover {
     color: white;
     transition: -webkit-transform 1s;
     transition: transform 1s;
