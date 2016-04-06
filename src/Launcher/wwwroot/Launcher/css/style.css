@@ -26,7 +26,7 @@ starcounter-include.workspace[visible] {
 #homeIcon {
     width: 19px;
     height: 19px;
-    color: white;
+    color:white;
     display:inline-block;
     font-size:18px;
     margin-left: 4px;
@@ -208,6 +208,17 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     height: 24px;
 }
 
+.launcher-toolbar paper-icon-button.modified,
+.launcher-toolbar paper-icon-button.modified:hover,
+.launcher-toolbar paper-icon-button.modified:hover /deep/ path {
+    color: red;
+    fill: red;
+}
+
+.launcher-toolbar paper-icon-button.launcher-theme:hover {
+    background-color: #6794AC;
+}
+
 .launcher-toolbar div.launcher-theme {
     width: 100%;
 }
@@ -222,8 +233,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #fff;
 }
 
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon,
-#launcher-settings-icon:hover {
+.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
     color: white;
     transition: -webkit-transform 1s;
     transition: transform 1s;
