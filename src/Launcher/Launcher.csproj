@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,21 +58,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
+      <HintPath>$(StarcounterBin)\Public Assemblies\Starcounter.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Bootstrap, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
+      <HintPath>$(StarcounterBin)\Public Assemblies\Starcounter.Bootstrap.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Extensions, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>$(StarcounterBin)\Public Assemblies\Starcounter.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Hypermedia, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
+      <HintPath>$(StarcounterBin)\Public Assemblies\Starcounter.Hypermedia.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.Internal, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
+      <HintPath>$(StarcounterBin)\Public Assemblies\Starcounter.Internal.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Starcounter.XSON, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
+      <HintPath>$(StarcounterBin)\Public Assemblies\Starcounter.XSON.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
