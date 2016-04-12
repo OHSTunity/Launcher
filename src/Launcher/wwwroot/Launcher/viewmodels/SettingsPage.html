@@ -1,3 +1,51 @@
-﻿<template>
-    <h1>App Settings</h1>
+﻿<link rel="import" href="/tu-common/css/tu-layout.html">
+<template>
+  <style is="custom-style" include="tu-layout">
+
+  </style>
+  <template is="dom-bind">
+    <div class="vertical">
+      <div class="horizontal">
+        <h1>App Settings</h1>
+      </div>
+      <div class="horizontal">
+        <template is="dom-repeat" items="{{_getItems(model.Items)}}" sort="_sortAlphabetic">
+          <a href$="{{item.Url}}" id="item">
+            <div class="vertical center">
+              <tu-icon size= "48" style="font-weight: bold;
+                        display: block;
+                        margin-top: 10px;
+                        color: #9E7DA6;"
+                  icon="trello">
+              </tu-icon>
+              <span class="label">{{item.Label}}</span>
+            </div>
+          </a>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      var template = (document._currentScript ||  document.currentScript).previousElementSibling;
+
+      template._sortAlphabetic = function(i1, i2) {
+          return i1.Label > i2.Label ? 1 : -1;
+      };
+
+      template._getItems = function(menu) {
+        var items = [];
+        if (menu) {
+          for (var name in menu) {
+            if (menu.hasOwnProperty(name) && menu[name].hasOwnProperty("Items")) {
+              for (var i = 0; i < menu[name].Items.length; i++) {
+                items.push(menu[name].Items[i]);
+              }
+            }
+          }
+        }
+        return items;
+      };
+    })();
+  </script>
 </template>

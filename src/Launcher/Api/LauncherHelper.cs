@@ -105,14 +105,17 @@ namespace Launcher {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
-                    var p = new SettingsPage() {
-                        Html = "/Launcher/viewmodels/SettingsPage.html"
-
+                if (!(launcher.currentPage is SettingsPage))
+                {
+                    launcher.currentPage = new SettingsPage()
+                    {
+                        Html = "/Launcher/viewmodels/SettingsPage.html",
+                        Items = Self.GET(UriMapping.MappingUriPrefix + "/settings", () =>
+                        {
+                            return new Page();
+                        })
                     };
-                    return p;
-                });
-
+                }
                 launcher.uri = req.Uri;
                 return launcher;
             });
