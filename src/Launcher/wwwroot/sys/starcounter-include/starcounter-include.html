@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.4.2
+version: 0.4.3
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -84,7 +84,7 @@ version: 0.4.2
             this.sync = clone.children[0]; // .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
             this.grid = clone.children[1]; // .getElementsByTagName("juicy-tile-table");
             this.template = this.grid.firstElementChild; // .getElementsByTagName("TEMPLATE");
-            
+
             // attach partial
             this.partialChanged();
 
@@ -105,21 +105,23 @@ version: 0.4.2
          * @see Starcounter/starcounter-include#partialChanged it's alsmost a copy
          * @param  {Object} newVal new partial value
          */
-        LauncherPartialPrototype.partialChanged = function(newVal) {           
+        LauncherPartialPrototype.partialChanged = function(newVal) {
             this._htmlChanged();
             this._partialIdChanged();
             this._layoutChanged();
         };
-        
+
         LauncherPartialPrototype._htmlChanged = function() {
             var html;
             if (this.partial) {
-                html = this.partial.Html;
+                html = this.partial.Html; //should always be string
                 if (this.partial.Launcher) {
-                    html = this.partial.Launcher.MergedHtml; //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
+                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
+                    //should be removed when the original issue with not patched Html is resolved
+                    html = this.partial.Launcher.MergedHtml;
                 }
             }
-            if (html != this._lastHtml) {
+            if (html !== this._lastHtml) {
                 if (this._lastHtml) {
                     this.template.clear();
                 }
@@ -128,21 +130,22 @@ version: 0.4.2
                 } else {
                     this.template.setAttribute("content", html);
                 }
+                this._forceLayoutChange = true;
                 this._lastHtml = html;
             }
             if (this.template.model != this.partial) {
-               this.template.model = this.partial
+                this.template.model = this.partial
             }
         };
-        
+
         LauncherPartialPrototype._partialIdChanged = function() {
             var partialId;
             if (this.partial) {
                 if (this.partial.Launcher) {
-                    partialId = this.partial.Launcher.PartialId;
+                    partialId = this.partial.Launcher.PartialId; //should always be string
                 }
             }
-            if (partialId != this._lastPartialId) {
+            if (partialId !== this._lastPartialId) {
                 if (!partialId) {
                     this.sync.removeAttribute("name");
                     this.grid.removeAttribute("name");
@@ -150,19 +153,18 @@ version: 0.4.2
                     this.sync.setAttribute("name", partialId);
                     this.grid.setAttribute("name", partialId);
                 }
-                this._layoutChanged(true);
                 this._lastPartialId = partialId;
             }
         };
-        
-        LauncherPartialPrototype._layoutChanged = function(force) {
+
+        LauncherPartialPrototype._layoutChanged = function() {
             var layout;
             if (this.partial) {
                 if (this.partial.Launcher) {
-                    layout = this.partial.Launcher.Layout;
+                    layout = this.partial.Launcher.Layout; //should always be string
                 }
             }
-            if (layout != this._lastLayout || force) {
+            if (layout !== this._lastLayout || this._forceLayoutChange) {
                 if (!layout) {
                     this.sync.storedValue = null;
                     this.grid.setup = {
@@ -177,6 +179,7 @@ version: 0.4.2
                     // make clone to avoid direct binding
                     this.grid.setup = JSON.parse(layout);
                 }
+                this._forceLayoutChange = false;
                 this._lastLayout = layout;
             }
         };
@@ -203,4 +206,5 @@ version: 0.4.2
             prototype: LauncherPartialPrototype
         });
     })();
+
 </script>
