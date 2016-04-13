@@ -84,27 +84,9 @@ version: 0.4.2
             this.sync = clone.children[0]; // .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
             this.grid = clone.children[1]; // .getElementsByTagName("juicy-tile-table");
             this.template = this.grid.firstElementChild; // .getElementsByTagName("TEMPLATE");
+            
             // attach partial
-            if(partial){
-                partial.Html && this.template.setAttribute('content', partial.Html);
-                if (partial.Launcher) {
-                    partialId = partial.Launcher.PartialId;
-                    !partialId && console.warn("partial.Launcher.PartialId for", this, "is missing.");
-                    layout = partial.Launcher.Layout;
-                }
-            }
-            this.template.model = partial;
-
-            if (partialId) {
-                this.sync.setAttribute("name", partialId);
-                this.grid.setAttribute("name", partialId);
-            }
-            if (layout) {
-                var parsedLayout = JSON.parse(layout);
-                this.sync.storedValue = parsedLayout;
-                // make clone to avoid direct binding
-                this.grid.setup = JSON.parse(layout);
-            }
+            this.partialChanged();
 
             // attach to light DOM
             this.appendChild(clone);
@@ -123,45 +105,80 @@ version: 0.4.2
          * @see Starcounter/starcounter-include#partialChanged it's alsmost a copy
          * @param  {Object} newVal new partial value
          */
-        LauncherPartialPrototype.partialChanged = function(newVal) {
-            var html, partialId, layout;
-            //only apply layout when there is layout information
+        LauncherPartialPrototype.partialChanged = function(newVal) {           
+            this._htmlChanged();
+            this._partialIdChanged();
+            this._layoutChanged();
+        };
+        
+        LauncherPartialPrototype._htmlChanged = function() {
+            var html;
             if (this.partial) {
                 html = this.partial.Html;
-                !html && console.warn("partial.Html for", this, "is missing.");
+                if (this.partial.Launcher) {
+                    html = this.partial.Launcher.MergedHtml; //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
+                }
+            }
+            if (html != this._lastHtml) {
+                if (this._lastHtml) {
+                    this.template.clear();
+                }
+                if (!html) {
+                    this.template.removeAttribute("content");
+                } else {
+                    this.template.setAttribute("content", html);
+                }
+                this._lastHtml = html;
+            }
+            if (this.template.model != this.partial) {
+               this.template.model = this.partial
+            }
+        };
+        
+        LauncherPartialPrototype._partialIdChanged = function() {
+            var partialId;
+            if (this.partial) {
                 if (this.partial.Launcher) {
                     partialId = this.partial.Launcher.PartialId;
-                    !partialId && console.warn("partial.Launcher.PartialId for", this, "is missing.");
+                }
+            }
+            if (partialId != this._lastPartialId) {
+                if (!partialId) {
+                    this.sync.removeAttribute("name");
+                    this.grid.removeAttribute("name");
+                } else {
+                    this.sync.setAttribute("name", partialId);
+                    this.grid.setAttribute("name", partialId);
+                }
+                this._layoutChanged(true);
+                this._lastPartialId = partialId;
+            }
+        };
+        
+        LauncherPartialPrototype._layoutChanged = function(force) {
+            var layout;
+            if (this.partial) {
+                if (this.partial.Launcher) {
                     layout = this.partial.Launcher.Layout;
                 }
             }
-            if (!layout) {
-                this.sync.storedValue = null;
-                this.grid.setup = {
-                    gutter: 0,
-                    width: 1200,
-                    direction: "horizontal",
-                    items: []
-                };
-            } else {
-                var parsedLayout = JSON.parse(layout);
-                this.sync.storedValue = parsedLayout;
-                // make clone to avoid direct binding
-                this.grid.setup = JSON.parse(layout);
+            if (layout != this._lastLayout || force) {
+                if (!layout) {
+                    this.sync.storedValue = null;
+                    this.grid.setup = {
+                        gutter: 0,
+                        width: 1200,
+                        direction: "horizontal",
+                        items: []
+                    };
+                } else {
+                    var parsedLayout = JSON.parse(layout);
+                    this.sync.storedValue = parsedLayout;
+                    // make clone to avoid direct binding
+                    this.grid.setup = JSON.parse(layout);
+                }
+                this._lastLayout = layout;
             }
-            if (!partialId) {
-                this.sync.removeAttribute("name");
-                this.grid.removeAttribute("name");
-            } else {
-                this.sync.setAttribute("name", partialId);
-                this.grid.setAttribute("name", partialId);
-            }
-            if (!html) {
-                this.template.removeAttribute("content");
-            } else {
-                this.template.setAttribute("content", html);
-            }
-            this.template.model = this.partial;
         };
 
 
@@ -175,6 +192,9 @@ version: 0.4.2
             if (path.indexOf("partial.") == 0) {
                 if (this.template._notifyPath) {
                     this.template._notifyPath(path.replace("partial.", "model."), value);
+                }
+                if (path.indexOf("partial.Launcher.") == 0 || path == "partial.Html") {
+                    this.partialChanged(this.partial);
                 }
             }
         };
