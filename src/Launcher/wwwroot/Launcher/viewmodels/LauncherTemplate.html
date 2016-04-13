@@ -44,7 +44,6 @@
     <link rel="import" href="/sys/imported-template/imported-template.html" />
 	  <!--<link rel="import" href="/sys/dom-imported/dom-imported.html" />-->
     <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
-    <link rel="import" href="/sys/juicy-redirect/juicy-redirect.html" />
 
     <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
@@ -79,30 +78,11 @@
             <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
             <core-field class="launcher-theme">
               <launcher-search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
-
-                <!--<launcher-search-input placeholder="Search here..." lastkey="{{model._lastkey}}" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
-                <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
-
-                <!--<link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />-->
-              <!--  <template is="dom-if" if="{{model.searchBar.previewVisible}}">
-                    <div class="preview">
-                        <launcher-search-result keypress="{{model._lastkey}}" data="{{model.searchBar.previewResult}}"></launcher-search-result>
-                    </div>
-                </template>-->
             </core-field>
             <span class="toolbar-divider"></span>
 
             <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
 
-            <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
-            <!--
-            <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-            <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
-            </template>
-            <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
-            </template>
-            -->
             <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
         </div>
 
@@ -122,6 +102,7 @@
 
             <!-- Dashboard/search results/settings -->
             <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
+            
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 

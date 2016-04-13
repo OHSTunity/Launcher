@@ -179,10 +179,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     #launcher-menu ul a span {
         display:none;
     }
-    .launcher-toolbar so-signin .full-name
-    {
-        display: none;
-    }
     .launcher-toolbar #search-icon
     {
         display: none;
@@ -243,12 +239,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 .launcher-toolbar #launcher-settings-icon {
     width: 22px;
     height: 22px;
-}
-
-.launcher-toolbar paper-icon-button,
-.launcher-toolbar so-signin {
-    padding: 0;
-    font-size: 0; /*otherwise plays bad with flexbox*/
 }
 
 .launcher-toolbar paper-icon-button.modified,
