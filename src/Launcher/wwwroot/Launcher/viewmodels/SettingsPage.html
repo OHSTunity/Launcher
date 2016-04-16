@@ -1,7 +1,9 @@
 ﻿<link rel="import" href="/tu-common/css/tu-layout.html">
 <template>
   <style is="custom-style" include="tu-layout">
-
+    a {
+      padding: 10px;
+    }
   </style>
   <template is="dom-bind">
     <div class="vertical">
@@ -16,7 +18,7 @@
                         display: block;
                         margin-top: 10px;
                         color: #9E7DA6;"
-                  icon="trello">
+                  icon="{{item.Icon}}">
               </tu-icon>
               <span class="label">{{item.Label}}</span>
             </div>
