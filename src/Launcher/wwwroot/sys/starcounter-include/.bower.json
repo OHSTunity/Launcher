@@ -26,18 +26,18 @@
   "dependencies": {
     "imported-template": ">=1.4.0",
     "juicy-tiles-setup-sync": "Juicy/juicy-tiles-setup-sync#gh-pages",
-    "juicy-tile-table": ">=0.0.4"
+    "juicy-tile-table": "#gh-pages"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#>=4.2.2",
     "polymer": ">=1.1.3"
   },
-  "version": "0.4.2",
-  "_release": "0.4.2",
+  "version": "0.4.3",
+  "_release": "0.4.3",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "72da769640508d835abcbde058008c45d472a560"
+    "tag": "0.4.3",
+    "commit": "6e16b0d87db91f618238b553864d5f0088a99609"
   },
   "_source": "git://github.com/StarcounterSamples/launcher-include.git",
   "_target": ">=0.4.0",

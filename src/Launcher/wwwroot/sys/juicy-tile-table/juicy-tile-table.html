@@ -87,10 +87,11 @@ version: 0.0.7
         }
     </style>
     <content select="script,style,template" class="not-a-tile"></content>
+    <!-- <content select=":not([juicytile])" class="not-a-tile"></content> -->
 </template>
 
 <script>
-    (function(scriptDocument) {
+    (function (scriptDocument) {
         var template = scriptDocument.querySelector("#juicy-tile-table");
         if (window.ShadowDOMPolyfill) {
             WebComponents.ShadowCSS.shimStyling(template.content, 'juicy-tile-table');
@@ -236,7 +237,7 @@ version: 0.0.7
                 var tile = document.createElement('td');
                 tile.appendChild(frag.children[0]);
                 tile.id = id;
-                tile.firstChild.firstChild.setAttribute("select", "[juicytile='" + id + "']");
+                tile.firstChild.firstChild.setAttribute('select', '[juicytile="' + id + '"]');
                 // add to key based map
                 tiles[id] = tile;
             }
@@ -756,10 +757,10 @@ version: 0.0.7
           and `(width|height):NN%` as `(width|height):NN%;(width|height)Flexible: true;`
           @param {String} rules, css directive-like string example
               \n\width:40%;\n    priority:0.5;\n
-          Modified ver
+          @param {Object} map set of JSON properties to be extended
+          @retruns {Object} modified map
         */
-        proto.parseRules = function(rules) {
-            var map = {};
+        proto.parseRules = function(rules, map) {
             rules = rules.split(';');
 
             //proccess rules
