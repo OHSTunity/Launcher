@@ -10,7 +10,6 @@
 #launcher-menu {
     flex: 1 0 auto;
     color: #4c444b;
-    height:100%;
 }
 
 #launcher-content {
@@ -132,18 +131,17 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 #launcher-menu ul li {
-    padding-right: 8px;
-    padding-left: 8px;
-    font-size: 16px;
+  border-radius: 10px;
+  padding-right: 8px;
+  padding-left: 8px;
+  font-size: 16px;
 }
 
 #launcher-menu a {
     display: block;
-    /*
-    padding-top: 4px;
-    padding-bottom: 4px;
-    */
-    line-height: 47px;
+    display: flex;
+    height: 36px;
+    align-items: center;
     padding-left: 2px;
     padding-right: 2px;
 }
