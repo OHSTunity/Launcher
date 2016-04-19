@@ -84,9 +84,9 @@
 
             <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
 
-            <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
+            <!--<a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
+-->
         </div>
-
 
         <div id="launcher-content">
             <div class="launchpad">
@@ -103,7 +103,7 @@
 
             <!-- Dashboard/search results/settings -->
             <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
-            
+
             <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
             <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
