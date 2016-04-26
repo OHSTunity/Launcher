@@ -27,6 +27,8 @@
             "thumbnail": { }
         }
     ],
-    "workspaces": [ ],
+    "permanentbar": {},
+	"workspaces": [ ],
+	"sidebar": {},
     "uri": ""
 }

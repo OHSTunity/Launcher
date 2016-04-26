@@ -82,6 +82,18 @@ namespace Launcher {
                     return p;
                 });
 
+                launcher.sidebar = Self.GET(UriMapping.MappingUriPrefix + "/sidebar", () =>
+                {
+                    var p = new Page();
+                    return p;
+                });
+
+                launcher.permanentbar = Self.GET(UriMapping.MappingUriPrefix + "/permanentbar", () =>
+                {
+                    var p = new Page();
+                    return p;
+                });
+
                 launcher.uri = req.Uri;
                 MarkWorkspacesInactive(launcher.workspaces);
                 return launcher;

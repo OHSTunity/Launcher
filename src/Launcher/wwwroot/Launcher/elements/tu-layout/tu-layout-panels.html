@@ -1,0 +1,244 @@
+<link rel="import" href="/sys/polymer/polymer.html">
+
+<dom-module id="tu-layout-panels">
+    <template>
+        <style>
+            :host{
+              position: absolute;
+              left: 0px;
+              right: 0px;
+              top: 0px;
+              bottom: 0px;
+              display: block;
+            }
+
+            :host #wrapper {
+              display: flex;
+              flex-direction: row;
+              height: 100%;
+              background-color: #ffffff;
+            }
+            :host #center
+            {
+              flex: 1 1 ;
+              order: 2;
+              z-index: 1;
+              position: relative;
+            }
+
+            :host #left
+            {
+              position: relative;
+              width: 350px;
+              order: 1;
+              z-index: 2;
+              background: #fff;
+              border-right: solid 1px #aaa;
+              padding-top: 30px;
+              will-change: transform;
+              transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;
+            }
+            :host #left .toggler
+            {
+              position: absolute;
+              left: 1px;
+              top: 1px;
+            }
+
+            :host(.tu-layout-panels-left-close) #left tu-icon-button.toggler
+            {
+              transform: rotate(180deg);
+            }
+
+            :host(.tu-layout-panels-left-close) #left
+            {
+              width: 0px;
+              visibility: hidden;
+            }
+
+            :host(.tu-layout-panels-right-close) #right
+            {
+              width: 0px;
+              visibility: hidden;
+            }
+
+            :host #right
+            {
+              position: relative;
+              width: 350px;
+              padding-top: 30px;
+              order: 3;
+              z-index: 3;
+              background: #fff;
+              border-left: solid 1px #aaa;
+              will-change: transform;
+              transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;
+            }
+
+            #right .toggler
+            {
+              position: absolute;
+              right: 5px;
+              top: 5px;
+            }
+
+            /* Media query states */
+            :host(.tu-layout-panels-micro) #left
+            {
+              position: absolute;
+              left: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.tu-layout-panels-small) #left
+            {
+              position: absolute;
+              left: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.tu-layout-panels-micro) #center
+            {
+              margin-left: 50px;
+            }
+
+            :host(.tu-layout-panels-small) #center
+            {
+              margin-left: 50px;
+            }
+
+            :host(.tu-layout-panels-micro) #right
+            {
+              position:absolute;
+              position: absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.tu-layout-panels-small) #right
+            {
+              position: absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.tu-layout-panels-medium)  #right
+            {
+              position: absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+
+
+        </style>
+        <div id="wrapper" >
+
+            <div id="center">
+                <content select="[main]"></content>
+            </div>
+            <div id="left">
+                <tu-icon-button nohovereffect taptoggle="{{context}}" class="toggler" icon="arrow-left"></tu-icon-button>
+                <content select="[context]"></content>
+            </div>
+            <div id="right">
+                <tu-icon-button class="toggler" icon="times" taptoggle="{{right}}" ></tu-icon-button>
+                <content select="[right]"></content>
+            </div>
+
+            <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
+            <iron-media-query query="(min-width: 401px ) and ( max-width: 800px)" query-matches="{{layoutSmall}}"></iron-media-query>
+            <iron-media-query query="(min-width: 801px)  and ( max-width: 1150px)" query-matches="{{layoutMedium}}"></iron-media-query>
+            <iron-media-query query="(min-width: 1151px)" query-matches="{{layoutLarge}}"></iron-media-query>
+
+        </div>
+    </template>
+    <script>
+        var TuApp = Polymer({
+            is: "tu-layout-panels",
+          properties: {
+            context: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              reflectToAttribute: true,
+              observer: 'contextChanged',
+            },
+            right: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              reflectToAttribute: true,
+              observer: 'rightChanged',
+            },
+            layoutMicro: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            layoutSmall: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            layoutMedium: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            layoutLarge: {
+              type: Boolean,
+              value: true,
+              notify: true,
+              observer: 'mediaChange',
+            },
+          },
+          ready: function() {
+            this.addEventListener("tu-pane", this.onTuPane.bind(this));
+            this.addEventListener("tu-menu", this.onTuMenu.bind(this));
+          },
+          attached: function() {
+          },
+          contextChanged: function(e)
+          {
+            this.classList.toggle("tu-layout-panels-left-close", !this.context);
+          },
+          rightChanged: function(e)
+          {
+            this.classList.toggle("tu-layout-panels-right-close", !this.right);
+          },
+          onTuPane: function(e)
+          {
+            this.classList.toggle("show_pane", e.detail.open);
+          },
+          onTuMenu: function(e)
+          {
+            var menu = e.target;
+            if ( (this.layoutMicro || this.layoutSmall ) )
+            {
+              menu.collapse = ! menu.isForceOpen();
+            }
+            else
+            {
+              menu.collapse = menu.isForceClose();
+            }
+            this.classList.toggle("collapse_menu", menu.collapse);
+          },
+          mediaChange: function()
+          {
+            this.classList.toggle("tu-layout-panels-micro", this.layoutMicro);
+            this.classList.toggle("tu-layout-panels-small", this.layoutSmall);
+            this.classList.toggle("tu-layout-panels-medium", this.layoutMedium);
+            this.classList.toggle("tu-layout-panels-large", this.layoutLarge);
+          }
+        });
+    </script>
+</dom-module>

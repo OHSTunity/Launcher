@@ -1,0 +1,41 @@
+<link rel="import" href="/sys/polymer/polymer.html">
+
+<dom-module id="tu-layout-multiview">
+    <template>
+        <style>
+        </style>
+        <content></content>
+    </template>
+    <script>
+        var TuApp = Polymer({
+            is: "tu-layout-multiview",
+          properties: {
+            data: {
+              type: Object,
+              value: {},
+              notify: true,
+            },
+          },
+          ready: function() {
+          },
+          attached: function() {
+          },
+          AddEventListeners:function() {
+
+          },
+          RemoveEventListeners:function() {
+
+          },
+          UpdateActive: function() {
+
+          },
+          contextChanged: function(e)
+          {
+            this.RemoveEventListeners();
+            this.AddEventListeners();
+            this.UpdateActive();
+          },
+
+        });
+    </script>
+</dom-module>

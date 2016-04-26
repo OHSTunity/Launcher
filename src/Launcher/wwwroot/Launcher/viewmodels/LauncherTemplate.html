@@ -34,7 +34,8 @@
     <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
 	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
-
+    <link rel="import" href="/Launcher/elements/tu-layout/tu-layout-panels.html" />
+    <link rel="import" href="/Launcher/elements/tu-layout/tu-layout-multiview.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
@@ -89,27 +90,41 @@
         </div>
 
         <div id="launcher-content">
-            <div class="launchpad">
 
-                <template is="dom-if" if="{{model.launchpad}}">
-                    <launcher-launchpad class="visible" apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+            <tu-layout-panels>
+              <div main>
+
+                  <div class="launchpad">
+
+                      <template is="dom-if" if="{{model.launchpad}}">
+                          <launcher-launchpad class="visible" apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+                      </template>
+
+                  </div>
+
+                  <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
+
+                  <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
+                  <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
+
+                  <!-- Dashboard/search results/settings -->
+                  <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
+
+                  <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
+                  <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
+
+                <template is="dom-repeat" items="{{model.workspaces}}">
+                    <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                 </template>
-
-            </div>
-            <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
-
-            <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
-            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-
-            <!-- Dashboard/search results/settings -->
-            <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
-
-            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
-
-            <template is="dom-repeat" items="{{model.workspaces}}">
-                <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
-            </template>
+              </div>
+              <div right>
+                <tu-layout-multiview>
+                  <template is="dom-repeat" items="{{_getSidebars(model.sidebar)}}">
+                      <starcounter-include partial="{{item.Current}}" visible$="{{item.Active$}}"></starcounter-include>
+                  </template>
+                </tu-layout-multiview>
+              </div>
+            </tu-layout-panels>
         </div>
 
         <!-- TODO migrate this getModel -->
@@ -152,6 +167,17 @@
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
 
+            template._getSidebars = function(data) {
+              var sidebars=[];
+              for (var name in data)
+              {
+                if (data.hasOwnProperty(name) &&
+                    data[name].hasOwnProperty("Active$")) {
+                  sidebars.push(data[name]);
+                }
+              }
+              return sidebars;
+            }
       		/*	template.addEventListener("model-changed", function (e) {
       				console.log("lt", e);
       			});*/
