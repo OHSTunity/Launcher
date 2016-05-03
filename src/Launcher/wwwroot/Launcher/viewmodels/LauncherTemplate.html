@@ -91,7 +91,7 @@
 
         <div id="launcher-content">
 
-            <tu-layout-panels>
+            <tu-layout-panels right="{{model.sidebar.tunity_assets.Active$}}">
               <div main>
 
                   <div class="launchpad">
@@ -118,11 +118,21 @@
                 </template>
               </div>
               <div right>
-                <tu-layout-multiview>
-                  <template is="dom-repeat" items="{{_getSidebars(model.sidebar)}}">
-                      <starcounter-include partial="{{item.Current}}" visible$="{{item.Active$}}"></starcounter-include>
+                <!--<tu-layout-multiview>-->
+                  <!--
+                  <template is="dom-repeat" items="{{_getSidebars(model.sidebar)}}" observe="Current.Html" filter="{{fuskfilter}}">
+                    
+                      <template is="dom-if" if="{{item.Active$}}">
+                        <template is="imported-template" model="{{item.Current}}" content="{{item.Current.Html}}"></template>
+                      </template>
                   </template>
-                </tu-layout-multiview>
+                  -->
+                  <tu-layout-multiview>
+                    <template is="dom-if" if="{{model.sidebar.tunity_assets.Active$}}">
+                      <starcounter-include partial="{{model.sidebar.tunity_assets.Current}}"></starcounter-include>
+                    </template>
+                  </tu-layout-multiview>
+                <!--</tu-layout-multiview>-->
               </div>
             </tu-layout-panels>
         </div>
