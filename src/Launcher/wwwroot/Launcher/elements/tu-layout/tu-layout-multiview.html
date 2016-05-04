@@ -85,7 +85,7 @@
             this.set('apps.#'+i+'.active', true);
           }
         }
-        if (this._activeApp) {
+        if (this._activeApp && this._activeApp != 'none') {
           this.fire("panel-command", { status: "open" });
         } else {
           this.fire("panel-command", { status: "close"});
