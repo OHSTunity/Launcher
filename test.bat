@@ -1,4 +1,4 @@
-staradmin kill all
+staradmin stop db default
 msbuild src\Launcher\Launcher.csproj
 msbuild test\Launcher_AcceptanceTest\Launcher_AcceptanceTest.csproj
 msbuild test\Launcher_AcceptanceHelperOne\Launcher_AcceptanceHelperOne.csproj
