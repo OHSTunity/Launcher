@@ -1,41 +1,107 @@
 <link rel="import" href="/sys/polymer/polymer.html">
 
 <dom-module id="tu-layout-multiview">
-    <template>
-        <style>
-        </style>
-        <content></content>
+  <style>
+  </style>
+  <template>
+    <template is="dom-repeat" items="{{apps}}" as="item">
+      <div class="{{_class(item.active)}}">
+        <template is="imported-template" model="{{item.data.Current}}" content$="{{item.data.Current.Html}}"></template>
+      </div>
     </template>
-    <script>
-        var TuApp = Polymer({
-            is: "tu-layout-multiview",
-          properties: {
-            data: {
-              type: Object,
-              value: {},
-              notify: true,
-            },
-          },
-          ready: function() {
-          },
-          attached: function() {
-          },
-          AddEventListeners:function() {
-
-          },
-          RemoveEventListeners:function() {
-
-          },
-          UpdateActive: function() {
-
-          },
-          contextChanged: function(e)
-          {
-            this.RemoveEventListeners();
-            this.AddEventListeners();
+  </template>
+  <script>
+    var TuApp = Polymer({
+      is: "tu-layout-multiview",
+      properties: {
+        data: {
+          type: Object,
+          value: {},
+          notify: true,
+          observer:'contextChanged'
+        },
+        apps: {
+          type:Array,
+          value: [],
+          notify: true,
+        }
+      },
+      observers:[
+        'subdataChanged(data.*)',
+      ],
+      ready: function() {
+      },
+      attached: function() {
+      },
+      _activeApp : '',
+      subdataChanged: function(ev) {
+        if (ev.path != 'data') {
+          pathes = ev.path.split('.');
+          if (pathes.length == 3 && pathes[2] == 'Active$') {
+            this._activeApp = ev.value? pathes[1]: '';
             this.UpdateActive();
-          },
-
-        });
-    </script>
+          }
+          else {
+            var index = this.GetIndex(pathes[1]);
+            if (index > -1 && this.root.children.length > index-1) {
+              var path =   ev.path.replace("data."+pathes[1], "apps.#"+index+".data");
+              this.notifyPath(path, ev.value);
+            }
+          }
+        }
+      },
+      GetIndex: function (appname) {
+        for (var i = 0; i < this.apps.length; i++) {
+          if (this.apps[i].name == appname)
+            return i;
+        }
+        return -1;
+      },
+      UpdateApps: function() {
+        this.apps = [];
+        for (var name in this.data)
+        {
+          if (this.data.hasOwnProperty(name) &&
+            this.data[name].hasOwnProperty("Active$")) {
+            var app = {
+              name: name,
+              active: false,
+              data: this.data[name]
+            };
+            this.push('apps', app);
+          }
+        }
+      },
+      UpdateActive: function() {
+        for (var i = 0; i < this.apps.length; i++) {
+          var notedActive = this.apps[i].data.Active$;
+          if (!this._activeApp && notedActive)
+            this._activeApp = this.apps[i].name;
+          if (notedActive && this._activeApp != this.apps[i].name) {
+            this.set('data.'+this.apps[i].name+".Active$", false);
+            this.set('apps.#'+i+'.active', false);
+          }
+          if (notedActive && !this.apps[i].active) {
+            this.set('apps.#'+i+'.active', true);
+          }
+        }
+        if (this._activeApp) {
+          this.fire("panel-command", { status: "open" });
+        } else {
+          this.fire("panel-command", { status: "close"});
+        }
+      },
+      deActivateAll() {
+        this._activeApp = "none";
+        this.UpdateActive();
+      },
+      contextChanged: function(e) {
+        this.UpdateApps();
+        this.UpdateActive();
+      },
+      _class: function(active) {
+        return active ? "active":"hidden";
+      }
+    });
+  </script>
 </dom-module>

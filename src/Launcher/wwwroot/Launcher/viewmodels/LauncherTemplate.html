@@ -117,13 +117,7 @@
                     <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                 </template>
               </div>
-              <div right>
-                <tu-layout-multiview>
-                  <template is="dom-repeat" items="{{_getSidebars(model.sidebar)}}">
-                      <starcounter-include partial="{{item.Current}}" visible$="{{item.Active$}}"></starcounter-include>
-                  </template>
-                </tu-layout-multiview>
-              </div>
+              <tu-layout-multiview right data="{{model.sidebar}}"></tu-layout-multiview>
             </tu-layout-panels>
         </div>
 

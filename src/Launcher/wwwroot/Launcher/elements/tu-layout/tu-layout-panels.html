@@ -35,8 +35,6 @@
               background: #fff;
               border-right: solid 1px #aaa;
               padding-top: 30px;
-              will-change: transform;
-              transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;
             }
             :host #left .toggler
             {
@@ -71,8 +69,8 @@
               z-index: 3;
               background: #fff;
               border-left: solid 1px #aaa;
-              will-change: transform;
-              transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;
+            /*  will-change: transform;
+              transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;*/
             }
 
             #right .toggler
@@ -147,7 +145,7 @@
                 <content select="[context]"></content>
             </div>
             <div id="right">
-                <tu-icon-button class="toggler" icon="times" taptoggle="{{right}}" ></tu-icon-button>
+                <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
                 <content select="[right]"></content>
             </div>
 
@@ -202,14 +200,28 @@
             },
           },
           ready: function() {
-            this.addEventListener("tu-pane", this.onTuPane.bind(this));
-            this.addEventListener("tu-menu", this.onTuMenu.bind(this));
           },
           attached: function() {
+            this.listen(this, "tu-pane", "onTuMenu");
+            this.listen(this, "tu-menu", "onTuMenu");
+            this.listen(this.$.right, "panel-command", "onRightChange");
           },
-          contextChanged: function(e)
-          {
+          detached: function() {
+            this.unlisten(this, "tu-pane", "onTuMenu");
+            this.unlisten(this, "tu-menu", "onTuMenu");
+            this.unlisten(this.$.right, "panel-command", "onRightChange");
+          },
+          onRightChange: function(ev) {
+            this.set("right", ev.detail.status == 'open');
+          },
+          contextChanged: function(e) {
             this.classList.toggle("tu-layout-panels-left-close", !this.context);
+          },
+          onCloseRightTapped: function(ev) {
+            this.set("right", false);
+            var mviews = Polymer.dom(this.$.right).queryDistributedElements("tu-layout-multiview");
+            for (var i = 0; i < mviews.length; i++)
+              mviews[i].deActivateAll();
           },
           rightChanged: function(e)
           {
