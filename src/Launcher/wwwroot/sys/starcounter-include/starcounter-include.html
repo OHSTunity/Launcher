@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.4.3
+version: 0.5.0
 
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
@@ -38,6 +38,9 @@ version: 0.4.3
         var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
 
         LauncherPartialPrototype.partial = null;
+        // LauncherPartialPrototype.html = null;
+        LauncherPartialPrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
+        LauncherPartialPrototype.defaultHtml = '';
 
         /**
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
@@ -62,6 +65,7 @@ version: 0.4.3
             //   return ;
             // }
             var partial = partialAttributeToProperty(this);
+            var html = buildURL(partial, this.mergedHtmlPrefix, this.defaultHtml);
             var starcounterInclude = this;
             var layout;
             var partialId;
@@ -84,6 +88,7 @@ version: 0.4.3
             this.sync = clone.children[0]; // .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
             this.grid = clone.children[1]; // .getElementsByTagName("juicy-tile-table");
             this.template = this.grid.firstElementChild; // .getElementsByTagName("TEMPLATE");
+            html && this.template.setAttribute('content', html);
 
             // attach partial
             this.partialChanged();
@@ -112,15 +117,7 @@ version: 0.4.3
         };
 
         LauncherPartialPrototype._htmlChanged = function() {
-            var html;
-            if (this.partial) {
-                html = this.partial.Html; //should always be string
-                if (this.partial.Launcher) {
-                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
-                    //should be removed when the original issue with not patched Html is resolved
-                    html = this.partial.Launcher.MergedHtml;
-                }
-            }
+            var html = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
             if (html !== this._lastHtml) {
                 if (this._lastHtml) {
                     this.template.clear();
@@ -193,12 +190,59 @@ version: 0.4.3
          */
         LauncherPartialPrototype._notifyPath = function(path, value) {
             if (path.indexOf("partial.") == 0) {
-                if (this.template._notifyPath) {
-                    this.template._notifyPath(path.replace("partial.", "model."), value);
-                }
-                if (path.indexOf("partial.Launcher.") == 0 || path == "partial.Html") {
+
+                if (
+                    path === "partial.Html" ||
+                    path.indexOf("partial.Launcher.") === 0 ||
+                    // path.match(/^partial\.[^.]+\.Html$/)
+                    (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
+                ) {
                     this.partialChanged(this.partial);
+                } else {
+                    if (this.template._notifyPath) {
+                        this.template._notifyPath(path.replace("partial.", "model."), value);
+                    }
                 }
+            }
+        };
+        /**
+         * Retrieves URL of HTML file to be loaded from given partial.
+         * For merged partials/namespaced JSONs without
+         * `.Html` property on root level it builds one out of
+         * `.Html` properties from nested objects
+         * {prefix}{key1}={partial.key1.Html}&{key2}={partial.key2.Html}&{key3}={defaultURL}
+         * Parameters are URI encoded, for scopes without `.Html` property _defaultURL_ is used
+         * @param  {Object} partial    partial object
+         * @param  {String} prefix     prefix for merged partials
+         * @param  {String} defaultURL Html to be used for nodes that does not have one
+         * @return {String}            [description]
+         */
+        function buildURL(partial, prefix, defaultURL) {
+            if(partial){
+                if (partial.Launcher) {
+                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
+                    //should be removed when the original issue with not patched Html is resolved
+                    return partial.Launcher.MergedHtml;
+                }
+                if(partial.Html !== undefined){
+                    return partial.Html;
+                } else {
+                    var htmls = [];
+                    for (var key in partial){
+                        if (partial.hasOwnProperty(key)) {
+                            htmls.push(
+                                key +
+                                '=' +
+                                (partial[key].Html && encodeURIComponent(partial[key].Html) || defaultURL)
+                            );
+                        }
+                    }
+                    // Workaround for https://github.com/Starcounter/starcounter-include/issues/12
+                    return htmls.length && (prefix + htmls.join('&')) || undefined;
+                    // return prefix + htmls.join('&');
+                }
+            } else {
+                return undefined;
             }
         };
 

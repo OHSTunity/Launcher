@@ -61,12 +61,8 @@
                     </div>
                 </template>
             </div>
-            <div style="max-width: 300px; overflow: hidden;">
-                <starcounter-include partial="{{model.user}}"></starcounter-include>
-            </div>
-            <!--<template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>-->
+            <template is="imported-template" content$="{{model.user.Launcher.MergedHtml}}" model="{{model.user}}"></template>
 
-            <!-- TODO: migrate getModel boolean trigger -->
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
                 <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
             </template>
@@ -80,7 +76,7 @@
         <div id="launcher-menu">
             <launcher-menu>
                 <ul>
-                    <template is="imported-template" content$="{{model.menu.Html}}" model="{{model.menu}}"></template>
+                    <template is="imported-template" content$="{{model.menu.Launcher.MergedHtml}}" model="{{model.menu}}"></template>
                 </ul>
             </launcher-menu>
         </div>
