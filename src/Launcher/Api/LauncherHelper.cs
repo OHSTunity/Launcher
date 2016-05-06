@@ -149,7 +149,7 @@ namespace Launcher {
                     if (String.IsNullOrEmpty(a[1]))
                         continue;
 
-                    Response resp = Self.GET(a[1]);
+                    Response resp = Self.GET(HttpUtility.UrlDecode(a[1]));
                     sb.Append("<imported-template-scope scope=\"" + a[0] + "\">");
                     sb.Append("<template><juicy-tile-group name=\"" + a[0] + "\"></juicy-tile-group></template>");
                     sb.Append(resp.Body);
@@ -232,7 +232,7 @@ namespace Launcher {
                 var appItem = layoutInfo.AppsResponded.Add();
                 appItem.StringValue = partialJson.GetAppName();
 
-                partialUrl = partialJson.GetHtmlPartialUrl();
+                partialUrl = partialJson["Html"] as string;
                 if (!string.IsNullOrEmpty(partialUrl)) {
                     if (html != null)
                         html += "&";
