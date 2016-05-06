@@ -33,7 +33,6 @@
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
-    <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
     <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
 
     <!-- Style sheets -->
@@ -124,8 +123,6 @@
                 <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
             </div>
         </paper-dialog>
-
-        <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
     </template>
     <script>
         (function () {

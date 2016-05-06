@@ -5,7 +5,6 @@
       "PuppetJs",
       "imported-template",
       "puppet-redirect",
-      "dom-bind-notifier",
       "juicy-redirect",
       "starcounter-debug-aid",
       "puppet-client",
