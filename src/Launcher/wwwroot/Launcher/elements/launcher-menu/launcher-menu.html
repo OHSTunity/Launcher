@@ -23,7 +23,7 @@
                 sortItems: function () {
                     this.observer.disconnect();
 
-                    var lis = this.querySelectorAll("html /deep/ li");
+                    var lis = this.querySelectorAll('li');
 
                     lis = Array.prototype.slice.call(lis, 0);
                     lis.sort(function (a, b) {
@@ -39,7 +39,7 @@
                         return 0;
                     });
 
-                    var ul = this.querySelector("html /deep/ ul");
+                    var ul = this.querySelector('ul');
 
                     for (var i = 0, l = lis.length; i < l; i++) {
                         ul.appendChild(lis[i]);
