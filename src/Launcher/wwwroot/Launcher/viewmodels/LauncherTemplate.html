@@ -61,7 +61,10 @@
                     </div>
                 </template>
             </div>
-            <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
+            <div style="max-width: 300px; overflow: hidden;">
+                <starcounter-include partial="{{model.user}}"></starcounter-include>
+            </div>
+            <!--<template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>-->
 
             <!-- TODO: migrate getModel boolean trigger -->
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
