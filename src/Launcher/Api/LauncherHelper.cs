@@ -88,7 +88,7 @@ namespace Launcher {
                     return p;
                 });
 
-                launcher.permanentbar = Self.GET(UriMapping.MappingUriPrefix + "/permanentbar", () =>
+                launcher.contextbar = Self.GET(UriMapping.MappingUriPrefix + "/contextbar", () =>
                 {
                     var p = new Page();
                     return p;

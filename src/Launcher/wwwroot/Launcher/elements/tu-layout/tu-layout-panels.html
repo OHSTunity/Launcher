@@ -205,14 +205,19 @@
             this.listen(this, "tu-pane", "onTuMenu");
             this.listen(this, "tu-menu", "onTuMenu");
             this.listen(this.$.right, "panel-command", "onRightChange");
+            this.listen(this.$.left, "panel-command", "onContextChange");
           },
           detached: function() {
             this.unlisten(this, "tu-pane", "onTuMenu");
             this.unlisten(this, "tu-menu", "onTuMenu");
             this.unlisten(this.$.right, "panel-command", "onRightChange");
+            this.unlisten(this.$.left, "panel-command", "onContextChange");
           },
           onRightChange: function(ev) {
             this.set("right", ev.detail.status == 'open');
+          },
+          onContextChange: function(ev) {
+            this.set("context", ev.detail.status == 'open');
           },
           contextChanged: function(e) {
             this.classList.toggle("tu-layout-panels-left-close", !this.context);

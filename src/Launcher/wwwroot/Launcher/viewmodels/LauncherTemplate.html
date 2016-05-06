@@ -91,7 +91,7 @@
 
         <div id="launcher-content">
 
-            <tu-layout-panels right="{{model.sidebar.tunity_assets.Active$}}">
+            <tu-layout-panels>
               <div main>
 
                   <div class="launchpad">
@@ -117,6 +117,7 @@
                     <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                 </template>
               </div>
+              <tu-layout-multiview context data="{{model.contextbar}}"></tu-layout-multiview>              
               <tu-layout-multiview right data="{{model.sidebar}}"></tu-layout-multiview>
             </tu-layout-panels>
         </div>
