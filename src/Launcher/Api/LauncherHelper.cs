@@ -232,6 +232,10 @@ namespace Launcher {
                 var appItem = layoutInfo.AppsResponded.Add();
                 appItem.StringValue = partialJson.GetAppName();
 
+                if (partialJson.Template == null) {
+                    continue;
+                }
+
                 partialUrl = partialJson["Html"] as string;
                 if (!string.IsNullOrEmpty(partialUrl)) {
                     if (html != null)
