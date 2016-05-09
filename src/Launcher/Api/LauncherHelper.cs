@@ -137,16 +137,16 @@ namespace Launcher {
 
             // + dummy responses from launcher itself
             // Merges HTML partials according to provided URLs.
-            Handle.GET(StarcounterConstants.HtmlMergerPrefix + "{?}", (String s) => {
+            Handle.GET(StarcounterConstants.HtmlMergerPrefix + "{?}", (string s) => {
 
                 StringBuilder sb = new StringBuilder();
 
-                String[] allPartialInfos = s.Split(new char[] { '&' });
+                string[] allPartialInfos = s.Split(new char[] { '&' });
 
-                foreach (String appNamePlusPartialUrl in allPartialInfos) {
+                foreach (string appNamePlusPartialUrl in allPartialInfos) {
 
-                    String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
-                    if (String.IsNullOrEmpty(a[1]))
+                    string[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
+                    if (a.Length < 2 || string.IsNullOrEmpty(a[1]))
                         continue;
 
                     Response resp = Self.GET(HttpUtility.UrlDecode(a[1]));
@@ -156,7 +156,13 @@ namespace Launcher {
                     sb.Append("</imported-template-scope>");
                 }
 
-                return sb.ToString();
+                string html = sb.ToString();
+
+                if (string.IsNullOrEmpty(html)) {
+                    html = "<template></template>";
+                }
+
+                return html;
             }, new HandlerOptions() {
                 SkipHandlersPolicy = true,
                 ReplaceExistingHandler = true
