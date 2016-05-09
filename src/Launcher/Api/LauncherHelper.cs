@@ -248,8 +248,12 @@ namespace Launcher {
                         html += "&";
                     html += partialJson.GetAppName() + "=" + partialUrl;
 
-                    if (callingAppName.Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase)) {
+                    if (callingAppName.Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase))
+                    {
                         layoutInfo.PartialId = partialUrl;
+                    }
+                    if ("Launcher".Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase))
+                    {
                         // XXX (tomalec):
                         // As we'are currently replacing Launcher's namespace
                         // forward at least partial HTML
