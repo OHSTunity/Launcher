@@ -29,7 +29,7 @@
               position: relative;
             }
 
-            :host #context
+            :host #contextPanel
             {
               position: relative;
               order: 1;
@@ -39,7 +39,7 @@
               padding-top: 30px;
             }
 
-            :host(.tu-layout-panels-left-close) #context tu-icon-button.toggler
+            :host(.tu-layout-panels-left-close) #contextPanel tu-icon-button.toggler
             {
               transform: rotate(180deg);
             }
@@ -72,7 +72,7 @@
             }
 
             /* Media query states */
-            :host(.tu-layout-panels-micro) #context
+            :host(.tu-layout-panels-micro) #contextPanel
             {
               position: absolute;
               left: 0;
@@ -153,16 +153,48 @@
               /*min-width: 6px !important;*/
             }
 
+            #hoverContextPanel {
+              position: absolute;
+              top: 0px;
+              right: -40px;
+              width: 40px;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              visibility: collapse;
+            }
+
+            #contextPanel:hover #hoverContextPanel {
+              visibility: visible;
+            }
+
+            #contextPanelTools {
+              width: 32px;
+              height: 40px;
+              border-top-right-radius: 32px;
+              border-bottom-right-radius: 32px;
+              border: 1px solid #000;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-color: white;
+              opacity: 0.6;
+            }
         </style>
         <div id="wrapper" >
 
             <div id="center">
                 <content select="[main]"></content>
             </div>
-            <div id="context">
-                <!--<tu-icon-button nohovereffect taptoggle="{{context}}" class="toggler" icon="arrow-left"></tu-icon-button>-->
+            <div id="contextPanel" on-tap="contextPanelTapped">
+                <div id="hoverContextPanel">
+                  <div id="contextPanelTools">
+                    <tu-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></tu-icon-button>
+                  </div>
+                </div>
                 <content select="[context]"></content>
-                <div id="widthtracker" on-track="contextWidthTrack"></div>
+                <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
             </div>
             <div id="right">
                 <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
@@ -180,17 +212,17 @@
         var TuApp = Polymer({
             is: "tu-layout-panels",
           properties: {
-            showContext: {
+            showContextPanel: {
               type: Boolean,
               value: false,
               notify: true,
             },
-            contextMinimized: {
+            contextPanelMinimized: {
               type: Boolean,
               value: false,
               notify: true,
             },
-            contextWidth: {
+            contextPanelWidth: {
               type: Number,
               value: 350,
               notify: true,
@@ -228,7 +260,7 @@
             },
           },
           observers: [
-            'contextStatusChanged(showContext, contextWidth, contextMinimized)'
+            'contextPanelStatusChanged(showContextPanel, contextPanelWidth, contextPanelMinimized)'
           ],
           ready: function() {
           },
@@ -236,37 +268,44 @@
             this.listen(this, "tu-pane", "onTuMenu");
             this.listen(this, "tu-menu", "onTuMenu");
             this.listen(this.$.right, "panel-command", "onRightChange");
-            this.listen(this.$.context, "panel-command", "onContextChange");
+            this.listen(this.$.contextPanel, "panel-command", "onContextPanelChange");
           },
           detached: function() {
             this.unlisten(this, "tu-pane", "onTuMenu");
             this.unlisten(this, "tu-menu", "onTuMenu");
             this.unlisten(this.$.right, "panel-command", "onRightChange");
-            this.unlisten(this.$.context, "panel-command", "onContextChange");
+            this.unlisten(this.$.contextPanel, "panel-command", "onContextPanelChange");
           },
           onRightChange: function(ev) {
             this.set("right", ev.detail.status == 'open');
           },
-          onContextChange: function(ev) {
-            this.set("showContext", ev.detail.status == 'open');
+          onContextPanelChange: function(ev) {
+            if (ev.detail.status == 'expand')
+              this.set("contextPanelMinimized", false);
+            else if (ev.detail.status == 'minimize')
+              this.set("contextPanelMinimized", true);
+            else if (ev.detail.status == 'open')
+              this.set("showContextPanel", true);
+            else if (ev.detail.status == 'close')
+              this.set("showContextPanel", false);
           },
-          contextStatusChanged: function(e) {
-            this.toggleClass('minimized', this.contextMinimized, this.$.context);
-            this.toggleClass('hidden', !this.showContext, this.$.context);
-            var width = this.contextWidth;
-            if (this.showContext) {
-              if (this.contextMinimized)
-                width = '40px';
+          contextPanelStatusChanged: function(e) {
+            this.toggleClass('minimized', this.contextPanelMinimized, this.$.contextPanel);
+            this.toggleClass('hidden', !this.showContextPanel, this.$.contextPanel);
+            var width = this.contextPanelWidth;
+            if (this.showContextPanel) {
+              if (this.contextPanelMinimized)
+                width = '40';
             }
             else {
-              width = '0px';
+              width = '0';
             }
-              this.$.context.style.width = width + 'px';
-            var mviews = Polymer.dom(this.$.context).queryDistributedElements("tu-layout-multiview");
+            this.$.contextPanel.style.width = width + 'px';
+            var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("tu-layout-multiview");
             for (var i = 0; i < mviews.length; i++)
               mviews[i].panelWidth = width;
           },
-          contextWidthTrack: function(e) {
+          contextPanelWidthTrack: function(e) {
             e.cancelBubble=true
             e.stopPropagation();
             switch(e.detail.state) {
@@ -278,11 +317,19 @@
               break;
             }
             var width = e.detail.x;
-            if (width < 40)
-              width = 40;
+            if (width < 200)
+              width = 200;
             if (width > 600)
               width = 600;
-            this.set('contextWidth', width);
+            this.set('contextPanelWidth', width);
+          },
+          toggleContextPanel: function(ev) {
+            ev.stopPropagation();
+            this.set('contextPanelMinimized', !this.contextPanelMinimized);
+          },
+          contextPanelTapped: function() {
+            if (this.contextPanelMinimized)
+              this.set('contextPanelMinimized', false);
           },
           onCloseRightTapped: function(ev) {
             this.set("right", false);
@@ -310,6 +357,9 @@
               menu.collapse = menu.isForceClose();
             }
             this.classList.toggle("collapse_menu", menu.collapse);
+          },
+          _calcArrow: function(value) {
+            return value? "arrow-right": "arrow-left";
           },
           mediaChange: function()
           {
