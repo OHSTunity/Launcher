@@ -1,5 +1,8 @@
-<link rel="import" href="/sys/polymer/polymer.html">
+<!--
 
+
+-->
+<link rel="import" href="/sys/polymer/polymer.html">
 <dom-module id="tu-layout-panels">
     <template>
         <style>
@@ -26,37 +29,25 @@
               position: relative;
             }
 
-            :host #left
+            :host #context
             {
               position: relative;
-              width: 350px;
               order: 1;
               z-index: 2;
               background: #fff;
               border-right: solid 1px #aaa;
               padding-top: 30px;
             }
-            :host #left .toggler
-            {
-              position: absolute;
-              left: 1px;
-              top: 1px;
-            }
 
-            :host(.tu-layout-panels-left-close) #left tu-icon-button.toggler
+            :host(.tu-layout-panels-left-close) #context tu-icon-button.toggler
             {
               transform: rotate(180deg);
-            }
-
-            :host(.tu-layout-panels-left-close) #left
-            {
-              width: 0px;
-              visibility: hidden;
             }
 
             :host(.tu-layout-panels-right-close) #right
             {
               width: 0px;
+              overflow: hidden;
               visibility: hidden;
             }
 
@@ -81,7 +72,7 @@
             }
 
             /* Media query states */
-            :host(.tu-layout-panels-micro) #left
+            :host(.tu-layout-panels-micro) #context
             {
               position: absolute;
               left: 0;
@@ -132,7 +123,35 @@
               bottom: 0;
             }
 
+            #widthtracker
+            {
+              position: absolute;
+              height: 100%;
+              top: 0px;
+              right: 0px;
+              min-width: 4px;
+              background-color: black;
+              background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,.5) 5px, rgba(255,255,255,.5) 10px);
+              opacity: .0;
+              cursor: ew-resize;
+            }
 
+
+            tu-actionboard-sidebar:hover #widthtracker
+            {
+              opacity:.25;
+            }
+
+            #widthtracker:hover
+            {
+              opacity:.6 !important;
+            }
+
+            .widthtracking
+            {
+              opacity:.6 !important;
+              /*min-width: 6px !important;*/
+            }
 
         </style>
         <div id="wrapper" >
@@ -140,9 +159,10 @@
             <div id="center">
                 <content select="[main]"></content>
             </div>
-            <div id="left">
-                <tu-icon-button nohovereffect taptoggle="{{context}}" class="toggler" icon="arrow-left"></tu-icon-button>
+            <div id="context">
+                <!--<tu-icon-button nohovereffect taptoggle="{{context}}" class="toggler" icon="arrow-left"></tu-icon-button>-->
                 <content select="[context]"></content>
+                <div id="widthtracker" on-track="contextWidthTrack"></div>
             </div>
             <div id="right">
                 <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
@@ -160,12 +180,20 @@
         var TuApp = Polymer({
             is: "tu-layout-panels",
           properties: {
-            context: {
+            showContext: {
               type: Boolean,
               value: false,
               notify: true,
-              reflectToAttribute: true,
-              observer: 'contextChanged',
+            },
+            contextMinimized: {
+              type: Boolean,
+              value: false,
+              notify: true,
+            },
+            contextWidth: {
+              type: Number,
+              value: 350,
+              notify: true,
             },
             right: {
               type: Boolean,
@@ -199,28 +227,62 @@
               observer: 'mediaChange',
             },
           },
+          observers: [
+            'contextStatusChanged(showContext, contextWidth, contextMinimized)'
+          ],
           ready: function() {
           },
           attached: function() {
             this.listen(this, "tu-pane", "onTuMenu");
             this.listen(this, "tu-menu", "onTuMenu");
             this.listen(this.$.right, "panel-command", "onRightChange");
-            this.listen(this.$.left, "panel-command", "onContextChange");
+            this.listen(this.$.context, "panel-command", "onContextChange");
           },
           detached: function() {
             this.unlisten(this, "tu-pane", "onTuMenu");
             this.unlisten(this, "tu-menu", "onTuMenu");
             this.unlisten(this.$.right, "panel-command", "onRightChange");
-            this.unlisten(this.$.left, "panel-command", "onContextChange");
+            this.unlisten(this.$.context, "panel-command", "onContextChange");
           },
           onRightChange: function(ev) {
             this.set("right", ev.detail.status == 'open');
           },
           onContextChange: function(ev) {
-            this.set("context", ev.detail.status == 'open');
+            this.set("showContext", ev.detail.status == 'open');
           },
-          contextChanged: function(e) {
-            this.classList.toggle("tu-layout-panels-left-close", !this.context);
+          contextStatusChanged: function(e) {
+            this.toggleClass('minimized', this.contextMinimized, this.$.context);
+            this.toggleClass('hidden', !this.showContext, this.$.context);
+            var width = this.contextWidth;
+            if (this.showContext) {
+              if (this.contextMinimized)
+                width = '40px';
+            }
+            else {
+              width = '0px';
+            }
+              this.$.context.style.width = width + 'px';
+            var mviews = Polymer.dom(this.$.context).queryDistributedElements("tu-layout-multiview");
+            for (var i = 0; i < mviews.length; i++)
+              mviews[i].panelWidth = width;
+          },
+          contextWidthTrack: function(e) {
+            e.cancelBubble=true
+            e.stopPropagation();
+            switch(e.detail.state) {
+              case 'start':
+                this.$.widthtracker.classList.add("widthtracking");
+              break;
+              case 'end':
+                this.$.widthtracker.classList.remove("widthtracking");
+              break;
+            }
+            var width = e.detail.x;
+            if (width < 40)
+              width = 40;
+            if (width > 600)
+              width = 600;
+            this.set('contextWidth', width);
           },
           onCloseRightTapped: function(ev) {
             this.set("right", false);
