@@ -311,7 +311,7 @@
             }
 
             this.$.contextPanel.style.width = width + 'px';
-            this.$.context.style.minWidth = width + 'px';
+            this.$.contextPanel.style.minWidth = width + 'px';
             var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("tu-layout-multiview");
             for (var i = 0; i < mviews.length; i++)
               mviews[i].panelWidth = width;
