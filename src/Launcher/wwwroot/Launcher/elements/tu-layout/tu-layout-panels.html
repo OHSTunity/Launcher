@@ -13,6 +13,9 @@
               top: 0px;
               bottom: 0px;
               display: block;
+              -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
             }
 
             :host #wrapper {
@@ -55,7 +58,7 @@
             {
               position: relative;
               width: 350px;
-              padding-top: 30px;
+              
               order: 3;
               z-index: 3;
               background: #fff;
@@ -63,12 +66,16 @@
             /*  will-change: transform;
               transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;*/
             }
+            :host #rightheader
+            {
+              height: 58px;
+            }
 
             #right .toggler
             {
               position: absolute;
               right: 5px;
-              top: 5px;
+              top: 14px;
             }
 
             /* Media query states */
@@ -165,7 +172,9 @@
                 <div id="widthtracker" on-track="contextWidthTrack"></div>
             </div>
             <div id="right">
-                <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
+
+                  <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
+                
                 <content select="[right]"></content>
             </div>
 
@@ -262,12 +271,13 @@
               width = '0px';
             }
               this.$.context.style.width = width + 'px';
+              this.$.context.style.minWidth = width + 'px';
             var mviews = Polymer.dom(this.$.context).queryDistributedElements("tu-layout-multiview");
             for (var i = 0; i < mviews.length; i++)
               mviews[i].panelWidth = width;
           },
           contextWidthTrack: function(e) {
-            e.cancelBubble=true
+            e.cancelBubble=true;
             e.stopPropagation();
             switch(e.detail.state) {
               case 'start':
@@ -282,6 +292,7 @@
               width = 40;
             if (width > 600)
               width = 600;
+
             this.set('contextWidth', width);
           },
           onCloseRightTapped: function(ev) {
