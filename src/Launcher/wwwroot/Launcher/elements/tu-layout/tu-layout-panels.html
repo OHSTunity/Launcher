@@ -163,13 +163,14 @@
             #hoverContextPanel {
               position: absolute;
               top: 0px;
-              right: -40px;
+              right: -32px;
               width: 40px;
               height: 100%;
               display: flex;
               flex-direction: column;
               justify-content: center;
               visibility: collapse;
+              z-index:-1;
             }
 
             #contextPanel:hover #hoverContextPanel {
@@ -177,11 +178,11 @@
             }
 
             #contextPanelTools {
-              width: 32px;
+              width: 35px;
               height: 40px;
-              border-top-right-radius: 32px;
-              border-bottom-right-radius: 32px;
-              border: 1px solid #000;
+              border-top-right-radius: 34px;
+              border-bottom-right-radius: 34px;
+              border-right: 1px solid rgba(0,0,0,.5);
               display: flex;
               align-items: center;
               justify-content: center;
