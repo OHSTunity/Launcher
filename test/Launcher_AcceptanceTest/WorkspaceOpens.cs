@@ -18,7 +18,6 @@ namespace SeleniumTests {
     [TestFixture("edge")]
     public class WorkspaceOpens : BaseTest
     {
-        private StringBuilder verificationErrors;
         private bool acceptNextAlert = true;
         
         public WorkspaceOpens(string browser) : base(browser) { }
