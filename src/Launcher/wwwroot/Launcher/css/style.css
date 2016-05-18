@@ -7,6 +7,11 @@
     color: #000000;
 }
 
+body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
+{
+    min-width: 100px !important;
+}
+
 #launcher-menu {
     flex: 1 0 auto;
     color: #4c444b;
