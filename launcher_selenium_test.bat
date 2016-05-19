@@ -1,8 +1,11 @@
-staradmin stop db default
-msbuild src\Launcher\Launcher.csproj
-msbuild test\Launcher_AcceptanceTest\Launcher_AcceptanceTest.csproj
-msbuild test\Launcher_AcceptanceHelperOne\Launcher_AcceptanceHelperOne.csproj
-msbuild test\Launcher_AcceptanceHelperTwo\Launcher_AcceptanceHelperTwo.csproj
+:: Checking if we are not running on build server.
+IF NOT "%SC_RUNNING_ON_BUILD_SERVER%"=="True" (
+    staradmin stop db default
+    msbuild src\Launcher\Launcher.csproj
+    msbuild test\Launcher_AcceptanceTest\Launcher_AcceptanceTest.csproj
+    msbuild test\Launcher_AcceptanceHelperOne\Launcher_AcceptanceHelperOne.csproj
+    msbuild test\Launcher_AcceptanceHelperTwo\Launcher_AcceptanceHelperTwo.csproj
+)
 
 IF "%Configuration%"=="" set Configuration=Debug
 
