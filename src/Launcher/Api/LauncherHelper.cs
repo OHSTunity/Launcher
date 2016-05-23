@@ -3,6 +3,7 @@ using Starcounter.Advanced.XSON;
 using Starcounter.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web;
 
@@ -187,23 +188,17 @@ namespace Launcher {
             launcher.uri = req.Uri;
 
             // First check if a workspace already exists for the app that registered the uri.
-            LayoutInfo workspace = null;
             string appName = req.HandlerAppName;
-            for (var i = 0; i < launcher.workspaces.Count; i++) {
-                var existingWs = (launcher.workspaces[i] as LayoutInfo);
-                if (existingWs == null) continue;
-                
-                if (existingWs.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase)) {
-                    workspace = existingWs;
-                    break;
-                }
-            }
+            LayoutInfo workspace = launcher.workspaces
+                .OfType<LayoutInfo>()
+                .FirstOrDefault(ws => ws.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase));
 
             if (workspace == null) {
                 workspace = new LayoutInfo() { AppName = appName };
                 launcher.workspaces.Add(workspace);
             }
             workspace.ActiveWorkspace = true;
+            workspace.AutoRefreshBoundProperties = false;
 
             // Call proxied request
             Response resp = Self.CallUsingExternalRequest(req, () => { return workspace; });
