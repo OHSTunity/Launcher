@@ -78,6 +78,14 @@
               top: 14px;
             }
 
+            :host #right ::content tu-layout-multiview /deep/ .right-tools
+            {
+              height: 46px;
+              padding:7px;
+              background: linear-gradient(to bottom, #f1eff9 0%,#f5f5fa 100%);
+              border-bottom: .5px solid #cad1ed;
+            }
+
             /* Media query states */
             :host(.tu-layout-panels-micro) #contextPanel
             {
@@ -130,6 +138,23 @@
               bottom: 0;
             }
 
+            :host #center ::content .top-tools
+            {
+              margin: -10px -10px 10px -10px;
+              left: 0px;
+              right: 0px;
+              box-sizing: border-box;
+              top: 0px;
+              height: 61px;
+              background: linear-gradient(to bottom, #f1eff9 0%,#f5f5fa 100%);
+              border-bottom: .5px solid #cad1ed;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              flex: 1;
+              font-size: 16px;
+            }
+            
             #widthtracker
             {
               position: absolute;
@@ -208,7 +233,7 @@
 
                   <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
                 
-                <content select="[right]"></content>
+                  <content select="[right]"></content>
             </div>
 
             <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>

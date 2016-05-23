@@ -113,7 +113,8 @@ namespace Launcher {
                 return launcher;
             });
 
-            Handle.GET("/launcher/settings", (Request req) => {
+            Handle.GET("/launcher/settings", (Request req) =>
+            {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
@@ -132,7 +133,21 @@ namespace Launcher {
                 return launcher;
             });
 
-            Handle.GET("/launcher/search?query={?}", (Request req, string query) => {
+            Handle.GET("/launcher/theme", (Request req) =>
+            {
+                var referer = req.Headers["Referer"];
+                if (referer != null)
+                {
+                    var url = new Uri(referer);
+                    var path = url.PathAndQuery.Replace("/tunity_", "/tunity_theme_");
+                    var css = Self.GET(path);
+                    return css;
+                }
+                return 200;
+            });
+
+            Handle.GET("/launcher/search?query={?}", (Request req, string query) =>
+            {
              //   LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                // string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);

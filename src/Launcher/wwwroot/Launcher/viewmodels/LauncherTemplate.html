@@ -54,10 +54,21 @@
     <!-- Style sheets -->
     <!--<link rel="import" href="/sys/bootstrap.html" />-->
     <link rel="stylesheet" href="/Launcher/css/style.css" />
+    <script>
+        var fileref=document.createElement("link");
+        var theme = window.location.pathname.replace(/\/tunity_terminal\/portal\/([^\/]+).*/, "/tunity_terminal/theme/$1");
+        if (theme != window.location.pathname)
+        {
+          fileref.setAttribute("rel", "stylesheet");
+          fileref.setAttribute("type", "text/css");
+          fileref.setAttribute("href", theme);
+          document.getElementsByTagName("head")[0].appendChild(fileref);
+        }
+    </script>
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 </head>
-<body is="launcher-main">
+<body is="launcher-main" >
     <template id="root-launcher-dom-bind" is="dom-bind">
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
@@ -144,6 +155,7 @@
         </paper-dialog>
 
         <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
+        <div class$="{{_appclass(model.uri, model.workspaces, model)}}"></div>
     </template>
     <script>
         (function () {
@@ -173,6 +185,16 @@
               }
               return sidebars;
             }
+          
+            template._appclass = function (uri, workspaces, model) {
+                workspaces.forEach(function(w) {
+                    if (w.Launcher.ActiveWorkspace)
+                    {
+                        document.body.className = w.Launcher.AppName;
+                    }
+                });
+            };
+
       		/*	template.addEventListener("model-changed", function (e) {
       				console.log("lt", e);
       			});*/
