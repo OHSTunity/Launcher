@@ -177,9 +177,10 @@ namespace Launcher {
             });
         }
 
-        static void MarkWorkspacesInactive(Arr<Json> workspaces) {
-            foreach (LayoutInfo layoutInfo in workspaces) {
+        static void MarkWorkspacesInactive(Arr<LayoutInfo> workspaces) {
+            foreach (var layoutInfo in workspaces) {
                 layoutInfo.ActiveWorkspace = false;
+                layoutInfo.AutoRefreshBoundProperties = false;
             }
         }
 
@@ -198,10 +199,11 @@ namespace Launcher {
                 launcher.workspaces.Add(workspace);
             }
             workspace.ActiveWorkspace = true;
-            workspace.AutoRefreshBoundProperties = false;
 
             // Call proxied request
-            Response resp = Self.CallUsingExternalRequest(req, () => { return workspace; });
+            Self.CallUsingExternalRequest(req, () => workspace);
+            // this has to be called after calling request due to merging that happens inside
+            workspace.AutoRefreshBoundProperties = true;
             return launcher;
         }
 
