@@ -82,7 +82,7 @@
             <span class="toolbar-divider"></span>
             <div id="launcher-menu">
                <ul>
-                  <template is="imported-template" content$="{{model.menu.Html}}" model="{{model.menu}}"></template>
+                  <template is="imported-template" content$="{{model.menu.Launcher.MergedHtml}}" model="{{model.menu}}"></template>
                </ul>
             </div>
             <div flex=""></div>
@@ -94,7 +94,7 @@
             </core-field>
             <span class="toolbar-divider"></span>
 
-            <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
+            <template is="imported-template" content$="{{model.user.Launcher.MergedHtml}}" model="{{model.user}}"></template>
 
             <!--<a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
 -->
@@ -128,7 +128,7 @@
                     <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                 </template>
               </div>
-              <tu-layout-multiview context data="{{model.contextbar}}"></tu-layout-multiview>              
+              <tu-layout-multiview context data="{{model.contextbar}}"></tu-layout-multiview>
               <tu-layout-multiview right data="{{model.sidebar}}"></tu-layout-multiview>
             </tu-layout-panels>
         </div>
