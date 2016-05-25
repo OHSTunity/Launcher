@@ -19,7 +19,6 @@ namespace Launcher_AcceptanceHelperTwo
                 Transaction.Commit();
             }
             this.AutoRefreshBoundProperties = false;
-            SharedValue.AutoRefreshBoundProperties = false;
 
             return this;
         }

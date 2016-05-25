@@ -22,7 +22,6 @@ namespace Launcher_AcceptanceHelperTwo
                 SharedValue.Data = new Something { Name = magicKey, Description = "Try changing this value" };
                 Transaction.Commit();
             }
-            SharedValue.AutoRefreshBoundProperties = false;
 
             return this;
         }
