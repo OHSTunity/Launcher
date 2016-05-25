@@ -29,7 +29,7 @@ namespace Launcher_AcceptanceHelperTwo
                 try {
                     Data.Description = action.Value;
                     Transaction.Commit();
-                } catch (Exception e) {
+                } catch (Exception) {
                     Debugger.Launch();
                     Debugger.Break();
                 }

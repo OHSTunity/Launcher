@@ -34,7 +34,7 @@ namespace Launcher_AcceptanceHelperTwo
                     Data.Description = action.Value;
                     Transaction.Commit();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Debugger.Launch();
                     Debugger.Break();
