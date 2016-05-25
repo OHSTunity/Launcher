@@ -58,7 +58,7 @@
             {
               position: relative;
               width: 350px;
-              
+
               order: 3;
               z-index: 3;
               background: #fff;
@@ -105,10 +105,17 @@
               margin-left: 50px;
             }
 
+            #right {
+              overflow-x: hidden;
+            }
+
+            #right tu-icon-button {
+              z-index: 1;
+            }
+            
             :host(.tu-layout-panels-micro) #right
             {
               position:absolute;
-              position: absolute;
               right: 0;
               top: 0;
               bottom: 0;
@@ -207,7 +214,7 @@
             <div id="right">
 
                   <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
-                
+
                 <content select="[right]"></content>
             </div>
 
