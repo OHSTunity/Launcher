@@ -38,6 +38,6 @@
             "thumbnail": { }
         }
     ],
-    "workspaces": [ ],
+  "workspaces": [{"$":  {"Reuse" :  "Launcher.LayoutInfo" } } ],
     "uri": ""
 }
