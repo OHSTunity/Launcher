@@ -2,6 +2,17 @@
 
 <dom-module id="tu-layout-multiview">
   <style>
+    .view {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+    }
+
+    .view.hidden {
+      visibility: collapse;
+    }
   </style>
   <template>
     <template is="dom-repeat" items="{{apps}}" as="item">
@@ -95,10 +106,14 @@
           if (!this._activeApp && notedActive)
             this._activeApp = this.apps[i].name;
           if (notedActive && this._activeApp != this.apps[i].name) {
-            this.set('data.'+this.apps[i].name+".Active$", false);
+            var str = 'data.'+this.apps[i].name+".Active$";
+            this.async( function() {
+              this.set(str, false);
+              window.tu.puppetDirtyCheck();
+            });
             this.set('apps.#'+i+'.active', false);
           }
-          if (notedActive && !this.apps[i].active) {
+          else if (notedActive && this._activeApp == this.apps[i].name && !this.apps[i].active) {
             this.set('apps.#'+i+'.active', true);
           }
         }
