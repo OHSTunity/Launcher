@@ -285,3 +285,8 @@ launcher-search-input {
     font-size: 10px;
     vertical-align: middle;
 }
+
+.launcher-accept-cookie-button {
+    min-width: 55px;
+    margin-left: 10px;
+}
