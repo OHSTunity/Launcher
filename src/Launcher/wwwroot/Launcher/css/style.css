@@ -369,7 +369,7 @@ launcher-search-input {
 
 /* LOADING SPLASH PAGE */
 
-body #splash
+body #tu-splash
 {
     opacity:0;
     transition: opacity 0.2s ease;
@@ -394,7 +394,7 @@ body #splash
     z-index: 10000;
 }
 
-body.loading #splash
+body.loading #tu-splash
 {
     opacity:1;
     color: #444;
@@ -410,14 +410,14 @@ body.loading #splash
     to {transform: rotateZ(360deg);}
 }
 
-body.loading #splash #splash-spinner {        
+body.loading #tu-splash #tu-splash-spinner {        
     display: inline-block;
     -webkit-animation: spin 1.5s linear infinite;
     -moz-animation: spin 1.5s linear infinite;
     animation: spin 1.5s linear infinite;
 }
 
-body.loading #splash #splash-text {        
+body.loading #tu-splash #tu-splash-text {        
     font-size: 18px;
     display: inline-block;
     padding: 10px;
