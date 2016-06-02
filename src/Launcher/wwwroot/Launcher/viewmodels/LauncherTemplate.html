@@ -57,7 +57,11 @@
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 </head>
-<body is="launcher-main">
+<body is="launcher-main" class="loading">
+    <div id="splash">
+        <span id="splash-text">LOADING</span>        
+        <span id="splash-spinner">⚇</span>
+    </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
