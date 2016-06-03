@@ -122,22 +122,11 @@
                 <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
             </div>
         </paper-dialog>
-        <paper-dialog opened="{{!local.CookiesAccepted}}" horizontal-align="right" vertical-align="bottom" no-cancel-on-outside-click="true" no-cancel-on-esc-key="true">
-            <p>
-                We use cookies to enhance your experience with this application.
-                <button class="btn btn-xs btn-default launcher-accept-cookie-button" dialog-confirm>OK</button>
-            </p>
-        </paper-dialog>
-        <iron-localstorage name="launcher-accept-cookie" value="{{local.CookiesAccepted}}"></iron-localstorage>
     </template>
     <script>
         (function () {
             var script = document._currentScript || document.currentScript;
             var template = script.previousElementSibling;
-
-            template.local = {
-                CookiesAccepted: false
-            };
 
             template.closeEditor = function () {
                 template.set("model.editingMode$", false);
