@@ -74,8 +74,19 @@
             #right .toggler
             {
               position: absolute;
-              right: 5px;
+              left: 2px;
               top: 14px;
+            }
+            #right .togglercontainer
+            {
+              position: absolute;
+              right: 0px;
+              top: 0px;
+              border-left: 1px solid rgba(0,0,0,0.1);
+              width: 35px;
+              height: 60px;
+              z-index: 1;
+              background: rgba(0,0,0,.05);
             }
 
             /* Media query states */
@@ -205,6 +216,7 @@
             <div id="contextPanel" on-tap="contextPanelTapped">
                 <div id="hoverContextPanel">
                   <div id="contextPanelTools">
+
                     <tu-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></tu-icon-button>
                   </div>
                 </div>
@@ -212,9 +224,9 @@
                 <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
             </div>
             <div id="right">
-
-                  <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
-
+                  <div class="togglercontainer">
+                    <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
+                  </div>
                 <content select="[right]"></content>
             </div>
 
