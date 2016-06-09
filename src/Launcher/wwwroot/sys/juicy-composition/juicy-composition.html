@@ -131,9 +131,9 @@
                 decorateFilteredElements(element.elementsMap, nodesToDistribute, element.remainingDecorators, '', scopePrefix, scopedIndex);
                 // </V1 slot shim>
                 // TODO: remove it,  composition was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
-                element.composition && element.composition.items && distributeJuicyElements(element.elementsMap, element.composition.items, element.shadowContainer);
+                element.composition && element.composition.items && distributeJuicyElements(element.elementsMap, element.composition.items, element.shadowRoot);
                 // add remaining decorators
-                element.shadowContainer.appendChild( element.remainingDecorators );
+                element.shadowRoot.appendChild( element.remainingDecorators );
             }
             if(mutation.removedNodes.length){
                 undistributeJuicyElements(element.elementsMap, mutation.removedNodes);
