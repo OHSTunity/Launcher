@@ -2,35 +2,25 @@
 `launcher-include` - Launcher's `starcounter-include` -
 Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
-It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
-Uses juicy-tiles setup given from DB as layout.
+It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
+Uses juicy-composition.composition given from DB as layout.
 version: 0.5.0
 
-@FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
-@FIXME (tomalec): DRY with default starcounter-include
 -->
 <!-- Import dependencies -->
-<!-- <link rel="import" href="/sys/polymer/polymer.html"> -->
-
 <link rel="import" href="../imported-template/imported-template.html">
-<link rel="import" href="../juicy-tile-table/juicy-tile-table.html">
-<link rel="import" href="../juicy-tiles-setup-sync/src/juicy-tiles-setup-sync.html">
+<link rel="import" href="../juicy-composition/juicy-composition.html">
 <!-- <link rel="import" href="/sys/console-log/console-log.html"> -->
 
 <template id="partial-template">
-    <juicy-tiles-setup-sync api-url="/sc/layout"></juicy-tiles-setup-sync>
-    <juicy-tile-table defaultTileSetup='{
-            "height": 1,
-            "heightDynamic": true,
-            "width": "100%",
-            "widthFlexible": true
-        }' refreshonmutation>
+    <juicy-composition auto-stamp>
         <template is="imported-template"></template>
-    </juicy-tile-table>
+    </juicy-composition>
 </template>
 <script>
     (function() {
 
+        var isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
 
         var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
 
@@ -38,6 +28,9 @@ version: 0.5.0
         var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
 
         LauncherPartialPrototype.partial = null;
+        LauncherPartialPrototype.partialId = null;
+        //FIXME: this one should not be needed, once we get rid of workarounds for server-side
+        LauncherPartialPrototype.layoutAPI = '/sc/layout';
         // LauncherPartialPrototype.html = null;
         LauncherPartialPrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
         LauncherPartialPrototype.defaultHtml = '';
@@ -85,9 +78,8 @@ version: 0.5.0
             sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
 
             var clone = document.importNode(templ.content, true);
-            this.sync = clone.children[0]; // .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
-            this.grid = clone.children[1]; // .getElementsByTagName("juicy-tile-table");
-            this.template = this.grid.firstElementChild; // .getElementsByTagName("TEMPLATE");
+            this.compositionElement = clone.children[0]; // .getElementsByTagName("juicy-composition");
+            this.template = this.compositionElement.firstElementChild; // .getElementsByTagName("TEMPLATE");
             html && this.template.setAttribute('content', html);
 
             // attach partial
@@ -142,15 +134,13 @@ version: 0.5.0
                     partialId = this.partial.Launcher.PartialId; //should always be string
                 }
             }
-            if (partialId !== this._lastPartialId) {
+            if (partialId !== this.partialId) {
                 if (!partialId) {
-                    this.sync.removeAttribute("name");
-                    this.grid.removeAttribute("name");
+                    this.compositionElement.removeAttribute("name");
                 } else {
-                    this.sync.setAttribute("name", partialId);
-                    this.grid.setAttribute("name", partialId);
+                    this.compositionElement.setAttribute("name", partialId);
                 }
-                this._lastPartialId = partialId;
+                this.partialId = partialId;
             }
         };
 
@@ -163,18 +153,12 @@ version: 0.5.0
             }
             if (layout !== this._lastLayout || this._forceLayoutChange) {
                 if (!layout) {
-                    this.sync.storedValue = null;
-                    this.grid.setup = {
-                        gutter: 0,
-                        width: 1200,
-                        direction: "horizontal",
-                        items: []
-                    };
+                    this.storedLayout = null;
+                    // this.compositionElement.composition = '<div style="min-width: 1200px;"><content></content></div>';
                 } else {
-                    var parsedLayout = JSON.parse(layout);
-                    this.sync.storedValue = parsedLayout;
+                    this.storedLayout = layout;
                     // make clone to avoid direct binding
-                    this.grid.setup = JSON.parse(layout);
+                    this.compositionElement.composition = this.stringToDocumentFragment(layout);
                 }
                 this._forceLayoutChange = false;
                 this._lastLayout = layout;
@@ -237,7 +221,8 @@ version: 0.5.0
                             );
                         }
                     }
-                    // Workaround for https://github.com/Starcounter/starcounter-include/issues/12
+                    // Workaround for https://github.com/Starcounter/Starcounter/issues/3072
+                    // as described in https://github.com/Starcounter/starcounter-include/issues/12
                     return htmls.length && (prefix + htmls.join('&')) || undefined;
                     // return prefix + htmls.join('&');
                 }
@@ -245,6 +230,50 @@ version: 0.5.0
                 return undefined;
             }
         };
+        /**
+         * Saves given or current layout as stored one, (TODO:) notifies binding about it.
+         * @param  {String} [layoutStr] layout to be saved, if not given current one will be used
+         */
+        LauncherPartialPrototype.saveLayout = function(layoutStr){
+            layoutStr = layoutStr || this.compositionElement.shadowRoot.innerHTML;
+            this.storedLayout = layoutStr;
+            //TODO: trigger polymer-protocol-compliant event
+
+            // FIXME: temporary workaround for servers not accepting JSON-Patch
+            // from juicy-tiles-setup-sync
+            var req = new XMLHttpRequest();
+            req.open("POST", this.layoutAPI + "?" + this.partialId, true);
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+                    if (!(req.status >= 200 && req.status <= 299)) {
+                        console.error("Failed to save juicy-tile-list configuration");
+                        return;
+                    }
+                    console.info("juicy-composition configuration saved");
+                }
+                this.dispatchEvent(new CustomEvent("starcounter-include-layout-saved", {detail: this.storedLayout}));
+                // trigger polymer-notification-protocol-compilant event
+                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.Launcher.Layout'}}));
+            }.bind(this);
+            return req.send(this.storedLayout);
+
+        };
+
+        // stringToDocumentFragment(strHTML) from http://stackoverflow.com/a/25214113/868184
+        /**
+         * Creates DocumentFragment from a string.
+         * @param  {string} htmlStr  string to parse
+         * @param  {HTMLElement} node node to select a range, need for Safari workaround
+         * @return {DocumentFragment}      parsed string
+         */
+        LauncherPartialPrototype.stringToDocumentFragment = function (htmlStr) {
+            var range = document.createRange();
+            // Safari does not support `createContextualFragment` without selecting a node.
+            if (isSafari) {
+                range.selectNode(this);
+            }
+            return range.createContextualFragment(htmlStr);
+        }
 
         document.registerElement('starcounter-include', {
             prototype: LauncherPartialPrototype

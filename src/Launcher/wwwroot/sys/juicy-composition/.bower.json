@@ -28,14 +28,13 @@
     "polymer": "^1.3.1"
   },
   "homepage": "https://github.com/Juicy/juicy-composition",
-  "_release": "676d66abd4",
+  "_release": "e988bfc9bc",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "676d66abd4fc35187e9baa854b162facf1e89ad3"
+    "commit": "e988bfc9bc17747135923aadafd5ae05fcdc1e09"
   },
   "_source": "git://github.com/Juicy/juicy-composition.git",
   "_target": "gh-pages",
-  "_originalSource": "Juicy/juicy-composition",
-  "_direct": true
+  "_originalSource": "Juicy/juicy-composition"
 }

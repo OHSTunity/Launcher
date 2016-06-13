@@ -72,13 +72,15 @@
      */
     JuicyCompositionPrototype.stamp = function(){
         var givenComposition = this.composition;// document.importNode(this.composition, true);
-        if(!givenComposition){
-            if(this.shadowRoot){
-                this.shadowRoot = null;
+        var shadowRoot = this.shadowRoot;
+        if (shadowRoot) {
+            shadowRoot.innerHTML = '';
+        }
+        if (givenComposition) {
+            if (!shadowRoot) {
+                shadowRoot = this.createShadowRoot();
+                // shadowRoot = this.attachShadow({mode: "open"});
             }
-        } else {
-            var shadowRoot = this.createShadowRoot();
-            // var shadowRoot = this.attachShadow({mode: "open"});
 
             // <V1 slot shim>
             // adding it to a this.shadowContainer manually
@@ -133,7 +135,7 @@
                 // TODO: remove it,  composition was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
                 element.composition && element.composition.items && distributeJuicyElements(element.elementsMap, element.composition.items, element.shadowRoot);
                 // add remaining decorators
-                element.shadowRoot.appendChild( element.remainingDecorators );
+                element.shadowRoot.appendChild(element.remainingDecorators);
             }
             if(mutation.removedNodes.length){
                 undistributeJuicyElements(element.elementsMap, mutation.removedNodes);
