@@ -17,11 +17,11 @@
     "**/.*",
     "bower_components"
   ],
-  "_release": "acd00543d5",
+  "_release": "3cb4cdc017",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "acd00543d55079bbc894029261ebbcbd63f46a69"
+    "commit": "3cb4cdc017ca61e59071e8cdb20e0e3f33cec730"
   },
   "_source": "git://github.com/Juicy/juicy-popover.git",
   "_target": "gh-pages",

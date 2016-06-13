@@ -75,4 +75,4 @@ For detailed changelog, check [Releases](https://github.com/Juicy/juicy-tiles-se
 
 ## License
 
-[MIT License](http://opensource.org/licenses/MIT)
+MIT
