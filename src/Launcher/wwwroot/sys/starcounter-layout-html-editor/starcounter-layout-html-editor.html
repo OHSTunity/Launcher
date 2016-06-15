@@ -1,0 +1,157 @@
+<!--
+`starcounter-layout-html-editor`
+Custom Element with Ace editor to change Starcounter's layouts
+@element starcounter-layout-html-editor
+version: 0.0.0
+-->
+<!-- Imports Polymer -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../juicy-ace-editor/juicy-ace-editor.html">
+
+<!-- Defines element markup -->
+<dom-module id="starcounter-layout-html-editor">
+    <template>
+        <style>
+            :host{
+                display: flex;
+                resize: both;
+                overflow: auto;
+
+                flex-direction: column;
+            }
+            .partial-picker{
+                width: 100%;
+                display: flex;
+            }
+            .partial-picker > input{
+                flex: 1;
+                min-width: 80%;
+            }
+            #editor{
+                height: 100%;
+            }
+            #editor[readonly]{
+                opacity: 0.35;
+            }
+            #editor-area{
+                height: 5em;
+                flex: 1 0 5em;
+            }
+        </style>
+        <label class="partial-picker">
+            <input
+                type="text"
+                placeholder="css selector for partial to edit"
+                value="{{selector::input}}"/>
+        </label>
+        <!-- <code>{{selector}}</code> -->
+        <div id="editor-area">
+            <juicy-ace-editor
+                id="editor"
+                style="height: 100%;"
+                mode="ace/mode/html"
+                readonly$="{{disabled}}"
+                value="{{content::change}}"></juicy-ace-editor>
+        </div>
+        <div id="buttons">
+            <button on-click="revert" disabled$="{{disabled}}">Revert</button>
+            <button on-click="restore" disabled$="{{disabled}}">Restore default</button>
+            <button on-click="save" disabled$="{{disabled}}">Save</button>
+        </div>
+        <p>
+            To distribute the content use
+            <code>&lt;content select="[slot='<em>id</em>']"&gt;&lt;/content&gt;</code>
+            where <code><em>id</em></code> is the index or given custom slot id</p>
+    </template>
+
+    <!-- Registers custom element -->
+    <script>
+    (function () {
+        Polymer({
+            is: 'starcounter-layout-html-editor',
+
+            /**
+             * Reference to the partial (<starcounter-include>), that will be edited.
+             * @type {HTMLElement}
+             */
+            partial: null,
+
+            properties: {
+                selector: {
+                    type: String,
+                    observer: '_selectorChanged'
+                },
+                disabled: {
+                    type: Boolean,
+                    value: true
+                },
+                content: {
+                    type: String,
+                    observer: '_contentChanged'
+                }
+            },
+
+            _selectorChanged: function (newVal, oldVal) {
+                this.partial = selectElementByString(newVal);
+                if (this.partial){
+                    this.content = this.partial.compositionElement.shadowRoot && this.partial.compositionElement.shadowRoot.innerHTML || '';
+                    this.set('disabled', false);
+                } else {
+                    this.content = null;
+                    this.set('disabled', true);
+                }
+            },
+            _contentChanged: function (newVal, oldVal) {
+                if (this.partial && this.partial.compositionElement && this.disabled === false) {
+                    this.partial.compositionElement.composition = this.partial.stringToDocumentFragment(newVal);
+                }
+            },
+            // Fires when an instance of the element is created
+            created: function () {},
+
+            // Fires when the local DOM has been fully prepared
+            ready: function () {},
+
+            // Fires when the element was inserted into the document
+            attached: function () {},
+
+            // Fires when the element was removed from the document
+            detached: function () {},
+
+            // Fires when an attribute was added, removed, or updated
+            attributeChanged: function (name, type) {},
+
+
+            /**
+             * Saves given or current layout as stored one, (TODO:) notifies binding about it.
+             * @param  {String} [layoutStr] layout to be saved, if not given current one will be used
+             */
+            save: function () {
+                // TODO: move saving from sc-include to here
+                return this.partial && this.partial.saveLayout();
+            },
+            restore: function () {
+                // TODO:
+                console.warn('Default layouts are not yet implemented!');
+            },
+            revert: function () {
+                if (!this.partial) {
+                    return false;
+                }
+                return this.set('content', this.partial.storedLayout);
+
+            }
+        });
+
+        function selectElementByString(selector) {
+            var element;
+            try {
+                element = document.querySelector(selector);
+            } catch (e) {
+            }
+            return element && element.tagName === 'STARCOUNTER-INCLUDE' && element || null;
+
+        }
+    }());
+    </script>
+</dom-module>

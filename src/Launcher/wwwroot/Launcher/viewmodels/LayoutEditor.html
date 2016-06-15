@@ -1,21 +1,9 @@
-﻿<link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-simple-editor.html" />
+﻿<!-- <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-simple-editor.html" /> -->
+﻿<link rel="import" href="/sys/starcounter-layout-html-editor/starcounter-layout-html-editor.html" />
 
 <template>
     <template is="dom-bind">
-        <juicy-tile-simple-editor default-selected-list-selectors='["[visible] juicy-tile-table"]'
-                                  class="max-height"
-                                  has-changes="{{model.layoutModified$}}"
-                                  on-close-click="closeEditor"></juicy-tile-simple-editor>
-        <script src="/Launcher/js/predefinedLayouts.js"></script><!-- This needs to be a nextElementSiling -->
+        <h3>Edit your partial</h3>
+        <starcounter-layout-html-editor></starcounter-layout-html-editor>
     </template>
-    <script>
-        (function () {
-            var script = document._currentScript || document.currentScript;
-            var template = script.previousElementSibling;
-
-            template.closeEditor = function () {
-                template.set("model.editingMode$", false);
-            };
-        })();
-    </script>
 </template>

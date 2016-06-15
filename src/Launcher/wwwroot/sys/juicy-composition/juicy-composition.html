@@ -89,7 +89,7 @@
             // build shadow tree
             // givenComposition && distributeJuicyElements(this.elementsMap, composition.items, this.shadowContainer);
             // add remaining decorators
-            // givenComposition.appendChild(this.remainingDecorators);
+            givenComposition.appendChild(this.remainingDecorators);
 
             shadowRoot.appendChild(givenComposition);
             this.isStamped = true;
@@ -133,12 +133,13 @@
                 decorateFilteredElements(element.elementsMap, nodesToDistribute, element.remainingDecorators, '', scopePrefix, scopedIndex);
                 // </V1 slot shim>
                 // TODO: remove it,  composition was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
-                element.composition && element.composition.items && distributeJuicyElements(element.elementsMap, element.composition.items, element.shadowRoot);
+                // element.composition && element.composition.items && distributeJuicyElements(element.elementsMap, element.composition.items, element.shadowRoot);
                 // add remaining decorators
                 element.shadowRoot.appendChild(element.remainingDecorators);
             }
             if(mutation.removedNodes.length){
-                undistributeJuicyElements(element.elementsMap, mutation.removedNodes);
+            // TODO: remove it,  composition was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
+                // undistributeJuicyElements(element.elementsMap, mutation.removedNodes);
             }
             // console.error('update does not cover removed nodes yet!');
 
