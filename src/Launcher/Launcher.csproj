@@ -87,6 +87,9 @@
     <Compile Include="Api\MainHandlers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\AdvancedSearchPage.json.cs">
+      <DependentUpon>AdvancedSearchPage.json</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\LauncherPage.json.cs">
       <DependentUpon>LauncherPage.json</DependentUpon>
     </Compile>
@@ -110,6 +113,7 @@
     <Content Include="wwwroot\Launcher\elements\launcher-hot-key\launcher-hot-key.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-layout\launcher-main.html" />
     <Content Include="wwwroot\Launcher\elements\launcher-menu\launcher-menu.html" />
+    <Content Include="wwwroot\Launcher\viewmodels\Settings.html" />
     <Content Include="wwwroot\Launcher\viewmodels\LauncherMenu.html" />
     <Content Include="wwwroot\Launcher\viewmodels\LauncherTemplate.html" />
     <Content Include="wwwroot\Launcher\viewmodels\LayoutEditor.html" />
@@ -156,6 +160,11 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="ViewModels\LayoutInfo.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <TypedJSON Include="ViewModels\AdvancedSearchPage.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
   </ItemGroup>

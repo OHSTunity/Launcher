@@ -10,6 +10,13 @@ namespace Launcher {
 
     public static class LauncherHelper {
 
+        private static int ConvertOrDefault(String str, int defaulvalue)
+        {
+            int res;
+            if (!Int32.TryParse(str, out res))
+                res = defaulvalue;
+            return res;
+        }
         /// <summary>
         /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
         /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
@@ -121,8 +128,7 @@ namespace Launcher {
                 {
                     launcher.currentPage = new SettingsPage()
                     {
-                        Html = "/Launcher/viewmodels/SettingsPage.html",
-                        Items = Self.GET(UriMapping.MappingUriPrefix + "/settings", () =>
+                        AppMenu = Self.GET(UriMapping.MappingUriPrefix + "/settings_menu", () =>
                         {
                             return new Page();
                         })
@@ -132,20 +138,22 @@ namespace Launcher {
                 return launcher;
             });
 
-            Handle.GET("/launcher/search?query={?}", (Request req, string query) => {
-             //   LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+            Handle.GET("/launcher/search?query={?}&count={?}", (Request req, string query, string count) => {
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                // string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
-                /*
-                launcher.currentPage = Self.GET<ResultPage>(uri, () => {
-                    var p = new ResultPage() {
-                        Html = "/Launcher/viewmodels/ResultPage.html"
-                    };
-                    return p;
-                });
+                if (!(launcher.currentPage is AdvancedSearchPage))
+                {
+                    launcher.currentPage = new AdvancedSearchPage();
+                }
+                var asp = launcher.currentPage as AdvancedSearchPage;
+                asp.Query = query;
+                asp.Count = ConvertOrDefault(count, 10);
+                asp.StartAt = ConvertOrDefault(count, 0);
+                
 
                 launcher.uri = req.Uri;
-                launcher.searchBar.query = query;*/
+                launcher.searchBar.query = query;
 
                 return null;
             });

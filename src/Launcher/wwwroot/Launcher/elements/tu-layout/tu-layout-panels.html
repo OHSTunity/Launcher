@@ -14,8 +14,8 @@
               bottom: 0px;
               display: block;
               -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+              -moz-user-select: none;
+              user-select: none;
             }
 
             :host #wrapper {
@@ -112,7 +112,7 @@
             #right tu-icon-button {
               z-index: 1;
             }
-            
+
             :host(.tu-layout-panels-micro) #right
             {
               position:absolute;
@@ -150,7 +150,6 @@
               cursor: ew-resize;
             }
 
-
             tu-actionboard-sidebar:hover #widthtracker
             {
               opacity:.25;
@@ -165,6 +164,13 @@
             {
               opacity:.6 !important;
               /*min-width: 6px !important;*/
+            }
+
+            #contextPanel {
+              transition: width 0.5s;
+            }
+            #contextPanel.minimized #widthtracker {
+              visibility: collapse;
             }
 
             #hoverContextPanel {
@@ -212,10 +218,8 @@
                 <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
             </div>
             <div id="right">
-
-                  <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
-
-                <content select="[right]"></content>
+              <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
+              <content select="[right]"></content>
             </div>
 
             <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
@@ -317,12 +321,14 @@
             else {
               width = '0';
             }
-
             this.$.contextPanel.style.width = width + 'px';
-            this.$.contextPanel.style.minWidth = width + 'px';
             var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("tu-layout-multiview");
             for (var i = 0; i < mviews.length; i++)
+            {
               mviews[i].panelWidth = width;
+              this.toggleClass('minimized', this.contextPanelMinimized, mviews[i]);
+              this.toggleClass('hidden', !this.showContextPanel, mviews[i]);
+            }
           },
           contextPanelWidthTrack: function(e) {
             e.cancelBubble=true;
@@ -351,7 +357,6 @@
           contextPanelTapped: function() {
             if (this.contextPanelMinimized)
               this.set('contextPanelMinimized', false);
-
           },
           onCloseRightTapped: function(ev) {
             this.set("right", false);
