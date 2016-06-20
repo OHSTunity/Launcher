@@ -7,6 +7,7 @@
     color: #000000;
 }
 
+
 body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
 {
     min-width: 100px !important;
@@ -365,3 +366,62 @@ launcher-search-input {
     font-size: 12px;
     vertical-align: middle;
 }
+
+/* LOADING SPLASH PAGE */
+
+body #tu-splash
+{
+    opacity:0;
+    transition: opacity 0.2s ease;
+    color: transparent;
+    font-family: 'Lato',Helvetica,Arial,sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 24px;
+    display: block;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position:absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    background: #FFF;
+    z-index: 10000;
+}
+
+body.loading #tu-splash
+{
+    opacity:1;
+    color: #444;
+}
+
+@-webkit-keyframes spin {
+    from {-webkit-transform: rotateZ(0deg);}
+    to {-webkit-transform: rotateZ(360deg);}
+}
+
+@keyframes spin {
+    from {transform: rotateZ(0deg);}
+    to {transform: rotateZ(360deg);}
+}
+
+body.loading #tu-splash #tu-splash-spinner {        
+    display: inline-block;
+    -webkit-animation: spin 1.5s linear infinite;
+    -moz-animation: spin 1.5s linear infinite;
+    animation: spin 1.5s linear infinite;
+}
+
+body.loading #tu-splash #tu-splash-text {        
+    font-size: 18px;
+    display: inline-block;
+    padding: 10px;
+}
+
+
+
