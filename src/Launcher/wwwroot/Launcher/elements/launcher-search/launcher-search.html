@@ -18,8 +18,9 @@
           outline: none;
           color: inherit;
           font-weight: 200;
-          padding-left:10px;
+          padding-left:0px;
           font-size: 14px;
+          font-family: 'Lato';
         }
 
         input::-webkit-input-placeholder {
@@ -82,7 +83,7 @@
     </style>
     <template>
       <input placeholder="{{placeholder}}" value="{{data.query$::input}}" on-keydown='onKeyDown' on-keyup='onKeyUp' on-blur="onBlur" />
-      <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
+      <span style="padding-bottom: 5px;margin-right:10px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
 
       <div id="preview" class="preview">
         <div id='result'>
