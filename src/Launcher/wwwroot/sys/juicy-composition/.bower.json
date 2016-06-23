@@ -1,5 +1,6 @@
 {
   "name": "juicy-composition",
+  "version": "0.0.1",
   "description": "Custom Element that adds given Document Fragment to Shadow DOM",
   "license": "MIT",
   "main": "juicy-composition.html",
@@ -28,13 +29,13 @@
     "polymer": "^1.3.1"
   },
   "homepage": "https://github.com/Juicy/juicy-composition",
-  "_release": "be358e0f56",
+  "_release": "0.0.1",
   "_resolution": {
-    "type": "branch",
-    "branch": "gh-pages",
-    "commit": "be358e0f56dbbe447a3e057abea076c4593d6022"
+    "type": "version",
+    "tag": "0.0.1",
+    "commit": "f00b607d7bace6ac75f13e4eaef7ace807144ca7"
   },
-  "_source": "git://github.com/Juicy/juicy-composition.git",
-  "_target": "gh-pages",
-  "_originalSource": "Juicy/juicy-composition"
+  "_source": "https://github.com/Juicy/juicy-composition.git",
+  "_target": ">=0.0.1",
+  "_originalSource": "juicy-composition"
 }

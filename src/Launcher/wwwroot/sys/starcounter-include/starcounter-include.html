@@ -61,18 +61,7 @@ version: 0.5.0
             var html = buildURL(partial, this.mergedHtmlPrefix, this.defaultHtml);
             var starcounterInclude = this;
             var layout;
-            var partialId;
-            // define a setter for partial attribute,
-            // so it could be change by VanillaJs without Polymer Template Binding
-            Object.defineProperty(this, "partial", {
-                set: function(newValue) {
-                    partial = newValue;
-                    starcounterInclude.partialChanged(partial);
-                },
-                get: function() {
-                    return partial;
-                }
-            });
+            var partialId = this.partialId;
             // build shadow DOM
             var sroot = this.createShadowRoot();
             sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
@@ -81,6 +70,38 @@ version: 0.5.0
             this.compositionElement = clone.children[0]; // .getElementsByTagName("juicy-composition");
             this.template = this.compositionElement.firstElementChild; // .getElementsByTagName("TEMPLATE");
             html && this.template.setAttribute('content', html);
+
+            // define a setter for partial attribute,
+            // so it could be change by VanillaJs without Polymer Template Binding
+            Object.defineProperties(this, {
+                partial: {
+                    set: function(newValue) {
+                        partial = newValue;
+                        starcounterInclude.partialChanged(partial);
+                    },
+                    get: function() {
+                        return partial;
+                    }
+                },
+                partialId: {
+                    set: function(newValue) {
+                        // do nothing if value is the same or null is being changed to undefined
+                        if (newValue != partialId) {
+                            partialId = newValue || null;
+                            if (!partialId) {
+                                // this.compositionElement.removeAttribute("name");
+                                this.removeAttribute("partial-id");
+                            } else {
+                                // this.compositionElement.setAttribute("name", partialId);
+                                this.setAttribute("partial-id", partialId);
+                            }
+                        }
+                    },
+                    get: function() {
+                        return partialId;
+                    }
+                }
+            });
 
             // attach partial
             this.partialChanged();
@@ -104,7 +125,7 @@ version: 0.5.0
          */
         LauncherPartialPrototype.partialChanged = function(newVal) {
             this._htmlChanged();
-            this._partialIdChanged();
+            this.partialId = this.partial && this.partial.Launcher && this.partial.Launcher.PartialId; //should always be string
             this._layoutChanged();
         };
 
@@ -124,23 +145,6 @@ version: 0.5.0
             }
             if (this.template.model != this.partial) {
                 this.template.model = this.partial
-            }
-        };
-
-        LauncherPartialPrototype._partialIdChanged = function() {
-            var partialId;
-            if (this.partial) {
-                if (this.partial.Launcher) {
-                    partialId = this.partial.Launcher.PartialId; //should always be string
-                }
-            }
-            if (partialId !== this.partialId) {
-                if (!partialId) {
-                    this.compositionElement.removeAttribute("name");
-                } else {
-                    this.compositionElement.setAttribute("name", partialId);
-                }
-                this.partialId = partialId;
             }
         };
 

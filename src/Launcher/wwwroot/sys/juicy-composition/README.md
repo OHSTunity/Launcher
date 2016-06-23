@@ -1,4 +1,4 @@
-# &lt;juicy-composition&gt;
+# &lt;juicy-composition&gt; [![Build Status](https://travis-ci.org/Juicy/juicy-composition.svg?branch=gh-pages)](https://travis-ci.org/Juicy/juicy-composition)
 
 > Custom Element that adds given Document Fragment to Shadow DOM
 
@@ -73,6 +73,71 @@ Method        | Parameters   | Returns     | Description
 Event     | Description
 ---       | ---
 `stamped` | Triggered once shadow DOM is stamped
+
+## Slots
+
+In your composition you can/should use slots to distribute the content within your layout. Conceptually, it matches Shadow DOM V1, however, we still support V0 syntax, due to browser & polyfill coverage.
+
+`<juicy-composition>` adds also few handy features on top of that.
+
+### Custom slots
+Naturally, thanks to Shadow DOM. If you can/want, you setup everything explicitly
+
+```html
+<juicy-composition>
+  <div slot="my-slot-name">smth</div>
+</juicy-composition>
+```
+```html
+<template id="composition">
+  My composition structure
+  ...
+  <content select="[slot='my-slot-name']"></content>
+  <!-- in Shadow DOM V1 it will look like: -->
+  <slot name="my-slot-name"></slot>
+</template>
+```
+
+### Automatic slot names
+If for some reason your content does not have slot names, `juicy-composition` will add it automatically,
+so you will be able to distribute it easily, even if your content provider cannot do so.
+We will use child number as a slot-name.
+
+```html
+<juicy-composition>
+  <div slot="0">...</div><!-- slot name automatically generated -->
+  <div slot="provided-name">...</div>
+  <div slot="2">...</div><!-- slot name automatically generated -->
+</juicy-composition>
+```
+
+#### Scoped slot names
+
+You can also add name-space to your slot names, if for example you concatenate the content from many providers
+
+```html
+<juicy-composition>
+  <juicy-composition-scope name="fruits"></juicy-composition-scope>
+    <div slot="fruits-provider-slot-name">apple</div>
+    <div>plum</div>
+  <juicy-composition-scope name="veggies"></juicy-composition-scope>
+    <div>carrot</div>
+</juicy-composition>
+```
+Will make slot names look like this
+```html
+<juicy-composition>
+    <juicy-composition-scope name="fruits"></juicy-composition-scope>
+    <div slot="fruits-provider-slot-name">apple</div>
+    <div slot="fruits/1">plum</div>
+    <juicy-composition-scope name="veggies"></juicy-composition-scope>
+    <div slot="veggies/0">carrot</div>
+</juicy-composition>
+```
+
+### Automatic slots
+In case some content is added dynamically, out you just missed to add some slots for given content we will create slots automatically as well.
+We will append new `<slot>` (`<content>`) element(-s) to the end of the composition. 
 
 ## [Contributing and Development](CONTRIBUTING.md)
 

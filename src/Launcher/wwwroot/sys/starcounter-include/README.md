@@ -46,7 +46,7 @@ Or [download as ZIP](https://github.com/StarcounterPrefabs/launcher-include/arch
 1. Import Web Components' polyfill (if needed):
 
     ```html
-    <script src="bower_components/webcomponentsjs/webcomponents.js">
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     ```
 
 2. Import Custom Element:
@@ -68,6 +68,20 @@ Or [download as ZIP](https://github.com/StarcounterPrefabs/launcher-include/arch
     ```js
     <starcounter-include partial="{&quot;Html&quot;: &quot;/path/to/file.html&quot;, &quot;some&quot;: &quot;data&quot;}"></starcounter-include>
     ```
+
+## Attributes
+
+Attribute     | Options  | Default      | Description
+---           | ---      | ---          | ---
+`partial`     | *JSON*   |              | Set to provide a partial. It's also a `partial` property.
+`partial-id`  | *String* |              | **Read-only** attribute that represents `PartialID` fetched from `partial` JSON. It's also a `partialId` property.
+
+## Properties
+
+Attribute   | Options           | Default | Description
+---         | ---               | ---     | ---
+`partial`   | *Object*          |         | Object containing partial view-model, bindable with Polymer
+`partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.Launcher.PartialId`.
 
 ## Test suite
 

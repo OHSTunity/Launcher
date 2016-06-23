@@ -1,4 +1,4 @@
-<!-- juicy-composition @version: 0.0.0 @license: MIT -->
+<!-- juicy-composition @version: 0.0.1 @license: MIT -->
 <script>
 (function() {
     // Creates an object based in the HTML Element prototype
@@ -38,6 +38,7 @@
         this.autoStamp = this.hasAttribute('auto-stamp');
         Object.defineProperty(this, 'composition', {
             get: function(){
+                // IDEA: use just this.shadowRoot
                 return composition;
             },
             set: function(newVal){
@@ -68,7 +69,6 @@
     };
     /**
      * Creates shadow root, stamps slot wrappers and insertion points into shadow dom, and modify light dom according to given composition.
-     * @see distributeJuicyElements
      */
     JuicyCompositionPrototype.stamp = function(){
         var givenComposition = this.composition;// document.importNode(this.composition, true);
@@ -84,10 +84,8 @@
 
             // <V1 slot shim>
             // adding it to a this.shadowContainer manually
-            decorateFilteredElements(this.elementsMap, filterElements(this.children), this.remainingDecorators, '');
+            decorateFilteredElements(this.composition, this.elementsMap, filterElements(this.children), this.remainingDecorators, '');
             // </V1 slot shim>
-            // build shadow tree
-            // givenComposition && distributeJuicyElements(this.elementsMap, composition.items, this.shadowContainer);
             // add remaining decorators
             givenComposition.appendChild(this.remainingDecorators);
 
@@ -111,7 +109,7 @@
      * @param  {MutationRecord} mutation mutation of an element
      */
     JuicyCompositionPrototype.update = function(mutation){
-        if (mutation.addedNodes.length || mutation.removedNodes.length) {
+        if (mutation.addedNodes.length) {
             var element = mutation.target || this;
             // TODO: make it cleaner
             element.observer.disconnect();
@@ -129,19 +127,11 @@
 
                 // <V1 slot shim>
                 // adding it to a this.shadowContainer manually
-                // debugger
-                decorateFilteredElements(element.elementsMap, nodesToDistribute, element.remainingDecorators, '', scopePrefix, scopedIndex);
+                decorateFilteredElements(element.shadowRoot, element.elementsMap, nodesToDistribute, element.remainingDecorators, '', scopePrefix, scopedIndex);
                 // </V1 slot shim>
-                // TODO: remove it,  composition was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
-                // element.composition && element.composition.items && distributeJuicyElements(element.elementsMap, element.composition.items, element.shadowRoot);
                 // add remaining decorators
                 element.shadowRoot.appendChild(element.remainingDecorators);
             }
-            if(mutation.removedNodes.length){
-            // TODO: remove it,  composition was not changed so there is no point in rebuilding shadow tree, we need to attach new doecorators only.
-                // undistributeJuicyElements(element.elementsMap, mutation.removedNodes);
-            }
-            // console.error('update does not cover removed nodes yet!');
 
             // TODO: make it cleaner
             element.observer.observe(element, { childList: true });
@@ -171,76 +161,29 @@
     };
 
     /**
-     * Distributes nodes according to composition.
-     * - Build Shadow DOM tree according to given JSON composition
-     *
-     * @param  {Object} elementsMap map of elements to explode id->shadow dom slot
-     * @param  {NodeList|Array} nodesList   list of nodes to be distributed
-     * @param  {Array<Object>} compositionItems       array of composition.items objects with JSON tree reflecting Shadow DOM tree
-     * @param  {HTMLElement} parent      parent element of given nodes
-     * @param  {DocumentFragment} fragment    where slots should be aadded
-     * @return {DocumentFragment}             document fragmen that was altered by distribution
-     */
-    function distributeJuicyElements(elementsMap, compositionItems, parent){
-        var itemNo, len, item, id, sdContainer;
-        for (itemNo = 0, len = compositionItems.length; itemNo < len; itemNo++) {
-        // for (var nodeNo = 0, len = nodesList.length; nodeNo < len; nodeNo++) {
-            item = compositionItems[itemNo];
-            id = item.id;
-            // if it's a container
-            if (item.tagName) {
-                // create shadow container
-                // recursion
-                sdContainer = document.createElement(item.tagName);
-                item.attributes && setAttributes(sdContainer, item.attributes);
-                item.properties && setProperties(sdContainer, item.properties);
-                distributeJuicyElements(elementsMap, item.items, sdContainer);
-                parent.appendChild(sdContainer);
-            } else if (item.tagName === null && item.items){
-                // virtaul group
-                // recursion
-                distributeJuicyElements(elementsMap, item.items, parent);
-
-            } else if (item.tagName === undefined){
-                // regular element
-
-                if(!elementsMap[id]){
-                    // create decorator / virtual element for non existing child
-                    elementsMap[id] = createSlot(id);
-
-                }
-                item.attributes && setAttributes(elementsMap[id], item.attributes);
-                item.properties && setProperties(elementsMap[id], item.properties);
-                parent.appendChild( elementsMap[id] );
-            }
-        }
-
-    }
-    /**
      * Decorates given child nodes.
      * - Build slot ids
      * 	- Use DOM order as base
-     * 	- Apply juicy-tile-group prefix if given (to distinguish elements given within same elemen but by different vendors)
-     * - Create slot decorator/wrapper per each distributed element - to workaround lack of SD.V1 <slot> element, and give more encapsulated element for `juicy-tile-*`
+     * 	- Apply juicy-composition-scope prefix if given (to distinguish elements given within same elemen but by different vendors)
+     * - Create slot decorator/wrapper per each distributed element - to workaround lack of SD.V1 <slot> element, and give more encapsulated element for tiles
      * - Update elementsMap list to shim SD.V1 .assignedSlot method
      *
+     * @param  {DocumentFragment} composition composition to which we are supposed to add missing slots
      * @param  {Object} elementsMap map of decorated elements, will be modified
      * @param  {NodeList|Array} nodesList   list of nodes to be decorated
      * @param  {DocumentFragment} fragment    where slots should be aadded, will be modified
      * @param  {String} prefix    prefix for all ids
      * --@return {Object<HTMLElement>}   map of unattached decoretors
      */
-    function decorateFilteredElements(elementsMap, nodesList, fragment, prefix, scopePrefix, scopedIndex){
+    function decorateFilteredElements(composition, elementsMap, nodesList, fragment, prefix, scopePrefix, scopedIndex){
         var tiles = [], tile, child,
             id;
         scopePrefix = scopePrefix || '';
         scopedIndex = scopedIndex || 0;
         for (var nodeNo = 0, len = nodesList.length; nodeNo < len; nodeNo++) {
-        // for (var nodeNo = 0, len = nodesList.length; nodeNo < len; nodeNo++) {
             child = nodesList[nodeNo];
             // id scoping magic
-            //
-            if (child.tagName === "JUICY-TILE-GROUP") {
+            if (child.tagName === "JUICY-COMPOSITION-SCOPE" || child.tagName === "JUICY-TILE-GROUP") {
                 scopePrefix = child.getAttribute("name") || "";
                 scopePrefix += "/";
                 child._juicyScopePrefix = scopePrefix;
@@ -254,10 +197,16 @@
             // construct slot id
             id = child.getAttribute('slot') || prefix + scopePrefix + scopedIndex;
             scopedIndex++;
-            //id = i;
 
             // <V1 slot shim>
-            tile = createSlot(id);
+            // check if we need to create a missing slot
+            // TODO: check the performance impac of those selectors (at least once V1 is released)
+            // consider .getDestinationInsertionPoints()
+            tile = composition.querySelector('content[select="[slot=\'' + id + '\']"], content[select="[slot=\\"' + id + '\\"]"]');
+            if (!tile) {
+                tile = createSlot(id);
+                fragment.appendChild(tile);
+            }
             // <V1 assignedSlot shim>
             // https://www.w3.org/TR/shadow-dom/#extensions-to-nondocumenttypechildnode-interface
             elementsMap[id] = tile;
@@ -266,16 +215,9 @@
             // </V1 assignedSlot shim>
             // forward juicy-style attribute
             tile.setAttribute('juicy-style', child.getAttribute('juicy-style'));
-            fragment.appendChild(tile);
             // </V1 slot shim>
             // attach a selectable key to each light-dom node
             child.hasAttribute('slot') || child.setAttribute('slot', id);
-            // // specify a <content> with that key
-            // tiles.push(tile);
-            // // add also key based
-            // tiles[id] = tile;
-            // // tiles.push(child);
-            //}
         }
         // <V1 slot shim>
         // return fragment;
@@ -293,29 +235,6 @@
         // slot.name = id;
         slot.setAttribute("select", "[slot='" + id + "']");
         return slot;
-    }
-    /**
-     * Clear shadow DOM structure for given elements,
-     * implode children if needed.
-     * @param {Object} elementsMap map of slots to update - (SD.V1 assignedSlot shim)
-     * @param  {NodeList} nodeList list of nodes to remove
-     */
-    function undistributeJuicyElements(elementsMap, nodeList){
-        var explodedNodes, shadowElementId, shadowElement;
-        for(var nodeNo = 0, len = nodeList.length; nodeNo < len; nodeNo++){
-            var node = nodeList[nodeNo];
-            // <V1 assignedSlot shim>
-            // https://www.w3.org/TR/shadow-dom/#extensions-to-nondocumenttypechildnode-interface
-            // child.assignedSlot.parentElement.remove();
-            shadowElementId = node._juicyElementId;
-            shadowElement = elementsMap[shadowElementId];
-            elementsMap[shadowElementId] = undefined;
-            if(shadowElement){
-                shadowElement.parentNode.removeChild(shadowElement);
-            }
-            // </V1 assignedSlot shim>
-
-        }
     }
     /**
      * Sets attributes given in attrsMap (key-value map) to given element
