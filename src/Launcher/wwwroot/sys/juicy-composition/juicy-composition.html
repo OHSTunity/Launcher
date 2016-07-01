@@ -1,4 +1,4 @@
-<!-- juicy-composition @version: 0.0.1 @license: MIT -->
+<!-- juicy-composition @version: 0.0.2 @license: MIT -->
 <script>
 (function() {
     // Creates an object based in the HTML Element prototype
@@ -213,8 +213,10 @@
             child._juicyElementId = id;
             // child._juicyAssignedShadowElement = tile;
             // </V1 assignedSlot shim>
-            // forward juicy-style attribute
-            tile.setAttribute('juicy-style', child.getAttribute('juicy-style'));
+
+            // forward per-element attributes here
+
+            
             // </V1 slot shim>
             // attach a selectable key to each light-dom node
             child.hasAttribute('slot') || child.setAttribute('slot', id);

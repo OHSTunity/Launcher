@@ -24,10 +24,10 @@ module.exports = function(grunt) {
         },
         bump: {
           options: {
-            files: ['package.json', 'bower.json', 'src/*'],
+            files: ['package.json', 'bower.json', 'starcounter-layout-html-editor.html'],
             commit: true,
             commitMessage: '%VERSION%',
-            commitFiles: ['package.json', 'bower.json', 'src/*'],
+            commitFiles: ['package.json', 'bower.json', 'starcounter-layout-html-editor.html'],
             createTag: true,
             tagName: '%VERSION%',
             tagMessage: 'Version %VERSION%',

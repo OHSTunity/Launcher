@@ -87,7 +87,8 @@ version: 0.0.0
                 },
                 content: {
                     type: String,
-                    observer: '_contentChanged'
+                    observer: '_contentChanged',
+                    value: ''
                 }
             },
 
@@ -97,7 +98,7 @@ version: 0.0.0
                     this.content = this.partial.compositionElement.shadowRoot && this.partial.compositionElement.shadowRoot.innerHTML || '';
                     this.set('disabled', false);
                 } else {
-                    this.content = null;
+                    this.content = '';
                     this.set('disabled', true);
                 }
             },

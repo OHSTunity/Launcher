@@ -9,13 +9,6 @@
       "starcounter-debug-aid",
       "puppet-client",
       "bootswatch",
-      "polymer",
-          "paper-ripple",
-          "paper-styles",
-          "paper-behaviors",
-          "iron-localstorage",
-          "iron-flex-layout",
-          "iron-icons",
-          "iron-a11y-keys-behavior"
+      "polymer"
   ]
 }
