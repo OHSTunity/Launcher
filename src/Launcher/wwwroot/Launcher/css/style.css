@@ -233,7 +233,8 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #fff;
 }
 
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
+.launcher-toolbar > paper-icon-button:hover::shadow iron-icon,
+.launcher-toolbar #launcher-settings-icon:hover {
     color: white;
     transition: -webkit-transform 1s;
     transition: transform 1s;
