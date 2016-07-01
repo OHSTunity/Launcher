@@ -242,6 +242,11 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     transform: rotate(360deg);
 }
 
+#launcher-layout-editor{
+    box-shadow: 0px 0px 3px black;
+    padding: 0 1em;
+}
+
 div.launcher-theme input,
 div.launcher-theme /deep/ input {
     color: white;
