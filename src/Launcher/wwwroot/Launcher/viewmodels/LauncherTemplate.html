@@ -45,7 +45,6 @@
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
 	  <!--<link rel="import" href="/sys/dom-imported/dom-imported.html" />-->
-    <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
 
     <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
@@ -59,7 +58,7 @@
 </head>
 <body is="launcher-main" class="loading">
     <div id="tu-splash">
-        <span id="tu-splash-text">LOADING</span>        
+        <span id="tu-splash-text">LOADING</span>
         <span id="tu-splash-spinner">⚇</span>
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
@@ -146,8 +145,6 @@
                 <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
             </div>
         </paper-dialog>
-
-        <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
     </template>
     <script>
         (function () {
