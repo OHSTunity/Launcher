@@ -1,5 +1,11 @@
 ﻿<!-- <link rel="import" href="/sys/juicy-tile-editor/src/juicy-tile-simple-editor.html" /> -->
 ﻿<link rel="import" href="/sys/starcounter-layout-html-editor/starcounter-layout-html-editor.html" />
+<!--
+    Load ace/mode/html manually
+    This is a workaround for a conflict between ace loaded by juicy-ace-editor 
+    and browserified (br)ace loaded by jsoneditor (juicy-jsoneditor)
+    https://github.com/josdejong/jsoneditor/issues/309
+-->
 <script src="/sys/ace-builds/src-noconflict/mode-html.js"></script>
 
 <template>
