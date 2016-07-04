@@ -6,6 +6,33 @@
     height: 100%;
 }
 
+.launcher-layout {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+}
+
+.launcher-layout__top {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
+    z-index: 100;
+}
+
+.launcher-layout__main {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
 #launcher-content {
     flex: 1;
 }

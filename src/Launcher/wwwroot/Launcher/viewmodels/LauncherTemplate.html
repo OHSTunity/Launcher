@@ -17,7 +17,6 @@
     <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html" />
 
     <!-- Import our elements -->
-    <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
@@ -41,8 +40,11 @@
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 </head>
-<body is="launcher-main">
+<body>
     <template id="root-launcher-dom-bind" is="dom-bind">
+        <div class="launcher-layout">
+            <div class="launcher-layout__top">
+
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
         </template>
@@ -72,6 +74,9 @@
 
             <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
         </div>
+
+        </div>
+        <div class="launcher-layout__main">
 
         <div id="launcher-menu">
             <launcher-menu>
@@ -122,6 +127,9 @@
                 <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
             </div>
         </paper-dialog>
+
+            </div>
+        </div>
     </template>
     <script>
         (function () {
