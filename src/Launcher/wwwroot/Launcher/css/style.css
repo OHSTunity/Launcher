@@ -37,9 +37,11 @@
     flex: 1;
 }
 
-.workspace > juicy-tile-table {
+.workspace > juicy-tile-table,
+.workspace > juicy-composition {
     /*flex: 1 1 auto;*/
     padding: 32px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
+    display: block;
 }
 
 starcounter-include.workspace {
@@ -261,6 +263,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 }
 
 .launcher-toolbar > paper-icon-button:hover::shadow iron-icon,
+.launcher-toolbar > paper-icon-button:hover iron-icon,
 .launcher-toolbar #launcher-settings-icon:hover {
     color: white;
     transition: -webkit-transform 1s;
