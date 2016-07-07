@@ -78,10 +78,17 @@ Attribute     | Options  | Default      | Description
 
 ## Properties
 
-Attribute   | Options           | Default | Description
+Property   | Options           | Default | Description
 ---         | ---               | ---     | ---
 `partial`   | *Object*          |         | Object containing partial view-model, bindable with Polymer
 `partialId` | *String*          |         | Partial Id used to identify partial, usually it's fetched from `partial.Launcher.PartialId`.
+
+## Events
+
+Name                                    | Detail                 | Description
+---                                     | ---                    | ---
+`starcounter-include-composition-saved` | *String* stored layout | Triggered once composition is saved
+`partial-changed`                       | *Object* `{value: storedLayout, path: 'partial.Launcher.Composition'}` | Polymer notification protocol compilant event to notify about `partial.Launcher.Composition` change, triggered once composition is saved.
 
 ## Test suite
 

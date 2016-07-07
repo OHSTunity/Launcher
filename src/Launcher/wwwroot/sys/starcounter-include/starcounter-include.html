@@ -3,7 +3,7 @@
 Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
-Uses juicy-composition.composition given from DB as layout.
+Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition`.
 version: 0.5.0
 
 -->
@@ -30,7 +30,7 @@ version: 0.5.0
         LauncherPartialPrototype.partial = null;
         LauncherPartialPrototype.partialId = null;
         //FIXME: this one should not be needed, once we get rid of workarounds for server-side
-        LauncherPartialPrototype.layoutAPI = '/sc/layout';
+        LauncherPartialPrototype.compositionAPI = '/sc/partial/composition';
         // LauncherPartialPrototype.html = null;
         LauncherPartialPrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
         LauncherPartialPrototype.defaultHtml = '';
@@ -60,7 +60,6 @@ version: 0.5.0
             var partial = partialAttributeToProperty(this);
             var html = buildURL(partial, this.mergedHtmlPrefix, this.defaultHtml);
             var starcounterInclude = this;
-            var layout;
             var partialId = this.partialId;
             // build shadow DOM
             var sroot = this.createShadowRoot();
@@ -126,7 +125,7 @@ version: 0.5.0
         LauncherPartialPrototype.partialChanged = function(newVal) {
             this._htmlChanged();
             this.partialId = this.partial && this.partial.Launcher && this.partial.Launcher.PartialId; //should always be string
-            this._layoutChanged();
+            this._compositionChanged();
         };
 
         LauncherPartialPrototype._htmlChanged = function() {
@@ -148,24 +147,25 @@ version: 0.5.0
             }
         };
 
-        LauncherPartialPrototype._layoutChanged = function() {
-            var layout;
+        LauncherPartialPrototype._compositionChanged = function() {
+            var composition;
             if (this.partial) {
                 if (this.partial.Launcher) {
-                    layout = this.partial.Launcher.Layout; //should always be string
+                    composition = this.partial.Launcher.Composition; //should always be string
                 }
             }
-            if (layout !== this._lastLayout || this._forceLayoutChange) {
-                if (!layout) {
+            if (composition !== this._lastLayout || this._forceLayoutChange) {
+                if (!composition) {
                     this.storedLayout = null;
+                    this.compositionElement.composition = this.defaultComposition;
                     // this.compositionElement.composition = '<div style="min-width: 1200px;"><content></content></div>';
                 } else {
-                    this.storedLayout = layout;
+                    this.storedLayout = composition;
                     // make clone to avoid direct binding
-                    this.compositionElement.composition = this.stringToDocumentFragment(layout);
+                    this.compositionElement.composition = this.stringToDocumentFragment(composition);
                 }
                 this._forceLayoutChange = false;
-                this._lastLayout = layout;
+                this._lastLayout = composition;
             }
         };
 
@@ -235,18 +235,18 @@ version: 0.5.0
             }
         };
         /**
-         * Saves given or current layout as stored one, (TODO:) notifies binding about it.
-         * @param  {String} [layoutStr] layout to be saved, if not given current one will be used
+         * Saves given or current composition as stored one, (TODO:) notifies binding about it.
+         * @param  {String} [compositionStr] composition to be saved, if not given current one will be used
          */
-        LauncherPartialPrototype.saveLayout = function(layoutStr){
-            layoutStr = layoutStr || this.compositionElement.shadowRoot.innerHTML;
-            this.storedLayout = layoutStr;
+        LauncherPartialPrototype.saveLayout = function(compositionStr){
+            compositionStr = compositionStr || this.compositionElement.shadowRoot.innerHTML;
+            this.storedLayout = compositionStr;
             //TODO: trigger polymer-protocol-compliant event
 
             // FIXME: temporary workaround for servers not accepting JSON-Patch
             // from juicy-tiles-setup-sync
             var req = new XMLHttpRequest();
-            req.open("POST", this.layoutAPI + "?" + this.partialId, true);
+            req.open("POST", this.compositionAPI + "?key=" + this.partialId + '&ver=', true);
             req.onreadystatechange = function () {
                 if (req.readyState == 4) {
                     if (!(req.status >= 200 && req.status <= 299)) {
@@ -255,9 +255,9 @@ version: 0.5.0
                     }
                     console.info("juicy-composition configuration saved");
                 }
-                this.dispatchEvent(new CustomEvent("starcounter-include-layout-saved", {detail: this.storedLayout}));
+                this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
                 // trigger polymer-notification-protocol-compilant event
-                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.Launcher.Layout'}}));
+                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.Launcher.Composition'}}));
             }.bind(this);
             return req.send(this.storedLayout);
 

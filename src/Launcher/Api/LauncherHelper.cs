@@ -17,8 +17,8 @@ namespace Launcher {
         /// </summary>
         public static void Init() {
             Application application = Application.Current;
-            
-            Layout.Register();
+
+            Starcounter.MergedPartial.Composition.Register();
 
             JsonResponseMerger.RegisterMergeCallback(OnJsonMerge);
 
@@ -57,7 +57,7 @@ namespace Launcher {
                     var p = new Page();
                     return p;
                 });
-                var setup = Layout.GetSetup("/launcher/launchpad");
+                var setup = Starcounter.MergedPartial.Composition.GetUsingKey("/launcher/launchpad");
 
                 if (setup == null) {
                     // launcher.launchpad.layout = null
@@ -210,7 +210,7 @@ namespace Launcher {
         static Json OnJsonMerge(Request request, string callingAppName, IEnumerable<Json> partialJsons) {
             bool returnNewSibling = false;
             LayoutInfo layoutInfo = null;
-            Layout layout;
+            Starcounter.MergedPartial.Composition composition;
             string html = null;
             string partialUrl;
             var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
@@ -273,9 +273,9 @@ namespace Launcher {
             if (!string.IsNullOrEmpty(html))
                 layoutInfo.MergedHtml = StarcounterConstants.HtmlMergerPrefix + html;
 
-            layout = Db.SQL<Layout>("SELECT l FROM Starcounter.Layout l WHERE l.Key=?", layoutInfo.PartialId).First;
-            if (layout != null)
-                layoutInfo.Layout = layout.Value;
+            composition = Db.SQL<Starcounter.MergedPartial.Composition>("SELECT l FROM Starcounter.MergedPartial.Composition l WHERE l.Key=?", layoutInfo.PartialId).First;
+            if (composition != null)
+                layoutInfo.Composition = composition.Value;
 
             if (returnNewSibling)
                 return layoutInfo;

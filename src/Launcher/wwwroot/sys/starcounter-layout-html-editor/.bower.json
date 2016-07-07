@@ -28,11 +28,11 @@
     "starcounter-include": "StarcounterPrefabs/launcher-include#juicy-composition"
   },
   "homepage": "https://github.com/Starcounter/starcounter-layout-html-editor",
-  "_release": "f0900dd8a5",
+  "_release": "02a2173276",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "f0900dd8a5258002044b7a9e3d0cea8a0a584e92"
+    "commit": "02a2173276956ad5be66759f3e626124ede88c1c"
   },
   "_source": "git://github.com/Starcounter/starcounter-layout-html-editor.git",
   "_target": "gh-pages",
