@@ -260,14 +260,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #fff;
 }
 
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
-    color: white;
-    transition: -webkit-transform 1s;
-    transition: transform 1s;
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-}
-
 div.launcher-theme input,
 div.launcher-theme /deep/ input {
     color: white;
