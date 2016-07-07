@@ -1,5 +1,6 @@
 ﻿<link rel="import" href="/sys/polymer/polymer.html">
 <link rel="import" href="/sys/imported-template/imported-template.html">
+<link rel="import" href="/sys/juicy-tile-table/juicy-tile-table.html">
 
 <dom-module id="launcher-launchpad">
     <template>
@@ -52,7 +53,7 @@
                 line-height: 1.1;
             }
         </style>
-        <juicy-tiles-setup-sync api-url="/sc/layout" name="/Launcher/launchpad" storedValue="{{layout}}"></juicy-tiles-setup-sync>
+        <!-- <juicy-tiles-setup-sync api-url="/sc/layout" name="/Launcher/launchpad" storedValue="{{layout}}"></juicy-tiles-setup-sync> -->
         <!-- <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad"> -->
         <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='[[cloneJSON(layout)]]'>
         <!-- <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='{"width": 1000, "items": []}'> -->
