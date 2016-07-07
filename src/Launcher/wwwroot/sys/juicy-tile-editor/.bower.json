@@ -29,11 +29,11 @@
     "web-component-tester": "^4.0.0",
     "es6-promise": ">=3.2.1"
   },
-  "_release": "4e9b0b63c2",
+  "_release": "34f8c5636d",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "4e9b0b63c2a906781096fb8176f6fa0c5efea0cf"
+    "commit": "34f8c5636d3c0fbf88362540688819fb59d9f075"
   },
   "_source": "git://github.com/Juicy/juicy-tile-editor.git",
   "_target": "gh-pages",
