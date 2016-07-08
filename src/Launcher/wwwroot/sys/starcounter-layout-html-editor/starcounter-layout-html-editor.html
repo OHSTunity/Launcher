@@ -51,7 +51,8 @@ version: 0.0.0
                 style="height: 100%;"
                 mode="ace/mode/html"
                 readonly$="{{disabled}}"
-                value="{{content::change}}"></juicy-ace-editor>
+                value="{{content::change}}"
+                wrapmode="true"></juicy-ace-editor>
         </div>
         <div id="buttons">
             <button on-click="revert" disabled$="{{disabled}}">Revert</button>
@@ -132,8 +133,14 @@ version: 0.0.0
                 return this.partial && this.partial.saveLayout();
             },
             restore: function () {
-                // TODO:
-                console.warn('Default layouts are not yet implemented!');
+                if (!this.partial) {
+                    return false;
+                }
+                // TODO: move editing features from partial to here
+                this.partial._forceLayoutChange = true;
+                this.partial._compositionChanged("");
+                return this.set('content',this.partial.compositionElement.shadowRoot && this.partial.compositionElement.shadowRoot.innerHTML || '');
+
             },
             revert: function () {
                 if (!this.partial) {

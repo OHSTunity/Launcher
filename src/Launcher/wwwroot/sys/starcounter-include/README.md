@@ -65,7 +65,7 @@ Or [download as ZIP](https://github.com/StarcounterPrefabs/launcher-include/arch
     document.querySelector("starcounter-include").partial = ViewModel;
     ```
     or with inline JSON:
-    ```js
+    ```html
     <starcounter-include partial="{&quot;Html&quot;: &quot;/path/to/file.html&quot;, &quot;some&quot;: &quot;data&quot;}"></starcounter-include>
     ```
 
@@ -94,14 +94,8 @@ Name                                    | Detail                 | Description
 
  - local browser `./tests/index.html`
  - [online](http://starcounter.github.io/starcounter-include/tests)
-
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+ 
+## [Contributing and Development](CONTRIBUTING.md)
 
 ## History
 
