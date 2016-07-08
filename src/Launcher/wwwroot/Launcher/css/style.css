@@ -85,25 +85,6 @@ paper-toggle-button.launcher-theme {
     margin: 3px 5px 3px 5px;
 }
 
-paper-toggle-button.launcher-theme::shadow paper-radio-button::shadow #ink[checked] {
-    color: #8a98b0;
-}
-
-paper-toggle-button.launcher-theme::shadow paper-radio-button::shadow #onRadio {
-    background-color: #8a98b0;
-}
-
-paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
-    background-color: #8a98b0;
-}
-
-/*
-// Looks like a redundant piece of styles.
-#filters core-field label {
-    margin-right: 10px;
-}
-*/
-
 #launcher-menu {
     background-color: #333c4e;
     color: #8a98b0;
@@ -240,10 +221,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 .launcher-toolbar paper-icon-button.modified:hover /deep/ path {
     color: red;
     fill: red;
-}
-
-.launcher-toolbar paper-icon-button.launcher-theme:hover {
-    background-color: #6794AC;
 }
 
 .launcher-toolbar div.launcher-theme {
