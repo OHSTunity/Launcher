@@ -83,8 +83,10 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\LauncherHelper.cs" />
     <Compile Include="Api\MainHandlers.cs" />
+    <Compile Include="Helper\LauncherHelper.cs" />
+    <Compile Include="Helper\LauncherSettings.cs" />
+    <Compile Include="Helper\SettingsHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\LauncherPage.json.cs">

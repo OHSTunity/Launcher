@@ -1,13 +1,13 @@
-﻿using Starcounter;
-using Starcounter.Advanced.XSON;
-using Starcounter.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Starcounter;
+using Starcounter.Advanced.XSON;
+using Starcounter.Internal;
 
-namespace Launcher {
+namespace Launcher.Helper {
 
     public static class LauncherHelper {
 
@@ -26,7 +26,10 @@ namespace Launcher {
                 string uri = req.Uri;
 
                 // Checking if we should process this request.
-                if (("/" == uri) || (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) || (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase))) {
+                if (("/" == uri) || 
+                    (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
+                    (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase)) ||
+                    (SettingsHelper.IfBaypassUrl(uri))){
                     return null;
                 }
                 return WrapInLauncher(req);
@@ -107,11 +110,15 @@ namespace Launcher {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                 launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
-                    var p = new SettingsPage() {
-                        Html = "/Launcher/viewmodels/SettingsPage.html"
+                    return Db.Scope(() => {
+                        var p = new SettingsPage()
+                        {
+                            Html = "/Launcher/viewmodels/SettingsPage.html",
+                            Data = SettingsHelper.GetSettings ?? new LauncherSettings()
+                        };
+                        return p;
+                    });
 
-                    };
-                    return p;
                 });
 
                 launcher.uri = req.Uri;
