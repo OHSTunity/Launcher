@@ -111,7 +111,7 @@ namespace Launcher.Helper {
                         var p = new SettingsPage()
                         {
                             Html = "/Launcher/viewmodels/SettingsPage.html",
-                            Data = SettingsHelper.Settings
+                            Data = SettingsHelper.GetSettings()
                         };
                         return p;
                     });
