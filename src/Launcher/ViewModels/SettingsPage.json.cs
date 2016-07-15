@@ -1,4 +1,4 @@
-using Launcher.Helper;
+using Launcher.Database;
 using Starcounter;
 
 namespace Launcher {

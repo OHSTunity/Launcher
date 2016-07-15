@@ -85,7 +85,7 @@
   <ItemGroup>
     <Compile Include="Api\MainHandlers.cs" />
     <Compile Include="Helper\LauncherHelper.cs" />
-    <Compile Include="Helper\LauncherSettings.cs" />
+    <Compile Include="Database\LauncherSettings.cs" />
     <Compile Include="Helper\SettingsHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

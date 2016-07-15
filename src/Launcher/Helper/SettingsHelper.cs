@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Starcounter;
+using Launcher.Database;
 
 namespace Launcher.Helper
 {

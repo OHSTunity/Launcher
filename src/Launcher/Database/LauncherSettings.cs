@@ -1,6 +1,6 @@
 ﻿using Starcounter;
 
-namespace Launcher.Helper
+namespace Launcher.Database
 {
     [Database]
     public class LauncherSettings
