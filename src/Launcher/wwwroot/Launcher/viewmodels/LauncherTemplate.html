@@ -59,7 +59,7 @@
                     </div>
                 </template>
             </div>
-            <template is="imported-template" content$="{{model.user.Launcher.MergedHtml}}" model="{{model.user}}"></template>
+            <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
 
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
                 <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
@@ -77,7 +77,7 @@
         <div id="launcher-menu">
             <launcher-menu>
                 <ul>
-                    <template is="imported-template" content$="{{model.menu.Launcher.MergedHtml}}" model="{{model.menu}}"></template>
+                    <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
                 </ul>
             </launcher-menu>
         </div>
