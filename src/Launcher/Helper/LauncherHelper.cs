@@ -104,21 +104,23 @@ namespace Launcher.Helper {
                 launcher.uri = req.Uri;
                 return launcher;
             });
-
             Handle.GET("/launcher/settings", (Request req) => {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+                var settings = SettingsHelper.GetSettings ?? new LauncherSettings();
+                StarcounterEnvironment.RunWithinApplication("LuncherSettingsLayout", () =>
+                {
+                    launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
+                        return Db.Scope(() => {
+                            var p = new SettingsPage()
+                            {
+                                Html = "/Launcher/viewmodels/SettingsPage.html",
+                                Data = settings
+                            };
+                            return p;
+                        });
 
-                launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
-                    return Db.Scope(() => {
-                        var p = new SettingsPage()
-                        {
-                            Html = "/Launcher/viewmodels/SettingsPage.html",
-                            Data = SettingsHelper.GetSettings ?? new LauncherSettings()
-                        };
-                        return p;
                     });
-
                 });
 
                 launcher.uri = req.Uri;
