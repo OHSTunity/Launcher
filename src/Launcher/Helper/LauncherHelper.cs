@@ -105,24 +105,18 @@ namespace Launcher.Helper {
                 return launcher;
             });
             Handle.GET("/launcher/settings", (Request req) => {
-
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-                var settings = SettingsHelper.GetSettings();
-                StarcounterEnvironment.RunWithinApplication("LuncherSettingsLayout", () =>
-                {
-                    launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
-                        return Db.Scope(() => {
-                            var p = new SettingsPage()
-                            {
-                                Html = "/Launcher/viewmodels/SettingsPage.html",
-                                Data = settings
-                            };
-                            return p;
-                        });
-
+                launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
+                    return Db.Scope(() => {
+                        var p = new SettingsPage()
+                        {
+                            Html = "/Launcher/viewmodels/SettingsPage.html",
+                            Data = SettingsHelper.Settings
+                        };
+                        return p;
                     });
-                });
 
+                });
                 launcher.uri = req.Uri;
                 return launcher;
             });
@@ -222,6 +216,7 @@ namespace Launcher.Helper {
             Layout layout;
             string html = null;
             string partialUrl;
+            string layoutNamespace = "LauncherLayoutInfo";
             var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
             
             // First look for any responses already added. The same set of siblings can be merged
@@ -230,7 +225,7 @@ namespace Launcher.Helper {
                 if (partialJson == publicViewModel)
                     return null;
 
-                if (partialJson is LayoutInfo) {
+                if (partialJson is LayoutInfo && partialJson.GetAppName() == layoutNamespace) {
                     if (layoutInfo == null) {
                         layoutInfo = (LayoutInfo)partialJson; // Reusing first existing instance
                         layoutInfo.AppsResponded.Clear();
@@ -242,9 +237,12 @@ namespace Launcher.Helper {
                 }
             }
 
-            if (layoutInfo == null) {
+            if (layoutInfo == null)
+            {
                 returnNewSibling = true;
-                layoutInfo = new LayoutInfo();
+                StarcounterEnvironment.RunWithinApplication(layoutNamespace, () => {
+                    layoutInfo = new LayoutInfo();
+                });
             }
 
             foreach (Json partialJson in partialJsons) {

@@ -138,8 +138,8 @@ version: 0.5.0
         LauncherPartialPrototype._partialIdChanged = function() {
             var partialId;
             if (this.partial) {
-                if (this.partial.Launcher) {
-                    partialId = this.partial.Launcher.PartialId; //should always be string
+                if (this.partial.LauncherLayoutInfo) {
+                    partialId = this.partial.LauncherLayoutInfo.PartialId; //should always be string
                 }
             }
             if (partialId !== this._lastPartialId) {
@@ -157,8 +157,8 @@ version: 0.5.0
         LauncherPartialPrototype._layoutChanged = function() {
             var layout;
             if (this.partial) {
-                if (this.partial.Launcher) {
-                    layout = this.partial.Launcher.Layout; //should always be string
+                if (this.partial.LauncherLayoutInfo) {
+                    layout = this.partial.LauncherLayoutInfo.Layout; //should always be string
                 }
             }
             if (layout !== this._lastLayout || this._forceLayoutChange) {
@@ -193,7 +193,7 @@ version: 0.5.0
 
                 if (
                     path === "partial.Html" ||
-                    path.indexOf("partial.Launcher.") === 0 ||
+                    path.indexOf("partial.LauncherLayoutInfo.") === 0 ||
                     // path.match(/^partial\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
@@ -219,10 +219,10 @@ version: 0.5.0
          */
         function buildURL(partial, prefix, defaultURL) {
             if(partial){
-                if (partial.Launcher) {
+                if (partial.LauncherLayoutInfo) {
                     //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
                     //should be removed when the original issue with not patched Html is resolved
-                    return partial.Launcher.MergedHtml;
+                    return partial.LauncherLayoutInfo.MergedHtml;
                 }
                 if(partial.Html !== undefined){
                     return partial.Html;
