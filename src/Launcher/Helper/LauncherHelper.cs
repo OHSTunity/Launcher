@@ -107,7 +107,7 @@ namespace Launcher.Helper {
             Handle.GET("/launcher/settings", (Request req) => {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-                var settings = SettingsHelper.GetSettings ?? new LauncherSettings();
+                var settings = SettingsHelper.GetSettings();
                 StarcounterEnvironment.RunWithinApplication("LuncherSettingsLayout", () =>
                 {
                     launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
