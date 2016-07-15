@@ -29,7 +29,7 @@ namespace Launcher.Helper {
                 if (("/" == uri) || 
                     (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
                     (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase)) ||
-                    (SettingsHelper.IfBaypassUrl(uri))){
+                    (SettingsHelper.IfBypassUrl(uri))){
                     return null;
                 }
                 return WrapInLauncher(req);

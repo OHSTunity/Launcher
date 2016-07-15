@@ -21,14 +21,14 @@ namespace Launcher.Helper
             return settings;
         }
 
-        public static bool IfBaypassUrl(string uri)
+        public static bool IfBypassUrl(string uri)
         {
             var urlPattern = GetSettings().IgnoreUrlPattern;
             if (string.IsNullOrEmpty(urlPattern)) return false;
 
             try
             {
-                return Regex.IsMatch(urlPattern, uri);
+                return Regex.IsMatch(uri, urlPattern, RegexOptions.IgnoreCase);
             }
             catch (Exception)
             {
