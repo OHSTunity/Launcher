@@ -1,13 +1,13 @@
-﻿using Starcounter;
-using Starcounter.Advanced.XSON;
-using Starcounter.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Starcounter;
+using Starcounter.Advanced.XSON;
+using Starcounter.Internal;
 
-namespace Launcher {
+namespace Launcher.Helper {
 
     public static class LauncherHelper {
 
@@ -26,7 +26,10 @@ namespace Launcher {
                 string uri = req.Uri;
 
                 // Checking if we should process this request.
-                if (("/" == uri) || (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) || (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase))) {
+                if (("/" == uri) || 
+                    (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
+                    (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase)) ||
+                    (SettingsHelper.IfBypassUrl(uri))){
                     return null;
                 }
                 return WrapInLauncher(req);
@@ -101,19 +104,19 @@ namespace Launcher {
                 launcher.uri = req.Uri;
                 return launcher;
             });
-
             Handle.GET("/launcher/settings", (Request req) => {
-
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-
                 launcher.currentPage = Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
-                    var p = new SettingsPage() {
-                        Html = "/Launcher/viewmodels/SettingsPage.html"
+                    return Db.Scope(() => {
+                        var p = new SettingsPage()
+                        {
+                            Html = "/Launcher/viewmodels/SettingsPage.html",
+                            Data = SettingsHelper.GetSettings()
+                        };
+                        return p;
+                    });
 
-                    };
-                    return p;
                 });
-
                 launcher.uri = req.Uri;
                 return launcher;
             });
@@ -213,6 +216,7 @@ namespace Launcher {
             Layout layout;
             string html = null;
             string partialUrl;
+            string layoutNamespace = "LauncherLayoutInfo";
             var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
             
             // First look for any responses already added. The same set of siblings can be merged
@@ -221,7 +225,7 @@ namespace Launcher {
                 if (partialJson == publicViewModel)
                     return null;
 
-                if (partialJson is LayoutInfo) {
+                if (partialJson is LayoutInfo && partialJson.GetAppName() == layoutNamespace) {
                     if (layoutInfo == null) {
                         layoutInfo = (LayoutInfo)partialJson; // Reusing first existing instance
                         layoutInfo.AppsResponded.Clear();
@@ -233,9 +237,12 @@ namespace Launcher {
                 }
             }
 
-            if (layoutInfo == null) {
+            if (layoutInfo == null)
+            {
                 returnNewSibling = true;
-                layoutInfo = new LayoutInfo();
+                StarcounterEnvironment.RunWithinApplication(layoutNamespace, () => {
+                    layoutInfo = new LayoutInfo();
+                });
             }
 
             foreach (Json partialJson in partialJsons) {
