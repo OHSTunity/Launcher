@@ -258,20 +258,6 @@ namespace Launcher.Helper {
                     if (html != null)
                         html += "&";
                     html += partialJson.GetAppName() + "=" + partialUrl;
-
-                    if (callingAppName.Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        layoutInfo.PartialId = partialUrl;
-                    }
-                    if ("Launcher".Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        // XXX (tomalec):
-                        // As we'are currently replacing Launcher's namespace
-                        // forward at least partial HTML
-                        // In general we need to re-think how to store Launcher-specific partial meta-data
-                        // So it woudl be easy to access it, but we will not have to limit ourselves to one entry per app.
-                        layoutInfo.Html = partialUrl;
-                    }
                 }
             }
             
