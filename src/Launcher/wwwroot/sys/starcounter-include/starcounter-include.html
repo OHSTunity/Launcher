@@ -4,8 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-tile-table> and layout editor.
 Uses juicy-tiles setup given from DB as layout.
-version: 0.5.0
-
+version: 0.6.0
 @FIXME (tomalec): Use scoped Partial and layout data once implemented on server-side
 @FIXME (tomalec): DRY with default starcounter-include
 -->
@@ -30,18 +29,12 @@ version: 0.5.0
 </template>
 <script>
     (function() {
-
-
         var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
-
-
         var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
-
         LauncherPartialPrototype.partial = null;
         // LauncherPartialPrototype.html = null;
         LauncherPartialPrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
         LauncherPartialPrototype.defaultHtml = '';
-
         /**
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
          */
@@ -83,16 +76,13 @@ version: 0.5.0
             // build shadow DOM
             var sroot = this.createShadowRoot();
             sroot.innerHTML = "<style>:host{display:block;}</style><content></content>";
-
             var clone = document.importNode(templ.content, true);
             this.sync = clone.children[0]; // .getElementsByTagName("JUICY-TILES-SETUP-SYNC");
             this.grid = clone.children[1]; // .getElementsByTagName("juicy-tile-table");
             this.template = this.grid.firstElementChild; // .getElementsByTagName("TEMPLATE");
             html && this.template.setAttribute('content', html);
-
             // attach partial
             this.partialChanged();
-
             // attach to light DOM
             this.appendChild(clone);
         };
@@ -115,7 +105,6 @@ version: 0.5.0
             this._partialIdChanged();
             this._layoutChanged();
         };
-
         LauncherPartialPrototype._htmlChanged = function() {
             var html = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
             if (html !== this._lastHtml) {
@@ -134,7 +123,6 @@ version: 0.5.0
                 this.template.model = this.partial
             }
         };
-
         LauncherPartialPrototype._partialIdChanged = function() {
             var partialId;
             if (this.partial) {
@@ -153,7 +141,6 @@ version: 0.5.0
                 this._lastPartialId = partialId;
             }
         };
-
         LauncherPartialPrototype._layoutChanged = function() {
             var layout;
             if (this.partial) {
@@ -180,8 +167,6 @@ version: 0.5.0
                 this._lastLayout = layout;
             }
         };
-
-
         /**
          * Forward Polymer notification downwards from `<template is="dom-bind">`
          * to <template is="imported-template">
@@ -190,7 +175,6 @@ version: 0.5.0
          */
         LauncherPartialPrototype._notifyPath = function(path, value) {
             if (path.indexOf("partial.") == 0) {
-
                 if (
                     path === "partial.Html" ||
                     path.indexOf("partial.LauncherLayoutInfo.") === 0 ||
@@ -237,7 +221,8 @@ version: 0.5.0
                             );
                         }
                     }
-                    // Workaround for https://github.com/Starcounter/starcounter-include/issues/12
+                    // Workaround for https://github.com/Starcounter/Starcounter/issues/3072
+                    // as described in https://github.com/Starcounter/starcounter-include/issues/12
                     return htmls.length && (prefix + htmls.join('&')) || undefined;
                     // return prefix + htmls.join('&');
                 }
@@ -245,10 +230,8 @@ version: 0.5.0
                 return undefined;
             }
         };
-
         document.registerElement('starcounter-include', {
             prototype: LauncherPartialPrototype
         });
     })();
-
 </script>

@@ -2,7 +2,7 @@
 
 ------
 
-Launcher's &lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/StarcounterPrefabs/launcher-include.svg?branch=master)](https://travis-ci.org/StarcounterPrefabs/launcher-include)
+Launcher's &lt;starcounter-include&gt; [![Build Status](https://travis-ci.org/StarcounterPrefabs/launcher-include.svg?branch=gh-pages)](https://travis-ci.org/StarcounterPrefabs/launcher-include)
 ==============
 
 This is Launcher's version of [`<starcounter-include>`](https://github.com/Starcounter/starcounter-include).
@@ -85,3 +85,7 @@ Or [download as ZIP](https://github.com/StarcounterPrefabs/launcher-include/arch
 ## History
 
 For detailed changelog, check [Releases](https://github.com/StarcounterPrefabs/launcher-include/releases).
+
+## License
+
+MIT
