@@ -23,8 +23,7 @@
     "juicy-color-picker": "Juicy/juicy-color-picker#gh-pages",
     "iron-icons": "PolymerElements/iron-icons#~1.0.4",
     "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#~1.0.8",
-    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
-    "juicy-popover": "Juicy/juicy-popover#^0.0.2"
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5"
   },
   "resolutions": {
     "juicy-highlight": "^1.1.0"
