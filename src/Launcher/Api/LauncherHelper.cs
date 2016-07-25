@@ -18,7 +18,7 @@ namespace Launcher {
         public static void Init() {
             Application application = Application.Current;
 
-            Starcounter.MergedPartial.Composition.Register();
+            Starcounter.HTMLComposition.Register();
 
             JsonResponseMerger.RegisterMergeCallback(OnJsonMerge);
 
@@ -57,7 +57,7 @@ namespace Launcher {
                     var p = new Page();
                     return p;
                 });
-                var setup = Starcounter.MergedPartial.Composition.GetUsingKey("/launcher/launchpad");
+                var setup = Starcounter.HTMLComposition.GetUsingKey("/launcher/launchpad");
 
                 if (setup == null) {
                     // launcher.launchpad.layout = null
@@ -210,7 +210,7 @@ namespace Launcher {
         static Json OnJsonMerge(Request request, string callingAppName, IEnumerable<Json> partialJsons) {
             bool returnNewSibling = false;
             LayoutInfo layoutInfo = null;
-            Starcounter.MergedPartial.Composition composition;
+            Starcounter.HTMLComposition composition;
             string html = null;
             string partialUrl;
             var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
@@ -273,7 +273,7 @@ namespace Launcher {
             if (!string.IsNullOrEmpty(html))
                 layoutInfo.MergedHtml = StarcounterConstants.HtmlMergerPrefix + html;
 
-            composition = Db.SQL<Starcounter.MergedPartial.Composition>("SELECT l FROM Starcounter.MergedPartial.Composition l WHERE l.Key=?", layoutInfo.PartialId).First;
+            composition = Db.SQL<Starcounter.HTMLComposition>("SELECT l FROM Starcounter.HTMLComposition l WHERE l.Key=?", layoutInfo.PartialId).First;
             if (composition != null)
                 layoutInfo.Composition = composition.Value;
 
