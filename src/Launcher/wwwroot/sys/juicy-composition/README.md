@@ -53,7 +53,7 @@ Or [download as ZIP](https://github.com/Juicy/juicy-composition/archive/gh-pages
 
 Attribute     | Options     | Default      | Description
 ---           | ---         | ---          | ---
-`auto-stamp`  | *Boolean*   | `false`      | Set to make it stamp Shadow DOM on created and every setup change. It's also a `autoStamp` property.
+`auto-stamp`  | *Boolean*   | `false`      | Set to make it stamp Shadow DOM on created and every composition change. It's also a `autoStamp` property. If set in run-time stamps imediately.
 
 ## Properties
 
@@ -137,7 +137,7 @@ Will make slot names look like this
 
 ### Automatic slots
 In case some content is added dynamically, out you just missed to add some slots for given content we will create slots automatically as well.
-We will append new `<slot>` (`<content>`) element(-s) to the end of the composition. 
+We will append new `<slot>` (`<content>`) element(-s) to the end of the composition.
 
 ## [Contributing and Development](CONTRIBUTING.md)
 

@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
 Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition`.
-version: 0.5.0
+version: 1.0.0
 
 -->
 <!-- Import dependencies -->
@@ -23,10 +23,7 @@ version: 0.5.0
         var isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
 
         var templ = (document._currentScript || document.currentScript).ownerDocument.getElementById("partial-template");
-
-
         var LauncherPartialPrototype = Object.create(HTMLElement.prototype);
-
         LauncherPartialPrototype.partial = null;
         LauncherPartialPrototype.partialId = null;
         //FIXME: this one should not be needed, once we get rid of workarounds for server-side
@@ -34,7 +31,6 @@ version: 0.5.0
         // LauncherPartialPrototype.html = null;
         LauncherPartialPrototype.mergedHtmlPrefix = '/sc/htmlmerger?';
         LauncherPartialPrototype.defaultHtml = '';
-
         /**
          * @see Starcounter/starcounter-include - partialAttributeToProperty It's just a copy
          */
@@ -70,7 +66,7 @@ version: 0.5.0
             this.template = this.compositionElement.firstElementChild; // .getElementsByTagName("TEMPLATE");
             var that = this;
             this.template.addEventListener('stamping', function fetchCompositions(event) {
-                var mergedComposition = new DocumentFragment();
+                var mergedComposition = document.createDocumentFragment();
                 var templates = event.detail.querySelectorAll('template[is="starcounter-composition"]');
                 Array.prototype.forEach.call(templates, function mergeContents(individualComposition) {
                     mergedComposition.appendChild(individualComposition.content);
@@ -86,13 +82,13 @@ version: 0.5.0
             // so it could be change by VanillaJs without Polymer Template Binding
             Object.defineProperties(this, {
                 partial: {
-                set: function(newValue) {
-                    partial = newValue;
-                    starcounterInclude.partialChanged(partial);
-                },
-                get: function() {
-                    return partial;
-                }
+                    set: function(newValue) {
+                        partial = newValue;
+                        starcounterInclude.partialChanged(partial);
+                    },
+                    get: function() {
+                        return partial;
+                    }
                 },
                 partialId: {
                     set: function(newValue) {
@@ -113,10 +109,8 @@ version: 0.5.0
                     }
                 }
             });
-
             // attach partial
             this.partialChanged();
-
             // attach to light DOM
             this.appendChild(clone);
         };
@@ -136,10 +130,9 @@ version: 0.5.0
          */
         LauncherPartialPrototype.partialChanged = function(newVal) {
             this._htmlChanged();
-            this.partialId = this.partial && this.partial.Launcher && this.partial.Launcher.PartialId; //should always be string
+            this.partialId = this.partial && this.partial.LauncherLayoutInfo && this.partial.LauncherLayoutInfo.PartialId; //should always be string
             this._compositionChanged();
         };
-
         LauncherPartialPrototype._htmlChanged = function() {
             var html = buildURL(this.partial, this.mergedHtmlPrefix, this.defaultHtml);
             if (html !== this._lastHtml) {
@@ -158,11 +151,10 @@ version: 0.5.0
                 this.template.model = this.partial
             }
         };
-
         LauncherPartialPrototype._compositionChanged = function(composition) {
             if (this.partial && composition === undefined) {
-                if (this.partial.Launcher) {
-                    composition = this.partial.Launcher.Composition; //should always be string
+                if (this.partial.LauncherLayoutInfo) {
+                    composition = this.partial.LauncherLayoutInfo.Composition; //should always be string
                 }
             }
             // do not change if there is one, it's same as before, and we are not forced
@@ -180,8 +172,6 @@ version: 0.5.0
                 this._lastLayout = composition;
             }
         };
-
-
         /**
          * Forward Polymer notification downwards from `<template is="dom-bind">`
          * to <template is="imported-template">
@@ -190,10 +180,9 @@ version: 0.5.0
          */
         LauncherPartialPrototype._notifyPath = function(path, value) {
             if (path.indexOf("partial.") == 0) {
-
                 if (
                     path === "partial.Html" ||
-                    path.indexOf("partial.Launcher.") === 0 ||
+                    path.indexOf("partial.LauncherLayoutInfo.") === 0 ||
                     // path.match(/^partial\.[^.]+\.Html$/)
                     (path.indexOf('.Html') === path.length - 5) && path.slice(8, -5).indexOf('.') === -1
                 ) {
@@ -219,13 +208,12 @@ version: 0.5.0
          */
         function buildURL(partial, prefix, defaultURL) {
             if(partial){
-                if (partial.Launcher) {
-                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
-                    //should be removed when the original issue with not patched Html is resolved
-                    return partial.Launcher.MergedHtml;
-                }
                 if(partial.Html !== undefined){
                     return partial.Html;
+                } else if (partial.LauncherLayoutInfo) {
+                    //workaround for https://github.com/StarcounterPrefabs/Launcher/issues/224
+                    //should be removed when the original issue with not patched Html is resolved
+                    return partial.LauncherLayoutInfo.MergedHtml;
                 } else {
                     var htmls = [];
                     for (var key in partial){
@@ -269,10 +257,10 @@ version: 0.5.0
                 }
                 // FIXME: bellow is required for save button not to overwrite with old value, but it fails due to puppet error
                 console.info('Direct change to model is required for save button not to overwrite with old value, but it fails due to puppet error.');
-                this.partial.Launcher.Composition = this.storedLayout;
+                this.partial.LauncherLayoutInfo.Composition = this.storedLayout;
                 this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
                 // trigger polymer-notification-protocol-compilant event
-                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.Launcher.Composition'}}));
+                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.LauncherLayoutInfo.Composition'}}));
             }.bind(this);
             return req.send(this.storedLayout);
 
@@ -298,5 +286,4 @@ version: 0.5.0
             prototype: LauncherPartialPrototype
         });
     })();
-
 </script>
