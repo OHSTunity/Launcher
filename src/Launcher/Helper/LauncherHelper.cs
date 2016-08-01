@@ -60,7 +60,8 @@ namespace Launcher.Helper {
                     var p = new Page();
                     return p;
                 });
-                var setup = Starcounter.HTMLComposition.GetUsingKey("/launcher/launchpad");
+                // var setup = Starcounter.HTMLComposition.GetUsingKey("/launcher/launchpad");
+                var setup = Starcounter.Layout.GetSetup("/launcher/launchpad");
 
                 if (setup == null) {
                     // launcher.launchpad.layout = null
@@ -264,9 +265,12 @@ namespace Launcher.Helper {
             layoutInfo.AppName = callingAppName;
             layoutInfo.Path = request.Uri;
             if (!string.IsNullOrEmpty(html))
+            {
                 layoutInfo.MergedHtml = StarcounterConstants.HtmlMergerPrefix + html;
+                layoutInfo.PartialId = layoutInfo.MergedHtml;
+            } 
 
-            composition = Db.SQL<Starcounter.HTMLComposition>("SELECT l FROM Starcounter.HTMLComposition l WHERE l.Key=?", layoutInfo.PartialId).First;
+            composition = Starcounter.HTMLComposition.GetUsingKey(layoutInfo.PartialId);
             if (composition != null)
                 layoutInfo.Composition = composition.Value;
 
