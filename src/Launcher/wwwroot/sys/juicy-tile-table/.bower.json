@@ -32,13 +32,13 @@
     "Tomek Wytrebowicz <tomalecpub@gmail.com>"
   ],
   "homepage": "https://github.com/Juicy/juicy-tile-table",
-  "_release": "e306fc884b",
+  "_release": "3b95274ed6",
   "_resolution": {
     "type": "branch",
     "branch": "gh-pages",
-    "commit": "e306fc884b1ae8a944c8f032f919f719e05b7716"
+    "commit": "3b95274ed61e3fd96838875d680b77ca3aa16446"
   },
-  "_source": "git://github.com/Juicy/juicy-tile-table.git",
+  "_source": "https://github.com/Juicy/juicy-tile-table.git",
   "_target": "gh-pages",
   "_originalSource": "juicy-tile-table"
 }

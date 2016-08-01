@@ -31,7 +31,7 @@
     "tag": "1.4.0",
     "commit": "d386e2f2ea22f3e73063a325e473eef5020764e3"
   },
-  "_source": "git://github.com/Juicy/juicy-tile-list.git",
+  "_source": "https://github.com/Juicy/juicy-tile-list.git",
   "_target": ">=0.3.0",
   "_originalSource": "juicy-tile-list"
 }

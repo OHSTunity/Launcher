@@ -23,7 +23,6 @@
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
-    <link rel="import" href="/sys/iron-icons/iron-icons.html" />
     <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
@@ -41,88 +40,81 @@
         <div class="launcher-layout">
             <div class="launcher-layout__top">
 
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
-        </template>
-
-        <div class="launcher-toolbar launcher-topbar">
-            <a href="/launcher"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
-            <div class="launcher-theme">
-                <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" id="launcher-search-icon">
-                    <i class="glyphicon glyphicon-search"></i>
-                </a>
-                <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
-                <link is="puppet-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
-                <template is="dom-if" if="{{model.searchBar.previewVisible}}">
-                    <div class="preview">
-                        <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
+                <div class="launcher-toolbar launcher-topbar">
+                    <a href="/launcher"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>
+                    <div class="launcher-theme">
+                        <a href="javascript:" value="{{model.searchBar.submit$}}" onclick="++this.value" id="launcher-search-icon">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </a>
+                        <launcher-search-input placeholder="Search" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
+                        <link is="puppet-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />
+                        <template is="dom-if" if="{{model.searchBar.previewVisible}}">
+                            <div class="preview">
+                                <starcounter-include class="preview" partial="{{model.searchBar.preview}}"></starcounter-include>
+                            </div>
+                        </template>
                     </div>
+                    <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+
+                    <template is="dom-if" restamp if="{{!model.layoutModified$}}">
+                        <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" toggles></paper-icon-button>
+                    </template>
+                    <template is="dom-if" restamp if="{{model.layoutModified$}}">
+                        <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" toggles class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
+                    </template>
+
+                    <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
+                </div>
+
+                <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
+                <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
+                <template is="dom-if" restamp if="{{model.editingMode$}}">
+                    <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
                 </template>
-            </div>
-            <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
-
-            <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
-            </template>
-            <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
-            </template>
-
-            <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
-        </div>
-
-        </div>
-        <div class="launcher-layout__main">
-
-        <div id="launcher-menu">
-            <launcher-menu>
-                <ul>
-                    <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
-                </ul>
-            </launcher-menu>
-        </div>
-
-        <div id="launcher-content">
-            <div class="launchpad">
-                <template is="dom-if" if="{{model.launchpad}}">
-                    <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
-                </template>
-                <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
 
             </div>
-            <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
+            <div class="launcher-layout__main">
 
-            <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
-            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
+                <div id="launcher-menu">
+                    <launcher-menu>
+                        <ul>
+                            <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
+                        </ul>
+                    </launcher-menu>
+                </div>
 
-            <!-- Dashboard/search results/settings -->
-            <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
-            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
+                <div id="launcher-content">
+                    <div class="launchpad">
+                        <template is="dom-if" if="{{model.launchpad}}">
+                            <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+                        </template>
+                        <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
 
-            <template is="dom-repeat" items="{{model.workspaces}}">
-                <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
-            </template>
-        </div>
+                    </div>
+                    <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
 
-        <!-- TODO migrate this getModel -->
-        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
-        <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div id="elementSettings" class="launcher-topbar">
-                <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-            </div>
-        </template>
+                    <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
+                    <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
-        <paper-dialog opened="{{model.ConnectionError}}" modal="true">
-            <h4>Connection error</h4>
-            <p>You have been disconnected from server. Please reload page.</p>
-            <div class="buttons">
-                <button class="btn btn-sm btn-default" dialog-dismiss>Close</button>
-                <span>&nbsp;</span>
-                <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
-            </div>
-        </paper-dialog>
+                    <!-- Dashboard/search results/settings -->
+                    <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
+                    <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
+                    <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
+
+                    <template is="dom-repeat" items="{{model.workspaces}}">
+                        <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
+                    </template>
+                </div>
+
+                <paper-dialog opened="{{model.ConnectionError}}" modal="true">
+                    <h4>Connection error</h4>
+                    <p>You have been disconnected from server. Please reload page.</p>
+                    <div class="buttons">
+                        <button class="btn btn-sm btn-default" dialog-dismiss>Close</button>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
+                    </div>
+                </paper-dialog>
 
             </div>
         </div>
