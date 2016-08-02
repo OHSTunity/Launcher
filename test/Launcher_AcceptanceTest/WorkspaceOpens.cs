@@ -6,6 +6,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
+using Launcher.AcceptanceTest;
 
 /*
 This test checks if the workspace opens correctly when
@@ -15,35 +16,12 @@ namespace SeleniumTests {
     [TestFixture("firefox")]
     [TestFixture("chrome")]
     [TestFixture("edge")]
-    public class WorkspaceOpens {
-        private IWebDriver driver;
-        private StringBuilder verificationErrors;
-        private string baseURL;
+    public class WorkspaceOpens : BaseTest
+    {
         private bool acceptNextAlert = true;
-        private string browser;
-
-        public WorkspaceOpens(string browser) {
-            this.browser = browser;
-        }
-
-        [SetUp]
-        public void SetupTest() {
-            driver = WebDriverFactory.Create(this.browser);
-            baseURL = "http://localhost:8080";
-            verificationErrors = new StringBuilder();
-        }
-
-        [TearDown]
-        public void TeardownTest() {
-            try {
-                driver.Quit();
-            }
-            catch (Exception) {
-                // Ignore errors if unable to close the browser
-            }
-            Assert.AreEqual("", verificationErrors.ToString());
-        }
-
+        
+        public WorkspaceOpens(string browser) : base(browser) { }
+        
         [Test]
         public void TheWorkspaceOpensTest() {
             driver.Navigate().GoToUrl(baseURL + "/launcher");

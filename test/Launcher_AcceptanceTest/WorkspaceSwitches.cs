@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using Launcher.AcceptanceTest;
 
 /*
 This test checks if the workspace switches correctly by:
@@ -14,35 +15,12 @@ namespace SeleniumTests {
     [TestFixture("firefox")]
     [TestFixture("chrome")]
     [TestFixture("edge")]
-    public class WorkspaceSwitches {
-        private IWebDriver driver;
-        private StringBuilder verificationErrors;
-        private string baseURL;
+    public class WorkspaceSwitches : BaseTest
+    {
         private bool acceptNextAlert = true;
-        private string browser;
-
-        public WorkspaceSwitches(string browser) {
-            this.browser = browser;
-        }
-
-        [SetUp]
-        public void SetupTest() {
-            driver = WebDriverFactory.Create(this.browser);
-            baseURL = "http://localhost:8080";
-            verificationErrors = new StringBuilder();
-        }
-
-        [TearDown]
-        public void TeardownTest() {
-            try {
-                driver.Quit();
-            }
-            catch (Exception) {
-                // Ignore errors if unable to close the browser
-            }
-            Assert.AreEqual("", verificationErrors.ToString());
-        }
-
+        
+        public WorkspaceSwitches(string browser) : base(browser) { }
+        
         [Test]
         public void TheWorkspaceSwitchesTest() {
             driver.Navigate().GoToUrl(baseURL + "/launcher");

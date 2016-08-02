@@ -1,0 +1,31 @@
+{
+  "name": "starcounter-layout-html-editor",
+  "version": "0.0.0",
+  "description": "Custom Element with Ace editor to change Starcounter's layouts",
+  "license": "MIT",
+  "main": "starcounter-layout-html-editor.html",
+  "keywords": [
+    "polymer",
+    "web-components",
+    "starcounter",
+    "ace"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "preview.png",
+    "package.json",
+    "Gruntfile.json"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "^0.7.2",
+    "polymer": "^1.5.0",
+    "juicy-ace-editor": "^1.1.1"
+  },
+  "devDependencies": {
+    "web-component-tester": "^4.2.1",
+    "starcounter-include": "StarcounterPrefabs/launcher-include#juicy-composition"
+  }
+}

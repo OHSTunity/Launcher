@@ -3,6 +3,7 @@ using Starcounter.Advanced.XSON;
 using Starcounter.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web;
 
@@ -23,8 +24,8 @@ namespace Launcher {
         /// </summary>
         public static void Init() {
             Application application = Application.Current;
-            
-            Layout.Register();
+
+            Starcounter.HTMLComposition.Register();
 
             JsonResponseMerger.RegisterMergeCallback(OnJsonMerge);
 
@@ -63,7 +64,7 @@ namespace Launcher {
                     var p = new Page();
                     return p;
                 });
-                var setup = Layout.GetSetup("/launcher/launchpad");
+                var setup = Starcounter.HTMLComposition.GetUsingKey("/launcher/launchpad");
 
                 if (setup == null) {
                     // launcher.launchpad.layout = null
@@ -160,36 +161,48 @@ namespace Launcher {
 
             // + dummy responses from launcher itself
             // Merges HTML partials according to provided URLs.
-            Handle.GET(StarcounterConstants.HtmlMergerPrefix + "{?}", (String s) => {
+            Handle.GET(StarcounterConstants.HtmlMergerPrefix + "{?}", (string s) => {
 
                 StringBuilder sb = new StringBuilder();
 
-                String[] allPartialInfos = s.Split(new char[] { '&' });
+                string[] allPartialInfos = s.Split(new char[] { '&' });
 
-                foreach (String appNamePlusPartialUrl in allPartialInfos) {
+                foreach (string appNamePlusPartialUrl in allPartialInfos) {
 
-                    String[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
-                    if (String.IsNullOrEmpty(a[1]))
+                    string[] a = appNamePlusPartialUrl.Split(new char[] { '=' });
+                    if (a.Length < 2 || string.IsNullOrEmpty(a[1]))
                         continue;
 
-                    Response resp = Self.GET(a[1]);
+                    Response resp = Self.GET(HttpUtility.UrlDecode(a[1]));
+
                     sb.Append("<imported-template-scope scope=\"" + a[0] + "\">");
                     sb.Append("<template><juicy-tile-group name=\"" + a[0] + "\"></juicy-tile-group></template>");
-                    if (resp != null)
+
+                    if (resp != null) {
                         sb.Append(resp.Body);
+                    } else {
+                        sb.Append("<template></template>");
+                    }
                     sb.Append("</imported-template-scope>");
                 }
 
-                return sb.ToString();
+                string html = sb.ToString();
+
+                if (string.IsNullOrEmpty(html)) {
+                    html = "<template></template>";
+                }
+
+                return html;
             }, new HandlerOptions() {
                 SkipHandlersPolicy = true,
                 ReplaceExistingHandler = true
             });
         }
 
-        static void MarkWorkspacesInactive(Arr<Json> workspaces) {
-            foreach (LayoutInfo layoutInfo in workspaces) {
+        static void MarkWorkspacesInactive(Arr<LayoutInfo> workspaces) {
+            foreach (var layoutInfo in workspaces) {
                 layoutInfo.ActiveWorkspace = false;
+                layoutInfo.AutoRefreshBoundProperties = false;
             }
         }
 
@@ -198,17 +211,10 @@ namespace Launcher {
             launcher.uri = req.Uri;
 
             // First check if a workspace already exists for the app that registered the uri.
-            LayoutInfo workspace = null;
             string appName = req.HandlerAppName;
-            for (var i = 0; i < launcher.workspaces.Count; i++) {
-                var existingWs = (launcher.workspaces[i] as LayoutInfo);
-                if (existingWs == null) continue;
-                
-                if (existingWs.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase)) {
-                    workspace = existingWs;
-                    break;
-                }
-            }
+            LayoutInfo workspace = launcher.workspaces
+                .OfType<LayoutInfo>()
+                .FirstOrDefault(ws => ws.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase));
 
             if (workspace == null) {
                 workspace = new LayoutInfo() { AppName = appName };
@@ -217,14 +223,16 @@ namespace Launcher {
             workspace.ActiveWorkspace = true;
 
             // Call proxied request
-            Response resp = Self.CallUsingExternalRequest(req, () => { return workspace; });
+            Self.CallUsingExternalRequest(req, () => workspace);
+            // this has to be called after calling request due to merging that happens inside
+            workspace.AutoRefreshBoundProperties = true;
             return launcher;
         }
 
         static Json OnJsonMerge(Request request, string callingAppName, IEnumerable<Json> partialJsons) {
             bool returnNewSibling = false;
             LayoutInfo layoutInfo = null;
-            Layout layout;
+            Starcounter.HTMLComposition composition;
             string html = null;
             string partialUrl;
             var publicViewModel = (Session.Current != null) ? Session.Current.PublicViewModel : null;
@@ -256,14 +264,28 @@ namespace Launcher {
                 var appItem = layoutInfo.AppsResponded.Add();
                 appItem.StringValue = partialJson.GetAppName();
 
-                partialUrl = partialJson.GetHtmlPartialUrl();
+                if (partialJson.Template == null) {
+                    continue;
+                }
+
+                partialUrl = partialJson["Html"] as string;
                 if (!string.IsNullOrEmpty(partialUrl)) {
                     if (html != null)
                         html += "&";
                     html += partialJson.GetAppName() + "=" + partialUrl;
 
-                    if (callingAppName.Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase)) {
+                    if (callingAppName.Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase))
+                    {
                         layoutInfo.PartialId = partialUrl;
+                    }
+                    if ("Launcher".Equals(partialJson.GetAppName(), StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        // XXX (tomalec):
+                        // As we'are currently replacing Launcher's namespace
+                        // forward at least partial HTML
+                        // In general we need to re-think how to store Launcher-specific partial meta-data
+                        // So it woudl be easy to access it, but we will not have to limit ourselves to one entry per app.
+                        layoutInfo.Html = partialUrl;
                     }
                 }
             }
@@ -273,9 +295,9 @@ namespace Launcher {
             if (!string.IsNullOrEmpty(html))
                 layoutInfo.MergedHtml = StarcounterConstants.HtmlMergerPrefix + html;
 
-            layout = Db.SQL<Layout>("SELECT l FROM Starcounter.Layout l WHERE l.Key=?", layoutInfo.PartialId).First;
-            if (layout != null)
-                layoutInfo.Layout = layout.Value;
+            composition = Db.SQL<Starcounter.HTMLComposition>("SELECT l FROM Starcounter.HTMLComposition l WHERE l.Key=?", layoutInfo.PartialId).First;
+            if (composition != null)
+                layoutInfo.Composition = composition.Value;
 
             if (returnNewSibling)
                 return layoutInfo;

@@ -18,9 +18,37 @@ body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
     color: #4c444b;
 }
 
+.launcher-layout {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+}
+
+.launcher-layout__top {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
+    z-index: 100;
+}
+
+.launcher-layout__main {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
 #launcher-content {
     position: relative;
     left: 0px;
+    height:100%;
     flex: 1;
 }
 .workspace-no
@@ -30,12 +58,10 @@ body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
     flex-direction:row;
 }
 
-.workspace > juicy-tile-table {
+.workspace > juicy-tile-table,
+.workspace > juicy-composition {
     /*flex: 1 1 auto;*/
     padding: 10px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
-
-
-
 }
 
 starcounter-include.workspace {
@@ -270,12 +296,19 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #fff;
 }
 
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
+.launcher-toolbar > paper-icon-button:hover::shadow iron-icon,
+.launcher-toolbar > paper-icon-button:hover iron-icon,
+.launcher-toolbar #launcher-settings-icon:hover {
     color: white;
     transition: -webkit-transform 1s;
     transition: transform 1s;
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
+}
+
+#launcher-layout-editor{
+    box-shadow: 0px 0px 3px black;
+    padding: 0 1em;
 }
 
 div.launcher-theme input,
@@ -410,18 +443,20 @@ body.loading #tu-splash
     to {transform: rotateZ(360deg);}
 }
 
-body.loading #tu-splash #tu-splash-spinner {        
+body.loading #tu-splash #tu-splash-spinner {
     display: inline-block;
     -webkit-animation: spin 1.5s linear infinite;
     -moz-animation: spin 1.5s linear infinite;
     animation: spin 1.5s linear infinite;
 }
 
-body.loading #tu-splash #tu-splash-text {        
+body.loading #tu-splash #tu-splash-text {
     font-size: 18px;
     display: inline-block;
     padding: 10px;
 }
 
-
-
+.launcher-accept-cookie-button {
+    min-width: 55px;
+    margin-left: 10px;
+}
