@@ -1,4 +1,4 @@
-<!-- juicy-composition @version: 0.0.2 @license: MIT -->
+<!-- juicy-composition @version: 0.0.5 @license: MIT -->
 <script>
 (function() {
     // Creates an object based in the HTML Element prototype
@@ -45,8 +45,10 @@
                 if(this.autoStamp && newVal !== composition){
                     composition = newVal;
                     this.stamp();
+                    composition = this.shadowRoot;
+                } else {
+                    composition = newVal;
                 }
-                composition = newVal;
             }
         });
         this.elementsMap = {};
@@ -152,7 +154,8 @@
     JuicyCompositionPrototype.attributeChangedCallback = function(attr, oldVal, newVal) {
         switch(attr){
             case "auto-stamp":
-                this.autoStamp = !!newVal;
+                this.autoStamp = newVal !== null && newVal !== undefined;
+                this.autoStamp && oldVal != newVal && this.stamp();
                 break;
             case 'composition':
                 this.composition = newVal || null;
@@ -216,7 +219,7 @@
 
             // forward per-element attributes here
 
-            
+
             // </V1 slot shim>
             // attach a selectable key to each light-dom node
             child.hasAttribute('slot') || child.setAttribute('slot', id);

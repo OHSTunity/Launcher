@@ -60,14 +60,12 @@
         <span id="tu-splash-spinner">⚇</span>
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
-        </template>
 
         <div class="launcher-toolbar launcher-topbar">
             <div style="margin-left: 10px;min-width: 129px;max-width: 195px;">
                 <tu-logo-with-spinner></tu-logo-with-spinner>
             </div>
+
             <div class="toolbar-padding"></div>
             <span class="toolbar-divider"></span>
             <div id="launcher-menu">
@@ -86,22 +84,24 @@
 
             <template is="imported-template" content$="{{model.user.Launcher.MergedHtml}}" model="{{model.user}}"></template>
 
-<!--
+
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
               <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" toggles></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
               <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" toggles class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
             </template>
--->
+
             <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
             <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
-            <template is="dom-if" restamp if="{{model.editingMode$}}">
-                <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-            </template>
+
             <!--<a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
 -->
         </div>
+
+        <template is="dom-if" restamp if="{{model.editingMode$}}">
+            <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
+        </template>
 
         <div id="launcher-content">
 

@@ -107,25 +107,6 @@ paper-toggle-button.launcher-theme {
     margin: 3px 5px 3px 5px;
 }
 
-paper-toggle-button.launcher-theme::shadow paper-radio-button::shadow #ink[checked] {
-    color: #8a98b0;
-}
-
-paper-toggle-button.launcher-theme::shadow paper-radio-button::shadow #onRadio {
-    background-color: #8a98b0;
-}
-
-paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
-    background-color: #8a98b0;
-}
-
-/*
-// Looks like a redundant piece of styles.
-#filters core-field label {
-    margin-right: 10px;
-}
-*/
-
 #launcher-menu {
     color: white;
     padding-left: 6px;
@@ -278,10 +259,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     fill: red;
 }
 
-.launcher-toolbar paper-icon-button.launcher-theme:hover {
-    background-color: #6794AC;
-}
-
 .launcher-toolbar div.launcher-theme {
     width: 100%;
 }
@@ -294,16 +271,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 .launcher-toolbar div.launcher-theme:hover,
 .launcher-toolbar div.launcher-theme:has(:focus) {
     background-color: #fff;
-}
-
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon,
-.launcher-toolbar > paper-icon-button:hover iron-icon,
-.launcher-toolbar #launcher-settings-icon:hover {
-    color: white;
-    transition: -webkit-transform 1s;
-    transition: transform 1s;
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
 }
 
 #launcher-layout-editor{
