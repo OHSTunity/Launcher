@@ -70,7 +70,7 @@
             <span class="toolbar-divider"></span>
             <div id="launcher-menu">
                <ul>
-                  <template is="imported-template" content$="{{model.menu.Launcher.MergedHtml}}" model="{{model.menu}}"></template>
+                  <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
                </ul>
             </div>
             <div flex=""></div>
@@ -82,15 +82,15 @@
             </core-field>
             <span class="toolbar-divider"></span>
 
-            <template is="imported-template" content$="{{model.user.Launcher.MergedHtml}}" model="{{model.user}}"></template>
+            <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
 
-
+<!--
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
               <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" toggles></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
               <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" toggles class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
-            </template>
+            </template>-->
 
             <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
             <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
@@ -168,6 +168,7 @@
             };
 
             template.toggleEditor = function () {
+              console.log('toggle');
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
 
