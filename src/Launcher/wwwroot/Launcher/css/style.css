@@ -214,6 +214,7 @@ paper-toggle-button.launcher-theme {
     color: white;
     font-size: 28px;
     height: 47px;
+    flex-basis: 47px;
     line-height: normal; /*reset bootstrap line-height*/
     padding: 0 10px 0 10px;
     display: -webkit-box !important;
@@ -226,8 +227,6 @@ paper-toggle-button.launcher-theme {
     -moz-align-items: center;
     -webkit-align-items: center;
     align-items: center;
-    -webkit-flex: 1 1 auto;
-    flex: 1 1 auto;
 }
 
 .launcher-toolbar .glyphicon {
