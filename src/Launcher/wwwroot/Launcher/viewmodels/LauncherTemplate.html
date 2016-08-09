@@ -6,7 +6,6 @@
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="/sys/polymer/polymer.html" />
-    <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
 
     <!-- Import Starcounter specific components -->
     <link rel="import" href="/sys/starcounter.html" />
@@ -106,15 +105,7 @@
                     </template>
                 </div>
 
-                <paper-dialog opened="{{model.ConnectionError}}" modal="true">
-                    <h4>Connection error</h4>
-                    <p>You have been disconnected from server. Please reload page.</p>
-                    <div class="buttons">
-                        <button class="btn btn-sm btn-default" dialog-dismiss>Close</button>
-                        <span>&nbsp;</span>
-                        <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
-                    </div>
-                </paper-dialog>
+
 
             </div>
         </div>
@@ -135,15 +126,7 @@
             template.toggleEditor = function () {
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
-
-            template.addEventListener("dom-change", function () {
-                var puppet = document.querySelector("puppet-client");
-
-                puppet.addEventListener("connectionerror", function (e) {
-                    e.detail.handled = true;
-                    template.set("model.ConnectionError", true);
-                });
-            });
+            
         })();
     </script>
 
