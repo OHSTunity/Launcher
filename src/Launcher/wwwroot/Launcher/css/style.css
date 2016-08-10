@@ -101,7 +101,8 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 */
 
 #launcher-menu {
-    color: white;
+    /*color: white;*/
+    color: rgba(0, 0, 0, 0.6);
     padding-left: 6px;
 }
 
@@ -203,9 +204,10 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
 
 /* Toolbar custom theme */
 .launcher-toolbar {
-    background-color: #43525d;
+    /*background-color: #43525d;*/
+    background-image: linear-gradient(-195deg, rgba(35, 190, 182, 0.5) 25%, #045e9c 100%);
     color: white;
-    font-size: 28px;
+    font-size: 18px;
     height: 47px;
     line-height: normal; /*reset bootstrap line-height*/
     padding: 0 10px 0 10px;
@@ -410,18 +412,15 @@ body.loading #tu-splash
     to {transform: rotateZ(360deg);}
 }
 
-body.loading #tu-splash #tu-splash-spinner {        
+body.loading #tu-splash #tu-splash-spinner {
     display: inline-block;
     -webkit-animation: spin 1.5s linear infinite;
     -moz-animation: spin 1.5s linear infinite;
     animation: spin 1.5s linear infinite;
 }
 
-body.loading #tu-splash #tu-splash-text {        
+body.loading #tu-splash #tu-splash-text {
     font-size: 18px;
     display: inline-block;
     padding: 10px;
 }
-
-
-
