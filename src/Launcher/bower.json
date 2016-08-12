@@ -1,6 +1,6 @@
 {
   "name": "LauncherClient",
-  "version": "3.0.1",
+  "version": "5.0.0-develop.0",
   "homepage": "https://github.com/StarcounterSamples/Launcher",
   "private": true,
   "ignore": [
