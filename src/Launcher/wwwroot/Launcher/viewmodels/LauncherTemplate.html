@@ -31,7 +31,6 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
     </script>
 
-
     <link rel="import" href="/sys/polymer/polymer.html" />
 
 
@@ -43,7 +42,6 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
     <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html" />
 
     <!-- Import our elements -->
-    <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search/launcher-search.html" />
@@ -59,13 +57,12 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
-    <link rel="import" href="/sys/iron-icons/iron-icons.html" />
     <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
-	  <!--<link rel="import" href="/sys/dom-imported/dom-imported.html" />-->
-    <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
+    <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
+
 
     <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
@@ -83,19 +80,17 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
         <span id="tu-splash-spinner">⚇</span>
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
-        </template>
 
         <div class="launcher-toolbar launcher-topbar">
             <div style="margin-left: 10px;min-width: 129px;max-width: 195px;">
                 <tu-logo-with-spinner></tu-logo-with-spinner>
             </div>
+
             <div class="toolbar-padding"></div>
             <span class="toolbar-divider"></span>
             <div id="launcher-menu">
                <ul>
-                  <template is="imported-template" content$="{{model.menu.Launcher.MergedHtml}}" model="{{model.menu}}"></template>
+                  <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
                </ul>
             </div>
             <div flex=""></div>
@@ -107,39 +102,51 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
             </core-field>
             <span class="toolbar-divider"></span>
 
-            <template is="imported-template" content$="{{model.user.Launcher.MergedHtml}}" model="{{model.user}}"></template>
+            <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+
+<!--
+            <template is="dom-if" restamp if="{{!model.layoutModified$}}">
+              <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" toggles></paper-icon-button>
+            </template>
+            <template is="dom-if" restamp if="{{model.layoutModified$}}">
+              <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" toggles class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
+            </template>-->
+
+            <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
+            <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
 
             <!--<a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
 -->
         </div>
 
+        <template is="dom-if" restamp if="{{model.editingMode$}}">
+            <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
+        </template>
+
         <div id="launcher-content">
 
             <tu-layout-panels>
               <div main>
+                <div class="launchpad">
+                    <template is="dom-if" if="{{model.launchpad}}">
+                        <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
+                    </template>
+                    <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
 
-                  <div class="launchpad">
-
-                      <template is="dom-if" if="{{model.launchpad}}">
-                          <launcher-launchpad class="visible" apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
-                      </template>
-
-                  </div>
-
-                  <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
+                </div>
+                <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
 
                   <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
                   <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
 
                   <!-- Dashboard/search results/settings -->
                   <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
-
                   <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
                   <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
 
-                <template is="dom-repeat" items="{{model.workspaces}}">
-                    <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
-                </template>
+                  <template is="dom-repeat" items="{{model.workspaces}}">
+                      <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
+                  </template>
               </div>
               <tu-layout-multiview context data="{{model.contextbar}}"></tu-layout-multiview>
               <tu-layout-multiview right data="{{model.sidebar}}"></tu-layout-multiview>
@@ -166,8 +173,6 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
                 <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
             </div>
         </paper-dialog>
-
-        <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
     </template>
     <script>
         (function () {
@@ -183,6 +188,7 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
             };
 
             template.toggleEditor = function () {
+              console.log('toggle');
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
 

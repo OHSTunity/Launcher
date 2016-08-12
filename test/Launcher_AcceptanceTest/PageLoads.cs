@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using Launcher.AcceptanceTest;
 
 /*
 This test checks if the Launcher loads correctly
@@ -12,39 +13,12 @@ namespace SeleniumTests
     [TestFixture("firefox")]
     [TestFixture("chrome")]
     [TestFixture("edge")]
-    public class PageLoads
+    public class PageLoads : BaseTest
     {
-        private IWebDriver driver;
-        private StringBuilder verificationErrors;
-        private string baseURL;
         private bool acceptNextAlert = true;
-        private string browser;
-
-        public PageLoads(string browser) {
-            this.browser = browser;
-        }
-
-        [SetUp]
-        public void SetupTest()
-        {
-            driver = WebDriverFactory.Create(this.browser);
-            baseURL = "http://localhost:8080";
-            verificationErrors = new StringBuilder();
-        }
         
-        [TearDown]
-        public void TeardownTest()
-        {
-            try
-            {
-                driver.Quit();
-            }
-            catch (Exception)
-            {
-                // Ignore errors if unable to close the browser
-            }
-            Assert.AreEqual("", verificationErrors.ToString());
-        }
+        public PageLoads(string browser) : base(browser) { }
+
         
         [Test]
         public void ThePageLoadsTest()

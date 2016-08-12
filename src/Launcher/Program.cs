@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Launcher.Helper;
 using Starcounter;
 
 namespace Launcher {

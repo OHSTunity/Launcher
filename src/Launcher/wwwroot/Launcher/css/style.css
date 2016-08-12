@@ -18,9 +18,37 @@ body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
     color: #4c444b;
 }
 
+.launcher-layout {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+}
+
+.launcher-layout__top {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
+    z-index: 100;
+}
+
+.launcher-layout__main {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
 #launcher-content {
     position: relative;
     left: 0px;
+    height:100%;
     flex: 1;
 }
 .workspace-no
@@ -30,12 +58,10 @@ body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
     flex-direction:row;
 }
 
-.workspace > juicy-tile-table {
+.workspace > juicy-tile-table,
+.workspace > juicy-composition {
     /*flex: 1 1 auto;*/
     padding: 10px; /*this is the desired padding - labelled as WS on Jocke's screenshot. In future this margin will be created by the outermost gap*/
-
-
-
 }
 
 starcounter-include.workspace {
@@ -80,25 +106,6 @@ starcounter-include.workspace[visible] {
 paper-toggle-button.launcher-theme {
     margin: 3px 5px 3px 5px;
 }
-
-paper-toggle-button.launcher-theme::shadow paper-radio-button::shadow #ink[checked] {
-    color: #8a98b0;
-}
-
-paper-toggle-button.launcher-theme::shadow paper-radio-button::shadow #onRadio {
-    background-color: #8a98b0;
-}
-
-paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
-    background-color: #8a98b0;
-}
-
-/*
-// Looks like a redundant piece of styles.
-#filters core-field label {
-    margin-right: 10px;
-}
-*/
 
 #launcher-menu {
     /*color: white;*/
@@ -209,6 +216,7 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     color: white;
     font-size: 18px;
     height: 47px;
+    flex-basis: 47px;
     line-height: normal; /*reset bootstrap line-height*/
     padding: 0 10px 0 10px;
     display: -webkit-box !important;
@@ -221,8 +229,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     -moz-align-items: center;
     -webkit-align-items: center;
     align-items: center;
-    -webkit-flex: 1 1 auto;
-    flex: 1 1 auto;
 }
 
 .launcher-toolbar .glyphicon {
@@ -254,10 +260,6 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     fill: red;
 }
 
-.launcher-toolbar paper-icon-button.launcher-theme:hover {
-    background-color: #6794AC;
-}
-
 .launcher-toolbar div.launcher-theme {
     width: 100%;
 }
@@ -272,12 +274,9 @@ paper-toggle-button.launcher-theme::shadow #toggleBar[checked] {
     background-color: #fff;
 }
 
-.launcher-toolbar > paper-icon-button:hover::shadow iron-icon {
-    color: white;
-    transition: -webkit-transform 1s;
-    transition: transform 1s;
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+#launcher-layout-editor{
+    box-shadow: 0px 0px 3px black;
+    padding: 0 1em;
 }
 
 div.launcher-theme input,
@@ -424,3 +423,9 @@ body.loading #tu-splash #tu-splash-text {
     display: inline-block;
     padding: 10px;
 }
+
+.launcher-accept-cookie-button {
+    min-width: 55px;
+    margin-left: 10px;
+}
+

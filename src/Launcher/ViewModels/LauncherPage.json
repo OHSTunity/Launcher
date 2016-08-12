@@ -27,8 +27,9 @@
             "thumbnail": { }
         }
     ],
-    "contextbar": {},
-	"workspaces": [ ],
+
+  "contextbar": {},
+	"workspaces": [{"$":  {"Reuse" :  "Launcher.LayoutInfo" } } ],
 	"sidebar": {},
-    "uri": ""
+  "uri": ""
 }

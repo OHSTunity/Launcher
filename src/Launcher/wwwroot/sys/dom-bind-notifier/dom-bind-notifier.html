@@ -1,0 +1,317 @@
+<!--
+Element: dom-bind-notifier
+version: 1.3.1
+Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-bind)
+-->
+
+
+<link href="../polymer/polymer.html" rel="import">
+
+<dom-module id="dom-bind-notifier">
+
+<template strip-whitespace>
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+</template>
+
+<script type="text/javascript">(function() {
+  Polymer({
+    is: 'dom-bind-notifier',
+    _isAttached: false,
+    properties: {
+      ref: {
+        type: String,
+        observer: '_refChanged'
+      },
+      observedObject: {
+        type: Object,
+        observer: '_observedObjectChanged'
+      },
+      path: {
+        type: String,
+        value: "model",
+        reflect: true
+      },
+      deep: {
+        type: Boolean,
+        value: false,
+        observer: '_deepChanged'
+      }
+    },
+    created: function(){
+      // fix context for observer, make it instance method.
+      this.observer = this._observer.bind(this);
+      this.observer_array = this._observer_array.bind(this);
+
+    },
+    attached: function() {
+      this._isAttached = true;
+      this._stamp();
+      this.observe();
+    },
+    detached: function() {
+      this._isAttached = false;
+      this.unobserve();
+    },
+    _refChanged: function(newRef, oldRef) {
+      if (oldRef) {
+        return this._stamp();
+      }
+    },
+    _observedObjectChanged: function(newObj, oldObj) {
+      if (oldObj) {
+        this.unobserve(oldObj);
+      }
+      this._isAttached && this.observe();
+    },
+    _deepChanged: function(oldVal, newVal){
+      if(oldVal != newVal){
+        this.unobserve();
+        this.observe();
+      }
+    },
+    _stamp: function() {
+      var root, template, templateRoot;
+
+      if(this.ref){
+        root = Polymer.dom(this).parentNode;
+        while (Polymer.dom(root).parentNode) {
+          root = Polymer.dom(root).parentNode;
+        }
+        template = Polymer.dom(root).querySelector("template#" + this.ref);
+        if (!template) {
+          template = document.querySelector("template#" + this.ref);
+          if(!template){
+              throw "There is no template#" + this.ref;
+          }
+        }
+      } else {
+        template = this.nextElementSibling;
+        while(template && template.tagName != "TEMPLATE"){
+          template = template.nextElementSibling;
+        }
+        if(!template){
+            throw "There is no next `<template>` sibling.";
+        }
+      }
+      this.template = template;
+    },
+    _observer: function(arr){
+      var change;
+      for(var changeNo = 0; changeNo < arr.length; changeNo++){
+        change = arr[changeNo];
+        notifyTemplate(this, change);
+        // observe new nodes / unobserve old
+        if( this.deep ){
+          switch(change.type){
+            case "update":
+              // observe new nodes
+              this.unobserve(change.oldValue);
+              this.observe(change.object[ change.name ]);
+            break;
+            case "delete":
+              this.unobserve(change.oldValue);
+            break;
+            case "add":
+              // observe new nodes
+              this.observe(change.object[ change.name ]);
+            break;
+          }
+        }
+      }
+      this.fire("change", arr)
+    },
+    _observer_array: function(arr){
+      var change;
+      var addedCount, removedCount;
+
+      // do nothing for Polymer's bloatware
+      if(arr.length === 1 && arr[0].name === "splices"){
+        return ;
+      }
+
+      for(var changeNo = 0; changeNo < arr.length; changeNo++){
+        change = arr[changeNo];
+        // do nothing for Polymer's bloatware
+        if(change.name === "splices"){
+          continue;
+        }
+        switch(change.type){
+          // TODO: add support for changes to array propertires add, update, delete
+          case "splice":
+            this.template.notifySplices(
+              this.path + getPath(this.observedObject, change.object),
+              [{
+                object: change.object,
+                type: 'splice',
+                index: change.index,
+                addedCount: change.addedCount,
+                removed: change.removed
+              }]);
+            // observe new nodes
+            if( this.deep ){
+              for( addedCount = 0; addedCount < change.addedCount; addedCount++){
+                this.observe(change.object[ addedCount + change.index ]);
+              }
+              for( removedCount = 0; removedCount < change.removed.length; removedCount++){
+                this.unobserve(change.removed[ removedCount ]);
+              }
+            }
+          break;
+          case "update":
+            if(!isNormalInteger(change.name)){ // array property
+                notifyTemplate(this, change);
+            } else { // if array item
+              this.template.notifySplices(
+                this.path + getPath(this.observedObject, change.object),
+                [{
+                  object: change.object,
+                  type: 'splice',
+                  index: parseInt(change.name),
+                  addedCount: 1,
+                  removed: [change.oldValue]
+                }]
+              );
+            }
+            // observe new nodes
+            if( this.deep ){
+              this.unobserve(change.oldValue);
+              this.observe(change.object[ addedCount + change.index ]);
+            }
+          break;
+          case "delete":
+            notifyTemplate(this, change);
+            // observe new nodes
+            if( this.deep ){
+              this.unobserve(change.oldValue);
+            }
+          break;
+          case "add":
+            notifyTemplate(this, change);
+            // observe new nodes
+            if( this.deep ){
+              this.observe(change.object[ addedCount + change.index ]);
+            }
+          break;
+        }
+        // this.template.notifyPath(this.path + '.' + getPath(this.observedObject, change.object) + change.name, change.object[change.name]);
+      }
+      this.fire("change", arr)
+    },
+    unobserve: function(obj){
+      obj = typeof obj!== "undefined" ? obj : this.observedObject;
+      if(!(typeof obj === "object") || obj === null){
+        return false;
+      }
+      return this.deep ?
+        deepUnobserve(obj, this.observer, this.observer_array) :
+        _isArray( obj ) ?
+          Array.unobserve(obj, this.observer_array) :
+          Object.unobserve(obj, this.observer);
+    },
+    observe: function(obj){
+      obj = typeof obj!== "undefined" ? obj : this.observedObject;
+      if(!(typeof obj === "object")){
+        return false;
+      }
+      return this.deep ?
+        deepObserve(obj, this.observer, this.observer_array) :
+        _isArray( obj ) ?
+          Array.observe(obj, this.observer_array) :
+          Object.observe(obj, this.observer);
+    }
+  });
+
+
+  /// Listen to changes on an object tree, accumulate patches
+  function deepObserve(obj, observer, observer_array) {
+    if(_isArray(obj)){
+      Array.observe(obj, observer_array);
+    } else {
+      Object.observe(obj, observer);
+    }
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            var v = obj[key];
+            if (v && typeof (v) === "object") {
+                deepObserve(v, observer, observer_array);
+            }
+        }
+    }
+    return observer;
+  }
+  function deepUnobserve(obj, observer, observer_array) {
+    if(_isArray(obj)){
+      Array.unobserve(obj, observer_array);
+    } else {
+      Object.unobserve(obj, observer);
+    }
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            var v = obj[key];
+            if (v && typeof (v) === "object") {
+                deepUnobserve(v, observer, observer_array);
+            }
+        }
+    }
+    return observer;
+  }
+  function _getPathRecursive(root, obj) {
+      var found;
+      for (var key in root) {
+          if (root.hasOwnProperty(key)) {
+              if (root[key] === obj) {
+                  return '.' + key;
+              } else if (typeof root[key] === 'object') {
+                  found = _getPathRecursive(root[key], obj);
+                  if (found !== false) {
+                      return '.' + key + found;
+                  }
+              }
+          }
+      }
+      return false;
+  }
+
+  function getPath(root, obj) {
+      if (root === obj) {
+          return '';
+      }
+      var path = _getPathRecursive(root, obj);
+      if (path === false) {
+          throw new OriginalError("Object not found in root");
+      }
+      return path;
+  }
+  /**
+   * Helper function to DRY notifying Polymer Template with observed change
+   * @param  {dom-bind-notifier} element
+   * @param  {Object} change  change in Object.observe format
+   */
+  function notifyTemplate(element, change){
+    var path = element.path + getPath(element.observedObject, change.object) + '.' + change.name;
+    element.template.notifyPath(path, change.object[change.name]);
+  }
+
+  function isNormalInteger(str) {
+    var n = ~~Number(str);
+    return String(n) === str && n >= 0;
+  }
+
+
+  var _isArray;
+  if (Array.isArray) {
+    _isArray = Array.isArray;
+  } else {
+    _isArray = function (obj) {
+        return obj.push && typeof obj.length === 'number';
+    };
+  }
+
+}());
+</script>
+
+</dom-module>
