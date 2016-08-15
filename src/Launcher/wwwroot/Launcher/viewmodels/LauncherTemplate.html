@@ -3,7 +3,7 @@
 <head>
     <title>Tunity</title>
     <script>
-    /*
+      /*
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -30,9 +30,9 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
       window.Polymer.dom = "shadow";
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
     </script>
+    
 
     <link rel="import" href="/sys/polymer/polymer.html" />
-
 
 
     <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
@@ -73,6 +73,16 @@ mixpanel.init("372a0f527e2227887404d5436c4ed866");
     <link rel="stylesheet" href="/Launcher/css/style.css" />
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
+    <style>
+
+        @element ".container" and (min-width: 160px) {
+          .container {
+            background: gold;
+            border: 10px solid red;
+          }
+        }
+        
+    </style>
 </head>
 <body is="launcher-main" class="loading">
     <div id="tu-splash">

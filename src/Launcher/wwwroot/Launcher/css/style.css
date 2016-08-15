@@ -13,6 +13,12 @@ body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
     min-width: 100px !important;
 }
 
+body /deep/ juicy-shadow-row,  body /deep/ .juicy-shadow-row
+{
+    height: 120px !important;
+}
+
+
 #launcher-menu {
     flex: 1 0 auto;
     color: #4c444b;
