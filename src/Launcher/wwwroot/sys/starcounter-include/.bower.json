@@ -31,12 +31,12 @@
     "web-component-tester": "Polymer/web-component-tester#>=4.2.2",
     "polymer": ">=1.1.3"
   },
-  "version": "1.1.0",
-  "_release": "1.1.0",
+  "version": "1.2.0",
+  "_release": "1.2.0",
   "_resolution": {
     "type": "version",
-    "tag": "1.1.0",
-    "commit": "b1d3e3e731d701a3fa746d81e9dc76c312360e1a"
+    "tag": "1.2.0",
+    "commit": "015c82c96d28a407582880f9aaffc65882349d37"
   },
   "_source": "git://github.com/StarcounterSamples/launcher-include.git",
   "_target": ">=1.0.0",

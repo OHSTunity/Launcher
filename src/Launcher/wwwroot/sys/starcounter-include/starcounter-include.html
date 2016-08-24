@@ -4,7 +4,7 @@ Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
 Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition`.
-version: 1.1.0
+version: 1.2.0
 
 -->
 <!-- Import dependencies -->
@@ -154,7 +154,7 @@ version: 1.1.0
         LauncherPartialPrototype._compositionChanged = function(composition) {
             if (this.partial && composition === undefined) {
                 if (this.partial.LauncherLayoutInfo) {
-                    composition = this.partial.LauncherLayoutInfo.Composition; //should always be string
+                    composition = this.partial.LauncherLayoutInfo.Composition$; //should always be string
                 }
             }
             // do not change if there is one, it's same as before, and we are not forced
@@ -257,7 +257,7 @@ version: 1.1.0
                 }
                 // FIXME: bellow is required for save button not to overwrite with old value, but it fails due to puppet error
                 console.info('Direct change to model is required for save button not to overwrite with old value, but it fails due to puppet error.');
-                this.partial.LauncherLayoutInfo.Composition = this.storedLayout;
+                this.partial.LauncherLayoutInfo.Composition$ = this.storedLayout;
                 this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
                 // trigger polymer-notification-protocol-compilant event
                 this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.LauncherLayoutInfo.Composition'}}));
