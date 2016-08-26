@@ -10,7 +10,8 @@ using Starcounter.Internal;
 namespace Launcher.Helper {
 
     public static class LauncherHelper {
-
+        private const string WRAPINWORKSPACE = "X-WrapInWorkspace";
+        
         /// <summary>
         /// Every application in Starcounter works like a console application. They have an .EXE ending. They have a Main() function and
         /// they can do console output. However, they are run inside the scope of a database rather than connecting to it.
@@ -21,20 +22,32 @@ namespace Launcher.Helper {
             Starcounter.HTMLComposition.Register();
 
             JsonResponseMerger.RegisterMergeCallback(OnJsonMerge);
-
+            
             application.Use((Request req) => {
                 string uri = req.Uri;
 
                 // Checking if we should process this request.
-                if (("/" == uri) || 
+                if (("/" == uri) ||
                     (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
                     (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase)) ||
-                    (SettingsHelper.IfBypassUrl(uri))){
+                    (SettingsHelper.IfBypassUrl(uri))) {
                     return null;
                 }
-                return WrapInLauncher(req);
+
+                // Tag the request so we know in the response filter that the response from 
+                // this request should be wrapped in a workspace.
+                req.Headers[WRAPINWORKSPACE] = "T";
+                return null;
             });
 
+            // Response filter. If the request is tagged and the response contains json, we wrap it in a workspace.
+            application.Use((Request request, Response response) => {
+                if (!string.IsNullOrEmpty(request.Headers[WRAPINWORKSPACE]) && response.Resource is Json)
+                    return WrapInWorkspace(request, (Json)response.Resource);
+
+                return null;
+            });
+            
             Handle.GET("/launcher", (Request req) => {
                 var session = Session.Current;
                 LauncherPage launcher;
@@ -43,6 +56,10 @@ namespace Launcher.Helper {
                     launcher = (LauncherPage)Session.Current.Data;
                     launcher.uri = req.Uri;
                     MarkWorkspacesInactive(launcher.workspaces);
+
+                    if (session.PublicViewModel != launcher)
+                        session.PublicViewModel = launcher;
+
                     return launcher;
                 }
 
@@ -89,6 +106,10 @@ namespace Launcher.Helper {
 
                 launcher.uri = req.Uri;
                 MarkWorkspacesInactive(launcher.workspaces);
+
+                if (session.PublicViewModel != launcher)
+                    session.PublicViewModel = launcher;
+
                 return launcher;
             });
 
@@ -188,7 +209,7 @@ namespace Launcher.Helper {
             }
         }
 
-        static Response WrapInLauncher(Request req) {
+        static Response WrapInWorkspace(Request req, Json resource) {
             LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
             launcher.uri = req.Uri;
 
@@ -203,11 +224,12 @@ namespace Launcher.Helper {
                 launcher.workspaces.Add(workspace);
             }
             workspace.ActiveWorkspace = true;
-
-            // Call proxied request
-            Self.CallUsingExternalRequest(req, () => workspace);
-            // this has to be called after calling request due to merging that happens inside
             workspace.AutoRefreshBoundProperties = true;
+
+            // Doing a manual merge of the workspace and the resource from the response to attach the
+            // resource to the workspace.
+            workspace.MergeJson(resource);
+
             return launcher;
         }
 
