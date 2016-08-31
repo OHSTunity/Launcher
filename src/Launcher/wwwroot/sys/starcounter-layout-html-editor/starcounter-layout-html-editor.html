@@ -128,16 +128,21 @@ version: 0.0.0
                     window.dispatchEvent(new Event('resize')); //fix resizing of ACE edior
                 });
 
-                var that = this;
-                var elems = Array.prototype.slice.call(document.querySelectorAll("starcounter-include"));
-                elems.forEach(function(elem) {
-                    var selector = trySelectorFromAttribute("slot", elem) ||
-                        trySelectorFromAttribute("partial-id", elem) ||
-                        trySelectorFromAttribute("id", elem);
-                    if (selector) {
-                        that.push("knownSelectors", selector);
-                    }
-                });
+                // populate knownSelectors list
+                var knownSelectors = Array.prototype.reduce.call(
+                    document.querySelectorAll("starcounter-include"),
+                    function(result, elem) {
+                        var selector = trySelectorFromAttribute("slot", elem) ||
+                            trySelectorFromAttribute("partial-id", elem) ||
+                            trySelectorFromAttribute("id", elem);
+                        if (selector) {
+                            result.push(selector);
+                        }
+                        return result;
+                    },
+                    []
+                );
+                this.set('knownSelectors', knownSelectors);
             },
 
             // Fires when the element was inserted into the document
