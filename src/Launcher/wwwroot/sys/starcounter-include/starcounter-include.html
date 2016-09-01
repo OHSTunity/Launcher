@@ -3,8 +3,8 @@
 Custom Element (w/ Polymer's TempalteBinding)
 with predefined template content, which should be used to include partials.
 It's just <template is="imported-template"> wrapped within <juicy-composition> bindable by layout editor.
-Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition`.
-version: 1.2.0
+Uses juicy-composition.composition given from DB as `Starcounter.MergedPartial.Composition$`.
+version: 1.3.0
 
 -->
 <!-- Import dependencies -->
@@ -161,7 +161,7 @@ version: 1.2.0
             if (!composition || composition !== this._lastLayout || this._forceLayoutChange) {
                 if (!composition) {
                     this.storedLayout = null;
-                    this.compositionElement.composition = this.defaultComposition;
+                    this.compositionElement.composition = this.defaultComposition && this.defaultComposition.cloneNode(true);
                     // this.compositionElement.composition = '<div style="min-width: 1200px;"><content></content></div>';
                 } else {
                     this.storedLayout = composition;
@@ -260,7 +260,7 @@ version: 1.2.0
                 this.partial.LauncherLayoutInfo.Composition$ = this.storedLayout;
                 this.dispatchEvent(new CustomEvent("starcounter-include-composition-saved", {detail: this.storedLayout}));
                 // trigger polymer-notification-protocol-compilant event
-                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.LauncherLayoutInfo.Composition'}}));
+                this.dispatchEvent(new CustomEvent("partial-changed", {detail: {value: this.storedLayout, path: 'partial.LauncherLayoutInfo.Composition$'}}));
             }.bind(this);
             return req.send(this.storedLayout);
 

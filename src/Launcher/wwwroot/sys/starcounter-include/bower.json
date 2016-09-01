@@ -21,7 +21,8 @@
     "Gruntfile.js",
     "wwwroot/sys",
     "test",
-    "wct.conf.json"
+    "wct.conf.json",
+    "demo"
   ],
   "dependencies": {
     "imported-template": ">=1.4.3",

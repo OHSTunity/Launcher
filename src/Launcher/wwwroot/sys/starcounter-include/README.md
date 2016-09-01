@@ -88,7 +88,7 @@ Property   | Options           | Default | Description
 Name                                    | Detail                 | Description
 ---                                     | ---                    | ---
 `starcounter-include-composition-saved` | *String* stored layout | Triggered once composition is saved
-`partial-changed`                       | *Object* `{value: storedLayout, path: 'partial.LauncherLayoutInfo.Composition'}` | Polymer notification protocol compilant event to notify about `partial.LauncherLayoutInfo.Composition` change, triggered once composition is saved.
+`partial-changed`                       | *Object* `{value: storedLayout, path: 'partial.LauncherLayoutInfo.Composition$'}` | Polymer notification protocol compilant event to notify about `partial.LauncherLayoutInfo.Composition$` change, triggered once composition is saved.
 
 ## Test suite
 
