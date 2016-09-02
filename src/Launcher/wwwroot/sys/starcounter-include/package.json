@@ -1,6 +1,6 @@
 {
   "name": "launcher-include",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Custom Element to include HTML partials/templates from Starcounter, enhanced witch Launcher layout features.",
   "main": "starcounter-include.html",
   "directories": {

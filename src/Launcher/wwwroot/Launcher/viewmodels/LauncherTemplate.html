@@ -15,11 +15,9 @@
       window.Polymer.dom = "shadow";
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
     </script>
-    
+
 
     <link rel="import" href="/sys/polymer/polymer.html" />
-
-
     <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
 
     <!-- Import Starcounter specific components -->
@@ -43,7 +41,6 @@
 
     <!-- Import other elements used in this document -->
     <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
@@ -59,7 +56,7 @@
 
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
     <style>
-       
+
       /* Hack to avoid changing font name everywhere */
       /* cyrillic-ext */
       @font-face {
@@ -117,7 +114,7 @@
         src: local('Roboto'), local('Roboto-Regular'), url(http://fonts.gstatic.com/s/roboto/v15/oMMgfZMQthOryQo9n22dcuvvDin1pK8aKteLpeZ5c0A.woff2) format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
       }
-        
+
     </style>
 </head>
 <body is="launcher-main" class="loading">
@@ -182,9 +179,6 @@
                 </div>
                 <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
 
-                  <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
-                  <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-
                   <!-- Dashboard/search results/settings -->
                   <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
                   <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
@@ -238,6 +232,7 @@
                 template.set("model.editingMode$", !template.model.editingMode$);
             };
 
+
             template._getSidebars = function(data) {
               var sidebars=[];
               for (var name in data)
@@ -261,10 +256,11 @@
                     template.set("model.ConnectionError", true);
                 });
             });
+
         })();
     </script>
 
-    <puppet-client ref="root-launcher-dom-bind"></puppet-client>
+    <puppet-client ref="root-launcher-dom-bind" ping-interval-s="60"></puppet-client>
 	  <!--<puppet-bind-notifier path="model" ref="root-launcher-dom-bind"></puppet-bind-notifier>-->
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
