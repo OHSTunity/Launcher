@@ -55,14 +55,14 @@ namespace SeleniumTests {
                 Thread.Sleep(1000);
             }
 
-            Assert.IsTrue(IsElementPresent(By.TagName("h1")));
-            Assert.IsFalse(driver.FindElement(By.TagName("h1")).Displayed);
+            Assert.IsTrue(IsElementPresent(By.CssSelector("h1")));
+            Assert.IsFalse(driver.FindElement(By.CssSelector("h1")).Displayed);
 
             ClickOnElement(driver.FindElement(By.CssSelector(CssSelectorForMenuLink("/Launcher_AcceptanceHelperOne"))));
 
             Assert.AreEqual("This is Launcher Acceptance Helper One", driver.FindElement(By.CssSelector("h1")).Text);
-            Assert.IsTrue(IsElementPresent(By.TagName("h2")));
-            Assert.IsFalse(driver.FindElement(By.TagName("h2")).Displayed);
+            Assert.IsTrue(IsElementPresent(By.CssSelector("h2")));
+            Assert.IsFalse(driver.FindElement(By.CssSelector("h2")).Displayed);
         }
         private bool IsElementPresent(By by) {
             try {
