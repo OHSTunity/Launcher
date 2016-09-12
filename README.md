@@ -37,10 +37,11 @@ This will bring you an empty Launcher (with Launchpad, Dashboard and Search fiel
 
 ### How to release a package
 
-1. Install [Node.js](https://nodejs.org/)
-2. Run `npm install` to install all dependencies
-2. Run `grunt package` to generate a packaged version, (you can use `:minor`, `:major`, etc. as [grunt-bump](https://github.com/vojtajina/grunt-bump) does)
+1. Install [Node.js](https://nodejs.org/).
+2. Run `npm install` to install all dependencies.
+2. Run `grunt package` to generate a packaged version. You can use `grunt package:minor`, `grunt package:major`, `grunt package --setversion=1.0.0-develop.0`, etc. as [grunt-bump](https://github.com/vojtajina/grunt-bump) does.
 4. Publish `dist/<AppName>.zip` package to the App Store.
+5. Run `git push && git push --tags` to push the changes made by `grunt package`.
 
 ## License
 
