@@ -96,23 +96,6 @@ starcounter-include.workspace[visible] {
     flex-direction: row;
 }
 
-#filters {
-    -webkit-flex: 0 1 auto;
-    flex: 0 1 auto;
-    border-left: 1px solid rgb(221, 221, 221);
-}
-
-#filters > h2 {
-    margin: 0;
-    padding: 12px 9px;
-    color: rgb(51, 60, 78);
-    border-bottom: 1px solid rgb(221, 221, 221);
-}
-
-paper-toggle-button.launcher-theme {
-    margin: 3px 5px 3px 5px;
-}
-
 #launcher-menu {
     /*color: white;*/
     color: rgba(255, 255, 255, 0.9);

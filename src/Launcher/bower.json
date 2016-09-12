@@ -1,6 +1,6 @@
 {
   "name": "LauncherClient",
-  "version": "3.0.1",
+  "version": "5.0.0-develop.0",
   "homepage": "https://github.com/StarcounterSamples/Launcher",
   "private": true,
   "ignore": [
@@ -22,7 +22,7 @@
     "juicy-color-picker": "Juicy/juicy-color-picker#gh-pages",
     "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#~1.0.8",
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
-    "starcounter-layout-html-editor": "Starcounter/starcounter-layout-html-editor#gh-pages"
+    "starcounter-layout-html-editor": "Starcounter/starcounter-layout-html-editor#master"
   },
   "resolutions": {
     "juicy-highlight": "^1.1.0",
