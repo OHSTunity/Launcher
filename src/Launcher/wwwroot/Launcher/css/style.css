@@ -118,7 +118,7 @@ starcounter-include.workspace[visible] {
 #launcher-menu ul li:hover {
 
     color: white;
-    background-color: rgba(255,255,255,.1);
+    background-color: rgba(255,255,255,.2);
 
 }
 #launcher-menu ul li:active {
@@ -134,7 +134,7 @@ starcounter-include.workspace[visible] {
 }
 
 #launcher-menu ul li {
-  border-radius: 10px;
+  border-radius: 4px;
   padding-right: 8px;
   padding-left: 8px;
   font-size: 16px;
