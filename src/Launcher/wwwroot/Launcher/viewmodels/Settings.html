@@ -1,6 +1,6 @@
-﻿<link rel="import" href="/tu-common/css/tu-layout.html">
+﻿<link rel="import" href="/co-common/css/co-layout.html">
 <template>
-  <style is="custom-style" include="tu-layout">
+  <style is="custom-style" include="co-layout">
     a {
       padding: 10px;
     }
@@ -14,12 +14,12 @@
         <template is="dom-repeat" items="{{_getItems(model.Items)}}" sort="_sortAlphabetic">
           <a href$="{{item.Url}}" id="item">
             <div class="vertical center">
-              <tu-icon size= "48" style="font-weight: bold;
+              <co-icon size= "48" style="font-weight: bold;
                         display: block;
                         margin-top: 10px;
                         color: #9E7DA6;"
                   icon="{{item.Icon}}">
-              </tu-icon>
+              </co-icon>
               <span class="label">{{item.Label}}</span>
             </div>
           </a>

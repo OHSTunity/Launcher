@@ -3,7 +3,7 @@
 
 -->
 <link rel="import" href="/sys/polymer/polymer.html">
-<dom-module id="tu-layout-panels">
+<dom-module id="co-layout-panels">
     <template>
         <style>
             :host{
@@ -42,12 +42,12 @@
               padding-top: 30px;
             }
 
-            :host(.tu-layout-panels-left-close) #contextPanel tu-icon-button.toggler
+            :host(.co-layout-panels-left-close) #contextPanel co-icon-button.toggler
             {
               transform: rotate(180deg);
             }
 
-            :host(.tu-layout-panels-right-close) #right
+            :host(.co-layout-panels-right-close) #right
             {
               width: 0px;
               overflow: hidden;
@@ -93,7 +93,7 @@
             }
 
             /* Media query states */
-            :host(.tu-layout-panels-micro) #contextPanel
+            :host(.co-layout-panels-micro) #contextPanel
             {
               position: absolute;
               left: 0;
@@ -101,7 +101,7 @@
               bottom: 0;
             }
 
-            :host(.tu-layout-panels-small) #left
+            :host(.co-layout-panels-small) #left
             {
               position: absolute;
               left: 0;
@@ -109,12 +109,12 @@
               bottom: 0;
             }
 
-            :host(.tu-layout-panels-micro) #center
+            :host(.co-layout-panels-micro) #center
             {
               margin-left: 50px;
             }
 
-            :host(.tu-layout-panels-small) #center
+            :host(.co-layout-panels-small) #center
             {
               margin-left: 50px;
             }
@@ -123,11 +123,11 @@
               overflow-x: hidden;
             }
 
-            #right tu-icon-button {
+            #right co-icon-button {
               z-index: 1;
             }
 
-            :host(.tu-layout-panels-micro) #right
+            :host(.co-layout-panels-micro) #right
             {
               position:absolute;
               right: 0;
@@ -135,7 +135,7 @@
               bottom: 0;
             }
 
-            :host(.tu-layout-panels-small) #right
+            :host(.co-layout-panels-small) #right
             {
               position: absolute;
               right: 0;
@@ -143,7 +143,7 @@
               bottom: 0;
             }
 
-            :host(.tu-layout-panels-medium)  #right
+            :host(.co-layout-panels-medium)  #right
             {
               position: absolute;
               right: 0;
@@ -164,7 +164,7 @@
               cursor: ew-resize;
             }
 
-            tu-actionboard-sidebar:hover #widthtracker
+            co-actionboard-sidebar:hover #widthtracker
             {
               opacity:.25;
             }
@@ -226,7 +226,7 @@
                 <div id="hoverContextPanel">
                   <div id="contextPanelTools">
 
-                    <tu-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></tu-icon-button>
+                    <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
                   </div>
                 </div>
                 <content select="[context]"></content>
@@ -234,7 +234,7 @@
             </div>
             <div id="right">
               <div class="togglercontainer">
-                <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
+                <co-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></co-icon-button>
               </div>
               <content select="[right]"></content>
             </div>
@@ -248,7 +248,7 @@
     </template>
     <script>
         var TuApp = Polymer({
-            is: "tu-layout-panels",
+            is: "co-layout-panels",
           properties: {
             showContextPanel: {
               type: Boolean,
@@ -303,14 +303,14 @@
           ready: function() {
           },
           attached: function() {
-            this.listen(this, "tu-pane", "onTuMenu");
-            this.listen(this, "tu-menu", "onTuMenu");
+            this.listen(this, "co-pane", "onTuMenu");
+            this.listen(this, "co-menu", "onTuMenu");
             this.listen(this.$.right, "panel-command", "onRightChange");
             this.listen(this.$.contextPanel, "panel-command", "onContextPanelChange");
           },
           detached: function() {
-            this.unlisten(this, "tu-pane", "onTuMenu");
-            this.unlisten(this, "tu-menu", "onTuMenu");
+            this.unlisten(this, "co-pane", "onTuMenu");
+            this.unlisten(this, "co-menu", "onTuMenu");
             this.unlisten(this.$.right, "panel-command", "onRightChange");
             this.unlisten(this.$.contextPanel, "panel-command", "onContextPanelChange");
           },
@@ -339,7 +339,7 @@
               width = '0';
             }
             this.$.contextPanel.style.width = width + 'px';
-            var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("tu-layout-multiview");
+            var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
             for (var i = 0; i < mviews.length; i++)
             {
               mviews[i].panelWidth = width;
@@ -377,13 +377,13 @@
           },
           onCloseRightTapped: function(ev) {
             this.set("right", false);
-            var mviews = Polymer.dom(this.$.right).queryDistributedElements("tu-layout-multiview");
+            var mviews = Polymer.dom(this.$.right).queryDistributedElements("co-layout-multiview");
             for (var i = 0; i < mviews.length; i++)
               mviews[i].deActivateAll();
           },
           rightChanged: function(e)
           {
-            this.classList.toggle("tu-layout-panels-right-close", !this.right);
+            this.classList.toggle("co-layout-panels-right-close", !this.right);
           },
           onTuPane: function(e)
           {
@@ -407,10 +407,10 @@
           },
           mediaChange: function()
           {
-            this.classList.toggle("tu-layout-panels-micro", this.layoutMicro);
-            this.classList.toggle("tu-layout-panels-small", this.layoutSmall);
-            this.classList.toggle("tu-layout-panels-medium", this.layoutMedium);
-            this.classList.toggle("tu-layout-panels-large", this.layoutLarge);
+            this.classList.toggle("co-layout-panels-micro", this.layoutMicro);
+            this.classList.toggle("co-layout-panels-small", this.layoutSmall);
+            this.classList.toggle("co-layout-panels-medium", this.layoutMedium);
+            this.classList.toggle("co-layout-panels-large", this.layoutLarge);
           }
         });
     </script>

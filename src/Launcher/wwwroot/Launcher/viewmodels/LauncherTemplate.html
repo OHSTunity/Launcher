@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Tunity</title>
+    <title>Colab</title>
     <script>
 
 
@@ -31,12 +31,12 @@
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-result/launcher-search-result.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
-    <link rel="import" href="/Launcher/elements/tu-logo-with-spinner/tu-logo-with-spinner.html" />
+    <link rel="import" href="/Launcher/elements/co-logo-with-spinner/co-logo-with-spinner.html" />
     <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
 	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
-    <link rel="import" href="/Launcher/elements/tu-layout/tu-layout-panels.html" />
-    <link rel="import" href="/Launcher/elements/tu-layout/tu-layout-multiview.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-layout-panels.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <!-- Import other elements used in this document -->
@@ -118,15 +118,15 @@
     </style>
 </head>
 <body is="launcher-main" class="loading">
-    <div id="tu-splash">
-        <span id="tu-splash-text">LOADING</span>
-        <span id="tu-splash-spinner">⚇</span>
+    <div id="co-splash">
+        <span id="co-splash-text">LOADING</span>
+        <span id="co-splash-spinner">⚇</span>
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
 
         <div class="launcher-toolbar launcher-topbar">
             <div style="">
-                <tu-logo-with-spinner></tu-logo-with-spinner>
+                <co-logo-with-spinner></co-logo-with-spinner>
             </div>
 
             <div class="toolbar-padding"></div>
@@ -168,7 +168,7 @@
 
         <div id="launcher-content">
 
-            <tu-layout-panels>
+            <co-layout-panels>
               <div main>
                 <div class="launchpad">
                     <template is="dom-if" if="{{model.launchpad}}">
@@ -188,9 +188,9 @@
                       <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                   </template>
               </div>
-              <tu-layout-multiview context data="{{model.contextbar}}"></tu-layout-multiview>
-              <tu-layout-multiview right data="{{model.sidebar}}"></tu-layout-multiview>
-            </tu-layout-panels>
+              <co-layout-multiview context data="{{model.contextbar}}"></co-layout-multiview>
+              <co-layout-multiview right data="{{model.sidebar}}"></co-layout-multiview>
+            </co-layout-panels>
         </div>
 
         <!-- TODO migrate this getModel -->
@@ -202,7 +202,7 @@
             </div>
         </template>
 
-        <tu-lightbox-popup></tu-lightbox-popup>
+        <co-lightbox-popup></co-lightbox-popup>
 
         <paper-dialog opened="{{model.ConnectionError}}" modal="true">
             <h4>Connection error</h4>
