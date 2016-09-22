@@ -1,9 +1,18 @@
 <dom-module id="co-logo-with-spinner">
   <style type="text/css">
+  :host{
+    display: flex;
+  }
             .visiblespinner
             {
 
                 display: block !important;
+            }
+            span.logoname{
+              margin-left: 8px;
+              margin-top: 4px;
+              font-size: 16px;
+              opacity: .95;
             }
 
             #spinner {
@@ -17,7 +26,7 @@
 
             #logo
             {
-                width:68px;
+                width:27px;
                 height:28px;
                 
                 background: url(/Launcher/elements/cl-logo/cl-logo-fff.png);
@@ -27,8 +36,10 @@
                 cursor: pointer;
                 
                 transition: opacity 400ms ease;
+
+                margin: 0px 2px 0px 6px;
             }
-            #logo:hover, #logo.hover
+            #logo:hover, #logo.hover 9813 
             {
 
                 opacity: .75;
@@ -185,6 +196,7 @@
         </style>
   <template>
             <div id="logo" onclick="puppet.puppet.morphUrl('/')"></div>
+            <!--<span class="logoname">Colaber</span>-->
             <div class="timer" id="spinner">
                 Loading...
             </div>

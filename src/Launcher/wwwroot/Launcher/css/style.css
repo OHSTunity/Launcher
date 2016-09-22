@@ -11,12 +11,14 @@
 body /deep/ juicy-tile-table,  body /deep/ .juicy-tile-table
 {
     min-width: 100px !important;
+    max-width: 600px !important;
 }
 
 body /deep/ juicy-shadow-row,  body /deep/ .juicy-shadow-row
 {
     height: 120px !important;
 }
+
 
 
 #launcher-menu {
@@ -118,7 +120,7 @@ starcounter-include.workspace[visible] {
 #launcher-menu ul li:hover {
 
     color: white;
-    background-color: rgba(255,255,255,.1);
+    background-color: rgba(255,255,255,.2);
 
 }
 #launcher-menu ul li:active {
@@ -134,7 +136,7 @@ starcounter-include.workspace[visible] {
 }
 
 #launcher-menu ul li {
-  border-radius: 10px;
+  border-radius: 4px;
   padding-right: 8px;
   padding-left: 8px;
   font-size: 16px;
