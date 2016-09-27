@@ -360,6 +360,7 @@ launcher-search-input {
     vertical-align: middle;
 }
 
+
 /* LOADING SPLASH PAGE */
 
 body #co-splash
@@ -420,4 +421,3 @@ body.loading #co-splash #co-splash-text {
     min-width: 55px;
     margin-left: 10px;
 }
-

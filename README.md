@@ -1,5 +1,7 @@
 Launcher
 ========
+Wraps all apps in a UI frame with a common launchpad, menu and a search bar.
+
 A launcher is an app that gives a common UI feeling to multiple apps running simultaneously.
 
 What it does specifically:
