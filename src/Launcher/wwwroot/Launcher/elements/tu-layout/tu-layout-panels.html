@@ -42,7 +42,7 @@
               padding-top: 30px;
             }
 
-            :host(.tu-layout-panels-left-close) #contextPanel tu-icon-button.toggler
+            :host(.tu-layout-panels-left-close) #contextPanel co-icon-button.toggler
             {
               transform: rotate(180deg);
             }
@@ -123,7 +123,7 @@
               overflow-x: hidden;
             }
 
-            #right tu-icon-button {
+            #right co-icon-button {
               z-index: 1;
             }
 
@@ -226,7 +226,7 @@
                 <div id="hoverContextPanel">
                   <div id="contextPanelTools">
 
-                    <tu-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></tu-icon-button>
+                    <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
                   </div>
                 </div>
                 <content select="[context]"></content>
@@ -234,7 +234,7 @@
             </div>
             <div id="right">
               <div class="togglercontainer">
-                <tu-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></tu-icon-button>
+                <co-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></co-icon-button>
               </div>
               <content select="[right]"></content>
             </div>
