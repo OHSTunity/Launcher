@@ -43,6 +43,7 @@ https://github.com/Juicy/imported-template
          * @return {imported-template}      self
          */
         ImportedTemplatePrototype._loadExternalFile = function importHTMLImport(href) {
+            console.log(href);
             //href is a URL, load the partial from the HTTP server/cache
             var link = document.createElement('link');
             link.rel = "import";
