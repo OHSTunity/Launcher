@@ -6,6 +6,7 @@ using System.Web;
 using Starcounter;
 using Starcounter.Advanced.XSON;
 using Starcounter.Internal;
+using Colab.Common;
 
 namespace Launcher.Helper {
 
@@ -52,6 +53,10 @@ namespace Launcher.Helper {
             application.Use((Request request, Response response) => {
                 if (!string.IsNullOrEmpty(request.Headers[WRAPINWORKSPACE]) && response.Resource is Json)
                     return WrapInWorkspace(request, (Json)response.Resource);
+
+                //Colab context specific
+                if (response.Resource is Json)
+                    ContextHandler.SetNonContext(request.Uri); //Always save uri for last call without context
 
                 return null;
             });
@@ -245,6 +250,16 @@ namespace Launcher.Helper {
             }
             workspace.ActiveWorkspace = true;
             workspace.AutoRefreshBoundProperties = true;
+
+            //Colab specific Context handlers
+            if (resource is IContextApp && !String.IsNullOrEmpty((resource as IContextApp).ContextId))
+            {
+                ContextHandler.SetContext((resource as IContextApp).ContextId, appName);
+            }
+            else
+            {
+                ContextHandler.SetNonContext(req.Uri); //Always save uri for last call without context
+            }
 
             // Doing a manual merge of the workspace and the resource from the response to attach the
             // resource to the workspace.

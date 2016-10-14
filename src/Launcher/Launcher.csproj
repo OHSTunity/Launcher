@@ -57,6 +57,18 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SocietyObjects.Concepts.Ring1, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SocietyObjects.Concepts.Ring2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SocietyObjects.Concepts.Ring3, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SocietyObjects.Concepts.Ring4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Starcounter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d2df1e81d0ca3abf">
       <Private>False</Private>
     </Reference>
@@ -168,6 +180,17 @@
     <TypedJSON Include="ViewModels\AdvancedSearchPage.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Tunity-3\Colab.Common\Colab.Common.csproj">
+      <Project>{aad408c8-78ed-491e-9184-ad2fb8bf2773}</Project>
+      <Name>Colab.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="weaver.ignore">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(StarcounterBin)\Starcounter.MsBuild.targets" />
