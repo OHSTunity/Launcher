@@ -10,6 +10,7 @@ namespace Launcher {
 
             handlers.Register();
             LauncherHelper.Init();
+            LauncherMobileHelper.Init();
         }
     }
 }
