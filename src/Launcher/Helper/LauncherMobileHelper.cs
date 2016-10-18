@@ -70,11 +70,12 @@ namespace Launcher.Helper {
                     launcher.launchpad.layout = setup.Value; //setupJson;
                 }
 
-                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
+                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/mobile/user", () => {
                     var p = new Page();
                     return p;
                 });
-
+                
+                /*
                 launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
                     var p = new Page() {
                         Html = "/Launcher/viewmodels/LauncherMenu.html"
@@ -87,8 +88,9 @@ namespace Launcher.Helper {
                     var p = new Page();
                     return p;
                 });
+                */
 
-                launcher.contextbar = Self.GET(UriMapping.MappingUriPrefix + "/contextbar", () =>
+                launcher.contextbar = Self.GET(UriMapping.MappingUriPrefix + "/mobile/contextbar", () =>
                 {
                     var p = new Page();
                     return p;
