@@ -35,6 +35,12 @@ namespace Launcher.Helper {
             application.Use((Request req) => {
                 string uri = req.Uri;
 
+                if (uri.Contains("/mobile") && !uri.Equals("/launcher/mobile", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    req.Headers[WRAPINWORKSPACE] = "M";
+                    return null;
+                }
+                
                 // Checking if we should process this request.
                 if (("/" == uri) ||
                     (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
@@ -43,12 +49,6 @@ namespace Launcher.Helper {
                     return null;
                 }
 
-                if (uri.Contains("/mobile"))
-                {
-                    req.Headers[WRAPINWORKSPACE] = "M";
-                    return null;
-                }
-                
                 // Tag the request so we know in the response filter that the response from 
                 // this request should be wrapped in a workspace.
                 req.Headers[WRAPINWORKSPACE] = "T";
