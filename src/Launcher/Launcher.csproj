@@ -182,7 +182,7 @@
     </TypedJSON>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Tunity-3\Colab.Common\Colab.Common.csproj">
+    <ProjectReference Include="..\..\..\Colab\Colab.Common\Colab.Common.csproj">
       <Project>{aad408c8-78ed-491e-9184-ad2fb8bf2773}</Project>
       <Name>Colab.Common</Name>
     </ProjectReference>
