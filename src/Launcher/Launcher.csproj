@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\MainHandlers.cs" />
+    <Compile Include="Helper\LauncherMobileHelper.cs" />
     <Compile Include="Helper\LauncherHelper.cs" />
     <Compile Include="Database\LauncherSettings.cs" />
     <Compile Include="Helper\SettingsHelper.cs" />
@@ -103,6 +104,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AdvancedSearchPage.json.cs">
       <DependentUpon>AdvancedSearchPage.json</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\LauncherMobilePage.json.cs">
+      <DependentUpon>LauncherMobilePage.json</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\LauncherPage.json.cs">
       <DependentUpon>LauncherPage.json</DependentUpon>
@@ -188,6 +192,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <TypedJSON Include="ViewModels\LauncherMobilePage.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
     <None Include="weaver.ignore">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -35,6 +35,12 @@ namespace Launcher.Helper {
             application.Use((Request req) => {
                 string uri = req.Uri;
 
+                if (uri.Contains("/mobile") && !uri.Equals("/launcher/mobile", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    req.Headers[WRAPINWORKSPACE] = "M";
+                    return null;
+                }
+                
                 // Checking if we should process this request.
                 if (("/" == uri) ||
                     (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
@@ -51,8 +57,11 @@ namespace Launcher.Helper {
 
             // Response filter. If the request is tagged and the response contains json, we wrap it in a workspace.
             application.Use((Request request, Response response) => {
-                if (!string.IsNullOrEmpty(request.Headers[WRAPINWORKSPACE]) && response.Resource is Json)
+                if (string.Equals(request.Headers[WRAPINWORKSPACE],"T") && response.Resource is Json)
                     return WrapInWorkspace(request, (Json)response.Resource);
+
+                if (string.Equals(request.Headers[WRAPINWORKSPACE], "M") && response.Resource is Json)
+                    return LauncherMobileHelper.WrapInMobileWorkspace(request, (Json)response.Resource);
 
                 //Colab context specific
                 if (response.Resource is Json)
