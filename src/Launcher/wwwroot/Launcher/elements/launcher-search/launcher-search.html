@@ -93,7 +93,7 @@
         <div id='result'>
           <template is="dom-repeat" items="{{types}}" as="type">
             <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>{{type.Count}}</span>)</div>
-            <div index$={{index}} class="items">
+            <div index$={{type._index}} class="items">
               <template is="dom-repeat" items="{{type.Items}}" as="item">
                 <div class="item" index$="{{index}}" on-mouseover='itemHovered' on-tap='itemTapped'>
                   <template is="imported-template" model="{{item}}" content$="{{item.Html}}"></template>
@@ -162,6 +162,7 @@
                 if (this.data.previewResult.hasOwnProperty(name) &&
                     this.data.previewResult[name].hasOwnProperty("Types")) {
                   for (var i = 0; i < this.data.previewResult[name].Types.length; i++) {
+                    this.data.previewResult[name].Types[i]._index = i;
                     types.push(this.data.previewResult[name].Types[i]);
                   }
                 }
