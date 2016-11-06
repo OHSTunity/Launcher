@@ -6,6 +6,7 @@ using System.Web;
 using Starcounter;
 using Starcounter.Advanced.XSON;
 using Starcounter.Internal;
+using Colab.Common;
 
 namespace Launcher.Helper {
 
@@ -34,6 +35,12 @@ namespace Launcher.Helper {
             application.Use((Request req) => {
                 string uri = req.Uri;
 
+                if (uri.Contains("/mobile") && !uri.Equals("/launcher/mobile", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    req.Headers[WRAPINWORKSPACE] = "M";
+                    return null;
+                }
+                
                 // Checking if we should process this request.
                 if (("/" == uri) ||
                     (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
@@ -50,8 +57,15 @@ namespace Launcher.Helper {
 
             // Response filter. If the request is tagged and the response contains json, we wrap it in a workspace.
             application.Use((Request request, Response response) => {
-                if (!string.IsNullOrEmpty(request.Headers[WRAPINWORKSPACE]) && response.Resource is Json)
+                if (string.Equals(request.Headers[WRAPINWORKSPACE],"T") && response.Resource is Json)
                     return WrapInWorkspace(request, (Json)response.Resource);
+
+                if (string.Equals(request.Headers[WRAPINWORKSPACE], "M") && response.Resource is Json)
+                    return LauncherMobileHelper.WrapInMobileWorkspace(request, (Json)response.Resource);
+
+                //Colab context specific
+                if (response.Resource is Json)
+                    ContextHandler.SetNonContext(request.Uri); //Always save uri for last call without context
 
                 return null;
             });
@@ -245,6 +259,16 @@ namespace Launcher.Helper {
             }
             workspace.ActiveWorkspace = true;
             workspace.AutoRefreshBoundProperties = true;
+
+            //Colab specific Context handlers
+            if (resource is IContextApp && !String.IsNullOrEmpty((resource as IContextApp).ContextId))
+            {
+                ContextHandler.SetContext((resource as IContextApp).ContextId, appName);
+            }
+            else
+            {
+                ContextHandler.SetNonContext(req.Uri); //Always save uri for last call without context
+            }
 
             // Doing a manual merge of the workspace and the resource from the response to attach the
             // resource to the workspace.

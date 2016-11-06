@@ -19,6 +19,12 @@
 
     <link rel="import" href="/sys/polymer/polymer.html" />
     <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
+    <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html">
+    <link rel="import" href="/sys/paper-checkbox/paper-checkbox.html">
+    <link rel="import" href="/sys/paper-input/paper-textarea.html">
+    <link rel="import" href="/sys/paper-radio-group/paper-radio-group.html">
+    <link rel="import" href="/sys/paper-radio-button/paper-radio-button.html">
+
 
     <!-- Import Starcounter specific components -->
     <link rel="import" href="/sys/starcounter.html" />
@@ -115,6 +121,11 @@
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
       }
 
+      [main] {
+        position: relative;
+        flex:1;
+      }
+
     </style>
 </head>
 <body is="launcher-main" class="loading">
@@ -186,7 +197,10 @@
                       <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                   </template>
               </div>
-              <co-layout-multiview context data="{{model.contextbar}}"></co-layout-multiview>
+              <div context>
+                <template is="imported-template" model="{{model.contextbar.colab_organizer.Current.CurrentContext}}" content="/co-organizer/organizer/contextbar.html"></template>
+              </div>
+              <co-layout-multiview contextsidebar data="{{model.contextbar}}"></co-layout-multiview>
               <co-layout-multiview right data="{{model.sidebar}}"></co-layout-multiview>
             </co-layout-panels>
         </div>
