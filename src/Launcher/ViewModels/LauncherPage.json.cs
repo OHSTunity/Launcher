@@ -9,14 +9,31 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Web;
 using Starcounter.Advanced.XSON;
+using Concepts.Ring8.Tunity;
 
-namespace Launcher {
+namespace Launcher
+{
 
     [LauncherPage_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
-    partial class LauncherPage : Page {
+    partial class LauncherPage : Page
+    {
+        public Boolean CheckLogin()
+        {
+            var userSession = Db.SQL<UserSession>("SELECT o FROM Concepts.Ring8.Tunity.UserSession o WHERE o.SessionIdString=?", Session.Current.SessionId).First;
+            if (userSession != null)
+            {
+                return userSession.User != null;
+            };
+            return false;
+        }
+
+        public Boolean signedIn => CheckLogin();
+
         [LauncherPage_json.searchBar]
         partial class SearchBar : Json
         {
+
+
             void Handle(Input.query action)
             {
                 if (String.IsNullOrEmpty(action.Value))
@@ -62,7 +79,7 @@ namespace Launcher {
         }
     }
 
-    
 
- 
+
+
 }

@@ -222,7 +222,6 @@
         <div id="wrapper" >
 
             <div id="center">
-              <content select="[context]"></content>
               <content select="[main]"></content>
             </div>
             <div id="contextPanel" on-tap="contextPanelTapped">
@@ -232,7 +231,7 @@
                     <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
                   </div>
                 </div>
-                <content select="[contextsidebar]"></content>
+                <content select="[left]"></content>
                 <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
             </div>
             <div id="right">

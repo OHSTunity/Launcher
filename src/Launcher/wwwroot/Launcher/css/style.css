@@ -211,11 +211,11 @@ starcounter-include.workspace[visible] {
     flex-basis: 47px;
     line-height: normal; /*reset bootstrap line-height*/
     padding: 0 10px 0 10px;
-    display: -webkit-box !important;
-    display: -ms-flexbox !important;
-    display: -moz-flex !important;
-    display: -webkit-flex !important;
-    display: flex !important;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
     -webkit-box-align: center;
     -ms-flex-align: center;
     -moz-align-items: center;

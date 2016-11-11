@@ -1,35 +1,38 @@
 {
-    "Html": "",
-    "homeThumbnail": { },
-    "homeUrl": "",
-    "editingMode$": false,
-    "layoutModified$": false,
-    "searchBar": {
-        "query$": "",
-		"options$":"",
-		"$options$": { bind:"OptionsCB" },
-        "previewResult": { },
-        "previewVisible": false,
-        "close$": 0
-    },
-    "currentPage": {},
-    "user": { },
-    "menu": { },
-    "launchpad": {
-        "names": { },
-		"layout": ""
-    },
-    "appFilter": [
-        {
-            "AppName": "",
-            "on$": true,
-            "text": "",
-            "thumbnail": { }
-        }
-    ],
+  "Html": "",
 
-  "contextbar": {},
-	"workspaces": [{"$":  {"Reuse" :  "Launcher.LayoutInfo" } } ],
-	"sidebar": {},
+  "signedIn": false,
+  "signin": { },
+
+
+  "homeThumbnail": { },
+  "homeUrl": "",
+  "editingMode$": false,
+  "layoutModified$": false,
+  "searchBar": {
+    "query$": "",
+    "options$": "",
+    "$options$": { "bind": "OptionsCB" },
+    "previewResult": { },
+    "previewVisible": false,
+    "close$": 0
+  },
+  "currentPage": { },
+  "user": { },
+  "menu": { },
+
+  "appFilter": [
+    {
+      "AppName": "",
+      "on$": true,
+      "text": "",
+      "thumbnail": { }
+    }
+  ],
+
+  "workspaces": [ { "$": { "Reuse": "Launcher.LayoutInfo" } } ],
+  "contextbar": { },
+  "contextpanel": { },
+  "sidepanel": { },
   "uri": ""
 }

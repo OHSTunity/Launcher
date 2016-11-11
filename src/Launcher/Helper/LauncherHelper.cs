@@ -43,7 +43,6 @@ namespace Launcher.Helper {
                 
                 // Checking if we should process this request.
                 if (("/" == uri) ||
-                    (uri.StartsWith("/launcher/", StringComparison.InvariantCultureIgnoreCase)) ||
                     (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase)) ||
                     (SettingsHelper.IfBypassUrl(uri))) {
                     return null;
@@ -74,7 +73,8 @@ namespace Launcher.Helper {
                 var session = Session.Current;
                 LauncherPage launcher;
 
-                if (session != null && session.Data != null) {
+                if (session != null && session.Data != null)
+                {
                     launcher = (LauncherPage)Session.Current.Data;
                     launcher.uri = req.Uri;
                     MarkWorkspacesInactive(launcher.workspaces);
@@ -85,35 +85,19 @@ namespace Launcher.Helper {
                     return launcher;
                 }
 
-                if (session == null) {
+                if (session == null)
+                {
                     session = new Session(SessionOptions.PatchVersioning);
                 }
 
-                launcher = new LauncherPage() {
+                launcher = new LauncherPage()
+                {
                     Html = "/Launcher/viewmodels/LauncherTemplate.html"
                 };
 
                 launcher.Session = session;
 
-                launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
-                    var p = new Page();
-                    return p;
-                });
-                // var setup = Starcounter.HTMLComposition.GetUsingKey("/launcher/launchpad");
-                var setup = Starcounter.Layout.GetSetup("/launcher/launchpad");
-
-                if (setup == null) {
-                    // launcher.launchpad.layout = null
-                    // workaround for https://github.com/Starcounter/Starcounter/issues/3072
-                    // set default value 
-                    // consider moving to HTML, or pre-populatind default layouts
-                    //launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
-                    launcher.launchpad.layout = "{\"width\": \"1000\", \"items\":[]}";
-                } else {
-//                    dynamic setupJson = new Json(setup.Value);
-                    launcher.launchpad.layout = setup.Value; //setupJson;
-                }
-
+                
                 launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
                     var p = new Page();
                     return p;
@@ -126,13 +110,26 @@ namespace Launcher.Helper {
                     return p;
                 });
 
-                launcher.sidebar = Self.GET(UriMapping.MappingUriPrefix + "/sidebar", () =>
+                /*Special colab stuff*/
+                launcher.sidepanel = Self.GET(UriMapping.MappingUriPrefix + "/sidepanel", () =>
+                {
+                    var p = new Page();
+                    return p;
+                });
+
+                launcher.contextpanel = Self.GET(UriMapping.MappingUriPrefix + "/contextpanel", () =>
                 {
                     var p = new Page();
                     return p;
                 });
 
                 launcher.contextbar = Self.GET(UriMapping.MappingUriPrefix + "/contextbar", () =>
+                {
+                    var p = new Page();
+                    return p;
+                });
+
+                launcher.signin = Self.GET(UriMapping.MappingUriPrefix + "/signin", () =>
                 {
                     var p = new Page();
                     return p;
@@ -147,35 +144,61 @@ namespace Launcher.Helper {
                 return launcher;
             });
 
+            Handle.GET("/", (Request req) => {
+                return Self.GET("/launcher/launchpad");
+            });
+
             Handle.GET("/launcher/dashboard", (Request req) => {
 
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
-                launcher.currentPage = Self.GET(UriMapping.MappingUriPrefix + "/dashboard", () => {
+                return Self.GET(UriMapping.MappingUriPrefix + "/dashboard", () => {
                     var p = new Page();
 
                     return p;
                 });
-
-                launcher.uri = req.Uri;
-                return launcher;
             });
+
+            Handle.GET("/launcher/launchpad", (Request req) => {
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+                return Self.GET(UriMapping.MappingUriPrefix + "/launchpad", () => {
+                    dynamic json = new Json();
+                    json.Html = "/Launcher/viewmodels/launchpad.html";
+                    json.Apps = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
+                        var p = new Page();
+                        return p;
+                    });
+                    json.Layout = GetLaunchpadLayout();
+                    return json;
+                });
+            });
+
+            /* Dynamiv page for everything, could for example replace dashboard, 
+             * however, folder naming make it collide with static files          
+            Handle.GET("/launcher/{?}", (Request req, String subpage) => {
+                           LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+
+                           return Self.GET(UriMapping.MappingUriPrefix + subpage, () => {
+                               var p = new Page();
+                               return p;
+                           });
+            });*/
+
             Handle.GET("/launcher/settings", (Request req) => {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-                if (!(launcher.currentPage is SettingsPage))
-                {
-                    launcher.currentPage = new SettingsPage()
-                    {
-                        AppMenu = Self.GET(UriMapping.MappingUriPrefix + "/settings_menu", () =>
+                return Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
+                    return Db.Scope(() => {
+                        var p = new SettingsPage()
                         {
-                            return new Page();
-                        })
-                    };
-                }
-                launcher.uri = req.Uri;
-                return launcher;
-            });
+                            Html = "/Launcher/viewmodels/SettingsPage.html",
+                            Data = SettingsHelper.GetSettings()
+                        };
+                        return p;
+                    });
 
+                });
+            });
+            
             Handle.GET("/launcher/search?query={?}&count={?}", (Request req, string query, string count) => {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
@@ -236,6 +259,19 @@ namespace Launcher.Helper {
             });
         }
 
+        static string GetLaunchpadLayout()
+        {
+            var setup = Starcounter.Layout.GetSetup("/launcher/launchpad");
+            if (setup != null)
+            {
+                return setup.Value;
+            }
+            else
+            {
+                return "{\"width\": \"1000\", \"items\":[]}";
+            }
+        }
+       
         static void MarkWorkspacesInactive(Arr<LayoutInfo> workspaces) {
             foreach (var layoutInfo in workspaces) {
                 layoutInfo.ActiveWorkspace = false;
@@ -257,7 +293,13 @@ namespace Launcher.Helper {
                 workspace = new LayoutInfo() { AppName = appName };
                 launcher.workspaces.Add(workspace);
             }
-            workspace.ActiveWorkspace = true;
+            if (resource.GetAppName() == "Launcher")
+            {
+                dynamic s = resource as dynamic;
+                s.ActiveWorkspace = true;
+            }
+            else
+                workspace.ActiveWorkspace = true;
             workspace.AutoRefreshBoundProperties = true;
 
             //Colab specific Context handlers

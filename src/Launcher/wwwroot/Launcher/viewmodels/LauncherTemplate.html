@@ -2,11 +2,6 @@
 <html>
 <head>
     <title>Colab</title>
-    <script>
-
-
-
-    </script>
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
@@ -22,6 +17,8 @@
     <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html">
     <link rel="import" href="/sys/paper-checkbox/paper-checkbox.html">
     <link rel="import" href="/sys/paper-input/paper-textarea.html">
+    <link rel="import" href="/sys/paper-input/paper-input.html">
+    <link rel="import" href="/sys/paper-button/paper-button.html">
     <link rel="import" href="/sys/paper-radio-group/paper-radio-group.html">
     <link rel="import" href="/sys/paper-radio-button/paper-radio-button.html">
 
@@ -126,6 +123,11 @@
         flex:1;
       }
 
+      [hidden] {
+        visibility: hidden; !important;
+        display: none; !important;
+      }
+
     </style>
 </head>
 <body is="launcher-main" class="loading">
@@ -135,7 +137,7 @@
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
 
-        <div class="launcher-toolbar launcher-topbar">
+        <div class="launcher-toolbar launcher-topbar" hidden$="[[!model.signedIn]]">
             <div style="">
                 <co-logo-with-spinner></co-logo-with-spinner>
             </div>
@@ -156,14 +158,14 @@
 
             <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
 
-<!--
+            <!--
             <template is="dom-if" restamp if="{{!model.layoutModified$}}">
               <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" toggles></paper-icon-button>
             </template>
             <template is="dom-if" restamp if="{{model.layoutModified$}}">
               <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" toggles class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
-            </template>-->
-
+            </template>
+-->
             <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
             <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
 
@@ -175,39 +177,23 @@
             <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
         </template>
 
-        <div id="launcher-content">
-
+        <div id="launcher-content" hidden$="[[!model.signedIn]]">
             <co-layout-panels>
               <div main>
-                <div class="launchpad">
-                    <template is="dom-if" if="{{model.launchpad}}">
-                        <launcher-launchpad apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
-                    </template>
-                    <!--<launcher-launchpad json="{{model.launchpad}}"></launcher-launchpad>-->
-
-                </div>
-                <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
-
-                  <!-- Dashboard/search results/settings -->
-                  <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
-                  <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-                  <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
-
+                  <co-layout-multiview left data="{{model.contextbar}}"></co-layout-multiview>
                   <template is="dom-repeat" items="{{model.workspaces}}">
                       <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
                   </template>
               </div>
-              <div context>
-                <template is="imported-template" model="{{model.contextbar.colab_organizer.Current.CurrentContext}}" content="/co-organizer/organizer/contextbar.html"></template>
-              </div>
-              <co-layout-multiview contextsidebar data="{{model.contextbar}}"></co-layout-multiview>
-              <co-layout-multiview right data="{{model.sidebar}}"></co-layout-multiview>
+              <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
+              <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
             </co-layout-panels>
         </div>
 
-        <!-- TODO migrate this getModel -->
-        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
-        <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
+        <div id="launcher-login" hidden$="[[model.signedIn]]">
+          <starcounter-include partial="{{model.signin}}"></starcounter-include>
+        </div>
+
         <template is="dom-if" restamp if="{{model.editingMode$}}">
             <div id="elementSettings" class="launcher-topbar">
                 <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
@@ -245,17 +231,6 @@
             };
 
 
-            template._getSidebars = function(data) {
-              var sidebars=[];
-              for (var name in data)
-              {
-                if (data.hasOwnProperty(name) &&
-                    data[name].hasOwnProperty("Active$")) {
-                  sidebars.push(data[name]);
-                }
-              }
-              return sidebars;
-            }
       		/*	template.addEventListener("model-changed", function (e) {
       				console.log("lt", e);
       			});*/

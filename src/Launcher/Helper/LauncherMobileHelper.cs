@@ -56,29 +56,6 @@ namespace Launcher.Helper {
 
                 launcher.Session = session;
 
-                launcher.launchpad.names = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () =>
-                {
-                    var p = new Page();
-                    return p;
-                });
-                // var setup = Starcounter.HTMLComposition.GetUsingKey("/launcher/launchpad");
-                var setup = Starcounter.Layout.GetSetup("/launcher/launchpad");
-
-                if (setup == null)
-                {
-                    // launcher.launchpad.layout = null
-                    // workaround for https://github.com/Starcounter/Starcounter/issues/3072
-                    // set default value 
-                    // consider moving to HTML, or pre-populatind default layouts
-                    //launcher.launchpad.layout = new Json("{\"width\": \"1000\", \"items\":[]}");
-                    launcher.launchpad.layout = "{\"width\": \"1000\", \"items\":[]}";
-                }
-                else
-                {
-                    //                    dynamic setupJson = new Json(setup.Value);
-                    launcher.launchpad.layout = setup.Value; //setupJson;
-                }
-
                 launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/mobile/user", () =>
                 {
                     var p = new Page();
