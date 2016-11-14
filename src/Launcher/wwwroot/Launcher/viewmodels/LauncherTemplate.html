@@ -120,6 +120,8 @@
 
       [main] {
         position: relative;
+        display: flex;
+        flex-direction: column;
         flex:1;
       }
 
@@ -128,6 +130,11 @@
         display: none; !important;
       }
 
+        #workspace
+        {
+          position: relative;
+          flex: 1;
+        }
     </style>
 </head>
 <body is="launcher-main" class="loading">
@@ -181,9 +188,11 @@
             <co-layout-panels>
               <div main>
                   <co-layout-multiview left data="{{model.contextbar}}"></co-layout-multiview>
-                  <template is="dom-repeat" items="{{model.workspaces}}">
-                      <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
-                  </template>
+                  <div id="workspace">
+                      <template is="dom-repeat" items="{{model.workspaces}}">
+                          <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
+                      </template>
+                  </div>
               </div>
               <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
               <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
