@@ -121,11 +121,18 @@
       [main] {
         position: relative;
         flex:1;
+        display: flex;
+        flex-direction: column;
       }
 
       [hidden] {
         visibility: hidden; !important;
         display: none; !important;
+      }
+
+      #workspace {
+        position: relative;
+        flex:1;
       }
 
     </style>
@@ -180,10 +187,12 @@
         <div id="launcher-content" hidden$="[[!model.signedIn]]">
             <co-layout-panels>
               <div main>
-                  <co-layout-multiview left data="{{model.contextbar}}"></co-layout-multiview>
+                <co-layout-multiview data="{{model.contextbar}}"></co-layout-multiview>
+                <div id="workspace">
                   <template is="dom-repeat" items="{{model.workspaces}}">
-                      <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
+                    <starcounter-include partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
                   </template>
+                </div>
               </div>
               <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
               <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>

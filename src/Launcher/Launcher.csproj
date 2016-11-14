@@ -114,6 +114,9 @@
     <Compile Include="ViewModels\LauncherWrapperPage.json.cs">
       <DependentUpon>LauncherWrapperPage.json</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\WorkSpace.json.cs">
+      <DependentUpon>WorkSpace.json</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\LayoutInfo.json.cs">
       <DependentUpon>LayoutInfo.json</DependentUpon>
     </Compile>
@@ -197,6 +200,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="ViewModels\LauncherMobilePage.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+    <TypedJSON Include="ViewModels\WorkSpace.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
     <None Include="weaver.ignore">

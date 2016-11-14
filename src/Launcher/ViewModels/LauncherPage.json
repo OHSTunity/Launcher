@@ -17,7 +17,6 @@
     "previewVisible": false,
     "close$": 0
   },
-  "currentPage": { },
   "user": { },
   "menu": { },
 
@@ -30,7 +29,7 @@
     }
   ],
 
-  "workspaces": [ { "$": { "Reuse": "Launcher.LayoutInfo" } } ],
+  "workspaces": [ { "$": { "Reuse": "Launcher.WorkSpace" } } ],
   "contextbar": { },
   "contextpanel": { },
   "sidepanel": { },

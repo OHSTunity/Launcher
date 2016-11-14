@@ -7,6 +7,7 @@ using Starcounter;
 using Starcounter.Advanced.XSON;
 using Starcounter.Internal;
 using Colab.Common;
+using WorkSpace = Launcher.WorkSpace;
 
 namespace Launcher.Helper {
 
@@ -203,7 +204,7 @@ namespace Launcher.Helper {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
 
                // string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
-                if (!(launcher.currentPage is AdvancedSearchPage))
+            /*    if (!(launcher.currentPage is AdvancedSearchPage))
                 {
                     launcher.currentPage = new AdvancedSearchPage();
                 }
@@ -214,7 +215,7 @@ namespace Launcher.Helper {
                 
 
                 launcher.uri = req.Uri;
-                launcher.searchBar.query = query;
+                launcher.searchBar.query = query;*/
 
                 return null;
             });
@@ -272,7 +273,7 @@ namespace Launcher.Helper {
             }
         }
        
-        static void MarkWorkspacesInactive(Arr<LayoutInfo> workspaces) {
+        static void MarkWorkspacesInactive(Arr<WorkSpace> workspaces) {
             foreach (var layoutInfo in workspaces) {
                 layoutInfo.ActiveWorkspace = false;
                 layoutInfo.AutoRefreshBoundProperties = false;
@@ -285,21 +286,16 @@ namespace Launcher.Helper {
 
             // First check if a workspace already exists for the app that registered the uri.
             string appName = req.HandlerAppName;
-            LayoutInfo workspace = launcher.workspaces
-                .OfType<LayoutInfo>()
+            WorkSpace workspace = launcher.workspaces
+                .OfType<WorkSpace>()
                 .FirstOrDefault(ws => ws.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase));
 
             if (workspace == null) {
-                workspace = new LayoutInfo() { AppName = appName };
+                workspace = new WorkSpace() { AppName = appName };
                 launcher.workspaces.Add(workspace);
             }
-            if (resource.GetAppName() == "Launcher")
-            {
-                dynamic s = resource as dynamic;
-                s.ActiveWorkspace = true;
-            }
-            else
-                workspace.ActiveWorkspace = true;
+
+            workspace.ActiveWorkspace = true;
             workspace.AutoRefreshBoundProperties = true;
 
             //Colab specific Context handlers
@@ -314,7 +310,7 @@ namespace Launcher.Helper {
 
             // Doing a manual merge of the workspace and the resource from the response to attach the
             // resource to the workspace.
-            workspace.MergeJson(resource);
+            workspace.Partials.MergeJson(resource);
 
             return launcher;
         }
