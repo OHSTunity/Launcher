@@ -27,7 +27,15 @@ namespace Launcher
             return false;
         }
 
-        public Boolean signedIn => CheckLogin();
+       // public Boolean signedIn => CheckLogin();
+       
+       public Boolean SignedInCB
+       {
+            get
+            {
+                return CheckLogin();
+            }       
+        }
 
         [LauncherPage_json.searchBar]
         partial class SearchBar : Json

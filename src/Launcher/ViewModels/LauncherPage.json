@@ -2,8 +2,8 @@
   "Html": "",
 
   "signedIn": false,
+  "$signedIn": { "Bind": "SignedInCB" },
   "signin": { },
-
 
   "homeThumbnail": { },
   "homeUrl": "",
