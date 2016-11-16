@@ -20,6 +20,15 @@ namespace Launcher.Helper {
                 res = defaulvalue;
             return res;
         }
+
+        private static Response GetPartials(String common_uri)
+        {
+            return Self.GET(UriMapping.MappingUriPrefix + common_uri, () => {
+                var p = new Page();
+                return p;
+            });
+        }
+
         private const string WRAPINWORKSPACE = "X-WrapInWorkspace";
         
         /// <summary>
@@ -57,11 +66,8 @@ namespace Launcher.Helper {
 
             // Response filter. If the request is tagged and the response contains json, we wrap it in a workspace.
             application.Use((Request request, Response response) => {
-                if (string.Equals(request.Headers[WRAPINWORKSPACE],"T") && response.Resource is Json)
+                if (!string.IsNullOrEmpty(request.Headers[WRAPINWORKSPACE]) && response.Resource is Json)
                     return WrapInWorkspace(request, (Json)response.Resource);
-
-                if (string.Equals(request.Headers[WRAPINWORKSPACE], "M") && response.Resource is Json)
-                    return LauncherMobileHelper.WrapInMobileWorkspace(request, (Json)response.Resource);
 
                 //Colab context specific
                 if (response.Resource is Json)
@@ -74,67 +80,81 @@ namespace Launcher.Helper {
                 var session = Session.Current;
                 LauncherPage launcher;
 
-                if (session != null && session.Data != null)
+                if (session == null)
                 {
-                    launcher = (LauncherPage)Session.Current.Data;
-                    launcher.uri = req.Uri;
-                    MarkWorkspacesInactive(launcher.workspaces);
-
-                    if (session.PublicViewModel != launcher)
-                        session.PublicViewModel = launcher;
-
-                    return launcher;
+                    session = new Session(SessionOptions.PatchVersioning);
                 }
+
+                if (!(session.Data is LauncherPage))
+                {
+                    session.Data = launcher = new LauncherPage()
+                    {
+                        Html = "/Launcher/viewmodels/LauncherTemplate.html"
+                    };
+
+                    launcher.Session = session;
+
+                    launcher.user = GetPartials("/user");
+
+                    launcher.menu = GetPartials("/menu"); 
+
+                    /*Special colab stuff*/
+                    launcher.sidepanel = GetPartials("/sidepanel");
+
+                    launcher.contextpanel = GetPartials("/contextpanel");
+
+                    launcher.contextbar = GetPartials("/contextbar");
+
+                    launcher.signin = GetPartials("/signin");
+                }
+                else
+                {
+                    launcher = session.Data as LauncherPage;
+                }
+               
+                launcher.uri = req.Uri;
+                MarkWorkspacesInactive(launcher.workspaces);
+
+                if (session.PublicViewModel != launcher)
+                    session.PublicViewModel = launcher;
+
+                return launcher;
+            });
+
+
+
+            Handle.GET("/launcher/mobile", (Request req) =>
+            {
+                var session = Session.Current;
+                LauncherPage launcher;
 
                 if (session == null)
                 {
                     session = new Session(SessionOptions.PatchVersioning);
                 }
 
-                launcher = new LauncherPage()
+                if (!(session.Data is LauncherPage))
                 {
-                    Html = "/Launcher/viewmodels/LauncherTemplate.html"
-                };
-
-                launcher.Session = session;
-
-                
-                launcher.user = Self.GET(UriMapping.MappingUriPrefix + "/user", () => {
-                    var p = new Page();
-                    return p;
-                });
-
-                launcher.menu = Self.GET<Json>(UriMapping.MappingUriPrefix + "/menu", () => {
-                    var p = new Page() {
-                        Html = "/Launcher/viewmodels/LauncherMenu.html"
+                    session.Data = launcher = new LauncherPage()
+                    {
+                        Html = "/Launcher/viewmodels/LauncherMobileTemplate.html"
                     };
-                    return p;
-                });
 
-                /*Special colab stuff*/
-                launcher.sidepanel = Self.GET(UriMapping.MappingUriPrefix + "/sidepanel", () =>
-                {
-                    var p = new Page();
-                    return p;
-                });
+                    launcher.Session = session;
 
-                launcher.contextpanel = Self.GET(UriMapping.MappingUriPrefix + "/contextpanel", () =>
-                {
-                    var p = new Page();
-                    return p;
-                });
+                    launcher.user = GetPartials("/mobile/user");
 
-                launcher.contextbar = Self.GET(UriMapping.MappingUriPrefix + "/contextbar", () =>
-                {
-                    var p = new Page();
-                    return p;
-                });
+                    launcher.menu = GetPartials("/mobile/menu");
 
-                launcher.signin = Self.GET(UriMapping.MappingUriPrefix + "/signin", () =>
+                    /*Special colab stuff*/
+                    launcher.contextpanel = GetPartials("/mobile/contextpanel");
+
+                    launcher.signin = GetPartials("/signin");
+                }
+                else
                 {
-                    var p = new Page();
-                    return p;
-                });
+                    launcher = session.Data as LauncherPage;
+                }
 
                 launcher.uri = req.Uri;
                 MarkWorkspacesInactive(launcher.workspaces);
@@ -145,20 +165,22 @@ namespace Launcher.Helper {
                 return launcher;
             });
 
-            Handle.GET("/", (Request req) => {
-                return Self.GET("/launcher/launchpad");
+            Handle.GET("/launcher/mobile/dashboard", (Request req) =>
+            {
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher/mobile");
+                return new Page();
             });
 
-            Handle.GET("/launcher/dashboard", (Request req) => {
+            UriMapping.Map("/launcher/mobile/dashboard", UriMapping.MappingUriPrefix + "/mobile/dashboard");
 
+
+            Handle.GET("/launcher/dashboard", (Request req) => 
+            {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-
-                return Self.GET(UriMapping.MappingUriPrefix + "/dashboard", () => {
-                    var p = new Page();
-
-                    return p;
-                });
+                return new Page();
             });
+
+            UriMapping.Map("/launcher/dashboard", UriMapping.MappingUriPrefix + "/dashboard");
 
             Handle.GET("/launcher/launchpad", (Request req) => {
                 LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
@@ -281,7 +303,12 @@ namespace Launcher.Helper {
         }
 
         static Response WrapInWorkspace(Request req, Json resource) {
-            LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
+            LauncherPage launcher;
+            if (string.Equals(req.Headers[WRAPINWORKSPACE], "M"))
+                launcher = Self.GET<LauncherPage>("/launcher/mobile");
+            else
+                launcher = Self.GET<LauncherPage>("/launcher");
+
             launcher.uri = req.Uri;
 
             // First check if a workspace already exists for the app that registered the uri.

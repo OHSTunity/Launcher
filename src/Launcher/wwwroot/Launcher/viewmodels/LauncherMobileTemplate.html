@@ -61,12 +61,17 @@
         height: 100%;
         box-sizing: border-box;
       }
+
+      [hidden] {
+        visibility: hidden; !important;
+        display: none; !important;
+      }
     </style>
 
  </head>
  <body is="launcher-main">
     <template id="root-launcher-dom-bind" is="dom-bind">
-      <paper-drawer-panel class="flex">
+      <paper-drawer-panel class="flex" hidden$="[[!model.signedIn]]">
         <paper-header-panel drawer>
           <paper-toolbar>
             <div>Context</div>
@@ -78,7 +83,9 @@
             <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
             <div id="logo" onclick="puppet.puppet.morphUrl('/launcher/mobile/dashboard')" class="hover"></div>
             <div class="flex" style="margin-left:10px;">Colab</div>
-            <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+            <div id="user">
+              <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+            </div>
           </paper-toolbar>
           <div class="workspace">
             <template is="dom-repeat" items="{{model.workspaces}}">
@@ -87,6 +94,10 @@
           </div>
         </paper-header-panel>
       </paper-drawer-panel>
+
+      <div id="launcher-login" hidden$="[[model.signedIn]]">
+        <starcounter-include partial="{{model.signin}}"></starcounter-include>
+      </div>
     </template>
     <script>
         (function () {

@@ -10,7 +10,10 @@ namespace Launcher {
 
             handlers.Register();
             LauncherHelper.Init();
-            LauncherMobileHelper.Init();
+
+            Http.GET(8080, "http://sc/alias/8080/;/launcher/launchpad");
+            Http.GET(8080, "http://sc/alias/8080/mobile;/launcher/mobile");
+            Http.GET(8080, "http://sc/alias/8080/mobile/dashboard;/launcher/mobile/dashboard");
         }
     }
 }
