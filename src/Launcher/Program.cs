@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Launcher.Helper;
+using System.Threading;
 using Starcounter;
 
 namespace Launcher {
@@ -11,9 +12,12 @@ namespace Launcher {
             handlers.Register();
             LauncherHelper.Init();
 
-            Http.GET(8080, "http://sc/alias/8080/;/launcher/launchpad");
-            Http.GET(8080, "http://sc/alias/8080/mobile;/launcher/mobile");
-            Http.GET(8080, "http://sc/alias/8080/mobile/dashboard;/launcher/mobile/dashboard");
+            ThreadPool.QueueUserWorkItem(o => { 
+                Http.GET(8181, "http://localhost/sc/alias/8080/;/launcher/launchpad");
+                Http.GET(8181, "http://localhost/sc/alias/8080/settings;/launcher/settings");
+                Http.GET(8181, "http://localhost/sc/alias/8080/mobile;/launcher/mobile");
+                Http.GET(8181, "http://localhost/sc/alias/8080/mobile/dashboard;/launcher/mobile/dashboard");
+            });
         }
     }
 }

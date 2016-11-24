@@ -3,6 +3,9 @@
 <head>
     <title>Colab</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <script>
@@ -144,12 +147,11 @@
         <span id="co-splash-spinner">⚇</span>
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
-
-        <div class="launcher-toolbar launcher-topbar" hidden$="[[!model.signedIn]]">
+      <co-layout-panels only-workspace="[[!model.signedIn]]">
+        <div topbar class="launcher-toolbar launcher-topbar">
             <div style="">
                 <co-logo-with-spinner></co-logo-with-spinner>
             </div>
-
             <div id="launcher-menu">
                <ul>
                   <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
@@ -166,53 +168,34 @@
 
             <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
 
-            <!--
-            <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-              <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" toggles></paper-icon-button>
+            <template is="dom-if" restamp if="{{model.editingMode$}}">
+                <div id="elementSettings" class="launcher-topbar">
+                    <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
+                </div>
             </template>
-            <template is="dom-if" restamp if="{{model.layoutModified$}}">
-              <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" toggles class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
-            </template>
--->
+
             <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
             <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
-
-            <!--<a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
--->
         </div>
 
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-        </template>
-
-        <div id="launcher-content" hidden$="[[!model.signedIn]]">
-            <co-layout-panels>
-              <div main>
-                <co-layout-multiview data="{{model.contextbar}}"></co-layout-multiview>
-                <div id="workspace">
-                  <template is="dom-repeat" items="{{model.workspaces}}">
-                    <starcounter-include partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
-                  </template>
-                </div>
-              </div>
-              <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
-              <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
-            </co-layout-panels>
+        <div main>
+          <co-layout-multiview data="{{model.contextbar}}"></co-layout-multiview>
+          <div id="workspace">
+            <template is="dom-repeat" items="{{model.workspaces}}">
+              <starcounter-include partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
+            </template>
+          </div>
         </div>
 
-        <div id="launcher-login" hidden$="[[model.signedIn]]">
-          <starcounter-include partial="{{model.signin}}"></starcounter-include>
-        </div>
+        <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
+        <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
 
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div id="elementSettings" class="launcher-topbar">
-                <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-            </div>
-        </template>
+      </co-layout-panels>
 
-        <co-lightbox-popup></co-lightbox-popup>
+      <co-lightbox-popup></co-lightbox-popup>
 
-        <paper-dialog opened="{{model.ConnectionError}}" modal="true">
+      <link is="puppet-redirect" history url$="{{model.redirect$}}" />
+      <paper-dialog opened="{{model.ConnectionError}}" modal="true">
             <h4>Connection error</h4>
             <p>You have been disconnected from server. Please reload page.</p>
             <div class="buttons">
@@ -220,7 +203,7 @@
                 <span>&nbsp;</span>
                 <button class="btn btn-sm btn-primary" dialog-confirm onclick="window.location = window.location.href;">Reload</button>
             </div>
-        </paper-dialog>
+      </paper-dialog>
     </template>
     <script>
         (function () {

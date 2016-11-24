@@ -1,6 +1,6 @@
 {
-  Html:"/Launcher/viewmodels/Settings.html",
-	AppMenu:{},
-	CurrentSettings:{}
+  "Html": "/Launcher/viewmodels/Settings.html",
+	"AppMenu": {},
+	"CurrentSettings": {}
 }
 

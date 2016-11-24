@@ -53,7 +53,7 @@ namespace Launcher.Helper {
                 
                 // Checking if we should process this request.
                 if (("/" == uri) ||
-                    (uri.Equals("/launcher", StringComparison.InvariantCultureIgnoreCase)) ||
+                    (uri.Equals("/launcher/main", StringComparison.InvariantCultureIgnoreCase)) ||
                     (SettingsHelper.IfBypassUrl(uri))) {
                     return null;
                 }
@@ -76,7 +76,7 @@ namespace Launcher.Helper {
                 return null;
             });
             
-            Handle.GET("/launcher", (Request req) => {
+            Handle.GET("/launcher/main", (Request req) => {
                 var session = Session.Current;
                 LauncherPage launcher;
 
@@ -104,8 +104,6 @@ namespace Launcher.Helper {
                     launcher.contextpanel = GetPartials("/contextpanel");
 
                     launcher.contextbar = GetPartials("/contextbar");
-
-                    launcher.signin = GetPartials("/signin");
                 }
                 else
                 {
@@ -119,6 +117,10 @@ namespace Launcher.Helper {
                     session.PublicViewModel = launcher;
 
                 return launcher;
+            });
+
+            Handle.GET("/launcher", (Request req) => {
+                return RequireAuthorize(req);
             });
 
 
@@ -148,8 +150,6 @@ namespace Launcher.Helper {
 
                     /*Special colab stuff*/
                     launcher.contextpanel = GetPartials("/mobile/contextpanel");
-
-                    launcher.signin = GetPartials("/signin");
                 }
                 else
                 {
@@ -176,23 +176,44 @@ namespace Launcher.Helper {
 
             Handle.GET("/launcher/dashboard", (Request req) => 
             {
-                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-                return new Page();
+                return RequireAuthorize(req, (LauncherPage lp) =>
+                {
+                    return new Page();
+
+                });
             });
 
             UriMapping.Map("/launcher/dashboard", UriMapping.MappingUriPrefix + "/dashboard");
 
+
+            Handle.GET("/launcher/signin", (Request req) =>
+            {
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher/main");
+                return new Page();
+            });
+            UriMapping.Map("/launcher/signin", UriMapping.MappingUriPrefix + "/signin");
+            Handle.GET("/launcher/signin?{?}", (Request req, String uri) =>
+            {
+                LauncherPage launcher = Self.GET<LauncherPage>("/launcher/main");
+                return new Page();
+            });
+            UriMapping.Map("/launcher/signin?@w", UriMapping.MappingUriPrefix + "/signin/@w");
+
             Handle.GET("/launcher/launchpad", (Request req) => {
-                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-                return Self.GET(UriMapping.MappingUriPrefix + "/launchpad", () => {
-                    dynamic json = new Json();
-                    json.Html = "/Launcher/viewmodels/launchpad.html";
-                    json.Apps = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () => {
-                        var p = new Page();
-                        return p;
+                return RequireAuthorize(req, (LauncherPage lp) =>
+                {
+                    return Self.GET(UriMapping.MappingUriPrefix + "/launchpad", () =>
+                    {
+                        dynamic json = new Json();
+                        json.Html = "/Launcher/viewmodels/launchpad.html";
+                        json.Apps = Self.GET<Json>(UriMapping.MappingUriPrefix + "/app-name", () =>
+                        {
+                            var p = new Page();
+                            return p;
+                        });
+                        json.Layout = GetLaunchpadLayout();
+                        return json;
                     });
-                    json.Layout = GetLaunchpadLayout();
-                    return json;
                 });
             });
 
@@ -221,25 +242,27 @@ namespace Launcher.Helper {
 
                 });
             });
+
+            Handle.GET("/launcher/search", (Request req) =>
+            {
+                return null;
+               /* return Db.Scope(() =>
+                {
+                    return new AdvancedSearchPage()
+                    {
+                    };
+                });*/
+            });
             
             Handle.GET("/launcher/search?query={?}&count={?}", (Request req, string query, string count) => {
-                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-
-               // string uri = UriMapping.MappingUriPrefix + "/search?query=" + HttpUtility.UrlEncode(query);
-            /*    if (!(launcher.currentPage is AdvancedSearchPage))
-                {
-                    launcher.currentPage = new AdvancedSearchPage();
-                }
-                var asp = launcher.currentPage as AdvancedSearchPage;
-                asp.Query = query;
-                asp.Count = ConvertOrDefault(count, 10);
-                asp.StartAt = ConvertOrDefault(count, 0);
-                
-
-                launcher.uri = req.Uri;
-                launcher.searchBar.query = query;*/
-
                 return null;
+                /*return Db.Scope(() =>
+                {
+                    return new AdvancedSearchPage()
+                    {
+                        Query = query,
+                    };
+                });*/
             });
 
             // + dummy responses from launcher itself
@@ -302,12 +325,27 @@ namespace Launcher.Helper {
             }
         }
 
+        static dynamic RequireAuthorize(Request req, Func<LauncherPage, dynamic> func = null)
+        {
+            LauncherPage launcher = (LauncherPage)Self.GET("/launcher/main");
+            if (launcher.CheckLogin())
+            {
+                if (func != null)
+                    return func(launcher);
+            }
+            else
+            {
+                launcher.redirect = "/launcher/signin?originurl=" + req.Uri;
+            }
+            return new Page();
+        }
+
         static Response WrapInWorkspace(Request req, Json resource) {
             LauncherPage launcher;
             if (string.Equals(req.Headers[WRAPINWORKSPACE], "M"))
                 launcher = Self.GET<LauncherPage>("/launcher/mobile");
             else
-                launcher = Self.GET<LauncherPage>("/launcher");
+                launcher = Self.GET<LauncherPage>("/launcher/main");
 
             launcher.uri = req.Uri;
 

@@ -18,6 +18,14 @@
               user-select: none;
             }
 
+            :host #topbar {
+                height: 47px;
+            }
+
+            :host(.onlyWorkspace) #topbar {
+              height: 0px;
+            }
+
             :host #wrapper {
               display: flex;
               flex-direction: row;
@@ -219,38 +227,44 @@
               opacity: 0.6;
             }
         </style>
+        <div id="topbar">
+          <content select="[topbar]"></content>
+        </div>
         <div id="wrapper" >
-            <div id="center">
-              <content select="[main]"></content>
-            </div>
-            <div id="contextPanel" on-tap="contextPanelTapped">
-                <div id="hoverContextPanel">
-                  <div id="contextPanelTools">
-
-                    <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
-                  </div>
+          <div id="center">
+            <content select="[main]"></content>
+          </div>
+          <div id="contextPanel" on-tap="contextPanelTapped" hidden$="[[onlyWorkspace]]">
+              <div id="hoverContextPanel">
+                <div id="contextPanelTools">
+                  <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
                 </div>
-                <content select="[left]"></content>
-                <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
-            </div>
-            <div id="right">
-              <div class="togglercontainer">
-                <co-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></co-icon-button>
               </div>
-              <content select="[right]"></content>
+              <content select="[left]"></content>
+              <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
+          </div>
+          <div id="right" hidden$="[[onlyWorkspace]]">
+            <div class="togglercontainer">
+              <co-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></co-icon-button>
             </div>
+            <content select="[right]"></content>
+          </div>
 
-            <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
-            <iron-media-query query="(min-width: 401px ) and ( max-width: 800px)" query-matches="{{layoutSmall}}"></iron-media-query>
-            <iron-media-query query="(min-width: 801px)  and ( max-width: 1150px)" query-matches="{{layoutMedium}}"></iron-media-query>
-            <iron-media-query query="(min-width: 1151px)" query-matches="{{layoutLarge}}"></iron-media-query>
-
+          <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
+          <iron-media-query query="(min-width: 401px ) and ( max-width: 800px)" query-matches="{{layoutSmall}}"></iron-media-query>
+          <iron-media-query query="(min-width: 801px)  and ( max-width: 1150px)" query-matches="{{layoutMedium}}"></iron-media-query>
+          <iron-media-query query="(min-width: 1151px)" query-matches="{{layoutLarge}}"></iron-media-query>
         </div>
     </template>
     <script>
         var TuApp = Polymer({
             is: "co-layout-panels",
           properties: {
+            onlyWorkspace: {
+              type: Boolean,
+              value: false,
+              observer: "onlyWorkspaceChanged",
+             },
             showContextPanel: {
               type: Boolean,
               value: false,
@@ -314,6 +328,10 @@
             this.unlisten(this, "co-menu", "onTuMenu");
             this.unlisten(this.$.right, "panel-command", "onRightChange");
             this.unlisten(this.$.contextPanel, "panel-command", "onContextPanelChange");
+          },
+          onlyWorkspaceChanged: function() {
+            this.toggleClass('onlyWorkspace', this.onlyWorkspace);
+            console.log('this.onlyWorkspace: ', this.onlyWorkspace);
           },
           onRightChange: function(ev) {
             this.set("right", ev.detail.status == 'open');

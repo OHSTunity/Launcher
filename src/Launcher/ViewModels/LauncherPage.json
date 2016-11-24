@@ -30,8 +30,11 @@
   ],
 
   "workspaces": [ { "$": { "Reuse": "Launcher.WorkSpace" } } ],
+  
   "contextbar": { },
   "contextpanel": { },
   "sidepanel": { },
+
+  "redirect$": "",
   "uri": ""
 }
