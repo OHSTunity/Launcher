@@ -59,19 +59,26 @@
 
             #launcherheader
             {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                height: 60px;
-                width: 100%;
-                background: white;
-                background: linear-gradient(to bottom, #f1eff9 0%,#f5f5fa 100%);
-                border-bottom: .5px solid #cad1ed;
+              position: absolute;
+              display: flex;
+              align-items: center;
+              padding-left: 20px;
+              font-size: 24px;
+              top: 0px;
+              left: 0px;
+              height: 47px;
+              width: 100%;
+              background: white;
+              font-weight: bold;
+              color: #999;
+              background: linear-gradient(to bottom, #f1eff9 0%,#f5f5fa 100%);
+              border-bottom: .5px solid #cad1ed;
             }
+
             #launchercontent
             {
                 display: flex;
-                 position: absolute;
+                position: absolute;
                 top: 60px;
                 left: 0px;
                 bottom: 0px;
@@ -80,17 +87,7 @@
 
             }
         </style>
-        <!-- <juicy-tiles-setup-sync api-url="/sc/layout" name="/Launcher/launchpad" storedValue="{{layout}}"></juicy-tiles-setup-sync> -->
-        <!-- <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad"> -->
-
-        <!--
-        <juicy-tile-table defaulttilesetup='{ "height": 120, "width": 120}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='[[cloneJSON(layout)]]'>
-        -->
-
-        <!-- <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='{"width": 1000, "items": []}'> -->
-            <div id="launcherheader">
-
-            </div>
+            <div id="launcherheader">Applications</div>
 
             <div id="launchercontent">
 

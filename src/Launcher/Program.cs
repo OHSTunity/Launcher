@@ -12,9 +12,10 @@ namespace Launcher {
             handlers.Register();
             LauncherHelper.Init();
 
-            ThreadPool.QueueUserWorkItem(o => { 
+            ThreadPool.QueueUserWorkItem(o => {
                 Http.GET(8181, "http://localhost/sc/alias/8080/;/launcher/launchpad");
                 Http.GET(8181, "http://localhost/sc/alias/8080/settings;/launcher/settings");
+                Http.GET(8181, "http://localhost/sc/alias/8080/configs;/launcher/configs");
                 Http.GET(8181, "http://localhost/sc/alias/8080/mobile;/launcher/mobile");
                 Http.GET(8181, "http://localhost/sc/alias/8080/mobile/dashboard;/launcher/mobile/dashboard");
             });

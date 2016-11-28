@@ -217,31 +217,38 @@ namespace Launcher.Helper {
                 });
             });
 
-            /* Dynamiv page for everything, could for example replace dashboard, 
-             * however, folder naming make it collide with static files          
-            Handle.GET("/launcher/{?}", (Request req, String subpage) => {
-                           LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-
-                           return Self.GET(UriMapping.MappingUriPrefix + subpage, () => {
-                               var p = new Page();
-                               return p;
-                           });
-            });*/
-
             Handle.GET("/launcher/settings", (Request req) => {
-                LauncherPage launcher = Self.GET<LauncherPage>("/launcher");
-                return Self.GET<SettingsPage>(UriMapping.MappingUriPrefix + "/settings", () => {
-                    return Db.Scope(() => {
-                        var p = new SettingsPage()
-                        {
-                            Html = "/Launcher/viewmodels/SettingsPage.html",
-                            Data = SettingsHelper.GetSettings()
-                        };
-                        return p;
-                    });
-
+                return RequireAuthorize(req, (LauncherPage lp) =>
+                {
+                    dynamic json = new Json();
+                    json.Html = "/Launcher/viewmodels/settings.html";
+                    json.Menu = Self.GET<Json>("/launcher/settings/menu");
+                    return json;
                 });
             });
+            Handle.GET("/launcher/settings/menu", (Request req) =>
+            {
+                return new Page();
+            });
+            UriMapping.Map("/launcher/settings/menu", UriMapping.MappingUriPrefix + "/settings_menu");
+
+            Handle.GET("/launcher/configs", (Request req) => {
+                return RequireAuthorize(req, (LauncherPage lp) =>
+                {
+                    dynamic json = new Json();
+                    json.Html = "/Launcher/viewmodels/configs.html";
+                    json.Menu = Self.GET<Json>("/launcher/configs/menu");
+                    return json;
+                });
+            });
+            Handle.GET("/launcher/configs/menu", (Request req) =>
+            {
+                return new Page();
+            });
+            UriMapping.Map("/launcher/configs/menu", UriMapping.MappingUriPrefix + "/configs_menu");
+
+
+
 
             Handle.GET("/launcher/search", (Request req) =>
             {
