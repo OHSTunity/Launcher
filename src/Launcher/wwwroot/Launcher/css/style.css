@@ -117,7 +117,7 @@ starcounter-include.workspace[visible] {
     transition: all 0.2s ease;
 
 }
-#launcher-menu ul li:hover {
+#launcher-menu ul li a:hover {
 
     color: white;
     background-color: rgba(255,255,255,.2);
@@ -135,7 +135,7 @@ starcounter-include.workspace[visible] {
 
 }
 
-#launcher-menu ul li {
+#launcher-menu ul li a {
   border-radius: 4px;
   padding-right: 8px;
   padding-left: 8px;
