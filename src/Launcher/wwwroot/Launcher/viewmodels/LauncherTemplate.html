@@ -1,10 +1,18 @@
 <!doctype html>
 <html>
 <head>
-    <title>Colab</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Colab</title>
+    <link rel="shortcut icon" href="/Launcher/favicon.ico" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <!-- iOS -->
+    <link rel="apple-touch-icon" href="/Launcher/favicon.ico" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Colab">
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
@@ -61,7 +69,6 @@
     <!--<link rel="import" href="/sys/bootstrap.html" />-->
     <link rel="stylesheet" href="/Launcher/css/style.css" />
 
-    <link rel="shortcut icon" href="/Launcher/favicon.ico" />
     <style>
 
       /* Hack to avoid changing font name everywhere */
@@ -138,6 +145,7 @@
 
       #workspace {
         position: relative;
+        overflow: auto;
         flex:1;
       }
     </style>

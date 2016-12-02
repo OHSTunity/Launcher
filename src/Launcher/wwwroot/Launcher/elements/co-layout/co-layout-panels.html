@@ -39,6 +39,7 @@
               order: 2;
               z-index: 1;
               position: relative;
+              box-sizing: border-box;
               display: flex;
               flex-direction: column;
             }
@@ -47,6 +48,7 @@
             {
               position: relative;
               order: 1;
+              box-sizing: border-box;
               z-index: 2;
               background: #fff;
               border-right: solid 1px #aaa;
@@ -60,6 +62,7 @@
 
             :host(.co-layout-panels-right-close) #right
             {
+              display: none;
               width: 0px;
               overflow: hidden;
               visibility: hidden;
@@ -67,9 +70,10 @@
 
             :host #right
             {
+              display: block;
               position: relative;
               width: 350px;
-
+              box-sizing: border-box;
               order: 3;
               z-index: 3;
               background: #fff;
@@ -122,12 +126,10 @@
 
             :host(.co-layout-panels-micro) #center
             {
-              margin-left: 50px;
             }
 
             :host(.co-layout-panels-small) #center
             {
-              margin-left: 50px;
             }
 
             #right {
