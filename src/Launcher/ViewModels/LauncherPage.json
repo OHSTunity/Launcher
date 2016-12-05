@@ -1,6 +1,8 @@
 {
   "Html": "",
 
+  "Title":  "",
+
   "signedIn": false,
   "$signedIn": { "Bind": "SignedInCB" },
   "signin": { },

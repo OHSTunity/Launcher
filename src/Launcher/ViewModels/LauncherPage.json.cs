@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Web;
 using Starcounter.Advanced.XSON;
 using Concepts.Ring8.Tunity;
+using Colab.Common;
 
 namespace Launcher
 {
@@ -27,9 +28,15 @@ namespace Launcher
             return false;
         }
 
-       // public Boolean signedIn => CheckLogin();
-       
-       public Boolean SignedInCB
+
+        public void SetTitle(String subtitle)
+        {
+            Title = ColabConfiguration.Get<String>(ColabConfig.TITLE) + " "  + subtitle;
+        }
+
+        // public Boolean signedIn => CheckLogin();
+
+        public Boolean SignedInCB
        {
             get
             {

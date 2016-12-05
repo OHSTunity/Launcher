@@ -358,6 +358,7 @@ namespace Launcher.Helper {
 
             // First check if a workspace already exists for the app that registered the uri.
             string appName = req.HandlerAppName;
+            launcher.SetTitle(appName);
             WorkSpace workspace = launcher.workspaces
                 .OfType<WorkSpace>()
                 .FirstOrDefault(ws => ws.AppName.Equals(appName, StringComparison.InvariantCultureIgnoreCase));
