@@ -104,6 +104,9 @@
     <Compile Include="ViewModels\AdvancedSearchPage.json.cs">
       <DependentUpon>AdvancedSearchPage.json</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Dashboard.json.cs">
+      <DependentUpon>Dashboard.json</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\LauncherPage.json.cs">
       <DependentUpon>LauncherPage.json</DependentUpon>
     </Compile>
@@ -196,6 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypedJSON Include="ViewModels\WorkSpace.json">
+      <Generator>MsBuild:Compile</Generator>
+    </TypedJSON>
+    <TypedJSON Include="ViewModels\Dashboard.json">
       <Generator>MsBuild:Compile</Generator>
     </TypedJSON>
     <None Include="weaver.ignore">

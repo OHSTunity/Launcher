@@ -174,15 +174,32 @@ namespace Launcher.Helper {
             UriMapping.Map("/launcher/mobile/dashboard", UriMapping.MappingUriPrefix + "/mobile/dashboard");
 
 
+            Handle.GET("/launcher/container_dashboard", (Request req) =>
+            {
+                return RequireAuthorize(req, (LauncherPage lp) =>
+                {
+                    return new Dashboard()
+                    {
+                        DashboardPartials = Self.GET("/launcher/dashboard"),
+                        LaunchpadPartials = Self.GET(UriMapping.MappingUriPrefix + "/app-name",
+                        () =>
+                        {
+                            var p = new Page();
+                            return p;
+                        })
+                    };
+                });
+            });
+ 
             Handle.GET("/launcher/dashboard", (Request req) => 
             {
                 return RequireAuthorize(req, (LauncherPage lp) =>
                 {
+
                     return new Page();
 
                 });
             });
-
             UriMapping.Map("/launcher/dashboard", UriMapping.MappingUriPrefix + "/dashboard");
 
 

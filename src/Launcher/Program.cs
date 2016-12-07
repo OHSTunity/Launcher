@@ -11,13 +11,15 @@ namespace Launcher {
 
             handlers.Register();
             LauncherHelper.Init();
-
+            var port = Starcounter.Internal.StarcounterEnvironment.Default.UserHttpPort;
             ThreadPool.QueueUserWorkItem(o => {
-                Http.GET(8181, "http://localhost/sc/alias/8080/;/launcher/launchpad");
-                Http.GET(8181, "http://localhost/sc/alias/8080/settings;/launcher/settings");
-                Http.GET(8181, "http://localhost/sc/alias/8080/configs;/launcher/configs");
-                Http.GET(8181, "http://localhost/sc/alias/8080/mobile;/launcher/mobile");
-                Http.GET(8181, "http://localhost/sc/alias/8080/mobile/dashboard;/launcher/mobile/dashboard");
+                
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/;/launcher/launchpad", port));
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/dashboard;/launcher/container_dashboard", port));
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/settings;/launcher/settings", port));
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/configs;/launcher/configs", port));
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/mobile;/launcher/mobile", port));
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/mobile/dashboard;/launcher/mobile/dashboard", port));
             });
         }
     }
