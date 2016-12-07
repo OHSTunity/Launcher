@@ -46,7 +46,7 @@
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-result/launcher-search-result.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
-    <link rel="import" href="/Launcher/elements/co-logo-with-spinner/co-logo-with-spinner.html" />
+    <link rel="import" href="/co-common/elements/app/co-logo.html">
     <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
 	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
@@ -160,8 +160,8 @@
       <co-title value="[[model.Title]]"></co-title>
       <co-layout-panels only-workspace="[[!model.signedIn]]">
         <div topbar class="launcher-toolbar launcher-topbar">
-            <div style="">
-                <co-logo-with-spinner></co-logo-with-spinner>
+            <div style="width:30px;height:30px;">
+                <co-logo></co-logo>
             </div>
             <div id="launcher-menu">
                <ul>
