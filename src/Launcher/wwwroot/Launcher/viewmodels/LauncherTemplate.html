@@ -193,7 +193,7 @@
           <co-layout-multiview data="{{model.contextbar}}"></co-layout-multiview>
           <div id="workspace">
             <template is="dom-repeat" items="{{model.workspaces}}">
-              <starcounter-include partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
+              <starcounter-include style="height:100%" partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
             </template>
           </div>
         </div>
