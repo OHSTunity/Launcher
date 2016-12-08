@@ -1,9 +1,9 @@
 <!--
-
+  Co-launcher handles the total layout
 
 -->
 <link rel="import" href="/sys/polymer/polymer.html">
-<dom-module id="co-layout-panels">
+<dom-module id="co-launcher">
     <template>
         <style>
             :host{
@@ -20,7 +20,8 @@
             }
 
             :host #topbar {
-                height: 47px;
+              order:1;
+              height: 47px;
             }
 
             :host(.onlyWorkspace) #topbar {
@@ -28,6 +29,7 @@
             }
 
             :host #wrapper {
+              order:2;
               display: flex;
               flex-direction: row;
               height: 100%;
@@ -229,6 +231,14 @@
               background-color: white;
               opacity: 0.6;
             }
+
+            #layout-editor {
+              display: none;
+              order: 0
+            }
+            :host(.editing-mode) #layout-editor {
+              display: block;
+            }
         </style>
         <div id="topbar">
           <content select="[topbar]"></content>
@@ -252,16 +262,24 @@
             </div>
             <content select="[right]"></content>
           </div>
-
-          <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
-          <iron-media-query query="(min-width: 401px ) and ( max-width: 800px)" query-matches="{{layoutSmall}}"></iron-media-query>
-          <iron-media-query query="(min-width: 801px)  and ( max-width: 1150px)" query-matches="{{layoutMedium}}"></iron-media-query>
-          <iron-media-query query="(min-width: 1151px)" query-matches="{{layoutLarge}}"></iron-media-query>
         </div>
+
+        <div id="layout-editor">
+          <content select="[layouteditor]"></content>
+        </div>
+
+        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
+        <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
+
+
+        <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
+        <iron-media-query query="(min-width: 401px ) and ( max-width: 800px)" query-matches="{{layoutSmall}}"></iron-media-query>
+        <iron-media-query query="(min-width: 801px)  and ( max-width: 1150px)" query-matches="{{layoutMedium}}"></iron-media-query>
+        <iron-media-query query="(min-width: 1151px)" query-matches="{{layoutLarge}}"></iron-media-query>
     </template>
     <script>
         var TuApp = Polymer({
-            is: "co-layout-panels",
+          is: "co-launcher",
           properties: {
             onlyWorkspace: {
               type: Boolean,
@@ -314,11 +332,26 @@
               notify: true,
               observer: 'mediaChange',
             },
+            editingMode: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'editingModeChanged'
+            }
           },
           observers: [
             'contextPanelStatusChanged(showContextPanel, contextPanelWidth, contextPanelMinimized)'
           ],
           ready: function() {
+          },
+          closeEditor: function () {
+            this.editingMode = false;
+          },
+          toggleEditor: function () {
+             this.editingMode = !this.editingMode;
+          },
+          editingModeChanged: function(value) {
+            this.toggleClass('editing-mode', value);
           },
           attached: function() {
             this.listen(this, "co-pane", "onTuMenu");
@@ -334,7 +367,6 @@
           },
           onlyWorkspaceChanged: function() {
             this.toggleClass('onlyWorkspace', this.onlyWorkspace);
-            console.log('this.onlyWorkspace: ', this.onlyWorkspace);
           },
           onRightChange: function(ev) {
             this.set("right", ev.detail.status == 'open');

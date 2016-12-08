@@ -1,0 +1,15 @@
+{
+  "short_name": "Colabers",
+  "name": "Colabers",
+  "icons": [
+    {
+      "src":"/images/cl-log-fff-99.png",
+      "sizes": "99x99",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/", 
+  "background_color": "#000",
+  "Theme_color": "#536878",
+  "display": "standalone"
+}

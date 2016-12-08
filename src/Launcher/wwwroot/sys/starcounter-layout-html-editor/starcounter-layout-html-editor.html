@@ -127,26 +127,30 @@ version: 0.0.0
                 this.addEventListener('mouseup', function(ev) {
                     window.dispatchEvent(new Event('resize')); //fix resizing of ACE edior
                 });
+            },
 
-                // populate knownSelectors list
-                var knownSelectors = Array.prototype.reduce.call(
-                    document.querySelectorAll("starcounter-include"),
-                    function(result, elem) {
-                        var selector = trySelectorFromAttribute("slot", elem) ||
-                            trySelectorFromAttribute("partial-id", elem) ||
-                            trySelectorFromAttribute("id", elem);
-                        if (selector) {
-                            result.push(selector);
-                        }
-                        return result;
-                    },
-                    []
-                );
-                this.set('knownSelectors', knownSelectors);
+            updateKnownSelectors: function() {
+              // populate knownSelectors list
+              var knownSelectors = Array.prototype.reduce.call(
+                  document.querySelectorAll("starcounter-include"),
+                  function(result, elem) {
+                      var selector = trySelectorFromAttribute("slot", elem) ||
+                          trySelectorFromAttribute("partial-id", elem) ||
+                          trySelectorFromAttribute("id", elem);
+                      if (selector) {
+                          result.push(selector);
+                      }
+                      return result;
+                  },
+                  []
+              );
+              this.set('knownSelectors', knownSelectors);
             },
 
             // Fires when the element was inserted into the document
-            attached: function () {},
+            attached: function () {
+              this.updateKnownSelectors();
+            },
 
             // Fires when the element was removed from the document
             detached: function () {},
