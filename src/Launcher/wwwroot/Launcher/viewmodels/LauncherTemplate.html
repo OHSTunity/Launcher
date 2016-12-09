@@ -50,7 +50,7 @@
     <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
 	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
-    <link rel="import" href="/Launcher/elements/co-layout/co-layout-panels.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-launcher.html" />
     <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html" />
     <link rel="import" href="/Launcher/elements/co-layout/co-title.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
@@ -70,6 +70,7 @@
     <!--<link rel="import" href="/sys/bootstrap.html" />-->
     <link rel="stylesheet" href="/Launcher/css/style.css" />
 
+    <link rel="manifest" href="/webapp/manifest.json">
     <style>
 
       /* Hack to avoid changing font name everywhere */
@@ -158,7 +159,8 @@
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
-      <co-layout-panels only-workspace="[[!model.signedIn]]">
+      <co-launcher only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}}>
+
         <div topbar class="launcher-toolbar launcher-topbar">
             <div style="width:30px;height:30px;">
                 <co-logo></co-logo>
@@ -178,15 +180,6 @@
             <span class="toolbar-divider"></span>
 
             <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
-
-            <template is="dom-if" restamp if="{{model.editingMode$}}">
-                <div id="elementSettings" class="launcher-topbar">
-                    <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-                </div>
-            </template>
-
-            <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
-            <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
         </div>
 
         <div main>
@@ -201,7 +194,13 @@
         <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
         <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
 
-      </co-layout-panels>
+
+        <template is="dom-if" if="[[model.editingMode$]]" restamp>
+          <div layouteditor>
+            <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
+          </div>
+        </template>
+      </co-launcher>
 
       <co-lightbox-popup></co-lightbox-popup>
 
@@ -221,23 +220,9 @@
             var script = document._currentScript || document.currentScript;
             var template = script.previousElementSibling;
 
-            template.closeEditor = function () {
-                template.set("model.editingMode$", false);
-            };
-
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
             };
-
-            template.toggleEditor = function () {
-              console.log('toggle');
-                template.set("model.editingMode$", !template.model.editingMode$);
-            };
-
-
-      		/*	template.addEventListener("model-changed", function (e) {
-      				console.log("lt", e);
-      			});*/
 
             template.addEventListener("dom-change", function () {
                 var puppet = document.querySelector("puppet-client");
@@ -257,5 +242,16 @@
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
     </script>
+  <!--  <script>
+      if ('serviceWorker' in navigator) {
+        console.log("Will the service worker register?");
+        navigator.serviceWorker.register('/Launcher/js/service-worker.js')
+          .then(function(reg){
+            console.log("Yes, it did.");
+          }).catch(function(err) {
+            console.log("No it didn't. This happened: ", err)
+          });
+      }
+    </script>-->
 </body>
 </html>

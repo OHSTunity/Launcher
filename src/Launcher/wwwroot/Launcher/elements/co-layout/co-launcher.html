@@ -1,0 +1,471 @@
+<!--
+  Co-launcher handles the total layout
+
+-->
+<link rel="import" href="/sys/polymer/polymer.html">
+<dom-module id="co-launcher">
+    <template>
+        <style>
+            :host{
+              position: absolute;
+              left: 0px;
+              right: 0px;
+              top: 0px;
+              bottom: 0px;
+              display: flex;
+              flex-direction: column;
+              -webkit-user-select: none;
+              -moz-user-select: none;
+              user-select: none;
+            }
+
+            :host #topbar {
+              order:1;
+              height: 47px;
+            }
+
+            :host(.onlyWorkspace) #topbar {
+              height: 0px;
+            }
+
+            :host #wrapper {
+              order:2;
+              display: flex;
+              flex-direction: row;
+              height: 100%;
+              background-color: #ffffff;
+            }
+            :host #center
+            {
+              flex: 1 1 ;
+              order: 2;
+              z-index: 1;
+              position: relative;
+              box-sizing: border-box;
+              display: flex;
+              flex-direction: column;
+            }
+
+            :host #contextPanel
+            {
+              position: relative;
+              order: 1;
+              box-sizing: border-box;
+              z-index: 2;
+              background: #fff;
+              border-right: solid 1px #aaa;
+              padding-top: 30px;
+            }
+
+            :host(.co-layout-panels-left-close) #contextPanel co-icon-button.toggler
+            {
+              transform: rotate(180deg);
+            }
+
+            :host(.co-layout-panels-right-close) #right
+            {
+              display: none;
+              width: 0px;
+              overflow: hidden;
+              visibility: hidden;
+            }
+
+            :host #right
+            {
+              display: block;
+              position: relative;
+              width: 350px;
+              box-sizing: border-box;
+              order: 3;
+              z-index: 3;
+              background: #fff;
+              border-left: solid 1px #aaa;
+              transition: width .2s ease;
+              will-change: transform;
+            /*  will-change: transform;
+              transition: transform ease-in-out 0s, width ease-in-out 0s, visibility 0s;*/
+            }
+            :host #rightheader
+            {
+              height: 58px;
+            }
+
+            #right .toggler
+            {
+              position: absolute;
+              left: 2px;
+              top: 7px;
+            }
+            #right .togglercontainer
+            {
+              position: absolute;
+              right: 0px;
+              top: 0px;
+
+              width: 35px;
+              height: 47px;
+              z-index: 1;
+
+
+            }
+
+            /* Media query states */
+            :host(.co-layout-panels-micro) #contextPanel
+            {
+              position: absolute;
+              left: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.co-layout-panels-small) #left
+            {
+              position: absolute;
+              left: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.co-layout-panels-micro) #center
+            {
+            }
+
+            :host(.co-layout-panels-small) #center
+            {
+            }
+
+            #right {
+              overflow-x: hidden;
+            }
+
+            #right co-icon-button {
+              z-index: 1;
+            }
+
+            :host(.co-layout-panels-micro) #right
+            {
+              position:absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.co-layout-panels-small) #right
+            {
+              position: absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            :host(.co-layout-panels-medium)  #right
+            {
+              position: absolute;
+              right: 0;
+              top: 0;
+              bottom: 0;
+            }
+
+            #widthtracker
+            {
+              position: absolute;
+              height: 100%;
+              top: 0px;
+              right: 0px;
+              min-width: 4px;
+              background-color: black;
+              background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,.5) 5px, rgba(255,255,255,.5) 10px);
+              opacity: .0;
+              cursor: ew-resize;
+            }
+
+            co-actionboard-sidebar:hover #widthtracker
+            {
+              opacity:.25;
+            }
+
+            #widthtracker:hover
+            {
+              opacity:.6 !important;
+            }
+
+            .widthtracking
+            {
+              opacity:.6 !important;
+              /*min-width: 6px !important;*/
+            }
+
+            #contextPanel {
+              transition: width 0.2s ease;
+            }
+            #contextPanel.minimized #widthtracker {
+              visibility: collapse;
+            }
+
+            #hoverContextPanel {
+              position: absolute;
+              top: 0px;
+              right: -10px;
+              width: 10px;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              visibility: collapse;
+              z-index:-1;
+            }
+
+            #contextPanel:hover #hoverContextPanel {
+              visibility: visible;
+            }
+
+            #contextPanelTools {
+              width: 35px;
+              height: 40px;
+              border-top-right-radius: 34px;
+              border-bottom-right-radius: 34px;
+              border-right: 1px solid rgba(0,0,0,.5);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background-color: white;
+              opacity: 0.6;
+            }
+
+            #layout-editor {
+              display: none;
+              order: 0
+            }
+            :host(.editing-mode) #layout-editor {
+              display: block;
+            }
+        </style>
+        <div id="topbar">
+          <content select="[topbar]"></content>
+        </div>
+        <div id="wrapper" >
+          <div id="center">
+            <content select="[main]"></content>
+          </div>
+          <div id="contextPanel" on-tap="contextPanelTapped" hidden$="[[onlyWorkspace]]">
+              <div id="hoverContextPanel">
+                <div id="contextPanelTools">
+                  <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
+                </div>
+              </div>
+              <content select="[left]"></content>
+              <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
+          </div>
+          <div id="right" hidden$="[[onlyWorkspace]]">
+            <div class="togglercontainer">
+              <co-icon-button class="toggler" icon="times" on-tap="onCloseRightTapped" ></co-icon-button>
+            </div>
+            <content select="[right]"></content>
+          </div>
+        </div>
+
+        <div id="layout-editor">
+          <content select="[layouteditor]"></content>
+        </div>
+
+        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
+        <launcher-hot-key keys="Esc" on-keypress="closeEditor"></launcher-hot-key>
+
+
+        <iron-media-query query="(min-width: 0px ) and ( max-width: 400px)" query-matches="{{layoutMicro}}"></iron-media-query>
+        <iron-media-query query="(min-width: 401px ) and ( max-width: 800px)" query-matches="{{layoutSmall}}"></iron-media-query>
+        <iron-media-query query="(min-width: 801px)  and ( max-width: 1150px)" query-matches="{{layoutMedium}}"></iron-media-query>
+        <iron-media-query query="(min-width: 1151px)" query-matches="{{layoutLarge}}"></iron-media-query>
+    </template>
+    <script>
+        var TuApp = Polymer({
+          is: "co-launcher",
+          properties: {
+            onlyWorkspace: {
+              type: Boolean,
+              value: false,
+              observer: "onlyWorkspaceChanged",
+             },
+            showContextPanel: {
+              type: Boolean,
+              value: false,
+              notify: true,
+            },
+            contextPanelMinimized: {
+              type: Boolean,
+              value: false,
+              notify: true,
+            },
+            contextPanelWidth: {
+              type: Number,
+              value: 350,
+              notify: true,
+            },
+            right: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              reflectToAttribute: true,
+              observer: 'rightChanged',
+            },
+            layoutMicro: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            layoutSmall: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            layoutMedium: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            layoutLarge: {
+              type: Boolean,
+              value: true,
+              notify: true,
+              observer: 'mediaChange',
+            },
+            editingMode: {
+              type: Boolean,
+              value: false,
+              notify: true,
+              observer: 'editingModeChanged'
+            }
+          },
+          observers: [
+            'contextPanelStatusChanged(showContextPanel, contextPanelWidth, contextPanelMinimized)'
+          ],
+          ready: function() {
+          },
+          closeEditor: function () {
+            this.editingMode = false;
+          },
+          toggleEditor: function () {
+             this.editingMode = !this.editingMode;
+          },
+          editingModeChanged: function(value) {
+            this.toggleClass('editing-mode', value);
+          },
+          attached: function() {
+            this.listen(this, "co-pane", "onTuMenu");
+            this.listen(this, "co-menu", "onTuMenu");
+            this.listen(this.$.right, "panel-command", "onRightChange");
+            this.listen(this.$.contextPanel, "panel-command", "onContextPanelChange");
+          },
+          detached: function() {
+            this.unlisten(this, "co-pane", "onTuMenu");
+            this.unlisten(this, "co-menu", "onTuMenu");
+            this.unlisten(this.$.right, "panel-command", "onRightChange");
+            this.unlisten(this.$.contextPanel, "panel-command", "onContextPanelChange");
+          },
+          onlyWorkspaceChanged: function() {
+            this.toggleClass('onlyWorkspace', this.onlyWorkspace);
+          },
+          onRightChange: function(ev) {
+            this.set("right", ev.detail.status == 'open');
+          },
+          onContextPanelChange: function(ev) {
+            if (ev.detail.status == 'expand')
+              this.set("contextPanelMinimized", false);
+            else if (ev.detail.status == 'minimize')
+              this.set("contextPanelMinimized", true);
+            else if (ev.detail.status == 'open')
+              this.set("showContextPanel", true);
+            else if (ev.detail.status == 'close')
+              this.set("showContextPanel", false);
+          },
+          contextPanelStatusChanged: function(e) {
+            this.toggleClass('minimized', this.contextPanelMinimized, this.$.contextPanel);
+            this.toggleClass('hidden', !this.showContextPanel, this.$.contextPanel);
+            var width = this.contextPanelWidth;
+            if (this.showContextPanel) {
+              if (this.contextPanelMinimized)
+                width = '40';
+            }
+            else {
+              width = '0';
+            }
+            this.$.contextPanel.style.width = width + 'px';
+            var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
+            for (var i = 0; i < mviews.length; i++)
+            {
+              mviews[i].panelWidth = width;
+              this.toggleClass('minimized', this.contextPanelMinimized, mviews[i]);
+              this.toggleClass('hidden', !this.showContextPanel, mviews[i]);
+            }
+          },
+          contextPanelWidthTrack: function(e) {
+            e.cancelBubble=true;
+
+            e.stopPropagation();
+            switch(e.detail.state) {
+              case 'start':
+                this.$.widthtracker.classList.add("widthtracking");
+              break;
+              case 'end':
+                this.$.widthtracker.classList.remove("widthtracking");
+              break;
+            }
+            var width = e.detail.x;
+            if (width < 200)
+              width = 200;
+            if (width > 600)
+              width = 600;
+
+            this.set('contextPanelWidth', width);
+          },
+          toggleContextPanel: function(ev) {
+            ev.stopPropagation();
+            this.set('contextPanelMinimized', !this.contextPanelMinimized);
+          },
+          contextPanelTapped: function() {
+            if (this.contextPanelMinimized)
+              this.set('contextPanelMinimized', false);
+          },
+          onCloseRightTapped: function(ev) {
+            this.set("right", false);
+            var mviews = Polymer.dom(this.$.right).queryDistributedElements("co-layout-multiview");
+            for (var i = 0; i < mviews.length; i++)
+              mviews[i].deActivateAll();
+          },
+          rightChanged: function(e)
+          {
+            this.classList.toggle("co-layout-panels-right-close", !this.right);
+          },
+          onTuPane: function(e)
+          {
+            this.classList.toggle("show_pane", e.detail.open);
+          },
+          onTuMenu: function(e)
+          {
+            var menu = e.target;
+            if ( (this.layoutMicro || this.layoutSmall ) )
+            {
+              menu.collapse = ! menu.isForceOpen();
+            }
+            else
+            {
+              menu.collapse = menu.isForceClose();
+            }
+            this.classList.toggle("collapse_menu", menu.collapse);
+          },
+          _calcArrow: function(value) {
+            return value? "arrow-right": "arrow-left";
+          },
+          mediaChange: function()
+          {
+            this.classList.toggle("co-layout-panels-micro", this.layoutMicro);
+            this.classList.toggle("co-layout-panels-small", this.layoutSmall);
+            this.classList.toggle("co-layout-panels-medium", this.layoutMedium);
+            this.classList.toggle("co-layout-panels-large", this.layoutLarge);
+          }
+        });
+    </script>
+</dom-module>
