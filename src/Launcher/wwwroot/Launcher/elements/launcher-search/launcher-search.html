@@ -92,7 +92,7 @@
       <div id="preview" class="preview">
         <div id='result'>
           <template is="dom-repeat" items="{{types}}" as="type">
-            <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>{{type.Count}}</span>)</div>
+            <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>[[_calcCount(type.Count)]]</span>)</div>
             <div index$={{type._index}} class="items">
               <template is="dom-repeat" items="{{type.Items}}" as="item">
                 <div class="item" index$="{{index}}" on-mouseover='itemHovered' on-tap='itemTapped'>
@@ -319,6 +319,9 @@
             },
             focus: function () {
                 this.$.input.focus();
+            },
+            _calcCount: function(count) {
+              return (count < 26)? count : "25+";
             },
         });
     </script>
