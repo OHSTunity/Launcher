@@ -1,6 +1,5 @@
 {
   "Html": "/Launcher/viewmodels/dashboard.html",
-
   "DashboardPartials": { },
   "LaunchpadPartials": { }
 }

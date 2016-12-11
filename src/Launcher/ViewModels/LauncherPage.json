@@ -35,6 +35,7 @@
   
   "contextbar": { },
   "contextpanel": { },
+  "contextpanelAutoVisible":  false,
   "sidepanel": { },
 
   "redirect$": "",

@@ -159,7 +159,7 @@
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
-      <co-launcher only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}}>
+      <co-launcher only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}} cp-auto-visible=[[model.contextpanelAutoVisible]]>
 
         <div topbar class="launcher-toolbar launcher-topbar">
             <div style="width:30px;height:30px;">
