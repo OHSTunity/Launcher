@@ -18,24 +18,23 @@
     .fill {
       top:0px;bottom:0px;width:100%;height:100%;background-position:center;background-size:cover;
     }
-
+    .dashboard-shadows
+    {
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
+    }
+    .dashboard-shadows>h1
+    {
+      font-size: 2em;
+    }
 
   </style>
 
 
   <template is="dom-bind">
     <div class="hero-unit" id="hu">
-      <!--<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>-->
-      <div id="particles-js">
 
-      <script>
-      </script>
-
-
-      <div>
-
-        <div style="text-align:center;text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);margin:50px;font-size:1.25em;">
-          <h1>Hello there Mattias!</h1>
+        <div class="dashboard-shadows" style="text-align:center;margin:50px;font-size:1.25em;">
+          <h1>Hello there {{model.FullName}}</h1>
         </div>
         <div>
           <starcounter-include partial="{{model.DashboardPartials}}" style="width: 80%; margin: 0 auto;"></starcounter-include>
@@ -43,13 +42,7 @@
         <div style="position:absolute;bottom:0px;left:0px;right:0px;background:rgba(0,0,0,.2)">
           <launcher-launchpad2 apps="{{model.LaunchpadPartials}}"></launcher-launchpad2>
         </div>
-
-
-
       </div>
-
-
-
 
 </div>
    </div>
