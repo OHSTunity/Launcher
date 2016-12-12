@@ -14,14 +14,14 @@
   |      |                            |      |
   --------------------------------------------
 
-  1 : Topbar, menu e.t.c.
-  2. Context panel
+  1 : Toolbar/topbar, menu e.t.c.
+  2. Context panels
   3. Context bar
   4. Workspace
   5. tool/side panel
 
 
-  1. Topbar
+  1. Toolbar
     - Only visible on logged in
     --------------------------------------------------------------------------
     | Logo/home |  Menu |               search | signin | tools/sidebar apps |
@@ -43,6 +43,7 @@
 
 -->
 <link rel="import" href="/sys/polymer/polymer.html">
+<link rel="import" href="co-launcher-toolbar.html">
 <dom-module id="co-launcher">
     <template>
         <style>
@@ -59,12 +60,12 @@
               user-select: none;
             }
 
-            :host #topbar {
+            :host #toolbar {
               order:1;
               height: 47px;
             }
 
-            :host(.onlyWorkspace) #topbar {
+            :host(.onlyWorkspace) #toolbar {
               height: 0px;
             }
 
@@ -284,8 +285,8 @@
               display: none;
             }
         </style>
-        <div id="topbar">
-          <content select="[topbar]"></content>
+        <div id="toolbar">
+          <content id="toolbar" select="[toolbar]"></content>
         </div>
         <div id="wrapper" >
           <div id="center">
@@ -445,7 +446,7 @@
             }
             else {
               if (autoVisible) {
-                this.manualVisible = false; //Always reset manual status on contextapp
+                this.cpManualVisible = false; //Always reset manual status on contextapp
               }
               var minimized = (!autoVisible && !manualVisible) || (autoVisible && manualMinimized);
               this.toggleClass('hidden', false, this.$.contextPanel);
@@ -525,8 +526,7 @@
           _calcArrow: function(value) {
             return value? "arrow-right": "arrow-left";
           },
-          mediaChange: function()
-          {
+          mediaChange: function() {
             this.classList.toggle("co-layout-panels-micro", this.layoutMicro);
             this.classList.toggle("co-layout-panels-small", this.layoutSmall);
             this.classList.toggle("co-layout-panels-medium", this.layoutMedium);

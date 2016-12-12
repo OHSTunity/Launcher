@@ -1,0 +1,245 @@
+<!--
+  co-launcher-toolbar
+    - Only visible on logged in
+    --------------------------------------------------------------------------
+    | Logo/home -  Menu |               search | signin | tools/sidebar apps |
+    --------------------------------------------------------------------------
+    - Responsive layout order:
+        * Menu loose text
+        * Sigin loose text
+        * search become button
+        * logo/home merge with menu -> button
+        * tools/sidebars become menu-button
+
+   LAYOUT Large (> 1150px) DEFAULT
+   --------------------------------------------------------------------------
+   | Logo/home -  Menu |               search | signin | tools/sidebar apps |
+   --------------------------------------------------------------------------
+   Everything expanded, if menu get to long, texts gets truncated (ugly)
+
+-->
+<link rel="import" href="/sys/polymer/polymer.html">
+<link rel="import" href="/co-common/css/co-fontawesome.html">
+<link rel="import" href="/co-common/css/co-icomoon.html">
+<dom-module id="co-launcher-toolbar">
+  <template>
+    <style include="co-icomoon"></style>
+    <style include="co-fontawesome">
+      :host {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        box-sizing: border-box;
+      }
+
+      .toolbar-divider {
+        padding: 7px 5px 7px 4px;
+        line-height: 15px;
+        width: 1px !important;
+        border-left: 1px rgba(255,255,255,0.37) solid;
+        position: relative;
+       }
+
+       #usersection {
+         flex-shrink: 0;
+         display: flex;
+         align-items: center;
+       }
+
+       #largeLogo {
+         width: 30px;
+         min-width: 30px;
+         height: 30px;
+         min-height: 30px;
+       }
+
+      /* Menu LARGE */
+      #logoMenu {
+        flex:1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      #menu {
+        flex: 1 1 auto;
+        display: flex;
+        color: #4c444b;
+        color: rgba(255, 255, 255, 0.9);
+        margin-left: 14px;
+        padding: 0px;
+        list-style-type: none; /* Remove bullets */
+        height:100%;
+     }
+
+      #menu li {
+        flex-shrink: 1;
+        /*padding-top: 2px;*/
+        transition: all 0.2s ease;
+      }
+      #menu li a:hover {
+
+          color: white;
+          background-color: rgba(255,255,255,.2);
+
+      }
+      #menu li:active {
+
+          background-color: rgba(0,0,0,.1);
+
+      }
+      #menu li.selected {
+
+          color: white;
+          background-color: rgba(0,0,0,.25);
+
+      }
+
+      #menu li a {
+        border-radius: 4px;
+        padding-right: 8px;
+        padding-left: 8px;
+        font-size: 16px;
+      }
+
+      #menu a {
+          display: block;
+          display: flex;
+          height: 36px;
+          align-items: center;
+          padding-left: 2px;
+          padding-right: 2px;
+      }
+
+      #menu a:link,
+      #menu a:visited,
+      #menu a:hover,
+      #menu a:active {
+          color: inherit;
+          text-decoration: none;
+      }
+
+      #menu a span
+      {
+          font-weight:normal;
+          padding-left:4px;
+      }
+
+      /* Menu SMALL */
+      #logoMenu.small #menu a span {
+          display: none;
+      }
+    </style>
+    <div id="logoMenu">
+        <co-logo id="largeLogo" on-tap="logoTapped"></co-logo>
+        <ul id="menu">
+          <template launcher-menu is="imported-template" content$="{{menu.LauncherLayoutInfo.MergedHtml}}" model="{{menu}}"></template>
+        </ul>
+    </div>
+    <span class="toolbar-divider"></span>
+    <content select="[search]"></content>
+    <span class="toolbar-divider"></span>
+    <div id="usersection">
+      <content></content>
+    </div>
+
+  </template>
+
+  <script>
+        var TuApp = Polymer({
+          is: "co-launcher-toolbar",
+          properties: {
+            menu: {
+              type: Object,
+              value: null,
+              notify: true
+            },
+            menuCount: { //Number of items in menu
+              type: Number,
+              value: 0,
+              readonly: true
+            },
+            dropdownMenu: { //should we use a dropdownMenu
+              type: Boolean,
+              readonly: true,
+              value: false,
+              notify: true
+            },
+            _width: {
+              type: Number,
+              value: 1150
+            }
+          },
+          observers: [
+            'layoutChanged(_width, menuCount)'
+          ],
+          listeners: {
+            'tap': 'tapped'
+          },
+          tapped: function() {
+            this.dropdownMenu = true;
+          },
+          ready: function() {
+          },
+          attached: function() {
+            this._menuObserver = Polymer.dom(this.$.menu).observeNodes(this.menuChanged.bind(this));
+            this.listen(window, 'resize', 'widthChanged');
+            this.widthChanged();
+          },
+          detached: function() {
+            Polymer.dom(this.$.menu).unobserveNodes(this._menuObserver);
+            this.unlisten(window, 'resize', 'widthChanged');
+          },
+          logoTapped: function() {
+            puppet.morphUrl("/");
+          },
+          menuChanged: function(ev) {
+            this.countMenuitems();
+          },
+          widthChanged: function() {
+            this._width = window.innerWidth;
+          },
+          layoutChanged: function(width, menuCount) {
+            var menuwidth = menuCount * 150 + 30 + 14;
+            var searchwidth = 200;
+            var userwidth = 200; //large
+            var toolwidth = 200; //needs to change
+            var menusmall = false;
+            var menumicro = false;
+            var usersmall = false;
+
+            // if full menu to long
+            if (menuwidth + searchwidth + userwidth + toolwidth > width) {
+              menuwidth = menuCount*20 + 30 + 14;
+              menusmall = true;
+            }
+
+            if (menuwidth + searchwidth + userwidth + toolwidth > width) {
+              userwidth = 50;
+              usersmall = true;
+            }
+
+            if (menuwidth + searchwidth + userwidth + toolwidth > width) {
+               menumicro = true;
+               menuwidth = 30+14;
+            }
+            this.toggleClass('small', menusmall, this.$.logoMenu);
+            this.toggleClass('micro', menumicro, this.$.logoMenu);
+            var signin = Polymer.dom(this).queryDistributedElements('so-signin')[0];
+            if (signin) {
+              signin.classList.toggle('small', usersmall);
+            }
+          },
+          setLayoutWidth: function(width) { //width = minimum width
+            this._width = width;
+          },
+          countMenuitems: function() {
+            if (this.$.menu) {
+              this.menuCount = this.$.menu.querySelectorAll('li').length;
+            }
+          }
+        });
+    </script>
+</dom-module>
