@@ -1,8 +1,49 @@
 <!--
   Co-launcher handles the total layout
 
+  --------------------------------------------
+  |                     1                    |
+  --------------------------------------------
+  |      |             3              |      |
+  |      |----------------------------|      |
+  |      |                            |      |
+  |   2  |                            |  5   |
+  |      |             4              |      |
+  |      |                            |      |
+  |      |                            |      |
+  |      |                            |      |
+  --------------------------------------------
+
+  1 : Toolbar/topbar, menu e.t.c.
+  2. Context panels
+  3. Context bar
+  4. Workspace
+  5. tool/side panel
+
+
+  1. Toolbar
+    - Only visible on logged in
+    --------------------------------------------------------------------------
+    | Logo/home |  Menu |               search | signin | tools/sidebar apps |
+    --------------------------------------------------------------------------
+    - Responsive layout order:
+        * Menu loose text
+        * Sigin loose text
+        * search become button
+        * logo/home merge with menu -> button
+        * tools/sidebars become menu-button
+
+
+  2. Context panelWidth
+    - Only visible on logged in (and app present that using it)
+    - Minimised as default
+    - Current workspace app may change to Expanded/visible as default.
+    - Minimises as default -> manual expanded goes back to minimized when appropiate
+    - Expanded as default -> manual minimized -> keeps state until manual expanded
+
 -->
 <link rel="import" href="/sys/polymer/polymer.html">
+<link rel="import" href="co-launcher-toolbar.html">
 <dom-module id="co-launcher">
     <template>
         <style>
@@ -19,12 +60,12 @@
               user-select: none;
             }
 
-            :host #topbar {
+            :host #toolbar {
               order:1;
               height: 47px;
             }
 
-            :host(.onlyWorkspace) #topbar {
+            :host(.onlyWorkspace) #toolbar {
               height: 0px;
             }
 
@@ -239,9 +280,13 @@
             :host(.editing-mode) #layout-editor {
               display: block;
             }
+
+            .hidden {
+              display: none;
+            }
         </style>
-        <div id="topbar">
-          <content select="[topbar]"></content>
+        <div id="toolbar">
+          <content id="toolbar" select="[toolbar]"></content>
         </div>
         <div id="wrapper" >
           <div id="center">
@@ -285,18 +330,24 @@
               type: Boolean,
               value: false,
               observer: "onlyWorkspaceChanged",
-             },
-            showContextPanel: {
+            },
+            cpExists: {
               type: Boolean,
               value: false,
-              notify: true,
             },
-            contextPanelMinimized: {
+            cpManualMinimized: {
               type: Boolean,
               value: false,
-              notify: true,
             },
-            contextPanelWidth: {
+            cpManualVisible: {
+              type: Boolean,
+              value: false,
+            },
+            cpAutoVisible: {
+              type: Boolean,
+              value: false,
+            },
+            cpWidth: {
               type: Number,
               value: 350,
               notify: true,
@@ -340,7 +391,7 @@
             }
           },
           observers: [
-            'contextPanelStatusChanged(showContextPanel, contextPanelWidth, contextPanelMinimized)'
+            'cpStatusChanged(cpExists, cpManualMinimized, cpManualVisible, cpAutoVisible, cpWidth)'
           ],
           ready: function() {
           },
@@ -372,33 +423,46 @@
             this.set("right", ev.detail.status == 'open');
           },
           onContextPanelChange: function(ev) {
-            if (ev.detail.status == 'expand')
-              this.set("contextPanelMinimized", false);
+            /*if (ev.detail.status == 'expand')
+              this.set('cpAutoVisible', true);
             else if (ev.detail.status == 'minimize')
-              this.set("contextPanelMinimized", true);
+              this.set('cpAutoVisible', false);
             else if (ev.detail.status == 'open')
-              this.set("showContextPanel", true);
+              this.set("cpAutoVisible", true);
             else if (ev.detail.status == 'close')
-              this.set("showContextPanel", false);
+              this.set("cpAutoVisible", false);*/
+              if (ev.detail.status == 'content_exist')
+                this.set("cpExists", true);
           },
-          contextPanelStatusChanged: function(e) {
-            this.toggleClass('minimized', this.contextPanelMinimized, this.$.contextPanel);
-            this.toggleClass('hidden', !this.showContextPanel, this.$.contextPanel);
-            var width = this.contextPanelWidth;
-            if (this.showContextPanel) {
-              if (this.contextPanelMinimized)
-                width = '40';
+          cpStatusChanged: function(exists, manualMinimized, manualVisible, autoVisible, width) {
+            if (!exists) {
+              this.$.contextPanel.style.width = 0 + 'px';
+              this.toggleClass('hidden', true, this.$.contextPanel);
+              var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
+              for (var i = 0; i < mviews.length; i++)
+              {
+                this.toggleClass('hidden', false, mviews[i]);
+              }
             }
             else {
-              width = '0';
-            }
-            this.$.contextPanel.style.width = width + 'px';
-            var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
-            for (var i = 0; i < mviews.length; i++)
-            {
-              mviews[i].panelWidth = width;
-              this.toggleClass('minimized', this.contextPanelMinimized, mviews[i]);
-              this.toggleClass('hidden', !this.showContextPanel, mviews[i]);
+              if (autoVisible) {
+                this.cpManualVisible = false; //Always reset manual status on contextapp
+              }
+              var minimized = (!autoVisible && !manualVisible) || (autoVisible && manualMinimized);
+              this.toggleClass('hidden', false, this.$.contextPanel);
+              this.toggleClass('minimized', minimized, this.$.contextPanel);
+              var width = this.cpWidth;
+              if (minimized) {
+                width = '40';
+              }
+              this.$.contextPanel.style.width = width + 'px';
+              var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
+              for (var i = 0; i < mviews.length; i++)
+              {
+                mviews[i].panelWidth = width;
+                this.toggleClass('minimized', minimized, mviews[i]);
+                this.toggleClass('hidden', false, mviews[i]);
+              }
             }
           },
           contextPanelWidthTrack: function(e) {
@@ -419,15 +483,18 @@
             if (width > 600)
               width = 600;
 
-            this.set('contextPanelWidth', width);
+            this.set('cpWidth', width);
           },
           toggleContextPanel: function(ev) {
             ev.stopPropagation();
-            this.set('contextPanelMinimized', !this.contextPanelMinimized);
+            if (this.cpAutoVisible)
+              this.set('cpManualMinimized', !this.cpManualMinimized);
+            else {
+              this.set('cpManualVisible', !this.cpManualVisible);
+            }
           },
           contextPanelTapped: function() {
-            if (this.contextPanelMinimized)
-              this.set('contextPanelMinimized', false);
+            this.toggleContextPanel();
           },
           onCloseRightTapped: function(ev) {
             this.set("right", false);
@@ -459,8 +526,7 @@
           _calcArrow: function(value) {
             return value? "arrow-right": "arrow-left";
           },
-          mediaChange: function()
-          {
+          mediaChange: function() {
             this.classList.toggle("co-layout-panels-micro", this.layoutMicro);
             this.classList.toggle("co-layout-panels-small", this.layoutSmall);
             this.classList.toggle("co-layout-panels-medium", this.layoutMedium);

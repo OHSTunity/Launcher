@@ -365,6 +365,31 @@ namespace Launcher.Helper {
             return new Page();
         }
 
+        static Boolean IsContextApp(Json resource)
+        {
+            try
+            {
+                var pi = resource.GetType().GetProperty("ContextId");
+                return (pi.CanRead && pi.PropertyType == typeof(String));
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        static String GetContextId(Json resource)
+        {
+            try
+            {
+                var pi = resource.GetType().GetProperty("ContextId");
+                return pi.GetValue(resource) as String;
+            }
+            catch
+            {
+                return "";
+            }
+        }
         static Response WrapInWorkspace(Request req, Json resource) {
             LauncherPage launcher;
             if (string.Equals(req.Headers[WRAPINWORKSPACE], "M"))
@@ -390,15 +415,19 @@ namespace Launcher.Helper {
             workspace.AutoRefreshBoundProperties = true;
 
             //Colab specific Context handlers
-            if (resource is IContextApp && !String.IsNullOrEmpty((resource as IContextApp).ContextId))
+            var contextApp = IsContextApp(resource);
+            launcher.contextpanelAutoVisible = contextApp;
+            String id = "";
+            if (contextApp && !String.IsNullOrEmpty(id = GetContextId(resource)))
             {
-                ContextHandler.SetContext((resource as IContextApp).ContextId, appName);
+                ContextHandler.SetContext(id, appName);
+
             }
             else
             {
                 ContextHandler.SetNonContext(req.Uri); //Always save uri for last call without context
             }
-
+         
             // Doing a manual merge of the workspace and the resource from the response to attach the
             // resource to the workspace.
             workspace.Partials.MergeJson(resource);

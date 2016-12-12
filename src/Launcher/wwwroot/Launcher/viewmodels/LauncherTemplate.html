@@ -159,28 +159,12 @@
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
-      <co-launcher only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}}>
-
-        <div topbar class="launcher-toolbar launcher-topbar">
-            <div style="width:30px;height:30px;">
-                <co-logo></co-logo>
-            </div>
-            <div id="launcher-menu">
-               <ul>
-                  <template is="imported-template" content$="{{model.menu.LauncherLayoutInfo.MergedHtml}}" model="{{model.menu}}"></template>
-               </ul>
-            </div>
-            <div flex=""></div>
-            <span class="toolbar-divider"></span>
-            <i class="ts_icon ts_icon_trello"></i>
-            <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
-            <core-field class="launcher-theme">
-              <launcher-search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
-            </core-field>
-            <span class="toolbar-divider"></span>
-
-            <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
-        </div>
+      <co-launcher only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}} cp-auto-visible=[[model.contextpanelAutoVisible]]>
+        <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}">
+          <!-- menu is built inside toolbar -->
+          <launcher-search search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
+          <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+        </co-launcher-toolbar>
 
         <div main>
           <co-layout-multiview data="{{model.contextbar}}"></co-layout-multiview>
