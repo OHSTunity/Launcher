@@ -34,14 +34,14 @@
       }
 
       .toolbar-divider {
-        padding: 7px 5px 7px 4px;
-        line-height: 15px;
-        width: 1px !important;
+        margin: 7px 4px 7px 4px;
+        height: 15px;
+        width: 0px !important;
         border-left: 1px rgba(255,255,255,0.37) solid;
         position: relative;
        }
 
-       #usersection {
+       #toolsection {
          flex-shrink: 0;
          display: flex;
          align-items: center;
@@ -131,6 +131,16 @@
       #logoMenu.small #menu a span {
           display: none;
       }
+
+      /* Menu micro, todo:dropdown menu */
+      #logoMenu.micro #menu li {
+          display: none;
+      }
+
+      #toolsection.micro {
+        display: none;
+      }
+
     </style>
     <div id="logoMenu">
         <co-logo id="largeLogo" on-tap="logoTapped"></co-logo>
@@ -141,8 +151,10 @@
     <span class="toolbar-divider"></span>
     <content select="[search]"></content>
     <span class="toolbar-divider"></span>
-    <div id="usersection">
-      <content></content>
+    <content select="[signin]"></content>
+    <div id="toolsection">
+      <span class="toolbar-divider"></span>
+      <content id="tools"></content>
     </div>
 
   </template>
@@ -161,6 +173,11 @@
               value: 0,
               readonly: true
             },
+            toolCount: { //Number of items in menu
+              type: Number,
+              value: 0,
+              readonly: true
+            },
             dropdownMenu: { //should we use a dropdownMenu
               type: Boolean,
               readonly: true,
@@ -173,7 +190,7 @@
             }
           },
           observers: [
-            'layoutChanged(_width, menuCount)'
+            'layoutChanged(_width, menuCount, toolCount)'
           ],
           listeners: {
             'tap': 'tapped'
@@ -185,61 +202,79 @@
           },
           attached: function() {
             this._menuObserver = Polymer.dom(this.$.menu).observeNodes(this.menuChanged.bind(this));
+            this._toolsObserver = Polymer.dom(this.$.tools).observeNodes(this.toolsChanged.bind(this));
             this.listen(window, 'resize', 'widthChanged');
             this.widthChanged();
           },
           detached: function() {
             Polymer.dom(this.$.menu).unobserveNodes(this._menuObserver);
+            Polymer.dom(this.$.tools).unobserveNodes(this._toolsObserver);
             this.unlisten(window, 'resize', 'widthChanged');
           },
           logoTapped: function() {
             puppet.morphUrl("/");
           },
           menuChanged: function(ev) {
-            this.countMenuitems();
+            this.countMenuItems();
+          },
+          toolsChanged: function(ev) {
+            this.countToolItems();
           },
           widthChanged: function() {
             this._width = window.innerWidth;
           },
-          layoutChanged: function(width, menuCount) {
+          layoutChanged: function(width, menuCount, toolCount) {
             var menuwidth = menuCount * 150 + 30 + 14;
             var searchwidth = 200;
+            var dividerwidth = 3*9;
             var userwidth = 200; //large
-            var toolwidth = 200; //needs to change
+            var toolwidth = toolCount*42;
             var menusmall = false;
             var menumicro = false;
             var usersmall = false;
+            var toolmicro = false;
 
             // if full menu to long
-            if (menuwidth + searchwidth + userwidth + toolwidth > width) {
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
               menuwidth = menuCount*20 + 30 + 14;
               menusmall = true;
             }
 
-            if (menuwidth + searchwidth + userwidth + toolwidth > width) {
-              userwidth = 50;
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
+              userwidth = 25;
               usersmall = true;
             }
 
-            if (menuwidth + searchwidth + userwidth + toolwidth > width) {
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
                menumicro = true;
                menuwidth = 30+14;
             }
+
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
+               toolmicro = true;
+               toolwidth = 0;
+               dividerwidth = 2*9;
+            }
+
             this.toggleClass('small', menusmall, this.$.logoMenu);
             this.toggleClass('micro', menumicro, this.$.logoMenu);
+            this.toggleClass('micro', toolmicro, this.$.toolsection);
             var signin = Polymer.dom(this).queryDistributedElements('so-signin')[0];
             if (signin) {
               signin.classList.toggle('small', usersmall);
             }
           },
-          setLayoutWidth: function(width) { //width = minimum width
-            this._width = width;
-          },
-          countMenuitems: function() {
+          countMenuItems: function() {
             if (this.$.menu) {
               this.menuCount = this.$.menu.querySelectorAll('li').length;
             }
-          }
+          },
+          countToolItems: function() {
+            if (this.$.tools) {
+              this.toolCount = this.queryAllEffectiveChildren('[tool]').length;
+              console.log(this.toolCount);
+            }
+          },
         });
     </script>
 </dom-module>
