@@ -180,6 +180,7 @@ namespace Launcher.Helper {
                 {
                     return new Dashboard()
                     {
+                        Data = SessionData.Current.User,
                         DashboardPartials = Self.GET("/launcher/dashboard"),
                         LaunchpadPartials = Self.GET(UriMapping.MappingUriPrefix + "/app-name",
                         () =>

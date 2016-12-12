@@ -14,7 +14,7 @@ namespace Launcher {
             var port = Starcounter.Internal.StarcounterEnvironment.Default.UserHttpPort;
             ThreadPool.QueueUserWorkItem(o => {
                 
-                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/;/launcher/launchpad", port));
+                Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/;/launcher/container_dashboard", port));
                 Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/dashboard;/launcher/container_dashboard", port));
                 Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/settings;/launcher/settings", port));
                 Http.GET(8181, String.Format("http://localhost/sc/alias/{0}/configs;/launcher/configs", port));
