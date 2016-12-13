@@ -18,7 +18,8 @@ namespace Launcher
     [Dashboard_json]                                       // This attribute tells Starcounter that the class corresponds to an object in the JSON-by-example file.
     partial class Dashboard : Page, IBound<TunityUser>
     {
-       
+        
+
     }
 
 
