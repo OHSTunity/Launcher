@@ -54,10 +54,11 @@
       template.ready = function () {
 
         var d = new Date().getDate();
+        if(d>15)d=d-15;
         if(d<10)d = "0"+d;
-        var url =  "url('https://momentumdash.com/backgrounds/"+d+".jpg')";
+        var url =  "url('/co-common/dashboard-images/"+d+".jpg')";
 
-        this.$.hu.style.backgroundImage = "url('https://momentumdash.com/backgrounds/"+d+".jpg')";
+        this.$.hu.style.backgroundImage = url;
       };
 
 
