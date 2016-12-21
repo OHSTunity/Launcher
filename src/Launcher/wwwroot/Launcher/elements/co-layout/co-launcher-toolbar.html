@@ -21,6 +21,7 @@
 <link rel="import" href="/sys/polymer/polymer.html">
 <link rel="import" href="/co-common/css/co-fontawesome.html">
 <link rel="import" href="/co-common/css/co-icomoon.html">
+<link rel="import" href="/co-common/elements/spinner/co-spinner.html">
 <dom-module id="co-launcher-toolbar">
   <template>
     <style include="co-icomoon"></style>
@@ -48,14 +49,17 @@
        }
 
        #largeLogo {
-         width: 30px;
-         min-width: 30px;
-         height: 30px;
-         min-height: 30px;
+         margin-top: -4px;
+         margin-left: -2px;
+         width: 25px;
+         min-width: 25px;
+         height: 25px;
+         min-height: 25px;
        }
 
       /* Menu LARGE */
       #logoMenu {
+        height: 37px;
         flex:1;
         overflow: hidden;
         display: flex;
@@ -141,9 +145,24 @@
         display: none;
       }
 
+      co-spinner
+      {
+
+        position: absolute;
+        width: 54px;
+        height: 54px;
+        top: -4px;
+        left: -5px;
+        opacity: .9;
+        pointer-events: none;
+      }
+
     </style>
     <div id="logoMenu">
+        <co-spinner id="logospinner"></co-spinner>
         <co-logo id="largeLogo" on-tap="logoTapped"></co-logo>
+
+
         <ul id="menu">
           <template launcher-menu is="imported-template" content$="{{menu.LauncherLayoutInfo.MergedHtml}}" model="{{menu}}"></template>
         </ul>
@@ -167,6 +186,10 @@
               type: Object,
               value: null,
               notify: true
+            },
+            patchcnt: {
+              type: Number,
+              value: 0
             },
             menuCount: { //Number of items in menu
               type: Number,
@@ -199,6 +222,25 @@
             this.dropdownMenu = true;
           },
           ready: function() {
+
+            puppet.addEventListener("patchsent", function(ev){
+
+              if(ev.detail.data == null || ev.detail.data != "[]"){
+                this.patchcnt+=1;
+                this.$.logospinner.style.opacity = 1.0;
+              }
+
+            }.bind(this));
+
+
+            puppet.addEventListener("patchreceived", function(ev){
+
+              this.patchcnt-=1;
+              if(this.patchcnt<0)this.patchcnt=0
+              if(this.patchcnt == 0)this.$.logospinner.style.opacity = 0.0;
+              
+            }.bind(this));
+
           },
           attached: function() {
             this._menuObserver = Polymer.dom(this.$.menu).observeNodes(this.menuChanged.bind(this));
