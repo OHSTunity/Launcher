@@ -1,39 +1,30 @@
 <!doctype html>
 <html>
   <head>
-    <!-- Required meta tags-->
+    <title>Colab</title>
+    <link rel="shortcut icon" href="/Launcher/favicon.ico" />
+
+    <!-- Mobile tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- iOS -->
+    <link rel="apple-touch-icon" href="/Launcher/favicon.ico" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Colab">
 
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
     <script>
       window.Polymer = window.Polymer || {};
-      window.Polymer.dom = "shady";
+      window.Polymer.dom = "shadow";
     </script>
 
     <link rel="import" href="/sys/polymer/polymer.html" />
 
-    <!-- Import Starcounter specific components -->
-    <link rel="import" href="/sys/starcounter.html" />
-    <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html" />
-
-    <!-- Import our elements -->
-	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
-    <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
-
-    <link rel="import" href="/sys/imported-template/imported-template.html" />
-    <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
-
-    <!-- Your app title -->
-    <title>Colab</title>
-
-    <link rel="import" href="/sys/paper-drawer-panel/paper-drawer-panel.html">
-    <link rel="import" href="/sys/paper-header-panel/paper-header-panel.html">
-    <link rel="import" href="/sys/paper-toolbar/paper-toolbar.html">
+    <!-- import polymer/paper elements -->
     <link rel="import" href="/sys/paper-button/paper-button.html">
     <link rel="import" href="/sys/paper-card/paper-card.html">
     <link rel="import" href="/sys/paper-fab/paper-fab.html">
@@ -42,6 +33,20 @@
     <link rel="import" href="/sys/iron-icons/iron-icons.html">
     <link rel="import" href="/sys/iron-flex-layout/iron-flex-layout.html">
     <link rel="import" href="/sys/iron-flex-layout/iron-flex-layout-classes.html">
+
+   <!-- Import Starcounter specific elements -->
+    <link rel="import" href="/sys/starcounter.html" />
+    <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html" />
+    <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
+    <link rel="import" href="/sys/imported-template/imported-template.html" />
+    <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
+
+
+    <!-- Import launcher elements -->
+	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-launcher-toolbar.html">
+    <link rel="import" href="/Launcher/elements/co-layout/co-launcher-mobile.html">
+
 
     <style is="custom-style" include="iron-flex iron-flex-alignment">
       #logo {
@@ -71,33 +76,20 @@
  </head>
  <body is="launcher-main">
     <template id="root-launcher-dom-bind" is="dom-bind">
-      <paper-drawer-panel class="flex" hidden$="[[!model.signedIn]]">
-        <paper-header-panel drawer>
-          <paper-toolbar>
-            <div>Context</div>
-          </paper-toolbar>
-          <div style="border-right:1px solid;height:100%">Login first</div>
-        </paper-header-panel>
-        <paper-header-panel main>
-          <paper-toolbar>
-            <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-            <div id="logo" onclick="puppet.puppet.morphUrl('/launcher/mobile/dashboard')" class="hover"></div>
-            <div class="flex" style="margin-left:10px;">Colab</div>
-            <div id="user">
-              <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
-            </div>
-          </paper-toolbar>
-          <div class="workspace">
+      <co-title value="[[model.Title]]"></co-title>
+      <co-launcher-mobile only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}} cp-auto-visible=[[model.contextpanelAutoVisible]]>
+        <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}">
+          <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+        </co-launcher-toolbar>
+        <div main>
+          <div id="workspace">
             <template is="dom-repeat" items="{{model.workspaces}}">
-                <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
+              <starcounter-include style="height:100%" partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
             </template>
           </div>
-        </paper-header-panel>
-      </paper-drawer-panel>
-
-      <div id="launcher-login" hidden$="[[model.signedIn]]">
-        <starcounter-include partial="{{model.signin}}"></starcounter-include>
-      </div>
+        </div>
+      </co-launcher-mobile>
+      <link is="puppet-redirect" history url$="{{model.redirect$}}" />
     </template>
     <script>
         (function () {

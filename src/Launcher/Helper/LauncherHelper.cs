@@ -124,8 +124,12 @@ namespace Launcher.Helper {
             });
 
 
+            Handle.GET("/launcher/mobile", (Request req) => {
+                return RequireAuthorizeMobile(req);
+            });
 
-            Handle.GET("/launcher/mobile", (Request req) =>
+
+            Handle.GET("/launcher/mobile/main", (Request req) =>
             {
                 var session = Session.Current;
                 LauncherPage launcher;
@@ -167,8 +171,12 @@ namespace Launcher.Helper {
 
             Handle.GET("/launcher/mobile/dashboard", (Request req) =>
             {
-                LauncherPage launcher = Self.GET<LauncherPage>("/launcher/mobile");
-                return new Page();
+                return RequireAuthorizeMobile(req, (LauncherPage lp) =>
+                {
+
+                    return new Page();
+
+                });
             });
 
             UriMapping.Map("/launcher/mobile/dashboard", UriMapping.MappingUriPrefix + "/mobile/dashboard");
@@ -365,6 +373,21 @@ namespace Launcher.Helper {
             return new Page();
         }
 
+        static dynamic RequireAuthorizeMobile(Request req, Func<LauncherPage, dynamic> func = null)
+        {
+            LauncherPage launcher = (LauncherPage)Self.GET("/launcher/mobile/main");
+            if (launcher.CheckLogin())
+            {
+                if (func != null)
+                    return func(launcher);
+            }
+            else
+            {
+                launcher.redirect = "/launcher/mobile/signin?originurl=" + req.Uri;
+            }
+            return new Page();
+        }
+
         static Boolean IsContextApp(Json resource)
         {
             try
@@ -393,7 +416,7 @@ namespace Launcher.Helper {
         static Response WrapInWorkspace(Request req, Json resource) {
             LauncherPage launcher;
             if (string.Equals(req.Headers[WRAPINWORKSPACE], "M"))
-                launcher = Self.GET<LauncherPage>("/launcher/mobile");
+                launcher = Self.GET<LauncherPage>("/launcher/mobile/main");
             else
                 launcher = Self.GET<LauncherPage>("/launcher/main");
 
