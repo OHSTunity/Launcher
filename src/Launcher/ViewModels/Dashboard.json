@@ -1,6 +1,8 @@
 {
   "Html": "/Launcher/viewmodels/dashboard.html",
   "FullName": "", 
+  "FirstName": "",
+  "$FirstName": {Bind:"WhoIs.FirstName"},
   "DashboardPartials": { },
   "LaunchpadPartials": { }
 }
