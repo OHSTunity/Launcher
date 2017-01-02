@@ -6,7 +6,7 @@
 
     <!-- Mobile tags-->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"/>
 
     <!-- iOS -->
     <link rel="apple-touch-icon" href="/Launcher/favicon.ico" />
@@ -46,6 +46,7 @@
 	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
     <link rel="import" href="/Launcher/elements/co-layout/co-launcher-toolbar.html">
     <link rel="import" href="/Launcher/elements/co-layout/co-launcher-mobile.html">
+    <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html">
 
 
     <style is="custom-style" include="iron-flex iron-flex-alignment">
@@ -77,10 +78,17 @@
  <body is="launcher-main">
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
+
+
+
+
       <co-launcher-mobile only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}} cp-auto-visible=[[model.contextpanelAutoVisible]]>
+
+
         <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}">
           <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
         </co-launcher-toolbar>
+
         <div main>
           <div id="workspace">
             <template is="dom-repeat" items="{{model.workspaces}}">
@@ -88,7 +96,20 @@
             </template>
           </div>
         </div>
+
+
+        <!--<co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>-->
+        <div left>
+          <template is="imported-template" content$="{{model.contextpanel.colab_organizer.Current.Html}}" model="{{model.contextpanel.colab_organizer.Current}}"></template>
+        </div>
+
+
+
       </co-launcher-mobile>
+
+
+
+
       <link is="puppet-redirect" history url$="{{model.redirect$}}" />
     </template>
     <script>

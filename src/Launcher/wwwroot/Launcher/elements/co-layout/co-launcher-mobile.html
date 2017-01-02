@@ -248,9 +248,28 @@
               display: none;
             }
         </style>
-        <div id="toolbar">
-          <content id="toolbar" select="[toolbar]"></content>
-        </div>
+
+
+        <paper-drawer-panel>
+          <paper-header-panel drawer>
+            <div>
+              <content select="[left]"></content>
+            </div>
+          </paper-header-panel>
+          <paper-header-panel main>
+            <paper-toolbar style="background-image: linear-gradient(-195deg, #1eaef8 25%, #1782fa 65%);">
+              <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+              <div><content id="toolbar" select="[toolbar]"></content></div>
+            </paper-toolbar>
+            <div> Main content... </div>
+          </paper-header-panel>
+        </paper-drawer-panel>
+
+
+
+
+
+      <!--
         <div id="wrapper" >
           <div id="center">
             <content select="[main]"></content>
@@ -261,7 +280,7 @@
                   <co-icon-button id="contextPanelToggler" nohovereffect on-tap="toggleContextPanel" icon="{{_calcArrow(contextPanelMinimized)}}"></co-icon-button>
                 </div>
               </div>
-              <content select="[left]"></content>
+
               <div id="widthtracker" on-track="contextPanelWidthTrack"></div>
           </div>
           <div id="right" hidden$="[[onlyWorkspace]]">
@@ -271,6 +290,7 @@
             <content select="[right]"></content>
           </div>
         </div>
+      -->
 
         <div id="layout-editor">
           <content select="[layouteditor]"></content>
@@ -368,16 +388,10 @@
             this.toggleClass('editing-mode', value);
           },
           attached: function() {
-            this.listen(this, "co-pane", "onTuMenu");
-            this.listen(this, "co-menu", "onTuMenu");
-            this.listen(this.$.right, "panel-command", "onRightChange");
-            this.listen(this.$.contextPanel, "panel-command", "onContextPanelChange");
+
           },
           detached: function() {
-            this.unlisten(this, "co-pane", "onTuMenu");
-            this.unlisten(this, "co-menu", "onTuMenu");
-            this.unlisten(this.$.right, "panel-command", "onRightChange");
-            this.unlisten(this.$.contextPanel, "panel-command", "onContextPanelChange");
+
           },
           onlyWorkspaceChanged: function() {
             this.toggleClass('onlyWorkspace', this.onlyWorkspace);
@@ -398,6 +412,7 @@
                 this.set("cpExists", true);
           },
           cpStatusChanged: function(exists, manualMinimized, manualVisible, autoVisible, width) {
+            return;
             if (!exists) {
               this.$.contextPanel.style.width = 0 + 'px';
               this.toggleClass('hidden', true, this.$.contextPanel);
