@@ -238,6 +238,14 @@
 
             }.bind(this));
 
+            // Dirty check every 3 seconds. TODO: Fix a better solution
+            setInterval(function(){
+              this.patchcnt=0;
+              this.$.logospinner.style.opacity = 0.0;
+            }.bind(this), 3000);
+
+
+
           },
           attached: function() {
             this._menuObserver = Polymer.dom(this.$.menu).observeNodes(this.menuChanged.bind(this));
