@@ -22,18 +22,7 @@
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
     </script>
 
-
-    <link rel="import" href="/sys/polymer/polymer.html" />
-    <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
-    <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html">
-    <link rel="import" href="/sys/paper-checkbox/paper-checkbox.html">
-    <link rel="import" href="/sys/paper-input/paper-textarea.html">
-    <link rel="import" href="/sys/paper-input/paper-input.html">
-    <link rel="import" href="/sys/paper-toolbar/paper-toolbar.html">
-    <link rel="import" href="/sys/paper-button/paper-button.html">
-    <link rel="import" href="/sys/paper-radio-group/paper-radio-group.html">
-    <link rel="import" href="/sys/paper-radio-button/paper-radio-button.html">
-
+ <link rel="import" href="/sys/polymer/polymer.html" />
 
     <!-- Import Starcounter specific components -->
     <link rel="import" href="/sys/starcounter.html" />
@@ -54,9 +43,6 @@
     <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html" />
     <link rel="import" href="/Launcher/elements/co-layout/co-title.html" />
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
-
-    <!-- Import other elements used in this document -->
-    <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
     <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
@@ -154,7 +140,7 @@
       launcher-search {
         margin-left: 10px;
       }
-      
+
     </style>
 </head>
 <body is="launcher-main" class="loading">
@@ -164,7 +150,7 @@
     </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
-      <co-launcher only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}} cp-auto-visible=[[model.contextpanelAutoVisible]]>
+      <co-launcher only-workspace="[[!model.signedIn]]" cp-auto-visible=[[model.contextpanelAutoVisible]]>
         <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}">
           <!-- menu is built inside toolbar -->
           <launcher-search search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
@@ -183,12 +169,6 @@
         <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
         <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
 
-
-        <template is="dom-if" if="[[model.editingMode$]]" restamp>
-          <div layouteditor>
-            <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-          </div>
-        </template>
       </co-launcher>
 
       <co-lightbox-popup></co-lightbox-popup>
@@ -226,7 +206,6 @@
     </script>
 
     <puppet-client ref="root-launcher-dom-bind" ping-interval-s="60"></puppet-client>
-	  <!--<puppet-bind-notifier path="model" ref="root-launcher-dom-bind"></puppet-bind-notifier>-->
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
