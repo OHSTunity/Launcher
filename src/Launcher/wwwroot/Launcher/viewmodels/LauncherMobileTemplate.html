@@ -5,14 +5,14 @@
     <link rel="shortcut icon" href="/Launcher/favicon.ico" />
 
     <!-- Mobile tags-->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;" />
 
     <!-- iOS -->
     <link rel="apple-touch-icon" href="/Launcher/favicon.ico" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="Colab">
+    <meta name="apple-mobile-web-app-title" content="Colab" />
 
 
     <!-- Import Polymer platform -->
@@ -25,14 +25,14 @@
     <link rel="import" href="/sys/polymer/polymer.html" />
 
     <!-- import polymer/paper elements -->
-    <link rel="import" href="/sys/paper-button/paper-button.html">
-    <link rel="import" href="/sys/paper-card/paper-card.html">
-    <link rel="import" href="/sys/paper-fab/paper-fab.html">
-    <link rel="import" href="/sys/paper-input/paper-input.html">
-    <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html">
-    <link rel="import" href="/sys/iron-icons/iron-icons.html">
-    <link rel="import" href="/sys/iron-flex-layout/iron-flex-layout.html">
-    <link rel="import" href="/sys/iron-flex-layout/iron-flex-layout-classes.html">
+    <link rel="import" href="/sys/paper-button/paper-button.html" />
+    <link rel="import" href="/sys/paper-card/paper-card.html" />
+    <link rel="import" href="/sys/paper-fab/paper-fab.html" />
+    <link rel="import" href="/sys/paper-input/paper-input.html" />
+    <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
+    <link rel="import" href="/sys/iron-icons/iron-icons.html" />
+    <link rel="import" href="/sys/iron-flex-layout/iron-flex-layout.html" />
+    <link rel="import" href="/sys/iron-flex-layout/iron-flex-layout-classes.html" />
 
    <!-- Import Starcounter specific elements -->
     <link rel="import" href="/sys/starcounter.html" />
@@ -44,8 +44,9 @@
 
     <!-- Import launcher elements -->
 	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
-    <link rel="import" href="/Launcher/elements/co-layout/co-launcher-toolbar.html">
-    <link rel="import" href="/Launcher/elements/co-layout/co-launcher-mobile.html">
+    <link rel="import" href="/Launcher/elements/co-layout/co-launcher-toolbar.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-launcher-mobile.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html" />
 
 
     <style is="custom-style" include="iron-flex iron-flex-alignment">
@@ -68,8 +69,8 @@
       }
 
       [hidden] {
-        visibility: hidden; !important;
-        display: none; !important;
+        visibility: hidden !important;
+        display: none !important;
       }
     </style>
 
@@ -77,10 +78,17 @@
  <body is="launcher-main">
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
+
+
+
+
       <co-launcher-mobile only-workspace="[[!model.signedIn]]" editing-mode={{model.editingMode$}} cp-auto-visible=[[model.contextpanelAutoVisible]]>
+
+
         <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}">
           <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
         </co-launcher-toolbar>
+
         <div main>
           <div id="workspace">
             <template is="dom-repeat" items="{{model.workspaces}}">
@@ -88,7 +96,20 @@
             </template>
           </div>
         </div>
+
+
+        <!--<co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>-->
+        <div left>
+          <template is="imported-template" content$="{{model.contextpanel.colab_organizer.Current.Html}}" model="{{model.contextpanel.colab_organizer.Current}}"></template>
+        </div>
+
+
+
       </co-launcher-mobile>
+
+
+
+
       <link is="puppet-redirect" history url$="{{model.redirect$}}" />
     </template>
     <script>

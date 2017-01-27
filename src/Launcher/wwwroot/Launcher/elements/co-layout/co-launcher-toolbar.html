@@ -147,7 +147,6 @@
 
       co-spinner
       {
-
         position: absolute;
         width: 54px;
         height: 54px;
@@ -158,7 +157,7 @@
       }
 
     </style>
-    <div id="logoMenu">
+    <div id="logoMenu" >
         <co-spinner id="logospinner"></co-spinner>
         <co-logo id="largeLogo" on-tap="logoTapped"></co-logo>
 
@@ -224,7 +223,6 @@
           ready: function() {
 
             puppet.addEventListener("patchsent", function(ev){
-
               if(ev.detail.data == null || ev.detail.data != "[]"){
                 this.patchcnt+=1;
                 this.$.logospinner.style.opacity = 1.0;
@@ -232,14 +230,20 @@
 
             }.bind(this));
 
-
             puppet.addEventListener("patchreceived", function(ev){
-
               this.patchcnt-=1;
               if(this.patchcnt<0)this.patchcnt=0
               if(this.patchcnt == 0)this.$.logospinner.style.opacity = 0.0;
-              
+
             }.bind(this));
+
+            // Dirty check every 3 seconds. TODO: Fix a better solution
+            setInterval(function(){
+              this.patchcnt=0;
+              this.$.logospinner.style.opacity = 0.0;
+            }.bind(this), 3000);
+
+
 
           },
           attached: function() {
