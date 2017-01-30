@@ -173,9 +173,7 @@ namespace Launcher.Helper {
             {
                 return RequireAuthorizeMobile(req, (LauncherPage lp) =>
                 {
-
                     return new Page();
-
                 });
             });
 
