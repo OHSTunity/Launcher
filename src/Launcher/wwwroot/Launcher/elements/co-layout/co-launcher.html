@@ -486,7 +486,8 @@
             this.set('cpWidth', width);
           },
           toggleContextPanel: function(ev) {
-            ev.stopPropagation();
+            if (ev)
+              ev.stopPropagation();
             if (this.cpAutoVisible)
               this.set('cpManualMinimized', !this.cpManualMinimized);
             else {
@@ -494,7 +495,8 @@
             }
           },
           contextPanelTapped: function() {
-            this.toggleContextPanel();
+            if (this.$.contextPanel.classList.contains("minimized"))
+              this.toggleContextPanel();
           },
           onCloseRightTapped: function(ev) {
             this.set("right", false);
