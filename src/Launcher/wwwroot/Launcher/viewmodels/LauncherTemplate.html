@@ -42,10 +42,11 @@
     <link rel="import" href="/Launcher/elements/co-layout/co-launcher.html" />
     <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html" />
     <link rel="import" href="/Launcher/elements/co-layout/co-title.html" />
+    <link rel="import" href="/Launcher/elements/co-launcher-redirect/co-launcher-redirect.html" />
+
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
     <link rel="import" href="/sys/imported-template/imported-template.html" />
-    <link rel="import" href="/sys/puppet-redirect/puppet-redirect.html" />
 
 
     <!--<link href='//fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
@@ -173,7 +174,7 @@
 
       <co-lightbox-popup></co-lightbox-popup>
 
-      <link is="puppet-redirect" history url$="{{model.redirect$}}" />
+      <co-launcher-redirect uri="{{model.redirect$}}"> </co-launcher-redirect>
       <paper-dialog opened="{{model.ConnectionError}}" modal="true">
             <h4>Connection error</h4>
             <p>You have been disconnected from server. Please reload page.</p>

@@ -1,0 +1,32 @@
+<!--
+Takes an url attribute and try to morph the web clients url into that url on
+change
+-->
+<dom-module id="co-launcher-redirect">
+  <template>
+  </template>
+  <script type="text/javascript">
+    Polymer({
+      is: 'co-launcher-redirect',
+      properties: {
+        cache: {
+          type: String,
+          value: ''
+        },
+        uri: {
+          type: String,
+          value: '',
+          notify: true,
+          observer: 'uriChanged'
+        }
+      },
+      uriChanged: function () {
+        if (typeof this.uri != 'undefined' && this.uri.length >= 1) {
+          history.pushState(null, null, this.uri);
+          puppet.puppet.network.changeState(this.uri);
+          this.uri = "";
+        }
+      }
+    });
+  </script>
+</dom-module>
