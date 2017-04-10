@@ -190,22 +190,6 @@
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
-        //Ugly hack to customize the color of the error drop-down which is displayed by puppet.
-        var shadowChildren = puppet.shadowRoot.children;
-        //Adding custom style to puppet style object.
-        shadowChildren[0].innerHTML = shadowChildren[0].innerHTML + ".custom-notice  { background-color: #FFFFFF; border-color: #ffe070; color: #000;}";
-        for (let i = 0 ; i < shadowChildren.length; i++) {
-            if (shadowChildren[i].tagName == "DIV") {
-                var noticeDiv = shadowChildren[i].children;
-                for (let j = 0; j < noticeDiv.length; j++) {
-                    //remove current style for notice and add custom one.
-                    if (noticeDiv[j].classList.contains("notice")) {
-                        noticeDiv[j].classList.remove("notice");
-                        noticeDiv[j].classList.add("custom-notice");
-                    }
-                }
-            }
-        }
     </script>
 </body>
 </html>
