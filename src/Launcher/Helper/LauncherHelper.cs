@@ -45,12 +45,6 @@ namespace Launcher.Helper {
             application.Use((Request req) => {
                 string uri = req.Uri;
 
-                if (uri.Contains("/mobile") && !uri.Equals("/launcher/mobile", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    req.Headers[WRAPINWORKSPACE] = "M";
-                    return null;
-                }
-                
                 // Checking if we should process this request.
                 if (("/" == uri) ||
                     (uri.Equals("/launcher/main", StringComparison.InvariantCultureIgnoreCase)) ||
@@ -122,63 +116,6 @@ namespace Launcher.Helper {
             Handle.GET("/launcher", (Request req) => {
                 return RequireAuthorize(req);
             });
-
-
-            Handle.GET("/launcher/mobile", (Request req) => {
-                return RequireAuthorizeMobile(req);
-            });
-
-
-            Handle.GET("/launcher/mobile/main", (Request req) =>
-            {
-                var session = Session.Current;
-                LauncherPage launcher;
-
-                if (session == null)
-                {
-                    session = new Session(SessionOptions.PatchVersioning);
-                }
-
-                if (!(session.Data is LauncherPage))
-                {
-                    session.Data = launcher = new LauncherPage()
-                    {
-                        Html = "/Launcher/viewmodels/LauncherMobileTemplate.html"
-                    };
-
-                    launcher.Session = session;
-
-                    launcher.user = GetPartials("/mobile/user");
-
-                    launcher.menu = GetPartials("/mobile/menu");
-
-                    /*Special colab stuff*/
-                    launcher.contextpanel = GetPartials("/mobile/contextpanel");
-                }
-                else
-                {
-                    launcher = session.Data as LauncherPage;
-                }
-
-                launcher.uri = req.Uri;
-                MarkWorkspacesInactive(launcher.workspaces);
-
-                if (session.PublicViewModel != launcher)
-                    session.PublicViewModel = launcher;
-
-                return launcher;
-            });
-
-            Handle.GET("/launcher/mobile/dashboard", (Request req) =>
-            {
-                return RequireAuthorizeMobile(req, (LauncherPage lp) =>
-                {
-                    return new Page();
-                });
-            });
-
-            UriMapping.Map("/launcher/mobile/dashboard", UriMapping.MappingUriPrefix + "/mobile/dashboard");
-
 
             Handle.GET("/launcher/container_dashboard", (Request req) =>
             {
@@ -371,21 +308,6 @@ namespace Launcher.Helper {
             return new Page();
         }
 
-        static dynamic RequireAuthorizeMobile(Request req, Func<LauncherPage, dynamic> func = null)
-        {
-            LauncherPage launcher = (LauncherPage)Self.GET("/launcher/mobile/main");
-            if (launcher.CheckLogin())
-            {
-                if (func != null)
-                    return func(launcher);
-            }
-            else
-            {
-                launcher.redirect = "/launcher/mobile/signin?originurl=" + req.Uri;
-            }
-            return new Page();
-        }
-
         static Boolean IsContextApp(Json resource)
         {
             try
@@ -413,10 +335,7 @@ namespace Launcher.Helper {
         }
         static Response WrapInWorkspace(Request req, Json resource) {
             LauncherPage launcher;
-            if (string.Equals(req.Headers[WRAPINWORKSPACE], "M"))
-                launcher = Self.GET<LauncherPage>("/launcher/mobile/main");
-            else
-                launcher = Self.GET<LauncherPage>("/launcher/main");
+            launcher = Self.GET<LauncherPage>("/launcher/main");
 
             launcher.uri = req.Uri;
 
