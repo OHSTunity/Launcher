@@ -1,0 +1,336 @@
+<!--
+`juicy-dom-tree-view` - Awesome, Juicy Polymer Element
+@element juicy-dom-tree-view
+version: 0.0.1
+-->
+<!-- Imports Polymer -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Defines element markup -->
+<dom-module id="juicy-dom-tree-view">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            code {
+                background-color: #e6e6e6;
+                color: black;
+            }
+            code.attribute {
+                background-color: #transparent;
+            }
+
+            p, ul { margin: 0; }
+            p { border: inset thin; }
+            :host { border: inset thin; padding: 0.5em 0.5em 0.5em 1em; color: black; min-height: 5em; font-family: monospace; background: white; }
+            :host ul { padding: 0 0 0 1em; margin: 0; }
+            :host li { padding: 0; margin: 0; list-style: none; position: relative; }
+
+            :host li li { list-style: none; }
+            :host li:first-child::before { position: absolute; top: 0; height: 0.7em; left: -0.75em; width: 0.5em; border-style: none none solid solid; content: ''; border-width: 0.1em; }
+            :host li:not(:last-child)::after { position: absolute; top: 0; bottom: -0.7em; left: -0.75em; width: 0.5em; border-style: none none solid solid; content: ''; border-width: 0.1em; }
+
+
+            li.selected {
+                background-color: rbga(242,101,41,0.3);
+                background-color: var(--juicy-dom-tree-selected-background-color, rgba(242,101,41,0.3));
+            }
+        </style>
+        <ul id="root"></ul>
+    </template>
+
+    <!-- Registers custom element -->
+    <script>
+    (function() {
+        Polymer({
+            is: 'juicy-dom-tree-view',
+
+            properties: {
+                doc: {
+                    type: Object,
+                    observer: '_docChanged'
+                },
+                selectedElements:{
+                    type: Object,
+                    notify: true,
+                    value: function(){return []}
+                },
+                selectedClones:{
+                    type: Object,
+                    notify: false,
+                    value: function(){return []}
+                },
+                multiple: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_multipleChanged'
+                },
+                fakeV1: {
+                    type: Boolean,
+                    value: false
+                },
+                wrappedContent: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+            observers: [
+                // 'selectedElementsAddedOrRemoved(selectedElements.splices)',
+                // 'selectedClonesAddedOrRemoved(selectedClones.splices)'
+            ],
+            listeners: {
+                'root.tap': 'elementTapped'
+            },
+            /**
+             * Helper getter to support non-multiple mode
+             * For backward compatibility
+             * @readonly
+             * @deprecated
+             * @return first from selectedElements
+            */
+            get selectedElement(){
+                return this.selectedElements[0];
+            },
+            /**
+             * Helper getter to retrieve selected elements in tree order
+             * @readonly
+             * @return {Array} selectedElements sorted in tree order (querySelectorAll order)
+             */
+            get selectedElementInTreeOrder(){
+                return Array.prototype.map.call(
+                    this.$.root.querySelectorAll('.selected'),
+                    function(element){
+                        return element._juicyDocumentElement;
+                    }
+                );
+            },
+
+            /**
+             * Sets properites when element is selected
+             * @param  {Event} event
+             */
+            elementTapped: function (event) {
+                let ctrlPressed = event.detail.sourceEvent.ctrlKey;
+                let target = Polymer.dom(event).localTarget;
+                let tapped = getCloneElement(target);
+                let isSelected = this.selectedElements.indexOf(tapped._juicyDocumentElement);
+                if(this.multiple){
+                    if(ctrlPressed){
+                        if(isSelected > -1){
+                            tapped.classList.remove('selected');
+                            this.splice('selectedElements', isSelected, 1);
+                            this.splice('selectedClones', isSelected, 1);
+                        } else {
+                            tapped.classList.add('selected');
+                            this.push('selectedElements', tapped._juicyDocumentElement);
+                            this.push('selectedClones', tapped);
+                        }
+                    } else {
+                        if(isSelected > -1 && this.selectedElements.length === 1){
+                            tapped.classList.remove('selected');
+                            this.splice('selectedElements', isSelected, 1);
+                            this.splice('selectedClones', isSelected, 1);
+                        } else {
+                            removeSelection(this.$.root);
+                            tapped.classList.add('selected');
+                            this.splice('selectedElements', 0, this.selectedElements.length, tapped._juicyDocumentElement);
+                            this.splice('selectedClones', 0, this.selectedClones.length, tapped);
+                        }
+                    }
+
+                } else {
+                    if(isSelected > -1){
+                        tapped.classList.remove('selected');
+                        this.splice('selectedElements', isSelected, 1);
+                        this.splice('selectedClones', isSelected, 1);
+                    } else {
+                        this.selectedClones[0] && this.selectedClones[0].classList.remove('selected');
+                        tapped.classList.add('selected');
+                        this.splice('selectedElements', 0, 1, tapped._juicyDocumentElement);
+                        this.splice('selectedClones', 0, 1, tapped);
+                    }
+                }
+            },
+            _multipleChanged: function(){
+                if(!this.multiple){
+                    removeSelection(this.$.root, this.selectedClones[0]);
+                    this.splice('selectedElements', 1);
+                    this.splice('selectedClones', 1);
+                }
+
+            },
+            /**
+             * Clears selected elements and clones
+             * @return {Array<Array>} [deselectedElements, deselectedClones]
+             */
+            clearSelection: function(){
+                removeSelection(this.$.root);
+                return [this.splice('selectedElements', 0), this.splice('selectedClones', 0)];
+            },
+            // selectedClonesAddedOrRemoved: function(changeRecord) {
+            //   if (changeRecord) {
+            //     changeRecord.indexSplices.forEach(function(s) {
+            //       s.removed.forEach(function(user) {
+            //         console.log(user.name + ' was removed');
+            //       });
+            //       for (var i=0; i<s.addedCount; i++) {
+            //         var index = s.index + i;
+            //         var newUser = s.object[index];
+            //         console.log('User ' + newUser.name + ' added at index ' + index);
+            //       }
+            //     }, this);
+            //   }
+            // },
+            // // set Local DOM classes
+            // _selectedClonesChanged: function (newVal, oldVal) {
+            //     debugger
+            //     if(newVal !== oldVal) {
+            //         [].forEach.call(this.$.root.querySelectorAll('.selected'), function(elem) {
+            //             elem.classList.remove('selected');
+            //         });
+            //         newVal.classList.add('selected');
+            //     }
+            // },
+
+            /**
+             * document have changed, so we chould re-render tree
+             * @param  {DocumentFragment} doc changed document
+             */
+            _docChanged: function(doc) {
+                printDOM(this.$.root, doc, this.selectedElements, this.fakeV1, this.wrappedContent);
+            }
+
+        });
+
+        function printDOM(ul, node, selectedElements, fakeV1, wrappedContent) {
+            while (ul.firstChild) ul.removeChild(ul.firstChild);
+            for (var i = 0, len = node && node.childNodes.length || 0; i < len; i += 1) {
+                if(wrappedContent && node.childNodes[i].parentNode &&
+                    node.childNodes[i].parentNode.hasAttribute &&
+                    node.childNodes[i].parentNode.hasAttribute('content-wrapper')){
+                    continue;
+                }
+                var li = document.createElement('li');
+                // GC fregile
+                li._juicyDocumentElement = node.childNodes[i];
+
+                li.className = 't' + node.childNodes[i].nodeType;
+                // add support for shady DOM elements
+                li.className += ' juicy-dom-tree-view';
+                // re-select clones for previously selected elements
+                if(selectedElements && selectedElements.indexOf(li._juicyDocumentElement) > -1 ){
+                    li.className += ' selected';
+                }
+                if (node.childNodes[i].nodeType == 10) {
+                    li.appendChild(document.createTextNode('DOCTYPE: '));
+                }
+                if (node.childNodes[i].nodeName) {
+                    var code = document.createElement('code');
+                    // add support for shady DOM elements
+                    code.className += ' juicy-dom-tree-view';
+                    let nodeName;
+                    // TODO: clean it as we are spreading internal details among elements
+                    if(wrappedContent && node.childNodes[i].nodeName === 'DIV' && node.childNodes[i].hasAttribute('content-wrapper')){
+                        nodeName = 'SLOT';
+                    } else if(fakeV1 && node.childNodes[i].nodeName === 'CONTENT'){
+                        // pretend  it's SD v1
+                        nodeName =  'SLOT';
+                    } else {
+                        nodeName = node.childNodes[i].nodeName;
+                    }
+                    code.appendChild(document.createTextNode(nodeName));
+                    li.appendChild(code);
+                    // hide wrapped slots
+                    li.appendChild(code);
+                } else {
+                    var span = document.createElement('span');
+                    span.appendChild(document.createTextNode("no name"));
+                    span.className = 'unnamed';
+                    // add support for shady DOM elements
+                    span.className += ' juicy-dom-tree-view';
+                    li.appendChild(span);
+                }
+                if (node.childNodes[i].nodeValue) {
+                    var span = document.createElement('span');
+                    // add support for shady DOM elements
+                    span.className += ' juicy-dom-tree-view';
+                    span.appendChild(document.createTextNode(node.childNodes[i].nodeValue));
+                    li.appendChild(document.createTextNode(': '));
+                    li.appendChild(span);
+                }
+                if (node.childNodes[i].attributes)
+                    for (var j = 0; j < node.childNodes[i].attributes.length; j += 1) {
+                        if (node.childNodes[i].attributes[j].specified) {
+
+                            // pretend we are SD v1
+                            let attrNameContent = node.childNodes[i].attributes[j].nodeName;
+                            if(wrappedContent && attrNameContent === 'content-wrapper'){
+                                continue;
+                            }
+                            let attrValueContent = node.childNodes[i].attributes[j].nodeValue;
+                            if(fakeV1 && attrNameContent === 'select' && node.childNodes[i].nodeName === 'CONTENT' ){
+                                attrNameContent = 'name';
+                                attrValueContent = attrValueContent.replace(/\[slot=['"](.*)['"]\]/,'$1');
+                            }
+                            var attName = document.createElement('code');
+                            attName.appendChild(document.createTextNode(attrNameContent));
+                            attName.className = 'attribute name';
+                            // add support for shady DOM elements
+                            attName.className += ' juicy-dom-tree-view';
+                            var attValue = document.createElement('code');
+                            attValue.appendChild(document.createTextNode(attrValueContent));
+                            attValue.className = 'attribute value';
+                            // add support for shady DOM elements
+                            attValue.className += ' juicy-dom-tree-view';
+                            var att = document.createElement('span');
+                            att.className = 't2';
+                            // add support for shady DOM elements
+                            att.className += ' juicy-dom-tree-view';
+                            att.appendChild(attName);
+                            att.appendChild(document.createTextNode('="'));
+                            att.appendChild(attValue);
+                            att.appendChild(document.createTextNode('"'));
+                            li.appendChild(document.createTextNode(' '));
+                            li.appendChild(att);
+                        }
+                    }
+                if (node.childNodes[i].parentNode == node) {
+                    if (node.childNodes[i].childNodes.length) {
+                        var ul2 = document.createElement('ul');
+                        // add support for shady DOM elements
+                        ul2.className += ' juicy-dom-tree-view';
+                        li.appendChild(ul2);
+                        printDOM(ul2, node.childNodes[i], selectedElements, fakeV1, wrappedContent);
+                    }
+                    if (node.childNodes[i].content) {
+                        var ul2 = document.createElement('ul');
+                        li.appendChild(ul2);
+                        ul2.className = 'template';
+                        // add support for shady DOM elements
+                        ul2.className += ' juicy-dom-tree-view';
+                        printDOM(ul2, node.childNodes[i].content, selectedElements, fakeV1, wrappedContent);
+                    }
+                } else {
+                    li.className += ' misparented';
+                }
+                ul.appendChild(li);
+            }
+        }
+        function getCloneElement(element){
+            var clone = element;
+            while(clone && !clone._juicyDocumentElement){
+                clone = clone.parentNode;
+            }
+            return clone;
+        }
+        function removeSelection(root, except){
+            Array.prototype.forEach.call(root.querySelectorAll('.selected'), function(elem) {
+                if(elem !== except){
+                    elem.classList.remove('selected');
+                }
+            });
+        }
+    }());
+    </script>
+</dom-module>

@@ -1,0 +1,402 @@
+<!--
+`starcounter-layout-html-editor`
+Custom Element with Ace editor to change Starcounter's layouts
+@element starcounter-layout-html-editor
+version: 0.0.0
+-->
+<!-- Imports Polymer -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../juicy-ace-editor/juicy-ace-editor.html">
+<link rel="import" href="../juicy-dom-tree-view/juicy-dom-tree-view.html">
+<link rel="import" href="../juicy-highlight/juicy-highlight.html" />
+<link rel="import" href="juicy-simple-visual-html-editor.html" />
+
+<!-- Defines element markup -->
+<dom-module id="starcounter-layout-html-editor">
+    <template>
+         <style>
+            :host{
+                display: flex;
+                resize: both;
+                overflow: auto;
+
+                flex-direction: column;
+            }
+            .partial-picker{
+                width: 100%;
+                display: flex;
+            }
+            .partial-picker > input{
+                flex: 1;
+                min-width: 80%;
+            }
+            #editor{
+                height: 100%;
+            }
+            #editor[readonly]{
+                opacity: 0.35;
+            }
+            #editor-area{
+                /*height: 7em;*/
+                flex: 1 0 7em;
+                display: flex;
+                justify-content: space-between;
+                transition: height 0.2s, flex-basis 0.2s;
+            }
+            #editor-area[collapsedLeft][collapsedRight]{
+                height: 0;
+                flex-basis: 0;
+                transition: height 0.2s 1s, flex-basis 0.2s 1s;
+            }
+            #editor-area > *{
+                /*min-width: 10em;*/
+                flex: 1 1 10em;
+
+                box-shadow: 0 0  5px grey;
+                margin: 5px;
+                overflow: auto;
+                transition: all 1s 0.2s;
+            }
+            #editor-area >[disabled]{
+                opacity: 0.35;
+            }
+            #coders-pane{
+                position: relative;
+                /*display: flex;*/
+                /*flex-direction: column;*/
+                /*transition: visibility 0s, width 2s linear;*/
+            }
+            #editor-area > [collapsed]{
+                overflow: hidden;
+                visibility: hidden;
+                min-width: 0;
+                flex-grow: 0;
+                flex-basis: 0;
+                margin-left: 0;
+                margin-right: 0;
+                transition: all 1s;
+            }
+            juicy-ace-editor{
+                flex: 1 0 5em;
+                /*height: 100%*/
+            }
+            #slot-hint{
+                font-size: 75%;
+                line-height: 1.4em;
+                margin: 0.2em;
+            }
+            juicy-simple-visual-html-editor{
+                height: 100%;
+            }
+            #buttons{
+                display: flex;
+                justify-content: space-between;
+            }
+        </style>
+        <label class="partial-picker">
+            <input
+                list="selector-autocomplete"
+                type="text"
+                placeholder="Click here to pick the part of a screen that you want to edit"
+                value="{{selector::input}}"/>
+            <datalist id="selector-autocomplete">
+                <template is="dom-repeat" items="{{knownSelectors}}">
+                  <option value="{{item}}"></option>
+                </template>
+            </datalist>
+        </label>
+        <juicy-highlight id="highlightScopeSelected" strokewidth="1" strokecolor="#C0C0C0" strokeoffset="2" overlay></juicy-highlight>
+        <!-- <code>{{selector}}</code> -->
+        <div id="editor-area" collapsedLeft$="[[!toggleCode]]" collapsedRight$="[[!toggleWYSIWYG]]">
+            <div id="coders-pane" collapsed$="[[!toggleCode]]">
+                <div style="height: 100%; width: 100%; display: flex; flex-direction: column; position:absolute;">
+                    <juicy-ace-editor id="ace"
+                        mode="ace/mode/html"
+                        readonly$="{{disabled}}"
+                        wrapmode="true"></juicy-ace-editor>
+                        <!--  Polymer 1.x notification protocoll is too buggy to handle composed two way data binding-->
+                        <!-- value="{{stringify(partial.compositionElement.composition)}}" -->
+
+                    <aside id="slot-hint">
+                        In V0 to distribute the content use
+                        <code>&lt;content select="[slot='<em>id</em>']"&gt;&lt;/content&gt;</code> where <code><em>id</em></code> is the index or the name given custom slot name
+                    </aside>
+                </div>
+            </div>
+            <div collapsed$="[[!toggleWYSIWYG]]">
+                <juicy-simple-visual-html-editor id="wysiwyg"
+                    disabled$="{{disabled}}"
+                    on-composition-changed="wysiwygMadeAChange"></juicy-simple-visual-html-editor>
+                    <!--  Polymer 1.x notification protocoll is too buggy to handle composed two way data binding-->
+                    <!-- doc="{{partial.compositionElement.composition::composition-changed}}" -->
+            </div>
+            </div>
+        <div id="buttons">
+            <div>
+                <button on-click="revert" disabled$="{{disabled}}">Cancel</button>
+                <button on-click="restore" disabled$="{{disabled}}">Restore default</button>
+                <button on-click="save" disabled$="{{disabled}}">Save</button>
+                <!-- <label><input type="checkbox" checked="{{observeMutations::change}}" disabled$="{{disabled}}"/>Observe Shadow DOM mutations / I'll use browser's dev tools</label> -->
+            </div>
+            <div>
+                <label><input type="checkbox" checked="{{toggleCode::change}}"/>Code editor</label>
+                <label><input type="checkbox" checked="{{toggleWYSIWYG::change}}"/>Visual editor</label>
+                <!-- <button on-click="toggleCode" disabled$="{{disabled}}">code editor</button> -->
+            </div>
+        </div>
+    </template>
+
+    <script>
+        (function() {
+            const OBSERVER_INIT = {
+                childList: true,
+                attributes: true,
+                characterData: true,
+                subtree: true
+            };
+            Polymer({
+                is: 'starcounter-layout-html-editor',
+
+                properties: {
+                    selector: {
+                        type: String,
+                        observer: '_selectorChanged'
+                    },
+                    disabled: {
+                        type: Boolean,
+                        value: true
+                    },
+                    knownSelectors: {
+                        type: Array,
+                        value: []
+                    },
+                    toggleCode: {
+                        type: Boolean,
+                        value: true
+                    },
+                    toggleWYSIWYG: {
+                        type: Boolean,
+                        value: true
+                    },
+                    /**
+                     * Reference to the partial (<starcounter-include>), that will be edited.
+                     * @type {HTMLElement}
+                     */
+                    partial: {
+                        type: Object
+                    },
+                    /**
+                     * Should mutations made to composition made by 3rd party be observed?
+                     * @type {Object}
+                     */
+                    observeMutations: {
+                        type: Boolean,
+                        observer: '_updateObserver',
+                        // value: false
+                        value: true
+                    }
+                },
+                listeners:{
+                    'ace.blur':     'aceBlured',
+                    'ace.change':   'aceChanged',
+                    'ace.focusin':    'aceFocused'
+                },
+                observers: [
+                ],
+                _compositionIsBeingSet: false,
+                _selectorChanged: function(newVal, oldVal) {
+                    this.partial = selectElementByString(newVal);
+                    if (this.partial) {
+                        // console.log('_selectorChanged to smth', this.partial);
+                        this.set('disabled', false);
+                        this.$.highlightScopeSelected.show([this.parentElement, this.partial]);
+
+                        // if there is no composition yet, populate it and editor with defaults for ''
+                        if(this.partial.compositionElement.composition === null){
+                            console.info('starcounter-layout-html-editor is setting empty compostion, to edit all slots.');
+                            this.partial.compositionElement.composition = document.createDocumentFragment();
+                        }
+                        this._compositionIsBeingSet = true;
+                        this.$.ace.value = this.partial.compositionElement.shadowRoot.innerHTML || '';
+                        this._compositionIsBeingSet = false;
+                        // debugger
+                        this.$.wysiwyg.doc = this.partial.compositionElement.composition;
+                    } else {
+                        this.set('disabled', true);
+                        this.$.highlightScopeSelected.hide();
+                    }
+                    this._updateObserver();
+                },
+                aceFocused: function(){
+                    // console.log('aceFocused');
+                    // set flag, so mutation observer will not
+                    // reset ace editor with it's own change
+                    this.aceBeingChanged = true;
+                },
+                aceBlured: function(){
+                    // console.log('aceBlured');
+                    // reset flag, mutation observer notify ace editor
+                    // about external changes
+                    this.aceBeingChanged = false;
+                },
+                /**
+                 * Called after juicy-ace-editor change
+                 * Parses editors value to document fragment and
+                 * sets composition
+                 * @param  {Event} event  juicy-ace-editor change event
+                 */
+                aceChanged: function(event) {
+                    // Prevent infinite looping,
+                    // for event change being called after changin by ourselves
+                    if (this._compositionIsBeingSet) {
+                        return;
+                    }
+                    // console.log('aceChanged', event.target.value)
+                    // workaround appendChild(documentFragment)-like behavior
+                    // of composition setter
+                    let newComposition = this.partial.stringToDocumentFragment(event.target.value);
+                    this.partial.compositionElement.composition = newComposition;
+                    // please note that we cannot use newComposition any longer,
+                    // as it was empited by appending to SD
+                },
+                wysiwygMadeAChange: function(){
+                    // console.log('wysiwygMadeAChange', arguments);
+                    // this.compositionHTMLChanged(this.partial.compositionElement.composition)
+                },
+                _compositionChanged: function(newVal, oldVal, stopPropagation) {
+                    // console.log('_compositionChanged');
+                    return;
+                    this._compositionIsBeingSet = true;
+                    if (this.partial && this.partial.compositionElement && this.disabled === false) {
+                        // stop observing mutations
+                        this.observer.disconnect();
+                        this.partial.compositionElement.composition = newVal;
+                        if (!stopPropagation) {
+                            this.$.ace.value = this.partial.compositionElement.composition.innerHTML || '';
+                        }
+
+                        // start observing mutations if needed
+                        this._updateObserver();
+                    }
+                    this._compositionIsBeingSet = false;
+                },
+                /**
+                 * Connects or disconnects the mutation observer according to required properties
+                 */
+                _updateObserver: function(){
+                    if(this.observeMutations && this.partial){
+                        this.observer.observe(this.partial.compositionElement.shadowRoot, OBSERVER_INIT);
+                        // propt developer-firendly message, with a reference to the observed Shadow DOM
+                        console.info('starcounter-layout-html-editor (', this,
+                            ') is now observing all the mutations made to partials Shadow DOM, feel free to change it with your browser\'s dev tools.',
+                            this.partial.compositionElement.shadowRoot);
+                    } else {
+                        this.observer.disconnect();
+                    }
+
+                },
+                /**
+                 * Creates an observer for external changes made to composition, to notify the editors
+                 */
+                created: function () {
+                    const editor = this;
+                    // create an observer
+                    this.observer = new MutationObserver(function shadowDOMChanged(mutations){
+                        // console.log('mutation');
+                        // Prevent infinite looping
+                        if (editor._compositionIsBeingSet) {
+                            // console.log('disregared mutation');
+                            return;
+                        }
+                        editor._compositionIsBeingSet = true;
+                        // notify juicy-ace-editor, unless it's the one making it
+                        if(!editor.aceBeingChanged){
+                            editor.$.ace.value = editor.partial.compositionElement.shadowRoot && editor.partial.compositionElement.shadowRoot.innerHTML || '';
+                        }
+                        // notify wysiwyg-editor's document, even about its own change
+                        editor.$.wysiwyg.docMutated(mutations);
+                        editor._compositionIsBeingSet = false;
+                    });
+                },
+
+                // Fires when the local DOM has been fully prepared
+                ready: function() {
+                    this.addEventListener('mouseup', function(ev) {
+                        window.dispatchEvent(new Event('resize')); //fix resizing of ACE edior
+                    });
+                    this.refreshSelectors();
+                },
+                /**
+                 * Refreshes the list of currently available partials to populate dropdown
+                 * @return {starcounter-layout-html-editor} self
+                 */
+                refreshSelectors: function(){
+                    // populate knownSelectors list
+                    const knownSelectors = Array.prototype.reduce.call(
+                        document.querySelectorAll("starcounter-include"),
+                        function(result, elem) {
+                            var selector = trySelectorFromAttribute("slot", elem) ||
+                                trySelectorFromAttribute("partial-id", elem) ||
+                                trySelectorFromAttribute("id", elem);
+                            if (selector) {
+                                result.push(selector);
+                            }
+                            return result;
+                        }, []
+                    );
+                    this.set('knownSelectors', knownSelectors);
+                    return this;
+                },
+
+                /**
+                 * Saves given or current layout as stored one, (TODO:) notifies binding about it.
+                 * @param  {String} [layoutStr] layout to be saved, if not given current one will be used
+                 */
+                save: function() {
+                    // TODO: move saving from sc-include to here
+                    return this.partial && this.partial.saveLayout();
+                },
+                restore: function() {
+                    if (!this.partial) {
+                        return false;
+                    }
+                    // TODO: move editing features from partial to here
+                    this.partial._forceLayoutChange = true;
+                    this.partial._compositionChanged("");
+                    return this.partial.compositionElement.shadowRoot;
+                    // return this.set('content', this.partial.compositionElement.shadowRoot && this.partial.compositionElement.shadowRoot.innerHTML || '');
+
+                },
+                revert: function() {
+                    if (!this.partial) {
+                        return false;
+                    }
+                    return this.partial.compositionElement.composition = this.partial.storedLayout || this.partial.defaultComposition
+                    // return this.set('content', this.partial.storedLayout);
+
+                }
+            });
+
+            function matchElement(selector, elem) {
+                return document.querySelector(selector) === elem;
+            }
+
+            function trySelectorFromAttribute(attr, elem) {
+                var selector = '[' + attr + '="' + elem.getAttribute(attr) + '"]';
+                if (matchElement(selector, elem)) {
+                    return selector;
+                }
+                return false;
+            }
+
+            function selectElementByString(selector) {
+                var element;
+                try {
+                    element = document.querySelector(selector);
+                } catch (e) {}
+                return element && element.tagName === 'STARCOUNTER-INCLUDE' && element || null;
+
+            }
+        }());
+    </script>
+</dom-module>

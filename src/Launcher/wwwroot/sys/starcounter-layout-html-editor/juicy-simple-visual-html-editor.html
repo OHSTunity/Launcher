@@ -1,0 +1,481 @@
+<!--
+`juicy-simple-visual-html-editor`
+Custom Element with simple controls to edit any HTML Document Fragment
+@element juicy-simple-visual-html-editor
+version: 0.0.0
+-->
+<!-- Imports Polymer -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../juicy-dom-tree-view/juicy-dom-tree-view.html">
+<link rel="import" href="../juicy-highlight/juicy-highlight.html" />
+
+<!-- Defines element markup -->
+<dom-module id="juicy-simple-visual-html-editor">
+    <template>
+        <style>
+            :host{
+                min-height: 1em;
+                display: flex;
+                flex-direction: column;
+            }
+            .toolkit-ui
+            {
+                padding: 2px 2px;
+                background-color: #fefefe
+            }
+            #resize-area{
+                white-space: nowrap;
+            }
+            #resize-area-hidden input
+            {
+                width: 60px;
+                height: 30px;
+                vertical-align: top;
+                border-radius: 3px;
+                border: solid 1px #999;
+                outline: none;
+            }
+            #resize-area-hidden
+            {
+                opacity: 0;
+                transition: opacity 0.2s ease-in;
+            }
+            .toolkit-ui #resize-area:hover #resize-area-hidden
+            {
+                opacity: 1;
+            }
+            .toolkit-ui button
+            {
+                background: #eee;
+                border-radius: 3px;
+                border: solid 1px #999;
+                width: 30px;
+                height: 30px;
+                padding: 6px;
+                fill: #444;
+                vertical-align: middle;
+                line-height: 1em;
+            }
+            .toolkit-ui button.text
+            {
+                width: auto;
+                color: #444;
+            }
+            .toolkit-ui button:hover
+            {
+                background: #ccc;
+            }
+            .toolkit-ui button:active
+            {
+                background: #AAF;
+            }
+            #width-value:valid + #set-width-btn
+            {
+                fill: #009029;
+            }
+            [disabled]{
+                opacity: 0.5;
+            }
+            juicy-dom-tree-view{
+                --juicy-dom-tree-selected-background-color: rgba(30, 144, 255, 0.5);
+                border: none; /* override original css */
+                border-top: 1px solid #ccc;
+                flex: 1 0 1em;
+                overflow: auto;
+            }
+        </style>
+        <div class="toolkit-ui">
+            <button title="Move selected node upword inside its parent node"
+                on-tap="moveElementsUp"
+                disabled$="{{!selectedElements.length}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 -20 300 400">
+                <path d="M2 188c-3 4 -3 9 -1 13s7 7 12 7h62v167c0 7 6 13 13 13h116c7 0 12 -6 12 -13v-167h63c5 0 9 -3 11 -7s2 -9 -1 -13l-132 -187c-2 -3 -7 -5 -11 -5v0c-4 0 -8 2 -10 5z"></path>
+                </svg>
+            </button>
+            <button title="Move selected node downward inside its parent node"
+                on-tap="moveElementsDown"
+                disabled$="{{!selectedElements.length}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 -20 300 400">
+                    <path d="M289 196c3 -4 3 -9 1 -13s-6 -7 -11 -7h-63v-167c0 -7 -5 -13 -12 -13h-116c-7 0 -13 6 -13 13v167h-62c-5 0 -10 3 -12 7s-2 9 1 13l133 187c2 3 6 5 10 5v0c4 0 9 -2 11 -5z"></path>
+                </svg>
+            </button>
+            <button title="Jump selected node upword to outsite its parent node"
+                on-tap="moveElementsOut"
+                disabled$="{{!selectedElements.length}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 -20 300 400">
+                    <path d="M192 335c4 3 9 3 13 1s7 -6 7 -11v-62h168c7 0 13 -6 13 -13v-116c0 -7 -6 -13 -13 -13h-168v-62c0 -5 -3 -9 -7 -11s-9 -2 -13 1l-187 132c-3 2 -5 7 -5 11v0c0 4 2 8 5 10z"></path>
+                </svg>
+            </button>
+            <button
+              title="Hide node"
+              on-tap="hideElements"
+              disabled$="{{hasStylableElements}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 71.77 41.87">
+                    <title>Crossed eye icon</title>
+                    <path d="M67.32,19.25l1.13,1.68L67.32,22.6c-7,10.45-16.69,17.14-27.22,18.84a32.75,32.75,0,0,1-5.3.43,35.1,35.1,0,0,1-19-5.7l6.34-3.3a28.27,28.27,0,0,0,17,2.65c8.31-1.34,16.07-6.5,22-14.59a43.53,43.53,0,0,0-5-5.72l5.57-2.9A50.72,50.72,0,0,1,67.32,19.25Z"/><path class="cls-1" d="M54.27,6.05L48,9.31a28.43,28.43,0,0,0-17.57-3C22.1,7.66,14.36,12.82,8.48,20.93a42.16,42.16,0,0,0,5.38,6.13L8.26,30a50.11,50.11,0,0,1-5.93-7.39l-1.1-1.65,1.1-1.66C9.27,8.79,18.92,2.09,29.49.41A34.84,34.84,0,0,1,54.27,6.05Z"/><path class="cls-1" d="M47.75,19.58A13.37,13.37,0,0,1,47.83,21a13,13,0,0,1-21.59,9.76l6.16-3.2a6.84,6.84,0,0,0,2.43.44,7,7,0,0,0,6.77-5.22Z"/><path class="cls-1" d="M43.72,11.54l-6,3.1a7,7,0,0,0-9.79,5.09l-6,3.11A11.32,11.32,0,0,1,21.83,21,13,13,0,0,1,43.72,11.54Z"/>
+                    <rect class="cls-1" x="-3" y="17.78" width="77.77" height="6" transform="translate(-5.54 18.89) rotate(-27.47)"/>
+                </svg>
+            </button>
+            <button
+              title="Show node"
+              on-tap="showElements"
+              disabled$="{{hasStylableElements}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 -20 300 400">
+                    <path d="M359 204c4 -2 6 -6 6 -11c0 -4 -2 -8 -4 -10v0v0l-1 -1l-79 -79v0c-24 -27 -60 -44 -99 -44c-35 0 -66 14 -90 36v-1l-87 87c-3 3 -5 7 -5 11c0 3 1 7 3 9v0l80 79c24 27 60 45 99 45c35 0 67 -14 91 -36v1zM182 102c50 0 90 40 90 90s-40 90 -90 90s-90 -40 -90 -90 s40 -90 90 -90zM139 192c0 29 14 43 43 43s44 -14 44 -43s-15 -44 -44 -44s-43 15 -43 44z"></path>
+                </svg>
+            </button>
+            <button
+                title="Create a new container"
+                on-tap="createBlock"
+                disabled$="{{!doc}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="45 -20 300 400">
+                    <path d="M362 245c5 0 9 -5 9 -10v-86c0 -3 -1 -5 -3 -7s-3 -3 -6 -3h-124v-123c0 -2 -1 -5 -3 -7s-4 -3 -6 -3h-87c-2 0 -4 1 -6 3s-3 5 -3 7v123h-124c-2 0 -4 1 -6 3s-3 5 -3 7v86c0 5 4 10 9 10h124v123c0 5 4 10 9 10h87c5 0 9 -5 9 -10v-123h124z"></path>
+                </svg>
+            </button>
+            <button title="Delete selected nodes"
+                on-tap="deleteElements"
+                disabled$="{{!selectedElements.length}}">
+                <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 300 400">
+                    <rect x="0" y="150" width="300" height="100">
+                </svg>
+            </button>
+            <button title="Cut selected nodes"
+                class="text"
+                on-tap="cutElements"
+                disabled$="{{!selectedElements.length}}">
+                Cut
+            </button>
+            <button title="Paste nodes"
+                class="text"
+                disabled$="{{!pastePossible}}"
+                on-tap="pasteElements">
+                Paste
+            </button>
+            <span id="resize-area">
+                <button title="Resize selected element"
+                    disabled$="{{hasStylableElements}}">
+                    <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 512 380">
+                        <path d="M26 104c1 3 3 6 6 7s7 0 9 -2l31 -31l83 83c4 4 8 4 12 0l57 -57c4 -4 4 -9 0 -13l-82 -82l30 -31c2 -2 4 -6 3 -9s-4 -5 -7 -6l-158 -27c-3 0 -5 1 -7 3v0c-2 2 -3 4 -3 7zM486 280c-1 -3 -3 -6 -6 -7s-7 0 -9 2l-31 31l-83 -83c-4 -4 -8 -4 -12 0l-57 57 c-4 4 -4 9 0 13l82 82l-30 31c-2 2 -4 6 -3 9s4 5 7 6l158 27c3 0 5 -1 7 -3v0c2 -2 3 -4 3 -7z"></path>
+                    </svg>
+                </button>
+                <span id="resize-area-hidden">
+                    <input type="number"
+                        placeholder="0"
+                        min="0" max="100"
+                        id="width-value"
+                        value="{{elementWidth::input}}"
+                        disabled$="{{hasStylableElements}}">%
+                    <!-- use this button events to save width -->
+                    <button id="set-width-btn"
+                        on-tap="resizeElement"
+                        disabled$="{{hasStylableElements}}">
+                        <svg version="1.1" id="Layer_1"  x="0px" y="0px"
+                            viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
+                            <rect x="2.6" y="6.8" transform="matrix(0.7948 -0.6068 0.6068 0.7948 -5.1764 4.4947)" width="2.9" height="6.2"/>
+                            <rect x="5.1" y="5.7" transform="matrix(0.7948 -0.6068 0.6068 0.7948 -2.3188 7.6099)" width="9.9" height="3.1"/>
+                        </svg>
+                    </button>
+                </span>
+            </span>
+        </div>
+        <!-- <juicy-highlight id="highlightTileRollover" strokewidth="1" strokecolor="#1E90FF" strokeoffset="2" fill="rgba(0, 191, 255, 0.2)"></juicy-highlight> -->
+        <juicy-highlight id="highlightElementsSelected" strokewidth="2" strokecolor="#1E90FF" strokeoffset="2"></juicy-highlight>
+        <juicy-highlight id="highlightElementsCut" strokewidth="2" strokecolor="rgba(30,144,255,0.5)" strokeoffset="2"></juicy-highlight>
+        <juicy-dom-tree-view id="tree"
+            disabled$="{{disabled}}"
+            doc="{{doc}}"
+            selected-elements="{{selectedElements}}"
+            multiple
+            fake-v1
+            wrapped-content></juicy-dom-tree-view>
+    </template>
+
+    <script>
+        (function() {
+            Polymer({
+                is: 'juicy-simple-visual-html-editor',
+
+                properties: {
+                    doc: {
+                        type: Object,
+                        observer: 'docMutated',
+                        value: null
+                    },
+                    disabled: {
+                        type: Boolean,
+                        value: true
+                    },
+                    selectedElements: {
+                        type: Array,
+                        value: function(){return [];}
+                    },
+                    elementsCut: {
+                        type: Array,
+                        value: function(){return [];}
+                    },
+                    elementWidth: {
+                        type: Number,
+                        value: 100
+                    },
+                    hasStylableElements: {
+                      type: Boolean,
+                      computed: 'computeHasStylableElements(selectedElements.splices)'
+                    },
+                    pastePossible: {
+                        type: Boolean,
+                        computed: 'isPastePossible(elementsCut, selectedElements.splices)',
+                        value: false
+                    }
+
+                },
+                observers: [
+                    'selectedElementsAddedOrRemoved(selectedElements.splices)'
+                    //, 'selectedClonesAddedOrRemoved(selectedClones.splices)'
+                ],
+                selectedElementsAddedOrRemoved: function(changeRecord) {
+                    if (changeRecord) {
+                        this.set('elementWidth', this.selectedElements[0] && this.selectedElements[0].style && parseInt(this.selectedElements[0].style.width) || 100);
+                        this.$.highlightElementsSelected.show(visualElements(this.selectedElements));
+                    }
+                },
+                docMutated: function(mutations){
+                    // console.log('docMutated');
+                    this.$.tree._docChanged(this.doc)
+                },
+
+                computeHasStylableElements: function(){
+                    // console.log('computing');
+                    return !(this.selectedElements && this.selectedElements.filter(elementHasStyle).length > 0);
+                },
+
+                // TODO: DRY
+                hideElements: function() {
+                    let changed = false;
+                    if(!this.selectedElements.length){
+                        return;
+                    }
+                    for (var elementNo = 0, len = this.selectedElements.length; elementNo < len; elementNo++) {
+                        let element = this.selectedElements[elementNo];
+                        let wrappedElement = wrapContentWithDiv(this.selectedElements[elementNo]);
+                        if(element !== wrappedElement){
+                            this.splice('selectedElements', elementNo, 1, wrappedElement);
+                            element = wrappedElement;
+                        }
+
+                        if(element.style && element.style.display !== 'none'){
+                            element.dataset.originalDisplay = element.style.display;
+                            element.style.display = 'none';
+                        }
+                    }
+                    changed && fireChangeEvent(this, 'hideElements', this.selectedElements);
+                },
+                showElements: function() {
+                    let changed = false;
+                    if(!this.selectedElements.length){
+                        return;
+                    }
+                    for (var elementNo = 0, len = this.selectedElements.length; elementNo < len; elementNo++) {
+                        let element = this.selectedElements[elementNo];
+                        let wrappedElement = wrapContentWithDiv(this.selectedElements[elementNo]);
+                        if(element !== wrappedElement){
+                            this.splice('selectedElements', elementNo, 1, wrappedElement);
+                            element = wrappedElement;
+                        }
+
+                        if(element.style){
+                            changed = true;
+                            if(typeof element.dataset.originalDisplay !== 'undefined'){
+                                element.style.display = element.dataset.originalDisplay;
+                                delete element.dataset.originalDisplay;
+                            } else {
+                                element.style.display = 'unset';
+                            }
+                        }
+                    }
+                    changed && fireChangeEvent(this, 'showElements', this.selectedElements);
+                },
+                moveElementsOut: function() {
+                    if(!this.selectedElements.length){
+                        return;
+                    }
+                    let changed = false;
+                    for (var elementNo = 0, len = this.selectedElements.length; elementNo < len; elementNo++) {
+                        let element = this.selectedElements[elementNo];
+                        if(element.parentElement){
+                            element.parentElement.parentNode.insertBefore(element, element.parentNode);
+                            changed = true;
+                        }
+                    }
+                    if(changed){
+                        // this.$.tree._docChanged(this.doc);
+                        fireChangeEvent(this, 'moveElementsOut', this.selectedElements);
+                    }
+                },
+                deleteElements: function() {
+                    if(!this.selectedElements.length){
+                        return;
+                    }
+                    let changed = false;
+                    for (var elementNo = 0, len = this.selectedElements.length; elementNo < len; elementNo++) {
+                        let element = this.selectedElements[elementNo];
+                        if(element.parentNode){
+                            element.parentNode.removeChild(element);
+                            changed = true;
+                        }
+                    }
+                    if(changed){
+                        // this.$.tree._docChanged(this.doc);
+                        fireChangeEvent(this, 'deleteElements', this.selectedElements);
+                    }
+                },
+                moveElementsUp: function() {
+                    if(!this.selectedElements.length){
+                        return;
+                    }
+
+                    //sort elements in tree order
+                    let sortedElements = this.$.tree.selectedElementInTreeOrder;
+                    let changed = false;
+                    for (var elementNo = 0, len = sortedElements.length; elementNo < len; elementNo++) {
+                        let element = sortedElements[elementNo];
+                        if(element.parentNode && element.previousSibling){
+                            element.parentNode.insertBefore(element, element.previousSibling);
+                            changed = true;
+                        }
+                    }
+                    if(changed){
+                        // this.$.tree._docChanged(this.doc);
+                        fireChangeEvent(this, 'movesElementUp', sortedElements);
+                    }
+                },
+                moveElementsDown: function() {
+                    if(!this.selectedElements.length){
+                        return;
+                    }
+                    //sort elements in desc tree order
+                    let sortedElements = this.$.tree.selectedElementInTreeOrder.reverse();
+                    let changed = false;
+                    for (var elementNo = 0, len = sortedElements.length; elementNo < len; elementNo++) {
+                        let element = sortedElements[elementNo];
+                        if(element.parentNode && element.nextSibling){
+                            element.parentNode.insertBefore(element, element.nextSibling.nextSibling);
+                            changed = true;
+                        }
+                    }
+                    if(changed){
+                        // this.$.tree._docChanged(this.doc);
+                        fireChangeEvent(this, 'movesElementDown', sortedElements);
+                    }
+                },
+                cutElements: function(){
+                    let elementsCut, clonesCut;
+                    // [this.elementsCut, clonesCut] = this.$.tree.clearSelection();
+                    // Edge...
+                    [elementsCut, clonesCut] = this.$.tree.clearSelection();
+                    this.elementsCut = elementsCut; 
+                    this.$.highlightElementsCut.show(visualElements(this.elementsCut).concat(clonesCut));
+                },
+                pasteElements: function(){
+                    const destination = this.selectedElements[0] || this.doc;
+                    this.elementsCut.forEach(function(element){
+                        destination.appendChild(element);
+                    });
+                    this.elementsCut.splice(0);
+                    this.$.highlightElementsCut.hide();
+                },
+                createBlock: function(){
+                    const div = document.createElement('div');
+                    const destination = this.selectedElements[0] || this.doc;
+                    div.style.display = 'inline-block';
+                    destination.appendChild(div);
+                },
+                resizeElement: function(){
+                    const width = this.elementWidth
+                    const editor = this;
+                    this.selectedElements.forEach(function(element, elementNo){
+                        let wrappedElement = wrapContentWithDiv(element);
+                        if(element !== wrappedElement){
+                            editor.splice('selectedElements', elementNo, 1, wrappedElement);
+                            element = wrappedElement;
+                        }
+                        element.style.width = width + '%';
+                    });
+                },
+                isPastePossible: function(){
+                    const destination = this.selectedElements[0];
+                    return this.elementsCut.length > 0 &&
+                            (!destination ||
+                            this.elementsCut.indexOf(destination) === -1 && (
+                                destination.nodeType === Node.ELEMENT_NODE ||
+                                destination.nodeType === Node.DOCUMENT_FRAGMENT_NODE
+                            )
+                        );
+                }
+
+            });
+
+            function elementHasStyle(element){
+                return element.style;// && element.tagName !== 'CONTENT';
+            }
+            /**
+             * Wraps given `<content>` element with `<div content-wrapper>`,
+             * so it could get some styles
+             * @param  {HTMLElement} element element to wrap
+             * @return {HTMLElement}         wrapping element
+             */
+            function wrapContentWithDiv(element){
+                if(element.tagName !== 'CONTENT' || !element.parentNode){
+                    return element;
+                }
+                let div = document.createElement('div');
+                div.setAttribute('content-wrapper','');
+                if(element.hasAttribute('select')){
+                    div.setAttribute('name',element.getAttribute('select').replace(/\[slot=['"](.*)['"]\]/,'$1'));
+                }
+                element.parentNode.insertBefore(div, element);
+                div.appendChild(element);
+                return div;
+
+            }
+
+            /**
+             * Helper to dispatch events
+             * @param  {Element} root     element on which event will be dispatched
+             * @param  {String} type      sub-type of `composition-changed` event
+             * @param  {Any} elements elements detail
+             */
+            function fireChangeEvent(root, type, elements){
+                root.dispatchEvent(new CustomEvent('composition-changed', {
+                    detail:{
+                        type: type,
+                        elements: elements
+                    }
+                }));
+            }
+            /**
+             * Creates an array of visual elements -> flattens content/slot tags (just one level)
+             * @param  {Array-like} nodes list of nodes to chec
+             * @return {Array}      list of flatten nodes
+             */
+            function visualElements(nodes){
+                let visualNodes = [];
+                for(var nodeNo = 0, len = nodes.length; nodeNo < len; nodeNo++){
+                    let node = nodes[nodeNo];
+                    switch (node.tagName) {
+                        case 'CONTENT':
+                            visualNodes = visualNodes.concat(Array.prototype.slice.call(node.getDistributedNodes(), 0));
+                            break;
+                        case 'SLOT':
+                            visualNodes = visualNodes.concat(Array.prototype.slice.call(node.assignedNodes(), 0));
+                            break;
+                        default:
+                            visualNodes.push(node);
+                    }
+                }
+                return visualNodes;
+            }
+
+
+        }());
+    </script>
+</dom-module>

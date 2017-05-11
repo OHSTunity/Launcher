@@ -25,6 +25,6 @@
   },
   "resolutions": {
     "juicy-highlight": "^1.1.0",
-    "polymer": "1.6.0"
+    "polymer": "1.9.1"
   }
 }
