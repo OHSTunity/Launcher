@@ -1,5 +1,6 @@
 ﻿<link rel="import" href="/sys/polymer/polymer.html">
 <link rel="import" href="/sys/imported-template/imported-template.html">
+<link rel="import" href="/sys/juicy-tile-table/juicy-tile-table.html">
 
 <dom-module id="launcher-launchpad">
     <template>
@@ -7,6 +8,10 @@
             :host{
                 display: block;
                 min-height: 1em;
+            }
+            .launchpad-tile
+            {
+                margin:10px;
             }
             .launchpad-tile a {
                 text-align: center;
@@ -32,7 +37,7 @@
             }
 
             .launchpad-tile:hover .launchpad-icon {
-                box-shadow: inset 0px 0px 10px rgba(138, 152, 176,0.8);
+                background: rgba(108, 189, 203, .1);
             }
 
             .launchpad-tile > a,
@@ -51,11 +56,42 @@
                 font-weight: normal;
                 line-height: 1.1;
             }
+
+            #launcherheader
+            {
+              position: absolute;
+              display: flex;
+              box-sizing: border-box;
+              align-items: center;
+              padding-left: 20px;
+              font-size: 24px;
+              top: 0px;
+              left: 0px;
+              height: 47px;
+              width: 100%;
+              background: white;
+              font-weight: bold;
+              color: #999;
+              background: linear-gradient(to bottom, #f1eff9 0%,#f5f5fa 100%);
+              border-bottom: .5px solid #cad1ed;
+            }
+
+            #launchercontent
+            {
+                display: flex;
+                position: absolute;
+                top: 60px;
+                left: 0px;
+                bottom: 0px;
+                right: 0px;
+                padding:10px;
+
+            }
         </style>
-        <juicy-tiles-setup-sync api-url="/sc/layout" name="/Launcher/launchpad" storedValue="{{layout}}"></juicy-tiles-setup-sync>
-        <!-- <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad"> -->
-        <juicy-tile-table defaulttilesetup='{ "height": 120, "width": 120}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='[[cloneJSON(layout)]]'>
-        <!-- <juicy-tile-table defaulttilesetup='{ "height": 98, "width": 80}' gutter="10" refreshonmutation name="/Launcher/launchpad" setup='{"width": 1000, "items": []}'> -->
+            <div id="launcherheader">Applications</div>
+
+            <div id="launchercontent">
+
             <template is="dom-repeat" items="{{appsArray}}">
                 <div class="launchpad-tile">
                     <a href="{{item.url}}">
@@ -66,7 +102,14 @@
                     </a>
                 </div>
             </template>
+
+            </div>
+            <!--
         </juicy-tile-table>
+        -->
+
+
+
     </template>
     <script>
         Polymer({

@@ -1,4 +1,10 @@
-﻿﻿<link rel="import" href="../../polymer/polymer.html" />
+<!--
+juicy-tile-simple-editor
+@version: 2.0.3
+MIT
+-->
+
+﻿<link rel="import" href="../../polymer/polymer.html" />
 <link rel="import" href="../../iron-localstorage/iron-localstorage.html" />
 <link rel="import" href="../../juicy-highlight/src/juicy-highlight.html" />
 <link rel="import" href="../../juicy-popover/src/juicy-popover.html" />
@@ -130,7 +136,7 @@
                             Unbox
                         </button>
                         <div class="btn-group">
-                            <select class="btn btn-left"  on-change="_choosePredefinedSetup" title="Select the element that will control the layout of this group">
+                            <select class="btn btn-left predefined-setup-picker"  on-change="_choosePredefinedSetup" title="Select the element that will control the layout of this group">
                                 <!-- <option value="" title="subgrid/virtual group">parent conatiner</option> -->
                                 <option title="tight group">juicy-tile-table</option>
                                 <template is="dom-repeat" items="{{predefinedSetups}}">
@@ -285,7 +291,12 @@
                         <template is="dom-if" if="{{getIsScopable(item)}}">
                             <a href="javascript:" class="scope-in" on-click="selectScopeItem" item="{{item}}" title="Scope in">...</a>
                         </template>
-                        <span>{{getSetupName(item)}}</span>
+                        <input type="text" value="{{item.name::change}}" readonly 
+                               on-click="clickTreeItemName" 
+                               on-dblclick="editTreeItemName" 
+                               on-blur="saveTreeItemName" 
+                               on-keypress="saveTreeItemName" 
+                               on-change="touch" />
                     </div>
                 </template>
             </div>

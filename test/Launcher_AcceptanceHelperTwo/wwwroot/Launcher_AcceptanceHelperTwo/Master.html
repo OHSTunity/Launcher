@@ -1,3 +1,8 @@
 ﻿<template>
-    <h2>This is Launcher Acceptance Helper Two</h2>
+    <template is="dom-bind">
+        <h2>This is Launcher Acceptance Helper Two</h2>
+        <p>
+            This is a shared thing: <input type="text" value="{{model.SharedValue.Description$::input}}" id="helper-two-input"/>
+        </p>
+    </template>
 </template>

@@ -1,15 +1,28 @@
 {
   "directory" : "wwwroot/sys",
   "ignoredDependencies": [
-      "webcomponentsjs",
-      "PuppetJs",
-      "imported-template",
-      "puppet-redirect",
-      "dom-bind-notifier",
-      "juicy-redirect",
-      "starcounter-debug-aid",
-      "puppet-client",
-      "bootswatch",
-      "polymer"
+    "PuppetJs",
+    "fast-json-patch",
+    "json-patch-ot",
+    "json-patch-ot-agent",
+    "json-patch-queue",
+    "array.observe",
+    "bootswatch",
+    "bootstrap",
+    "jquery",
+    "dom-bind-notifier",
+    "imported-template",
+    "juicy-html",
+    "juicy-redirect",
+    "object.observe",
+    "polymer",
+    "puppet-client",
+    "puppet-redirect",
+    "starcounter-debug-aid",
+    "juicy-jsoneditor",
+    "jsoneditor",
+    "webcomponentsjs",
+    "starcounter-include",
+    "juicy-composition"
   ]
 }

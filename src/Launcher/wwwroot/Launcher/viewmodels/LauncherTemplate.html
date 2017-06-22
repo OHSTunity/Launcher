@@ -1,7 +1,18 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
 <head>
-    <title>Tunity</title>
+
+    <title>Colab</title>
+    <link rel="shortcut icon" href="/Launcher/favicon.ico" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <!-- iOS -->
+    <link rel="apple-touch-icon" href="/Launcher/favicon.ico" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Colab">
 
     <!-- Import Polymer platform -->
     <script src="/sys/webcomponentsjs/webcomponents.js"></script>
@@ -11,137 +22,160 @@
       //Raven.config('https://25d8d13cb3474332b051f3a8c8c3e647@app.getsentry.com/65046').install();
     </script>
 
-
-    <link rel="import" href="/sys/polymer/polymer.html" />
-
-
-
-    <link rel="import" href="/sys/paper-dialog/paper-dialog.html" />
+ <link rel="import" href="/sys/polymer/polymer.html" />
 
     <!-- Import Starcounter specific components -->
     <link rel="import" href="/sys/starcounter.html" />
     <link rel="import" href="/sys/starcounter-debug-aid/src/starcounter-debug-aid.html" />
 
     <!-- Import our elements -->
-    <link rel="import" href="/Launcher/elements/launcher-layout/launcher-main.html" />
     <link rel="import" href="/Launcher/elements/launcher-launchpad/launcher-launchpad.html" />
     <link rel="import" href="/Launcher/elements/launcher-hot-key/launcher-hot-key.html" />
     <link rel="import" href="/Launcher/elements/launcher-search/launcher-search.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-input/launcher-search-input.html" />
     <link rel="import" href="/Launcher/elements/launcher-search-result/launcher-search-result.html" />
     <link rel="import" href="/Launcher/elements/launcher-menu/launcher-menu.html" />
-    <link rel="import" href="/Launcher/elements/tu-logo-with-spinner/tu-logo-with-spinner.html" />
-    <link rel="import" href="/Launcher/elements/launcher-display-router/launcher-display-router.html" />
-	  <link rel="import" href="/Launcher/elements/puppet-bind-notifier/puppet-bind-notifier.html" />
+    <link rel="import" href="/co-common/elements/app/co-logo.html">
     <link rel="import" href="/sys/starcounter-include/starcounter-include.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-launcher.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-layout-multiview.html" />
+    <link rel="import" href="/Launcher/elements/co-layout/co-title.html" />
+    <link rel="import" href="/Launcher/elements/co-launcher-redirect/co-launcher-redirect.html" />
 
     <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/console-log/console-log.html" /> -->
 
-    <!-- Import other elements used in this document -->
-    <link rel="import" href="/sys/paper-icon-button/paper-icon-button.html" />
-    <!-- Disable untill migrated to Polymer1 <link rel="import" href="/sys/paper-toggle-button/paper-toggle-button.html" /> -->
-
     <link rel="import" href="/sys/imported-template/imported-template.html" />
-	  <!--<link rel="import" href="/sys/dom-imported/dom-imported.html" />-->
-    <link rel="import" href="/sys/dom-bind-notifier/dom-bind-notifier.html" />
-    <link rel="import" href="/sys/juicy-redirect/juicy-redirect.html" />
 
-    <!--<link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
-    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <!--<link href='//fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>-->
+    <link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <!--<link rel="stylesheet" type="text/css" href="/sys/font-awesome/css/font-awesome.css">-->
-    <link rel="stylesheet" href="/sys/font-awesome/css/font-awesome.css">
+    <!--<link rel="stylesheet" href="/sys/font-awesome/css/font-awesome.css">-->
     <!-- Style sheets -->
     <!--<link rel="import" href="/sys/bootstrap.html" />-->
     <link rel="stylesheet" href="/Launcher/css/style.css" />
 
-    <link rel="shortcut icon" href="/Launcher/favicon.ico" />
+    <link rel="manifest" href="/webapp/manifest.json">
+
+    <link rel="import" href="/co-common/css/co-theme.html" />
+    <style is="custom-style" include="co-theme">
+
+      /* Hack to avoid changing font name everywhere */
+      /* cyrillic-ext */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/sTdaA6j0Psb920Vjv-mrzH-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+        unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+      }
+      /* cyrillic */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/uYECMKoHcO9x1wdmbyHIm3-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+        unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+      }
+      /* greek-ext */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/tnj4SB6DNbdaQnsM8CFqBX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+        unicode-range: U+1F00-1FFF;
+      }
+      /* greek */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/_VYFx-s824kXq_Ul2BHqYH-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+        unicode-range: U+0370-03FF;
+      }
+      /* vietnamese */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/NJ4vxlgWwWbEsv18dAhqnn-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+        unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;
+      }
+      /* latin-ext */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/Ks_cVxiCiwUWVsFWFA3Bjn-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+      }
+      /* latin */
+      @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Roboto'), local('Roboto-Regular'), url(//fonts.gstatic.com/s/roboto/v15/oMMgfZMQthOryQo9n22dcuvvDin1pK8aKteLpeZ5c0A.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+      }
+
+      [main] {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex:1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      [hidden] {
+        visibility: hidden !important;
+        display: none !important;
+      }
+
+      #workspace {
+        position: relative;
+        overflow: auto;
+        flex:1;
+      }
+
+      launcher-search {
+        margin-left: 10px;
+      }
+
+    </style>
 </head>
-<body is="launcher-main">
+<body is="launcher-main" class="loading">
+    <div id="co-splash">
+        <span id="co-splash-text">LOADING</span>
+        <span id="co-splash-spinner">⚇</span>
+    </div>
     <template id="root-launcher-dom-bind" is="dom-bind">
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div class="launcher-toolbar launcher-topbar">&nbsp;</div>
-        </template>
+      <co-title value="[[model.Title]]"></co-title>
+      <co-launcher only-workspace="[[!model.signedIn]]" cp-auto-visible=[[model.contextpanelAutoVisible]]>
+        <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}">
+          <!-- menu is built inside toolbar -->
+          <launcher-search search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
+          <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>
+        </co-launcher-toolbar>
 
-        <div class="launcher-toolbar launcher-topbar">
-            <div style="margin-left: 10px;min-width: 129px;max-width: 195px;">
-                <tu-logo-with-spinner></tu-logo-with-spinner>
-            </div>
-            <div class="toolbar-padding"></div>
-            <span class="toolbar-divider"></span>
-            <div id="launcher-menu">
-               <ul>
-                  <template is="imported-template" content$="{{model.menu.Html}}" model="{{model.menu}}"></template>
-               </ul>
-            </div>
-            <div flex=""></div>
-            <span class="toolbar-divider"></span>
-            <i class="ts_icon ts_icon_trello"></i>
-            <!--<a href="/"><i id="homeIcon" class="glyphicon glyphicon-home"></i></a>-->
-            <core-field class="launcher-theme">
-              <launcher-search placeholder="Search here..."  data="{{model.searchBar}}"></launcher-search>
-
-                <!--<launcher-search-input placeholder="Search here..." lastkey="{{model._lastkey}}" value="{{model.searchBar.query$}}" close-action="{{model.searchBar.close$}}" submit-action="{{model.searchBar.submit$}}"></launcher-search-input>
-                <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
-
-                <!--<link is="juicy-redirect" history url="{{model.searchBar.searchEngineResultPageUrl$}}" />-->
-              <!--  <template is="dom-if" if="{{model.searchBar.previewVisible}}">
-                    <div class="preview">
-                        <launcher-search-result keypress="{{model._lastkey}}" data="{{model.searchBar.previewResult}}"></launcher-search-result>
-                    </div>
-                </template>-->
-            </core-field>
-            <span class="toolbar-divider"></span>
-
-            <template is="imported-template" content$="{{model.user.Html}}" model="{{model.user}}"></template>
-
-            <!--<core-icon-button id="account" icon="account"></core-icon-button>-->
-            <!--
-            <template is="dom-if" restamp if="{{!model.layoutModified$}}">
-            <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor.svg" on-click="toggleEditor"></paper-icon-button>
-            </template>
-            <template is="dom-if" restamp if="{{model.layoutModified$}}">
-                <paper-icon-button id="settings" active="{{model.editingMode$}}" src="/Launcher/images/layout-editor-unsaved.svg" on-click="toggleEditor" class="modified" title="You have unsaved layout changes on this page!"></paper-icon-button>
-            </template>
-            -->
-            <a href="/launcher/settings"><img id="launcher-settings-icon" src="/Launcher/images/cog.svg" /></a>
-        </div>
-
-
-        <div id="launcher-content">
-            <div class="launchpad">
-
-                <template is="dom-if" if="{{model.launchpad}}">
-                    <launcher-launchpad class="visible" apps="{{model.launchpad.names}}" layout="{{model.launchpad.layout}}"></launcher-launchpad>
-                </template>
-
-            </div>
-            <launcher-display-route match-path="^\/$|^\/launcher/?$" uri="{{model.uri}}" display-selector=".launchpad"></launcher-display-route>
-
-            <!-- <starcounter-include class="workspace launcher" partial="{{currentPage}}"></starcounter-include> -->
-            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-
-            <!-- Dashboard/search results/settings -->
-            <starcounter-include class="workspace launcher" name="/Launcher/currentPage" partial="{{model.currentPage}}"></starcounter-include>
-            <!-- just "/" or whatever starting from "/launcher/.." except stuff starting from "/launcher/workspace" -->
-            <launcher-display-route match-path="^\/launcher\/" uri="{{model.uri}}" display-selector=".workspace.launcher"></launcher-display-route>
-
+        <div main>
+          <co-layout-multiview data="{{model.contextbar}}"></co-layout-multiview>
+          <div id="workspace">
             <template is="dom-repeat" items="{{model.workspaces}}">
-                <starcounter-include partial="{{item}}" class="workspace" visible$="{{item.Launcher.ActiveWorkspace}}"></starcounter-include>
+              <starcounter-include style="height:100%" partial="{{item.Partials}}" class="workspace" visible$="{{item.ActiveWorkspace}}"></starcounter-include>
             </template>
+          </div>
         </div>
 
-        <!-- TODO migrate this getModel -->
-        <launcher-hot-key keys="Ctrl+E" on-keypress="toggleEditor"></launcher-hot-key>
-        <launcher-hot-key keys="Esc" onkeypress="toggleEditor"></launcher-hot-key>
-        <template is="dom-if" restamp if="{{model.editingMode$}}">
-            <div id="elementSettings" class="launcher-topbar">
-                <template is="imported-template" model="{{model}}" content="/Launcher/viewmodels/LayoutEditor.html"></template>
-            </div>
-        </template>
+        <co-layout-multiview left data="{{model.contextpanel}}"></co-layout-multiview>
+        <co-layout-multiview right data="{{model.sidepanel}}"></co-layout-multiview>
 
-        <tu-lightbox-popup></tu-lightbox-popup>
+      </co-launcher>
 
-        <paper-dialog opened="{{model.ConnectionError}}" modal="true">
+      <co-lightbox-popup></co-lightbox-popup>
+
+      <co-launcher-redirect uri="{{model.redirect$}}"> </co-launcher-redirect>
+      <paper-dialog opened="{{model.ConnectionError}}" modal="true">
             <h4>Connection error</h4>
             <p>You have been disconnected from server. Please reload page.</p>
             <div class="buttons">
@@ -149,30 +183,16 @@
                 <span>&nbsp;</span>
                 <paper-button dialog-confirm onclick="window.location = window.location.href;">Reload</paper-button>
             </div>
-        </paper-dialog>
-
-        <dom-bind-notifier path="model" observed-object="{{model}}" deep ref="root-launcher-dom-bind"></dom-bind-notifier>
+      </paper-dialog>
     </template>
     <script>
         (function () {
             var script = document._currentScript || document.currentScript;
             var template = script.previousElementSibling;
 
-            template.closeEditor = function () {
-                template.set("model.editingMode$", false);
-            };
-
             template.concat = function () {
                 return Array.prototype.join.call(arguments, "");
             };
-
-            template.toggleEditor = function () {
-                template.set("model.editingMode$", !template.model.editingMode$);
-            };
-
-      		/*	template.addEventListener("model-changed", function (e) {
-      				console.log("lt", e);
-      			});*/
 
             template.addEventListener("dom-change", function () {
                 var puppet = document.querySelector("puppet-client");
@@ -182,14 +202,42 @@
                     template.set("model.ConnectionError", true);
                 });
             });
+
         })();
     </script>
 
-    <puppet-client ref="root-launcher-dom-bind" ignore-add="/_.+"></puppet-client>
-	  <!--<puppet-bind-notifier path="model" ref="root-launcher-dom-bind"></puppet-bind-notifier>-->
+    <puppet-client ref="root-launcher-dom-bind" ping-interval-s="60"></puppet-client>
     <starcounter-debug-aid></starcounter-debug-aid>
     <script>
         var puppet = document.getElementsByTagName("puppet-client")[0];
+
+        //Ugly hack to customize the color of the error drop-down which is displayed by puppet.
+        var shadowChildren = puppet.shadowRoot.children;
+        //Adding custom style to puppet style object.
+        shadowChildren[0].innerHTML = shadowChildren[0].innerHTML + ".custom-notice  { background-color: #FFFFFF; border-color: #ffe070; color: #000;}";
+        for (let i = 0 ; i < shadowChildren.length; i++) {
+            if (shadowChildren[i].tagName == "DIV") {
+                var noticeDiv = shadowChildren[i].children;
+                for (let j = 0; j < noticeDiv.length; j++) {
+                    //remove current style for notice and add custom one.
+                    if (noticeDiv[j].classList.contains("notice")) {
+                        noticeDiv[j].classList.remove("notice");
+                        noticeDiv[j].classList.add("custom-notice");
+                    }
+                }
+            }
+        }
     </script>
+  <!--  <script>
+      if ('serviceWorker' in navigator) {
+        console.log("Will the service worker register?");
+        navigator.serviceWorker.register('/Launcher/js/service-worker.js')
+          .then(function(reg){
+            console.log("Yes, it did.");
+          }).catch(function(err) {
+            console.log("No it didn't. This happened: ", err)
+          });
+      }
+    </script>-->
 </body>
 </html>

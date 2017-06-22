@@ -1,0 +1,165 @@
+<link rel="import" href="/sys/polymer/polymer.html">
+
+<dom-module id="co-layout-multiview">
+  <style>
+    .view {
+    }
+
+    .view.hidden {
+      /* Why? visibility: collapse; */
+      display: none;
+    }
+  </style>
+  <template>
+    <template is="dom-repeat" items="{{apps}}" as="item">
+      <div class$="view {{_class(item.active)}}" on-attached="partialAttached">
+        <template is="imported-template" model="{{item.data.Current}}" content$="{{item.data.Current.Html}}"></template>
+      </div>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: "co-layout-multiview",
+      properties: {
+        data: {
+          type: Object,
+          value: {},
+          notify: true,
+          observer:'contextChanged'
+        },
+        apps: {
+          type:Array,
+          value: [],
+          notify: true,
+        },
+        panelWidth: {
+          type: Number,
+          value: 200,
+          notify: true,
+          observer: 'panelWidthChanged'
+        },
+        empty: {
+          type: Boolean,
+          value: true,
+          notify: true,
+          observer: 'emptyChanged'
+        },
+      },
+      observers:[
+        'subdataChanged(data.*)',
+      ],
+      ready: function() {
+      },
+      attached: function() {
+      },
+      partialAttached: function() {
+        this.updateChildPanelWidth();
+      },
+      panelWidthChanged: function() {
+        this.updateChildPanelWidth();
+      },
+      updateChildPanelWidth: function() {
+        var views = Polymer.dom(this.root).querySelectorAll('.view');
+        for (var i = 0; i < views.length; i++) {
+          var view = views[i];
+          var childs = view.children;
+          for (var j= 0; j < childs.length; j++) {
+            if (childs[j].__isPolymerInstance__)
+              childs[j].set('panelWidth', this.panelWidth);
+          }
+        }
+      },
+      _activeApp : '',
+      subdataChanged: function(ev) {
+        if (ev.path != 'data') {
+          pathes = ev.path.split('.');
+          if (pathes.length == 3 && pathes[2] == 'Active$') {
+            this._activeApp = ev.value? pathes[1]: '';
+            this.UpdateActive();
+          }
+          else {
+            var index = this.GetIndex(pathes[1]);
+            if (index > -1 && this.root.children.length > index-1) {
+              var path =   ev.path.replace("data."+pathes[1], "apps.#"+index+".data");
+              this.notifyPath(path, ev.value);
+            }
+          }
+        }
+      },
+      GetIndex: function (appname) {
+        for (var i = 0; i < this.apps.length; i++) {
+          if (this.apps[i].name == appname)
+            return i;
+        }
+        return -1;
+      },
+      UpdateApps: function() {
+        this.apps = [];
+        for (var name in this.data)
+        {
+          if (this.data.hasOwnProperty(name) && this.data[name].hasOwnProperty("Active$")) {
+            this.empty = false;
+            var app = {
+              name: name,
+              active: false,
+              data: this.data[name]
+            };
+            this.push('apps', app);
+          }
+        }
+      },
+      UpdateActive: function() {
+        for (var i = 0; i < this.apps.length; i++) {
+
+          var notedActive = this.apps[i].data.Active$;
+
+          if (!this._activeApp && notedActive)
+            this._activeApp = this.apps[i].name;
+
+
+          if (this._activeApp != this.apps[i].name) {
+            if (notedActive) {
+              var str = 'data.'+this.apps[i].name+".Active$";
+
+              this.async( function() {
+                this.set(str, false);
+                window.tu.puppetDirtyCheck();
+
+              });
+            }
+            this.set('apps.#'+i+'.active', false);
+          }
+          else if (notedActive && this._activeApp == this.apps[i].name && !this.apps[i].active) {
+            this.set('apps.#'+i+'.active', true);
+
+          }
+        }
+        if (this._activeApp && this._activeApp != 'none') {
+
+          this.debounce('trackAction', function () {
+              if(window.tu)window.tu.trackAction("Activate sidepanel", this._activeApp);
+          }, 300);
+
+          this.fire("panel-command", { status: "open" });
+        } else {
+          this.fire("panel-command", { status: "close"});
+        }
+      },
+      emptyChanged: function(empty) {
+        if (!empty)
+          this.fire("panel-command", { status: "content_exist"});
+      },
+      deActivateAll() {
+        this._activeApp = "none";
+        this.UpdateActive();
+      },
+      contextChanged: function(e) {
+        this.UpdateApps();
+        this.UpdateActive();
+      },
+      _class: function(active) {
+        return active ? "active":"hidden";
+      }
+    });
+  </script>
+</dom-module>

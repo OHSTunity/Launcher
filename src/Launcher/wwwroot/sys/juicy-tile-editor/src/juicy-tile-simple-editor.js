@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     /**
      * Checks whether an element is a juicy-tile-list.
      * @param   {HTMLElement}   element     The element to check.
@@ -195,26 +195,51 @@
     }
 
     /**
-     * Gets all juicy-tile-list elements within a tile.
-     * @param   {JuicyTileList}   list        The list to look for the tile in.
-     * @param   {String}          tileId      The tile's id. The tile should belong to the list.
-     * @param   {Array}           selectors   List of valid tag names for juicy-tile-list.
-     * @return  {Array}                       Returns list of juicy-tile-list items found inside the tile.
+     * Filters elements nested too deep (nested in other elements from array)
+     * @param  {Array<HTMLElement>} elementsArray array of elements to filter. This array will be changed.
+     * @param  {HTMLElement} root          root of our elements
+     * @return {Array<HTMLElement>}               reduced array
      */
-    function getNestedLists(list, tileId, selectors) {
-        if (!list) {
+    function filterNestedTooDeep(elementsArray, root) {
+        // start from last node, to reduce the size of an array faster - usually last nodes are nested deeper due to tree order
+        // Plus it would be easier to iterate over shrinking array
+        var elementNo = elementsArray.length;
+        while (elementNo--) {
+            var parent = elementsArray[elementNo];
+            while (parent && parent != root) {
+                parent = parent.parentNode;
+                // if this element is inside someone else from our list, it's nested too deep
+                if (elementsArray.indexOf(parent) > -1) {
+                    // remove it from our list
+                    elementsArray.splice(elementNo, 1);
+
+                    parent = null;
+                    // continue abovelabel;
+                }
+            }
+        };
+        return elementsArray;
+    }
+
+    /**
+     * Gets all juicy-tile-list elements within a tile.
+     * @param   {HTMLElement}     element     The HTML element from Shadow DOM, which distributes somewhere the nodes that we will browse.
+     * @param   {Array}           selectors   List of valid tag names for juicy-tile-list.
+     * @return  {Array}                       Returns list of juicy-tile-list items found inside the element.
+     */
+    function getNestedLists(element, selectors) {
+        element = element &&
+                element.querySelector &&
+                element.querySelector('content').getDistributedNodes()[0];
+        if (!element) {
             return [];
         }
 
-        var selector = selectors.map(function (s) {
-            return "[juicytile='" + tileId + "'] " + s;
-        }).join(", ");
-
-        var lists = list.querySelectorAll(selector);
+        var lists = element.querySelectorAll(selectors.join(','));
 
         lists = Array.prototype.slice.call(lists);
 
-        return lists;
+        return filterNestedTooDeep(lists, element);
     }
 
     /**
@@ -454,6 +479,8 @@
             }
 
             var names = [];
+            var groupTitle = "Group: ";
+            var partialTitle = "Partial: ";
 
             for (var i = 0; i < setup.items.length; i++) {
                 names.push(getFullSetupName(list, setup.items[i], listSelectors));
@@ -461,10 +488,14 @@
 
             names = names.join(" & ");
 
+            if (names.indexOf(groupTitle) == 0 || names.indexOf(partialTitle) == 0) {
+                return names;
+            }
+
             if (setup.container) {
-                return "Group: " + names;
+                return groupTitle + names;
             } else {
-                return "Partial: " + names;
+                return partialTitle + names;
             }
         }
 
@@ -681,9 +712,9 @@
             /**
              * Array of predefined setup objects
              */
-            predefinedSetups:{
+            predefinedSetups: {
                 type: Object,
-                value: function(){return [];}
+                value: function () { return []; }
             }
         },
         observers: ["selectedTilesChanged(selectedTiles.length)"],
@@ -803,15 +834,6 @@
                 }
             }.bind(this);
 
-            this.onDocumentClick = function (e) {
-                this.scopeOut();
-            }.bind(this);
-
-            this.onClick = function (e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-            }.bind(this);
-
             this.set("lists", lists);
             this.set("listsTree", listsTree);
 
@@ -862,9 +884,6 @@
                 list.addEventListener("dblclick", this.onListDoubleClick, true);
                 shadow.addEventListener("dblclick", this.onListDoubleClick, true);
             }
-
-            document.addEventListener("click", this.onDocumentClick);
-            this.addEventListener("click", this.onClick);
         },
         /**
          * Removes document click, editor click, juicy-tile-list click/dblclick/mousemove event handlers.
@@ -882,9 +901,6 @@
                 list.removeEventListener("dblclick", this.onListDoubleClick, true);
                 shadow.removeEventListener("dblclick", this.onListDoubleClick, true);
             }.bind(this));
-
-            document.removeEventListener("click", this.onDocumentClick);
-            this.removeEventListener("click", this.onClick);
         },
         /**
          * Polymer binding helper. Gets css class value for a media range button.
@@ -991,15 +1007,20 @@
         },
         /**
          * Gets whether a juicy setup item is scopable.
+         * Scopable are
+         * - all groups ≡ nodes with .items
+         * - tiles with nested juicy-tile-*
          * @param   {Object}    item   The juicy setup item to check.
          * @return  {Boolean}          Returns true if the item is a jucy-tile-list, is a tight group, is a lose group, or contains juicy-tile-list. Returns false otherwise.
          */
         getIsScopable: function (item) {
-            if (item.items && item.items.length) {
+            if (item.items) {
                 return true;
             }
 
-            return getNestedLists(this.selectedList, item.id, this.listSelectors).length;
+            return getNestedLists(
+                this.selectedList.tiles[item.id],
+                this.listSelectors).length;
         },
         /**
          * Polymer binding helper. Gets whether a list and/or scope is able to apply gutter.
@@ -1084,7 +1105,7 @@
         getSelectedScopeName: function (list, scope) {
             if (scope) {
                 return getSetupName(list, getSetupItem(list.setup, getTileId(scope)), this.listSelectors);
-            } else if(list) {
+            } else if (list) {
                 return getSetupName(list, list.setup, this.listSelectors);
             }
 
@@ -1679,6 +1700,42 @@
             this.notifyPath("selectedScopeItems." + index + ".hidden", setup.hidden);
         },
         /**
+         * Polymer event handler. Handles tree item input double click. Enables editing.
+         * @param   {MouseEvent}   e   The mouse click event object.
+         */
+        editTreeItemName: function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var txt = e.currentTarget;
+
+            txt.removeAttribute("readonly");
+            txt.setSelectionRange(0, txt.value.length);
+            txt.focus();
+        },
+        /**
+         * Polymer event handler. Handles tree item input enter click and blur events. Disables editing.
+         * @param   {MouseEvent}   e   The mouse click event object.
+         */
+        saveTreeItemName: function (e) {
+            if (!e.which || e.which == 13) {
+                e.currentTarget.setAttribute("readonly", "readonly");
+                clearSelection();
+            }
+        },
+        /**
+         * Polymer event handler. Handles tree item input click. Cancels the event in editing mode.
+         * @param   {MouseEvent}   e   The mouse click event object.
+         */
+        clickTreeItemName: function (e) {
+            var txt = e.currentTarget;
+
+            if (!txt.hasAttribute("readonly")) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+        },
+        /**
          * Polymer event handler. Scopes in a group or a juicy-tile-list on sidebar item ... button click.
          * @param   {MouseEvent}   e   The mouse click event object.
          */
@@ -1923,10 +1980,12 @@
             if (list) {
                 this.set("selectedScope", null);
                 this.set("selectedList", list);
-            } else if (setup.items && setup.items.length) {
+            } else if (setup.items) {
                 this.set("selectedScope", tile);
             } else {
-                var lists = getNestedLists(this.selectedList, setup.id, this.listSelectors);
+                var lists = getNestedLists(
+                    this.selectedList.tiles[setup.id],
+                    this.listSelectors);
 
                 if (!lists.length) {
                     throw "Cannot scope in to this tile!";
@@ -1989,7 +2048,7 @@
                 return;
             }
 
-            var index = this.selectedTiles.indexOf(tile);
+            var index = this.selectedTiles.map(function (x) { return x.id; }).indexOf(tile.id);
 
             if (index >= 0) {
                 this.splice("selectedTiles", index, 1);
@@ -2021,7 +2080,9 @@
                     items = setup.items.slice();
                     items.sort(sortByPriorityDesc);
                 } else {
-                    items = getNestedLists(this.selectedList, setup.id, this.listSelectors).map(function (it) {
+                    // fetch nested juicy-tile-* from given element
+                    items = getNestedLists(this.selectedScope, this.listSelectors)
+                    .map(function (it) {
                         return it.setup;
                     });
                 }
@@ -2035,6 +2096,12 @@
             } else {
                 items = [];
             }
+
+            items.forEach(function (x) {
+                if (!x.name) {
+                    x.name = this.getSetupName(x);
+                }
+            }.bind(this));
 
             this.set("selectedScopeItems", items);
         },
@@ -2072,7 +2139,7 @@
                 this.$.highlightScopeSelected.show(this.selectedScope);
             } else if (this.selectedList) {
                 this.$.highlightScopeSelected.show(this.selectedList);
-            } else if(this.listsTree) {
+            } else if (this.listsTree) {
                 var lists = this.listsTree.map(function (item) {
                     return item.list;
                 });
@@ -2264,7 +2331,7 @@
                                                         usually it's one of `.predefinedSetups`/
          * @return {this}                            self
          */
-        applyPredefinedSetup: function(predefinedSetupConstructor){
+        applyPredefinedSetup: function (predefinedSetupConstructor) {
             // for debugging
             // predefinedSetupConstructor = this.predefinedSetups["Labels on left"].apply;
             // --
@@ -2275,24 +2342,24 @@
              * @param  {[type]} allElements [description]
              * @return {[type]}             [description]
              */
-            function getElementsFromSetupItems(items, parentElements){
+            function getElementsFromSetupItems(items, parentElements) {
                 var elements = [];
-                for(var itemNo = 0, len = items.length; itemNo < len; itemNo++){
+                for (var itemNo = 0, len = items.length; itemNo < len; itemNo++) {
                     var item = items[itemNo];
-                    if(item.items){
+                    if (item.items) {
                         elements.concat(getElementsFromSetupItems(item.items, parentElements));
                     } else {
-                        for(var elementNo = 0, elementsLen = parentElements.length; elementNo < elementsLen; elementNo++){
-                            if(parentElements[elementNo].getAttribute('juicytile') === items[itemNo].id){
+                        for (var elementNo = 0, elementsLen = parentElements.length; elementNo < elementsLen; elementNo++) {
+                            if (parentElements[elementNo].getAttribute('juicytile') === items[itemNo].id) {
                                 elements.push(parentElements[elementNo]);
                             }
                         }
-        }
+                    }
                 }
                 return elements;
             }
-            if(this.selectedScope){
-                this.getSetupItem(this.selectedScope).items = predefinedSetupConstructor( getElementsFromSetupItems(this.selectedScopeItems, this.selectedList.elements));
+            if (this.selectedScope) {
+                this.getSetupItem(this.selectedScope).items = predefinedSetupConstructor(getElementsFromSetupItems(this.selectedScopeItems, this.selectedList.elements));
             } else {
                 this.selectedList.setup.items = predefinedSetupConstructor(this.selectedList.elements);
             }
@@ -2305,7 +2372,7 @@
          * Draft of a UI handler for applying predefined layouts
          * @param  {event} event
          */
-        _choosePredefinedSetup: function(event){
+        _choosePredefinedSetup: function (event) {
             event.target.value && this.applyPredefinedSetup(this.predefinedSetups[event.target.value].apply);
         }
 

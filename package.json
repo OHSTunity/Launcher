@@ -1,6 +1,6 @@
 {
   "name": "launcher",
-  "version": "3.1.6",
+  "version": "5.0.0-develop.1",
   "private": true,
   "dependencies": {},
   "devDependencies": {

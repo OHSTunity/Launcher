@@ -1,0 +1,325 @@
+<!--
+  co-launcher-toolbar
+    - Only visible on logged in
+    --------------------------------------------------------------------------
+    | Logo/home -  Menu |               search | signin | tools/sidebar apps |
+    --------------------------------------------------------------------------
+    - Responsive layout order:
+        * Menu loose text
+        * Sigin loose text
+        * search become button
+        * logo/home merge with menu -> button
+        * tools/sidebars become menu-button
+
+   LAYOUT Large (> 1150px) DEFAULT
+   --------------------------------------------------------------------------
+   | Logo/home -  Menu |               search | signin | tools/sidebar apps |
+   --------------------------------------------------------------------------
+   Everything expanded, if menu get to long, texts gets truncated (ugly)
+
+-->
+<link rel="import" href="/sys/polymer/polymer.html">
+<link rel="import" href="/co-common/css/co-fontawesome.html">
+<link rel="import" href="/co-common/css/co-icomoon.html">
+<link rel="import" href="/co-common/elements/spinner/co-spinner.html">
+<dom-module id="co-launcher-toolbar">
+  <template>
+    <style include="co-icomoon"></style>
+    <style include="co-fontawesome">
+      :host {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        box-sizing: border-box;
+      }
+
+      .toolbar-divider {
+        margin: 7px 4px 7px 4px;
+        height: 15px;
+        width: 0px !important;
+        border-left: 1px rgba(255,255,255,0.37) solid;
+        position: relative;
+       }
+
+       #toolsection {
+         flex-shrink: 0;
+         display: flex;
+         align-items: center;
+       }
+
+       #largeLogo {
+         margin-top: -4px;
+         margin-left: -2px;
+         width: 25px;
+         min-width: 25px;
+         height: 25px;
+         min-height: 25px;
+       }
+
+      /* Menu LARGE */
+      #logoMenu {
+        height: 37px;
+        flex:1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      #menu {
+        flex: 1 1 auto;
+        display: flex;
+        color: #4c444b;
+        color: rgba(255, 255, 255, 0.9);
+        margin-left: 14px;
+        padding: 0px;
+        list-style-type: none; /* Remove bullets */
+        height:100%;
+     }
+
+      #menu li {
+        flex-shrink: 1;
+        /*padding-top: 2px;*/
+        transition: all 0.2s ease;
+      }
+      #menu li a:hover {
+
+          color: white;
+          background-color: rgba(255,255,255,.2);
+
+      }
+      #menu li:active {
+
+          background-color: rgba(0,0,0,.1);
+
+      }
+      #menu li.selected {
+
+          color: white;
+          background-color: rgba(0,0,0,.25);
+
+      }
+
+      #menu li a {
+        border-radius: 4px;
+        padding-right: 8px;
+        padding-left: 8px;
+        font-size: 16px;
+      }
+
+      #menu a {
+          display: block;
+          display: flex;
+          height: 36px;
+          align-items: center;
+          padding-left: 2px;
+          padding-right: 2px;
+      }
+
+      #menu a:link,
+      #menu a:visited,
+      #menu a:hover,
+      #menu a:active {
+          color: inherit;
+          text-decoration: none;
+      }
+
+      #menu a span
+      {
+          font-weight:normal;
+          padding-left:4px;
+      }
+
+      /* Menu SMALL */
+      #logoMenu.small #menu a span {
+          display: none;
+      }
+
+      /* Menu micro, todo:dropdown menu */
+      #logoMenu.micro #menu li {
+          display: none;
+      }
+
+      #toolsection.micro {
+        display: none;
+      }
+
+      co-spinner
+      {
+        position: absolute;
+        width: 54px;
+        height: 54px;
+        top: -4px;
+        left: -5px;
+        opacity: .9;
+        pointer-events: none;
+      }
+
+    </style>
+    <div id="logoMenu" >
+        <co-spinner id="logospinner"></co-spinner>
+        <co-logo id="largeLogo" on-tap="logoTapped"></co-logo>
+
+
+        <ul id="menu">
+          <template launcher-menu is="imported-template" content$="{{menu.LauncherLayoutInfo.MergedHtml}}" model="{{menu}}"></template>
+        </ul>
+    </div>
+    <span class="toolbar-divider"></span>
+    <content select="[search]"></content>
+    <span class="toolbar-divider"></span>
+    <content select="[signin]"></content>
+    <div id="toolsection">
+      <span class="toolbar-divider"></span>
+      <content id="tools"></content>
+    </div>
+
+  </template>
+
+  <script>
+        var TuApp = Polymer({
+          is: "co-launcher-toolbar",
+          properties: {
+            menu: {
+              type: Object,
+              value: null,
+              notify: true
+            },
+            patchcnt: {
+              type: Number,
+              value: 0
+            },
+            menuCount: { //Number of items in menu
+              type: Number,
+              value: 0,
+              readonly: true
+            },
+            toolCount: { //Number of items in menu
+              type: Number,
+              value: 0,
+              readonly: true
+            },
+            dropdownMenu: { //should we use a dropdownMenu
+              type: Boolean,
+              readonly: true,
+              value: false,
+              notify: true
+            },
+            _width: {
+              type: Number,
+              value: 1150
+            }
+          },
+          observers: [
+            'layoutChanged(_width, menuCount, toolCount)'
+          ],
+          listeners: {
+            'tap': 'tapped'
+          },
+          tapped: function() {
+            this.dropdownMenu = true;
+          },
+          ready: function() {
+
+            puppet.addEventListener("patchsent", function(ev){
+              if(ev.detail.data == null || ev.detail.data != "[]"){
+                this.patchcnt+=1;
+                this.$.logospinner.style.opacity = 1.0;
+              }
+
+            }.bind(this));
+
+            puppet.addEventListener("patchreceived", function(ev){
+              this.patchcnt-=1;
+              if(this.patchcnt<0)this.patchcnt=0
+              if(this.patchcnt == 0)this.$.logospinner.style.opacity = 0.0;
+
+            }.bind(this));
+
+            // Dirty check every 3 seconds. TODO: Fix a better solution
+            setInterval(function(){
+              this.patchcnt=0;
+              this.$.logospinner.style.opacity = 0.0;
+            }.bind(this), 3000);
+
+
+
+          },
+          attached: function() {
+            this._menuObserver = Polymer.dom(this.$.menu).observeNodes(this.menuChanged.bind(this));
+            this._toolsObserver = Polymer.dom(this.$.tools).observeNodes(this.toolsChanged.bind(this));
+            this.listen(window, 'resize', 'widthChanged');
+            this.widthChanged();
+          },
+          detached: function() {
+            Polymer.dom(this.$.menu).unobserveNodes(this._menuObserver);
+            Polymer.dom(this.$.tools).unobserveNodes(this._toolsObserver);
+            this.unlisten(window, 'resize', 'widthChanged');
+          },
+          logoTapped: function() {
+            puppet.morphUrl("/");
+          },
+          menuChanged: function(ev) {
+            this.countMenuItems();
+          },
+          toolsChanged: function(ev) {
+            this.countToolItems();
+          },
+          widthChanged: function() {
+            this._width = window.innerWidth;
+          },
+          layoutChanged: function(width, menuCount, toolCount) {
+            var menuwidth = menuCount * 150 + 30 + 14;
+            var searchwidth = 200;
+            var dividerwidth = 3*9;
+            var userwidth = 200; //large
+            var toolwidth = toolCount*42;
+            var menusmall = false;
+            var menumicro = false;
+            var usersmall = false;
+            var toolmicro = false;
+
+            // if full menu to long
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
+              menuwidth = menuCount*20 + 30 + 14;
+              menusmall = true;
+            }
+
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
+              userwidth = 25;
+              usersmall = true;
+            }
+
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
+               menumicro = true;
+               menuwidth = 30+14;
+            }
+
+            if (menuwidth + dividerwidth + searchwidth + userwidth + toolwidth > width) {
+               toolmicro = true;
+               toolwidth = 0;
+               dividerwidth = 2*9;
+            }
+
+            this.toggleClass('small', menusmall, this.$.logoMenu);
+            this.toggleClass('micro', menumicro, this.$.logoMenu);
+            this.toggleClass('micro', toolmicro, this.$.toolsection);
+            var signin = Polymer.dom(this).queryDistributedElements('so-signin')[0];
+            if (signin) {
+              signin.classList.toggle('small', usersmall);
+            }
+          },
+          countMenuItems: function() {
+            if (this.$.menu) {
+              this.menuCount = this.$.menu.querySelectorAll('li').length;
+            }
+          },
+          countToolItems: function() {
+            if (this.$.tools) {
+              this.toolCount = this.queryAllEffectiveChildren('[tool]').length;
+            }
+          },
+        });
+    </script>
+</dom-module>

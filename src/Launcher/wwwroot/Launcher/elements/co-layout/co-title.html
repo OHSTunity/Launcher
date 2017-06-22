@@ -1,0 +1,26 @@
+<!-- Sets browser title -->
+<link rel="import" href="/sys/polymer/polymer.html">
+<dom-module id="co-title">
+  <template>
+  </template>
+  <script>
+    Polymer({
+      is: "co-title",
+      properties: {
+        value: {
+          type: String,
+          value: "",
+          observer: "valueChanged",
+        },
+      },
+      attached: function() {
+        this.valueChanged(this.value);
+      },
+      valueChanged: function(value) {
+        if (value) {
+          document.title = value;
+        }
+      },
+    });
+  </script>
+</dom-module>

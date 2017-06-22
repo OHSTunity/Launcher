@@ -1,0 +1,80 @@
+﻿<link rel="import" href="/co-common/css/co-layout.html">
+<template>
+  <style is="custom-style" include="co-layout">
+    a {
+      padding: 10px;
+    }
+    #settings_header
+    {
+      position: absolute;
+      display: flex;
+      box-sizing: border-box;
+      align-items: center;
+      padding-left: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #999;
+      top: 0px;
+      left: 0px;
+      height: 47px;
+      width: 100%;
+      background: white;
+      background: linear-gradient(to bottom, #f1eff9 0%,#f5f5fa 100%);
+      border-bottom: .5px solid #cad1ed;
+    }
+    #settings_content
+    {
+      display: flex;
+      position: absolute;
+      top: 60px;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+      padding:10px;
+    }
+  </style>
+  <template is="dom-bind">
+    <div class="vertical">
+
+      <div id="settings_header">App Settings</div>
+      <div id="settings_content">
+        <template is="dom-repeat" items="{{_getItems(model.Menu)}}" sort="_sortAlphabetic">
+          <a href$="{{item.Url}}" id="item">
+            <div class="vertical center">
+              <co-icon size= "48" style="font-weight: bold;
+                        display: block;
+                        margin-top: 10px;
+                        color: rgb(166, 155, 125);"
+                  icon="{{item.Icon}}">
+              </co-icon>
+              <span class="label">{{item.Label}}</span>
+            </div>
+          </a>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      var template = (document._currentScript ||  document.currentScript).previousElementSibling;
+
+      template._sortAlphabetic = function(i1, i2) {
+          return i1.Label > i2.Label ? 1 : -1;
+      };
+
+      template._getItems = function(menu) {
+        var items = [];
+        if (menu) {
+          for (var name in menu) {
+            if (menu.hasOwnProperty(name) && menu[name].hasOwnProperty("Items")) {
+              for (var i = 0; i < menu[name].Items.length; i++) {
+                items.push(menu[name].Items[i]);
+              }
+            }
+          }
+        }
+        return items;
+      };
+    })();
+  </script>
+</template>

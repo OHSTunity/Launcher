@@ -50,17 +50,17 @@ module.exports = function(grunt) {
     },
     bump: {
       options: {
-        files: ['package.json', 'src/Launcher/package/package.config'],
+        files: ['package.json', 'src/Launcher/package/package.config', 'src/Launcher/bower.json'],
         commit: true,
         commitMessage: '%VERSION%',
-        commitFiles: ['package.json', 'src/Launcher/package/package.config', 'README.md'],
+        commitFiles: ['package.json', 'src/Launcher/package/package.config', 'src/Launcher/bower.json', 'README.md'],
         createTag: true,
         tagName: '%VERSION%',
         tagMessage: 'Version %VERSION%',
         push: false,
         // pushTo: 'origin',
         globalReplace: false,
-        prereleaseName: "pre",
+        prereleaseName: "develop",
         regExp: new RegExp(
           '([\'|\"]?version[\'|\"]?[ ]*:[ ]*[\'|\"]?|<Version>)(\\d+\\.\\d+\\.\\d+(-' +
           "pre" + // opts.prereleaseName +

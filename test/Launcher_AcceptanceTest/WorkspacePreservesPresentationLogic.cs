@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using Launcher.AcceptanceTest;
 
 /*
 This test checks if the presentation logic is preserved by:
@@ -16,35 +17,12 @@ namespace SeleniumTests {
     [TestFixture("firefox")]
     [TestFixture("chrome")]
     [TestFixture("edge")]
-    public class WorkspacePreservesPresentationLogic {
-        private IWebDriver driver;
-        private StringBuilder verificationErrors;
-        private string baseURL;
+    public class WorkspacePreservesPresentationLogic : BaseTest
+    {
         private bool acceptNextAlert = true;
-        private string browser;
-
-        public WorkspacePreservesPresentationLogic(string browser) {
-            this.browser = browser;
-        }
-
-        [SetUp]
-        public void SetupTest() {
-            driver = WebDriverFactory.Create(this.browser);
-            baseURL = "http://localhost:8080";
-            verificationErrors = new StringBuilder();
-        }
-
-        [TearDown]
-        public void TeardownTest() {
-            try {
-                driver.Quit();
-            }
-            catch (Exception) {
-                // Ignore errors if unable to close the browser
-            }
-            Assert.AreEqual("", verificationErrors.ToString());
-        }
-
+        
+        public WorkspacePreservesPresentationLogic(string browser) : base(browser) { }
+        
         [Test]
         public void TheWorkspacePreservesPresentationLogicTest() {
             driver.Navigate().GoToUrl(baseURL + "/launcher");

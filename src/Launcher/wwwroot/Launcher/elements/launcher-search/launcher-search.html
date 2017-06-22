@@ -1,13 +1,13 @@
 ﻿<link rel="import" href="/sys/polymer/polymer.html" />
-<link rel="import" href="/tu-common/css/tu-fontawesome.html">
+<link rel="import" href="/co-common/css/co-fontawesome.html">
+
 
 <dom-module id="launcher-search">
-    <style include="tu-fontawesome"></style>
+    <style include="co-fontawesome"></style>
     <style>
         :host {
             display: inline;
-            height: 0px;
-            width: 0px;
+            min-width: 190px;
         }
 
         input {
@@ -16,22 +16,24 @@
           outline: none;
           background: transparent;
           outline: none;
-          color: #FFF;
+          color: inherit;
           font-weight: 200;
-          padding-left:10px;
+          padding:0 0 5px 0;
           font-size: 14px;
+          font-family: 'Lato';
         }
 
         input::-webkit-input-placeholder {
-          color:rgba(255,255,255,.5);
+          color: rgba(255,255,255,.25);
+          noopacity: 0.5;
         }
 
         input::-moz-placeholder {
-          color:rgba(255,255,255,.5);
+          opacity: 0.5;
         }
 
         input:-ms-input-placeholder {
-          color:rgba(255,255,255,.5);
+          opacity: 0.5;
         }
 
         div.preview {
@@ -49,6 +51,7 @@
             font-size: 14px;
             color: black;
             display: none;
+            z-index: 1000;
         }
 
         .preview.visible {
@@ -81,16 +84,17 @@
         }
     </style>
     <template>
-      <input placeholder="{{placeholder}}" value="{{data.query$::input}}" on-keydown='onKeyDown' on-keyup='onKeyUp' on-blur="onBlur" />
-      <span style="padding-bottom: 5px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
+      <div class="container">
+      <input id="thisinput" placeholder="{{placeholder}}" value="{{data.query$::input}}" on-keydown='onKeyDown' on-keyup='onKeyUp' on-blur="onBlur" />
+      <span style="padding-bottom: 5px;margin-right:10px;" id="search-icon"><i class="fa fa-search" style="font-size:0.70em;color:rgba(255,255,255,.5)"></i></span>
 
       <div id="preview" class="preview">
         <div id='result'>
           <template is="dom-repeat" items="{{types}}" as="type">
-            <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>{{type.Count}}</span>)</div>
-            <div class="items">
+            <div class="typeheader"><span style="flex:1">{{type.Type}}</span>(<span>[[_calcCount(type.Count)]]</span>)</div>
+            <div index$={{type._index}} class="items">
               <template is="dom-repeat" items="{{type.Items}}" as="item">
-                <div class="item" on-mouseover='itemHovered' on-tap='itemTapped'>
+                <div class="item" index$="{{index}}" on-mouseover='itemHovered' on-tap='itemTapped'>
                   <template is="imported-template" model="{{item}}" content$="{{item.Html}}"></template>
                 </div>
               </template>
@@ -100,6 +104,7 @@
             <span class="no-result">No result</span>
           </template>
         </div>
+      </div>
       </div>
     </template>
     <script>
@@ -125,6 +130,7 @@
             ],
             colors: [],
             ready: function () {
+
             },
             optionsChanged: function(options) {
             },
@@ -155,6 +161,7 @@
                 if (this.data.previewResult.hasOwnProperty(name) &&
                     this.data.previewResult[name].hasOwnProperty("Types")) {
                   for (var i = 0; i < this.data.previewResult[name].Types.length; i++) {
+                    this.data.previewResult[name].Types[i]._index = i;
                     types.push(this.data.previewResult[name].Types[i]);
                   }
                 }
@@ -250,6 +257,19 @@
               }
               return "";
             },
+            getNameFromType:function(type) {
+              for (var name in this.data.previewResult)
+              {
+                if (this.data.previewResult.hasOwnProperty(name) &&
+                    this.data.previewResult[name].hasOwnProperty("Types")) {
+                      for (var i = 0; i < this.data.previewResult[name].Types.length; i++) {
+                        if (this.data.previewResult[name].Types[i] == type)
+                          return name;
+                      }
+                }
+              }
+              return "";
+            },
             onKeyDown: function (event) {
                 switch (event.keyCode)
                 {
@@ -286,19 +306,21 @@
             {
               var data = item._templateInstance.__data__.item;
               var number = data.Activate$;
-              var itemIndex = data.$parent.indexOf(data);
-              data = data.$parent.$parent;
-              var typeIndex = data.$parent.indexOf(data);
-              data = data.$parent.$parent;
-              var appname = this.getName(data);
+              var itemIndex = item.getAttribute('index');
+              var typeIndex = item.parentElement.getAttribute('index');
+              var type = item.parentElement._templateInstance.__data__.type;
+              var appname = this.getNameFromType(type);
               var path = "data.previewResult." + appname + ".Types.#" + typeIndex + ".Items.#" + itemIndex + ".Activate$";
               this.set(path, number + 1);
               this.set('data.query$',  "");
               this.set("data.close$", this.data.close$ + 1);
-              console.log(path, number);
+              //console.log(path, number);
             },
             focus: function () {
                 this.$.input.focus();
+            },
+            _calcCount: function(count) {
+              return (count < 26)? count : "25+";
             },
         });
     </script>

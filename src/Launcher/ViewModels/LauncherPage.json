@@ -1,32 +1,43 @@
 {
-    "Html": "",
-    "homeThumbnail": { },
-    "homeUrl": "",
-    "editingMode$": false,
-    "layoutModified$": false,
-    "searchBar": {
-        "query$": "",
-		"options$":"",
-		"$options$": { bind:"OptionsCB" },
-        "previewResult": { },
-        "previewVisible": false,
-        "close$": 0
-    },
-    "currentPage": {},
-    "user": { },
-    "menu": { },
-    "launchpad": {
-        "names": { },
-		"layout": ""
-    },
-    "appFilter": [
-        {
-            "AppName": "",
-            "on$": true,
-            "text": "",
-            "thumbnail": { }
-        }
-    ],
-    "workspaces": [ ],
-    "uri": ""
+  "Html": "",
+
+  "Title":  "",
+
+  "signedIn": false,
+  "$signedIn": { "Bind": "SignedInCB" },
+  "signin": { },
+
+  "homeThumbnail": { },
+  "homeUrl": "",
+  "editingMode$": false,
+  "layoutModified$": false,
+  "searchBar": {
+    "query$": "",
+    "options$": "",
+    "$options$": { "bind": "OptionsCB" },
+    "previewResult": { },
+    "previewVisible": false,
+    "close$": 0
+  },
+  "user": { },
+  "menu": { },
+
+  "appFilter": [
+    {
+      "AppName": "",
+      "on$": true,
+      "text": "",
+      "thumbnail": { }
+    }
+  ],
+
+  "workspaces": [ { "$": { "Reuse": "Launcher.WorkSpace" } } ],
+  
+  "contextbar": { },
+  "contextpanel": { },
+  "contextpanelAutoVisible":  false,
+  "sidepanel": { },
+
+  "redirect$": "",
+  "uri": ""
 }
