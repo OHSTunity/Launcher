@@ -21,7 +21,7 @@
   },
   "user": { },
   "menu": { },
-
+  "topbarRightMenu": {},
   "appFilter": [
     {
       "AppName": "",

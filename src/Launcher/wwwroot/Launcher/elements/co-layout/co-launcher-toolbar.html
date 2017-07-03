@@ -22,6 +22,7 @@
 <link rel="import" href="/co-common/css/co-fontawesome.html">
 <link rel="import" href="/co-common/css/co-icomoon.html">
 <link rel="import" href="/co-common/elements/spinner/co-spinner.html">
+<link rel="import" href="/co-common/elements/button/co-button.html" />
 <dom-module id="co-launcher-toolbar">
   <template>
     <style include="co-icomoon"></style>
@@ -160,8 +161,7 @@
     <div id="logoMenu" >
         <co-spinner id="logospinner"></co-spinner>
         <co-logo id="largeLogo" on-tap="logoTapped"></co-logo>
-
-
+        
         <ul id="menu">
           <template launcher-menu is="imported-template" content$="{{menu.LauncherLayoutInfo.MergedHtml}}" model="{{menu}}"></template>
         </ul>
@@ -170,11 +170,16 @@
     <content select="[search]"></content>
     <span class="toolbar-divider"></span>
     <content select="[signin]"></content>
-    <div id="toolsection">
+    <div id="toolsection"> <!-- items for the "user" variable in the launcher. should be hidden. -->
       <span class="toolbar-divider"></span>
       <content id="tools"></content>
+        <co-icon-button-menu icon="ellipsis-v" size="18">
+            <template is="dom-repeat" items="{{menuitems}}">
+                <template is="imported-template" content$="{{item.Html}}" model="{{item}}"></template>
+            </template>
+        </co-icon-button-menu>
     </div>
-
+ 
   </template>
 
   <script>
@@ -209,10 +214,18 @@
             _width: {
               type: Number,
               value: 1150
+            },
+            topbarmenu: {
+                type:Object
+            },
+            menuitems: {
+                type: Array,
+                value:[]
             }
           },
           observers: [
-            'layoutChanged(_width, menuCount, toolCount)'
+            'layoutChanged(_width, menuCount, toolCount)',
+            "topmenuitemsChanged(topbarmenu)"
           ],
           listeners: {
             'tap': 'tapped'
@@ -221,7 +234,6 @@
             this.dropdownMenu = true;
           },
           ready: function() {
-
             puppet.addEventListener("patchsent", function(ev){
               if(ev.detail.data == null || ev.detail.data != "[]"){
                 this.patchcnt+=1;
@@ -244,9 +256,8 @@
             }.bind(this), 3000);
 
 
-
           },
-          attached: function() {
+          attached: function () {
             this._menuObserver = Polymer.dom(this.$.menu).observeNodes(this.menuChanged.bind(this));
             this._toolsObserver = Polymer.dom(this.$.tools).observeNodes(this.toolsChanged.bind(this));
             this.listen(window, 'resize', 'widthChanged');
@@ -260,10 +271,19 @@
           logoTapped: function() {
             puppet.morphUrl("/");
           },
+          topmenuitemsChanged: function () {
+              var dropitems = [];
+              var priomenu = [];
+              var menuData = this.topbarmenu;
+              for (var name in menuData) {
+                  dropitems.push(menuData[name]);
+              }
+              this.menuitems = dropitems;
+          },
           menuChanged: function(ev) {
             this.countMenuItems();
           },
-          toolsChanged: function(ev) {
+          toolsChanged: function (ev) {
             this.countToolItems();
           },
           widthChanged: function() {
@@ -316,8 +336,8 @@
             }
           },
           countToolItems: function() {
-            if (this.$.tools) {
-              this.toolCount = this.queryAllEffectiveChildren('[tool]').length;
+              if (this.$.tools) {
+                this.toolCount = this.queryAllEffectiveChildren('[tool]').length;
             }
           },
         });

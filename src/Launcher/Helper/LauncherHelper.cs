@@ -89,10 +89,14 @@ namespace Launcher.Helper {
                     launcher.Session = session;
 
                     launcher.user = GetPartials("/user");
+                    
+                    launcher.menu = GetPartials("/menu");
 
-                    launcher.menu = GetPartials("/menu"); 
 
                     /*Special colab stuff*/
+
+                    launcher.topbarRightMenu = GetPartials("/topbar-right-menu");
+
                     launcher.sidepanel = GetPartials("/sidepanel");
 
                     launcher.contextpanel = GetPartials("/contextpanel");
