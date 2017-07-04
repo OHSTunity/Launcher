@@ -173,10 +173,9 @@
     <div id="toolsection"> <!-- items for the "user" variable in the launcher. should be hidden. -->
       <span class="toolbar-divider"></span>
       <content id="tools"></content>
-        <co-icon-button-menu icon="ellipsis-h" size="18" style="font-size:15px;">
+        <co-icon-button-menu icon="ellipsis-v" size="18" style="font-size:15px;">
             <template is="dom-repeat" items="{{menuitems}}">
                 <template is="imported-template" content$="{{item.Html}}" model="{{item}}"></template>
-                 
             </template>
         </co-icon-button-menu>
     </div>
