@@ -170,16 +170,11 @@
     <content select="[search]"></content>
     <span class="toolbar-divider"></span>
     <content select="[signin]"></content>
-    <div id="toolsection"> <!-- items for the "user" variable in the launcher. should be hidden. -->
+    <div id="toolsection">
       <span class="toolbar-divider"></span>
       <content id="tools"></content>
-        <co-icon-button-menu icon="ellipsis-v" size="18" style="font-size:15px;">
-            <template is="dom-repeat" items="{{menuitems}}">
-                <template is="imported-template" content$="{{item.Html}}" model="{{item}}"></template>
-            </template>
-        </co-icon-button-menu>
     </div>
- 
+  
   </template>
 
   <script>
@@ -214,9 +209,6 @@
             _width: {
               type: Number,
               value: 1150
-            },
-            topbarmenu: {
-                type:Object
             },
             menuitems: {
                 type: Array,
@@ -270,15 +262,6 @@
           },
           logoTapped: function() {
             puppet.morphUrl("/");
-          },
-          topmenuitemsChanged: function () {
-              var dropitems = [];
-              var priomenu = [];
-              var menuData = this.topbarmenu;
-              for (var name in menuData) {
-                  dropitems.push(menuData[name]);
-              }
-              this.menuitems = dropitems;
           },
           menuChanged: function(ev) {
             this.countMenuItems();
