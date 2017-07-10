@@ -153,7 +153,7 @@
     <template id="root-launcher-dom-bind" is="dom-bind">
       <co-title value="[[model.Title]]"></co-title>
       <co-launcher only-workspace="[[!model.signedIn]]" cp-auto-visible=[[model.contextpanelAutoVisible]]>
-          <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}" rightmenu="{{model.topbarRightMenu}}">
+          <co-launcher-toolbar toolbar class="launcher-toolbar launcher-topbar" menu="{{model.menu}}" rightmenu="{{model.topbarRightMenu}}" displaydropdown="{{model.DisplayToprightMenu}}">
               <!-- menu is built inside toolbar -->
               <launcher-search search placeholder="Search here..." data="{{model.searchBar}}"></launcher-search>
               <template is="imported-template" content$="{{model.user.LauncherLayoutInfo.MergedHtml}}" model="{{model.user}}"></template>

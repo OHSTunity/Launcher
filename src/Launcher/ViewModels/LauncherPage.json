@@ -19,9 +19,12 @@
     "previewVisible": false,
     "close$": 0
   },
-  "user": { },
+  "user": {
+  },
   "menu": { },
-  "topbarRightMenu": {},
+  "topbarRightMenu": {
+  },
+  "DisplayToprightMenu": true,
   "appFilter": [
     {
       "AppName": "",

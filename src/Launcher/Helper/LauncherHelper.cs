@@ -11,7 +11,8 @@ using WorkSpace = Launcher.WorkSpace;
 
 namespace Launcher.Helper {
 
-    public static class LauncherHelper {
+    public static class LauncherHelper
+    {
 
         private static int ConvertOrDefault(String str, int defaulvalue)
         {
@@ -24,7 +25,7 @@ namespace Launcher.Helper {
         private static Response GetPartials(String common_uri)
         {
             return Self.GET(UriMapping.MappingUriPrefix + common_uri, () => {
-                var p = new Page();
+                var p = new Page();              
                 return p;
             });
         }
@@ -89,13 +90,12 @@ namespace Launcher.Helper {
                     launcher.Session = session;
 
                     launcher.user = GetPartials("/user");
-                    
                     launcher.menu = GetPartials("/menu");
-
 
                     /*Special colab stuff*/
 
                     launcher.topbarRightMenu = GetPartials("/topbar-right-menu");
+                         
 
                     launcher.sidepanel = GetPartials("/sidepanel");
 
@@ -325,6 +325,16 @@ namespace Launcher.Helper {
             }
         }
 
+        static bool ShouldDisplayTopRightMenu(Json resource)
+        {
+            var display = resource.GetType().GetProperty("DisplayTopRightMenu");
+            if (display == null)
+            {
+                return true;
+            }
+            return !(display.GetValue(resource) is bool) || (bool) display.GetValue(resource);
+        }
+
         static String GetContextId(Json resource)
         {
             try
@@ -342,6 +352,7 @@ namespace Launcher.Helper {
             launcher = Self.GET<LauncherPage>("/launcher/main");
 
             launcher.uri = req.Uri;
+           
 
             // First check if a workspace already exists for the app that registered the uri.
             string appName = req.HandlerAppName;
@@ -357,7 +368,8 @@ namespace Launcher.Helper {
 
             workspace.ActiveWorkspace = true;
             workspace.AutoRefreshBoundProperties = true;
-
+            launcher.DisplayToprightMenu = ShouldDisplayTopRightMenu(resource);
+            
             //Colab specific Context handlers
             var contextApp = IsContextApp(resource);
             launcher.contextpanelAutoVisible = contextApp;

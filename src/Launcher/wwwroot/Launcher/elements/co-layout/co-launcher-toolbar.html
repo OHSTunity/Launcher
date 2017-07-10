@@ -168,7 +168,7 @@
         <div id="toolsection">
             <span class="toolbar-divider"></span>
             <content id="tools"></content>
-            <template is="dom-if" if="{{menuitems}}">
+            <template is="dom-if" if="{{_displayDropdown(menuitems,displaydropdown)}}">
                 <co-icon-button-menu icon="ellipsis-v" size="18" style="font-size: 15px;">
                     <template is="dom-repeat" items="{{menuitems}}">
                         <co-option icon="{{item.Icon}}" label="{{item.Label}}" tap="{{item.Tap$}}"></co-option>
@@ -220,6 +220,9 @@
                     type: Object,
                     value: {},
                     observer: "rightmenuChanged"
+                },
+                displaydropdown: {
+                    value: true
                 }
             },
             observers: [
@@ -341,6 +344,11 @@
                     this.toolCount = this.queryAllEffectiveChildren('[tool]').length;
                 }
             },
+            _displayDropdown: function (menuitems, showdropdown) {
+                return menuitems.length > 0 && showdropdown;
+            },
+     
+            
         });
     </script>
 </dom-module>
