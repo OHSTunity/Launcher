@@ -494,6 +494,8 @@
             else {
               this.set('cpManualVisible', !this.cpManualVisible);
             }
+              this.fire("panel-width-changed", {width: 0});
+
           },
           contextPanelTapped: function() {
             if (this.$.contextPanel.classList.contains("minimized"))
