@@ -57,6 +57,7 @@
       },
       panelWidthChanged: function() {
         this.updateChildPanelWidth();
+        this.fire("panel-width-changed", {width:this.panelWidth});
       },
       updateChildPanelWidth: function() {
         var views = Polymer.dom(this.root).querySelectorAll('.view');
@@ -141,8 +142,10 @@
           }, 300);
 
           this.fire("panel-command", { status: "open" });
+            this.fire("panel-width-changed", { width: 0 });
         } else {
           this.fire("panel-command", { status: "close"});
+            this.fire("panel-width-changed", { width: 0 });
         }
       },
       emptyChanged: function(empty) {
