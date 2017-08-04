@@ -353,6 +353,18 @@
               value: 350,
               notify: true,
             },
+            rightWidth: {
+              type: Number,
+              value: 350,
+              notify: true,
+              observer: 'rightWidthChanged'
+            },
+            leftWidth: {
+              type: Number,
+              value: 350,
+              notify: true,
+              observer: 'leftWidthChanged'
+            },
             right: {
               type: Boolean,
               value: false,
@@ -435,9 +447,18 @@
               if (ev.detail.status == 'content_exist')
                 this.set("cpExists", true);
           },
+          rightWidthChanged: function() {
+            window.rightpanelwidth = this.rightWidth;
+            this.fire('workspaceSizeChanged');
+          },
+          leftWidthChanged: function() {
+            window.leftpanelwidth = this.leftWidth;
+            this.fire('workspaceSizeChanged');
+          },
           cpStatusChanged: function(exists, manualMinimized, manualVisible, autoVisible, width) {
             if (!exists) {
               this.$.contextPanel.style.width = 0 + 'px';
+              this.leftWidth = 0;
               this.toggleClass('hidden', true, this.$.contextPanel);
               var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
               for (var i = 0; i < mviews.length; i++)
@@ -457,6 +478,7 @@
                 width = '40';
               }
               this.$.contextPanel.style.width = width + 'px';
+              this.leftWidth = width;
               var mviews = Polymer.dom(this.$.contextPanel).queryDistributedElements("co-layout-multiview");
               for (var i = 0; i < mviews.length; i++)
               {
@@ -485,6 +507,7 @@
               width = 600;
 
             this.set('cpWidth', width);
+            this.leftWidth = width;
           },
           toggleContextPanel: function(ev) {
             if (ev)
@@ -507,6 +530,7 @@
           },
           rightChanged: function(e)
           {
+            this.rightWidth = this.right? 350:0;
             this.classList.toggle("co-layout-panels-right-close", !this.right);
           },
           onTuPane: function(e)
