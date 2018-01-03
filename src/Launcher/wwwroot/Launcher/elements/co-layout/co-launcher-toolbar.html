@@ -41,6 +41,7 @@
                 width: 0px !important;
                 border-left: 1px rgba(255,255,255,0.37) solid;
                 position: relative;
+				@apply --toolbar-divider-styles;
             }
 
             #toolsection {
@@ -77,6 +78,7 @@
                 padding: 0px;
                 list-style-type: none; /* Remove bullets */
                 height: 100%;
+				@apply --toolbar-menu-styles;
             }
 
                 #menu li {
@@ -347,8 +349,8 @@
             _displayDropdown: function (menuitems, showdropdown) {
                 return menuitems.length > 0 && showdropdown;
             },
-     
-            
+
+
         });
     </script>
 </dom-module>
