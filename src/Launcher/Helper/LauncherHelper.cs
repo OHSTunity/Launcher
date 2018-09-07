@@ -317,7 +317,7 @@ namespace Launcher.Helper {
             try
             {
                 var pi = resource.GetType().GetProperty("ContextId");
-                return (pi.CanRead && pi.PropertyType == typeof(String));
+                return pi != null && pi.CanRead && pi.PropertyType == typeof(String);
             }
             catch
             {
